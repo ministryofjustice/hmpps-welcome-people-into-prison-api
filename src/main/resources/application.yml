@@ -1,10 +1,10 @@
 info.app:
-  name: HMPPS Template Kotlin
+  name: Hmpps Welcome People Into Prison Api
   version: 1.0
 
 spring:
   application:
-    name: hmpps-template-kotlin
+    name: hmpps-welcome-people-into-prison-api
   codec:
     max-in-memory-size: 10MB
 
