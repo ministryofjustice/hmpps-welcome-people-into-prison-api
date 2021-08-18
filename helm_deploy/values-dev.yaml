@@ -6,7 +6,7 @@ generic-service:
 
   ingress:
     host: welcome-api-dev.prison.service.justice.gov.uk
-
+    tlsSecretName: hmpps-welcome-to-prison-dev-cert
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
 
