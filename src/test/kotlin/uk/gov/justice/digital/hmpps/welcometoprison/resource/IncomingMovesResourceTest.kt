@@ -90,7 +90,6 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       verify(movementService).getMovements("MDI", LocalDate.of(2020, 1, 2))
     }
 
-
     private fun String.loadJson(): String =
       IncomingMovesResourceTest::class.java.getResource("$this.json")?.readText()
         ?: throw AssertionError("file $this.json not found")

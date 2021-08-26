@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.resources;
+package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.MovementService
 import java.time.LocalDate
-import javax.validation.constraints.Size
 
 @RestController
 @Validated
@@ -37,10 +36,12 @@ class IncomingMovesResource(
       ApiResponse(
         responseCode = "200",
         description = "A list of incoming movements for that agency",
-        content = [Content(
-          mediaType = "application/json",
-          array = ArraySchema(schema = Schema(implementation = Movement::class))
-        )]
+        content = [
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = Movement::class))
+          )
+        ]
       ),
       ApiResponse(
         responseCode = "401",
@@ -62,7 +63,7 @@ class IncomingMovesResource(
   @GetMapping("/{agencyId}")
   fun getMoves(
     @Schema(description = "Agency ID", example = "MDI", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "AGENCY ID must be between 2 and 12") agencyId: String,
+    @PathVariable agencyId: String,
     @Parameter(description = "Movements on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
