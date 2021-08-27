@@ -1,0 +1,11 @@
+[
+  {
+    "firstName": "First",
+    "lastName": "Last",
+    "dateOfBirth": "1980-01-02",
+    "prisonNumber": "A1234AA",
+    "pncNumber": "1234/1234567A",
+    "date": "2021-01-02",
+    "moveType": "COURT_APPEARANCE"
+  }
+]
