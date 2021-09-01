@@ -11,9 +11,9 @@ class MovementService(val faker: Faker = Faker()) {
   private val numbers = '0'..'9'
   private val letters = 'A'..'Z'
 
-  fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString()
+  fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString("")
 
-  fun getMovements(agencyId: String, date: LocalDate) = Random().ints(5, 15).mapToObj {
+  fun getMovements(agencyId: String, date: LocalDate) = generateSequence {
     Movement(
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
@@ -24,5 +24,5 @@ class MovementService(val faker: Faker = Faker()) {
       date = date,
       moveType = MoveType.values().random(),
     )
-  }.toList()
+  }.take((5..20).random()).toList()
 }
