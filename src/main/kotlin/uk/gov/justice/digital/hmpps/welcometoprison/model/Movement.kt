@@ -15,12 +15,14 @@ data class Movement(
   @Schema(description = "Date of birth", example = "1971-02-01")
   val dateOfBirth: LocalDate,
   @Schema(description = "Prison number", example = "A1234AA")
-  val prisonNumber: String,
+  val prisonNumber: String?,
   @Schema(description = "PNC number", example = "01/1234X")
   val pncNumber: String,
   @Schema(description = "Date expected", example = "2020-02-23")
   val date: LocalDate,
-  @Schema(description = "Move type", example = "Crown House")
+  @Schema(description = "From Location", example = "Kingston-upon-Hull Crown Court")
+  val fromLocation: String,
+  @Schema(description = "Move type", example = "PRISON_REMAND")
   val moveType: MoveType
 )
 

@@ -63,7 +63,8 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
           prisonNumber = "A1234AA",
           pncNumber = "1234/1234567A",
           date = LocalDate.of(2021, 1, 2),
-          moveType = MoveType.COURT_APPEARANCE
+          moveType = MoveType.COURT_APPEARANCE,
+          fromLocation = "Hull Court"
         ),
       )
 

@@ -18,10 +18,11 @@ class MovementService(val faker: Faker = Faker()) {
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-      prisonNumber = letters.get(1) + letters.get(4) + numbers.get(2),
+      fromLocation = faker.address().city(),
+      prisonNumber = if (Random().nextBoolean()) letters.get(1) + letters.get(4) + numbers.get(2) else null,
       pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
       date = date,
-      moveType = MoveType.values().random()
+      moveType = MoveType.values().random(),
     )
   }.toList()
 }
