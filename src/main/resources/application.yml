@@ -23,6 +23,18 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${oauth.endpoint.url}/.well-known/jwks.json
+      client:
+        registration:
+          basm-api:
+            provider: basm-auth
+            client-id: ${basm.client.client-id}
+            client-secret: ${basm.client.client-secret}
+            authorization-grant-type: client_credentials
+        provider:
+          hmpps-auth:
+            token-uri: ${oauth.endpoint.url}/oauth/token
+          basm-auth:
+            token-uri: ${basm.endpoint.url}/oauth/token
 
 server:
   port: 8080

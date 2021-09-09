@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
-import java.net.URLEncoder
-
 typealias Param<T> = Pair<String, T>
 
 object JsonApiQueryBuilder {
@@ -27,8 +25,7 @@ object JsonApiQueryBuilder {
   }
 
   private fun <T, R> T?.toParams(build: (value: T) -> List<Param<R>>) =
-    if (this == null) emptyArray() else build(this).map { it.encoded() }.toTypedArray()
+    if (this == null) emptyArray() else build(this).map { it.write() }.toTypedArray()
 
-  private fun <T> Param<T>.encoded() = "${first.encoded()}=${second.toString().encoded()}"
-  private fun String.encoded() = URLEncoder.encode(this, "utf-8")
+  private fun <T> Param<T>.write() = "$first=$second"
 }

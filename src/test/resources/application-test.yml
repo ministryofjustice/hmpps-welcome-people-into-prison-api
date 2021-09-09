@@ -1,6 +1,9 @@
 server:
   shutdown: immediate
 
+basm:
+  endpoint.url: http://localhost:9004
+
 oauth:
   endpoint.url: http://localhost:8090/auth
 

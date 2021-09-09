@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -17,6 +19,25 @@ abstract class IntegrationTestBase {
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
+
+  companion object {
+    internal val basmApiMockServer = BasmApiMockServer()
+
+    @BeforeAll
+    @JvmStatic
+    fun startMocks() {
+      basmApiMockServer.start()
+      basmApiMockServer.stubGrantToken()
+      basmApiMockServer.stubGetPrison(200)
+      basmApiMockServer.stubGetMovements(200)
+    }
+
+    @AfterAll
+    @JvmStatic
+    fun stopMocks() {
+      basmApiMockServer.stop()
+    }
+  }
 
   init {
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
