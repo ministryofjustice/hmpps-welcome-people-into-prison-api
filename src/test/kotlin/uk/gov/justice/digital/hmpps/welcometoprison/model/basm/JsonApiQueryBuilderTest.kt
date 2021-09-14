@@ -39,13 +39,6 @@ class JsonApiQueryBuilderTest {
     ) `decodes to` "?include=profile.person,profile.person_escort_record.flags&filter[name]=Jim&filter[age]=65"
 
   @Test
-  fun `parameter encoding`() =
-    `query of`(
-      filters = mapOf("name" to listOf("Jim"), "age" to listOf("65")),
-      includes = listOf("education", "transport")
-    ) `encodes to` "?include=education%2Ctransport&filter%5Bname%5D=Jim&filter%5Bage%5D=65"
-
-  @Test
   fun `check pagination`() =
     `query of`(
       page = 3,
@@ -76,6 +69,3 @@ class JsonApiQueryBuilderTest {
 
 infix fun String.`decodes to`(expected: String) =
   Assertions.assertEquals(expected, URLDecoder.decode(this, UTF_8))
-
-infix fun String.`encodes to`(expected: String) =
-  Assertions.assertEquals(expected, this)

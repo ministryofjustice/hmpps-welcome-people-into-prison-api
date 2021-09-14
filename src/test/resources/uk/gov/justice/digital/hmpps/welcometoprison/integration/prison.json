@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "id": "a2bc2abf-75fe-4b7f-bf5a-a755bc290757",
+      "type": "locations",
+      "attributes": {
+        "key": "nmi",
+        "title": "NOTTINGHAM (HMP)",
+        "location_type": "prison",
+        "nomis_agency_id": "NMI",
+        "can_upload_documents": false,
+        "young_offender_institution": false,
+        "premise": "aaaaaaaaaa",
+        "locality": "cccccccc",
+        "city": "Nottingham",
+        "country": "England",
+        "postcode": "LN1 000",
+        "latitude": 53.000000,
+        "longitude": -1.000000,
+        "created_at": "2019-07-22T15:58:38+01:00",
+        "disabled_at": null
+      },
+      "relationships": {
+        "suppliers": {
+          "data": [
+            {
+              "id": "bccf4d77-984d-560c-9ffd-9badbb9157ca",
+              "type": "suppliers"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "per_page": 20,
+      "total_pages": 1,
+      "total_objects": 1
+    }
+  },
+  "links": {
+    "self": "https://server/api/reference/locations?filter%5Bnomis_agency_id%5D=NMI&page=1&per_page=20",
+    "first": "https://server/api/reference/locations?filter%5Bnomis_agency_id%5D=NMI&page=1&per_page=20",
+    "prev": null,
+    "next": null,
+    "last": "https://server/api/reference/locations?filter%5Bnomis_agency_id%5D=NMI&page=1&per_page=20"
+  }
+}
