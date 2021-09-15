@@ -50,9 +50,9 @@ class BasmService(private val basmClient: BasmClient) {
         Movement(
           firstName = personData.first_names!!,
           lastName = personData.last_name!!,
-          prisonNumber = personData.prison_number,
-          pncNumber = personData.police_national_computer!!,
           dateOfBirth = personData.date_of_birth!!,
+          prisonNumber = personData.prison_number,
+          pncNumber = personData.police_national_computer,
           date = it.attributes.date!!,
           moveType = MoveType.valueOf(it.attributes.move_type.name),
           fromLocation = locations(fromLocationUuid!!)?.attributes?.title!!
