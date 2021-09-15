@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import uk.gov.justice.digital.hmpps.welcometoprison.exception.NotFoundException
 import javax.validation.ValidationException
 
 @RestControllerAdvice
@@ -77,6 +79,20 @@ class HmppsWelcomePeopleIntoPrisonApiExceptionHandler {
         ErrorResponse(
           status = INTERNAL_SERVER_ERROR,
           userMessage = "Unexpected error",
+        )
+      )
+  }
+
+  @ExceptionHandler(NotFoundException::class)
+  fun handleNotFoundException(e: Exception): ResponseEntity<ErrorResponse> {
+    log.info("Not found exception: {}", e.message)
+    return ResponseEntity
+      .status(NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = NOT_FOUND,
+          userMessage = "Not found: ${e.message}",
+          developerMessage = e.message
         )
       )
   }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration.health
 
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
@@ -11,6 +13,8 @@ class HealthCheckTest : IntegrationTestBase() {
 
   @Test
   fun `Health page reports ok`() {
+    stubPing(200)
+
     webTestClient.get()
       .uri("/health")
       .exchange()
@@ -18,10 +22,14 @@ class HealthCheckTest : IntegrationTestBase() {
       .isOk
       .expectBody()
       .jsonPath("status").isEqualTo("UP")
+      .jsonPath("components.hmppsAuthApiHealth.details.HttpStatus").isEqualTo("OK")
+      .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("OK")
   }
 
   @Test
   fun `Health info reports version`() {
+    stubPing(200)
+
     webTestClient.get().uri("/health")
       .exchange()
       .expectStatus().isOk
@@ -34,6 +42,8 @@ class HealthCheckTest : IntegrationTestBase() {
 
   @Test
   fun `Health ping page is accessible`() {
+    stubPing(200)
+
     webTestClient.get()
       .uri("/health/ping")
       .exchange()
@@ -45,6 +55,8 @@ class HealthCheckTest : IntegrationTestBase() {
 
   @Test
   fun `readiness reports ok`() {
+    stubPing(200)
+
     webTestClient.get()
       .uri("/health/readiness")
       .exchange()
@@ -56,6 +68,8 @@ class HealthCheckTest : IntegrationTestBase() {
 
   @Test
   fun `liveness reports ok`() {
+    stubPing(200)
+
     webTestClient.get()
       .uri("/health/liveness")
       .exchange()
@@ -63,5 +77,40 @@ class HealthCheckTest : IntegrationTestBase() {
       .isOk
       .expectBody()
       .jsonPath("status").isEqualTo("UP")
+  }
+
+  @Test
+  fun `Health page reports down`() {
+    stubPing(404)
+
+    webTestClient.get()
+      .uri("/health")
+      .exchange()
+      .expectStatus()
+      .is5xxServerError
+      .expectBody()
+      .jsonPath("status").isEqualTo("DOWN")
+      .jsonPath("components.hmppsAuthApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
+      .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
+  }
+
+  private fun stubPing(status: Int) {
+    hmppsAuthMockServer.stubFor(
+      get("/auth/health/ping").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(if (status == 200) "pong" else "some error")
+          .withStatus(status)
+      )
+    )
+
+    prisonMockServer.stubFor(
+      get("/health/ping").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(if (status == 200) "pong" else "some error")
+          .withStatus(status)
+      )
+    )
   }
 }
