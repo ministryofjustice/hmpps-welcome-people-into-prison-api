@@ -8,5 +8,15 @@
     "date": "2021-04-29",
     "fromLocation": "BELMARSH (HMP)",
     "moveType": "PRISON_TRANSFER"
+  },
+  {
+    "firstName": "First",
+    "lastName": "Last",
+    "dateOfBirth": "1980-02-23",
+    "prisonNumber": "A1278AA",
+    "pncNumber": "1234/1234589A",
+    "date": "2021-01-02",
+    "moveType": "PRISON_TRANSFER",
+    "fromLocation": "MDI"
   }
 ]

@@ -2,12 +2,20 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
+import uk.gov.justice.digital.hmpps.welcometoprison.model.PrisonService
+import java.time.LocalDate
 
 @Suppress("ClassName")
 class IncomingMovesResourceTest : IntegrationTestBase() {
+  @MockBean
+  private lateinit var prisonService: PrisonService
 
   @Nested
   inner class `Find movements on day` {
@@ -47,6 +55,22 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
+
+      whenever(prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2))).thenReturn(
+        listOf(
+          Movement(
+            firstName = "First",
+            lastName = "Last",
+            dateOfBirth = LocalDate.of(1980, 2, 23),
+            prisonNumber = "A1278AA",
+            pncNumber = "1234/1234589A",
+            date = LocalDate.of(2021, 1, 2),
+            moveType = MoveType.PRISON_TRANSFER,
+            fromLocation = "MDI"
+          )
+        )
+      )
+
       webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
