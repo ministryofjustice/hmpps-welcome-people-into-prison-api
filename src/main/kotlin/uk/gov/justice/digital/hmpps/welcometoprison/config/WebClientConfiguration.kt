@@ -68,7 +68,7 @@ class WebClientConfiguration(
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
     oauth2Client.setDefaultClientRegistrationId("basm-api")
 
-    return WebClient.builder()
+    return webClientBuilder
       .baseUrl(basmRootUri)
       .apply(oauth2Client.oauth2Configuration())
       .exchangeStrategies(
@@ -84,7 +84,7 @@ class WebClientConfiguration(
 
   @Bean
   fun basmApiHealthWebClient(): WebClient {
-    return WebClient.builder().baseUrl(basmRootUri).build()
+    return webClientBuilder.baseUrl(basmRootUri).build()
   }
 
   @Bean
