@@ -29,7 +29,6 @@ class MovementServiceTest {
         )
       )
 
-
     every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns
       listOf(
         Movement(

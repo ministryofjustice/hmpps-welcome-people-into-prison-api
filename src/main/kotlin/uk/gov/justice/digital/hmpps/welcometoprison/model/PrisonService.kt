@@ -4,7 +4,7 @@ import com.github.javafaker.Faker
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.*
+import java.util.Random
 
 @Service
 class PrisonService(val faker: Faker = Faker()) {
