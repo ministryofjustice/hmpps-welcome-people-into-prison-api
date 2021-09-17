@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.service.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 
 @Suppress("ClassName")
 class PrisonResourceTest : IntegrationTestBase() {
