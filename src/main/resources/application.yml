@@ -30,6 +30,18 @@ spring:
             client-id: ${basm.client.client-id}
             client-secret: ${basm.client.client-secret}
             authorization-grant-type: client_credentials
+          prison-api:
+            provider: hmpps-auth
+            client-id: ${system.client.id}
+            client-secret: ${system.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read
+          hmpps-auth-api:
+            provider: hmpps-auth
+            client-id: ${system.client.id}
+            client-secret: ${system.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read
         provider:
           hmpps-auth:
             token-uri: ${oauth.endpoint.url}/oauth/token
