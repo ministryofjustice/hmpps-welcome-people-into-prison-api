@@ -8,11 +8,11 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerImage
 import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 
 class PrisonServiceTest {
 
