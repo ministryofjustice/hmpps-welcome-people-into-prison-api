@@ -1,24 +1,20 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
-import java.time.LocalDate
 
 @RestController
 @Validated
@@ -75,9 +71,9 @@ class PrisonResource(
     @PathVariable offenderNumber: String
   ) = prisonService.getPrisonerImage(offenderNumber)
 
-	@GetMapping(value = ["/temporary-absences/{agencyId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-	fun getTemporaryAbsences(
-		@Schema(description = "AgencyId", example = "MDI", required = true)
-		@PathVariable agencyId: String
-	) = prisonService.getTemporaryAbsences(agencyId)
+  @GetMapping(value = ["/temporary-absences/{agencyId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getTemporaryAbsences(
+    @Schema(description = "AgencyId", example = "MDI", required = true)
+    @PathVariable agencyId: String
+  ) = prisonService.getTemporaryAbsences(agencyId)
 }

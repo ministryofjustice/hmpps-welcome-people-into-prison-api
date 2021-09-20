@@ -41,13 +41,13 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
     )
   }.take((5..20).random()).toList()
 
-	fun getTemporaryAbsences(agencyId: String) = generateSequence {
-		TemporaryAbsence(
-			firstName = faker.name().firstName(),
-			lastName = faker.name().lastName(),
-			dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-			prisonNumber = if (Random().nextBoolean()) letters.get(1) + letters.get(4) + numbers.get(2) else null,
-			reasonForAbsence = faker.expression("reason")
-		)
-	}.take((5..20).random()).toList()
+  fun getTemporaryAbsences(agencyId: String) = generateSequence {
+    TemporaryAbsence(
+      firstName = faker.name().firstName(),
+      lastName = faker.name().lastName(),
+      dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+      prisonNumber = if (Random().nextBoolean()) letters.get(1) + letters.get(4) + numbers.get(2) else null,
+      reasonForAbsence = faker.expression("reason")
+    )
+  }.take((5..20).random()).toList()
 }
