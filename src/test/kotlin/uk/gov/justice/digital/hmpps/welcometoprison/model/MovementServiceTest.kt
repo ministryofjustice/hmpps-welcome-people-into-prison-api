@@ -2,9 +2,10 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model
 
 import io.mockk.every
 import io.mockk.mockk
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import java.time.LocalDate
 
 class MovementServiceTest {
@@ -45,7 +46,7 @@ class MovementServiceTest {
 
     val moves = movementService.getMovements("MDI", LocalDate.of(2020, 1, 2))
 
-    Assertions.assertThat(moves).isEqualTo(
+    assertThat(moves).isEqualTo(
       listOf(
         Movement(
           firstName = "JIM",

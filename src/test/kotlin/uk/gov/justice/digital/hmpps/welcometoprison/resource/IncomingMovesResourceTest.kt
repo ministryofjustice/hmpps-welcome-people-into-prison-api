@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
-import uk.gov.justice.digital.hmpps.welcometoprison.model.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import java.time.LocalDate
 
 @Suppress("ClassName")
