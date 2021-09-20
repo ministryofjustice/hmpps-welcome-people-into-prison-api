@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class WebClientConfiguration(
-  private val webClientBuilder: WebClient.Builder,
   @Value("\${oauth.endpoint.url}") private val oauthRootUri: String,
   @Value("\${prison.api.url}") private val prisonApiBaseUrl: String,
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
@@ -30,7 +29,7 @@ class WebClientConfiguration(
       .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(-1) }
       .build()
 
-    return webClientBuilder
+    return WebClient.builder()
       .baseUrl(oauthRootUri)
       .apply(oauth2Client.oauth2Configuration())
       .exchangeStrategies(exchangeStrategies)
@@ -39,7 +38,7 @@ class WebClientConfiguration(
 
   @Bean
   fun oauthApiHealthWebClient(): WebClient {
-    return webClientBuilder.baseUrl(oauthRootUri).build()
+    return WebClient.builder().baseUrl(oauthRootUri).build()
   }
 
   @Bean
@@ -51,7 +50,7 @@ class WebClientConfiguration(
       .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(-1) }
       .build()
 
-    return webClientBuilder
+    return WebClient.builder()
       .baseUrl(prisonApiBaseUrl)
       .apply(oauth2Client.oauth2Configuration())
       .exchangeStrategies(exchangeStrategies)
@@ -60,7 +59,7 @@ class WebClientConfiguration(
 
   @Bean
   fun prisonApiHealthWebClient(): WebClient {
-    return webClientBuilder.baseUrl(prisonApiBaseUrl).build()
+    return WebClient.builder().baseUrl(prisonApiBaseUrl).build()
   }
 
   @Bean
@@ -68,7 +67,7 @@ class WebClientConfiguration(
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
     oauth2Client.setDefaultClientRegistrationId("basm-api")
 
-    return webClientBuilder
+    return WebClient.builder()
       .baseUrl(basmRootUri)
       .apply(oauth2Client.oauth2Configuration())
       .exchangeStrategies(
@@ -84,7 +83,7 @@ class WebClientConfiguration(
 
   @Bean
   fun basmApiHealthWebClient(): WebClient {
-    return webClientBuilder.baseUrl(basmRootUri).build()
+    return WebClient.builder().baseUrl(basmRootUri).build()
   }
 
   @Bean
