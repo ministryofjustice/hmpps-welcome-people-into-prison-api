@@ -41,7 +41,7 @@ class PrisonResourceTest : IntegrationTestBase() {
         "imageString".toByteArray()
       )
       val response = webTestClient.get().uri("/prison/prisoner/A12345/image")
-        .headers(setAuthorisation(roles = listOf("ROLE_SYSTEM_USER"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody(ByteArray::class.java)
@@ -53,7 +53,7 @@ class PrisonResourceTest : IntegrationTestBase() {
     @Test
     fun `calls service method with correct args`() {
       webTestClient.get().uri("/prison/prisoner/A12345/image")
-        .headers(setAuthorisation(roles = listOf("ROLE_SYSTEM_USER"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 

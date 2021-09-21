@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
+import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Random
@@ -37,6 +38,16 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
       date = date,
       moveType = MoveType.PRISON_TRANSFER,
+    )
+  }.take((5..20).random()).toList()
+
+  fun getTemporaryAbsences(agencyId: String) = generateSequence {
+    TemporaryAbsence(
+      firstName = faker.name().firstName(),
+      lastName = faker.name().lastName(),
+      dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+      prisonNumber = if (Random().nextBoolean()) letters.get(1) + letters.get(4) + numbers.get(2) else null,
+      reasonForAbsence = faker.expression("reason")
     )
   }.take((5..20).random()).toList()
 }
