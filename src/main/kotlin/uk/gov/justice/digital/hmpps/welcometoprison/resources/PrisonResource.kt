@@ -18,15 +18,15 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 
 @RestController
 @Validated
-@PreAuthorize("hasRole('SYSTEM_USER')")
+@PreAuthorize("hasRole('ROLE_VIEW_INCOMING_MOVEMENTS')")
 @RequestMapping(name = "Prison", path = ["/prison"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class PrisonResource(
   private val prisonService: PrisonService,
 ) {
   @Operation(
     summary = "Retrieves latest front-facing image of an offenders face",
-    description = "Retrieves latest front-facing image of an offenders face, role required is SYSTEM_USER",
-    security = [SecurityRequirement(name = "SYSTEM_USER", scopes = ["read"])],
+    description = "Retrieves latest front-facing image of an offenders face, role required is ROLE_VIEW_INCOMING_MOVEMENTS",
+    security = [SecurityRequirement(name = "ROLE_VIEW_INCOMING_MOVEMENTS", scopes = ["read"])],
     responses = [
       ApiResponse(
         responseCode = "200",

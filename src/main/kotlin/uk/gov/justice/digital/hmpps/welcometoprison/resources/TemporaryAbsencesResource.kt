@@ -19,15 +19,15 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 
 @RestController
 @Validated
-@PreAuthorize("hasRole('SYSTEM_USER')")
+@PreAuthorize("hasRole('ROLE_VIEW_INCOMING_MOVEMENTS')")
 @RequestMapping(name = "Prison", path = ["/temporary-absences"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TemporaryAbsencesResource(
   private val prisonService: PrisonService,
 ) {
   @Operation(
     summary = "Retrieves the temporary absences for a prison",
-    description = "Retrieves the current temporary absences information, role required is SYSTEM_USER",
-    security = [SecurityRequirement(name = "SYSTEM_USER", scopes = ["read"])],
+    description = "Retrieves the current temporary absences information, role required is ROLE_VIEW_INCOMING_MOVEMENTS",
+    security = [SecurityRequirement(name = "ROLE_VIEW_INCOMING_MOVEMENTS", scopes = ["read"])],
     responses = [
       ApiResponse(
         responseCode = "200",

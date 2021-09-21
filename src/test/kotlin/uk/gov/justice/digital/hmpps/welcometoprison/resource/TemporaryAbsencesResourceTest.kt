@@ -40,7 +40,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         )
       )
       webTestClient.get().uri("/temporary-absences/MDI")
-        .headers(setAuthorisation(roles = listOf("ROLE_SYSTEM_USER"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("temporaryAbsence".loadJson(this))
@@ -49,7 +49,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     @Test
     fun `calls service method with correct args`() {
       webTestClient.get().uri("/temporary-absences/MDI")
-        .headers(setAuthorisation(roles = listOf("ROLE_SYSTEM_USER"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 
