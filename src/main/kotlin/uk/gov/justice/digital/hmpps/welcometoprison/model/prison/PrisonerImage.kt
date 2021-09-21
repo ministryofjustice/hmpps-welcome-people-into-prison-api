@@ -11,7 +11,7 @@ data class PrisonerImage(
   @Schema(description = "Capture date", example = "2021-09-14", format = "YYYY-DD-MM")
   val captureDate: LocalDate,
   @Schema(description = "Image ID", example = "1")
-  val imageId: Number,
+  val imageId: Int,
   @Schema(description = "Image orientation", example = "FRONT")
   val imageOrientation: String?,
   @Schema(description = "Image type", example = "OFF_BKG")
@@ -19,5 +19,5 @@ data class PrisonerImage(
   @Schema(description = "Image view", example = "FACE")
   val imageView: String?,
   @Schema(description = "Object ID", example = "1")
-  val objectId: Number?,
+  val objectId: Int?,
 )
