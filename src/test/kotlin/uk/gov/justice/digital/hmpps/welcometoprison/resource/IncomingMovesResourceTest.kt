@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestB
 import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.utils.LoadJsonHelper.Companion.loadJson
 import java.time.LocalDate
 
 @Suppress("ClassName")
@@ -75,7 +76,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
-        .expectBody().json("moves".loadJson())
+        .expectBody().json("moves".loadJson(this))
     }
 
     @Test
@@ -93,9 +94,5 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
         )
       )
     }
-
-    private fun String.loadJson(): String =
-      IncomingMovesResourceTest::class.java.getResource("$this.json")?.readText()
-        ?: throw AssertionError("file $this.json not found")
   }
 }
