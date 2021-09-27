@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Random
 
 @Service
 class PrisonService(@Autowired private val client: PrisonApiClient, val faker: Faker = Faker()) {
@@ -22,6 +23,7 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
 
   fun getMoves(agencyId: String, date: LocalDate) = generateSequence {
     Movement(
+      id = null,
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),

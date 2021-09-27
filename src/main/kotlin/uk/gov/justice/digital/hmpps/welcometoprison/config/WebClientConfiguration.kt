@@ -18,6 +18,7 @@ class WebClientConfiguration(
   @Value("\${oauth.endpoint.url}") private val oauthRootUri: String,
   @Value("\${prison.api.url}") private val prisonApiBaseUrl: String,
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
+  @Value("\${prisoner.search.api.endpoint.url}") private val prisonerSearchApiUrl: String
 ) {
 
   @Bean
@@ -78,6 +79,27 @@ class WebClientConfiguration(
           }
           .build()
       )
+      .build()
+  }
+
+  @Bean
+  fun prisonerSearchApiHealthWebClient(): WebClient {
+    return WebClient.builder().baseUrl(prisonerSearchApiUrl).build()
+  }
+
+  @Bean
+  fun prisonerSearchApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+    oauth2Client.setDefaultClientRegistrationId("prisoner-search-api")
+
+    val exchangeStrategies = ExchangeStrategies.builder()
+      .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(-1) }
+      .build()
+
+    return WebClient.builder()
+      .baseUrl(prisonerSearchApiUrl)
+      .apply(oauth2Client.oauth2Configuration())
+      .exchangeStrategies(exchangeStrategies)
       .build()
   }
 

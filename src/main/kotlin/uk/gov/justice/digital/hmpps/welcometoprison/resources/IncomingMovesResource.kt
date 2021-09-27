@@ -77,5 +77,5 @@ class IncomingMovesResource(
     @Parameter(description = "Movements on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
-  ) = movementService.getMovements(agencyId, date)
+  ) = movementService.getMovementsMatchedWithPrisoner(agencyId, date)
 }

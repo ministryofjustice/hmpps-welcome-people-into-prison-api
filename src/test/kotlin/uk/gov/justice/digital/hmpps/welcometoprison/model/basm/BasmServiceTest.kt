@@ -22,6 +22,7 @@ class BasmServiceTest {
     assertThat(moves).isEqualTo(
       listOf(
         Movement(
+          id = "0cb56df1-f421-44a9-9f4d-0b4b5661b29f",
           firstName = "Alexis",
           lastName = "Jones",
           dateOfBirth = LocalDate.of(1996, 7, 23),

@@ -49,6 +49,7 @@ class BasmService(private val basmClient: BasmClient) {
         val personData = people(personId)?.attributes!!
 
         Movement(
+          id = it.id,
           firstName = personData.first_names!!,
           lastName = personData.last_name!!,
           dateOfBirth = personData.date_of_birth!!,

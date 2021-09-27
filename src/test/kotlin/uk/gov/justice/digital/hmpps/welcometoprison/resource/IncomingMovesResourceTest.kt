@@ -60,6 +60,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       whenever(prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2))).thenReturn(
         listOf(
           Movement(
+            id = "1",
             firstName = "First",
             lastName = "Last",
             dateOfBirth = LocalDate.of(1980, 2, 23),
