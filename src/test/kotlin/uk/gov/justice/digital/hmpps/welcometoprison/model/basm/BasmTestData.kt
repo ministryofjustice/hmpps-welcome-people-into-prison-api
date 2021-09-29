@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.IncludesRelationships
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.LocationAttributes
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_REMAND
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MovementAttributes
@@ -28,6 +29,43 @@ class BasmTestData {
 
     val MOVEMENTS = MovementResponseWrapper(
       data = listOf(
+        Movement(
+          id = "476d47a3-013a-4772-94c7-5d043b0d0574",
+          type = "moves",
+          attributes = MovementAttributes(
+            additional_information = "example Court to Prison prison_remand: Huddersfield Youth Court to HMP Isle of Wight",
+            date = LocalDate.of(2021, 9, 29),
+            date_from = null,
+            date_to = null,
+            move_type = PRISON_REMAND,
+            reference = "MUT4738J",
+            status = "completed",
+            time_due = "2021-09-29T09:05:09+01:00",
+            created_at = "2021-09-29T09:05:09+01:00",
+            updated_at = "2021-09-29T09:05:10+01:00"
+          ),
+          relationships = Relationships(
+            from_location = Relationship(
+              data = RelationshipData(
+                id = "6c1047cf-c8e8-4034-9899-d05ac1b07038",
+                type = "locations"
+              )
+            ),
+            to_location = Relationship(
+              data = RelationshipData(
+                id = "a2bc2abf-75fe-4b7f-bf5a-a755bc290757",
+                type = "locations"
+              )
+            ),
+            profile = Relationship(
+              data = RelationshipData(
+                id = "45a2b4a8-38ec-46f4-b882-148a21ebbe6e",
+                type = "profiles"
+              )
+            ),
+            supplier = null
+          )
+        ),
         Movement(
           id = "0cb56df1-f421-44a9-9f4d-0b4b5661b29f",
           type = "moves",
@@ -71,8 +109,55 @@ class BasmTestData {
           )
         )
       ),
-      meta = ResponseMetadata(pagination = ResponsePagination(per_page = 1, total_pages = 76, total_objects = 76)),
+      meta = ResponseMetadata(
+        pagination = ResponsePagination(
+          per_page = 1,
+          total_pages = 76,
+          total_objects = 76
+        )
+      ),
       included = listOf(
+        People(
+          id = "bd1bf67e-d160-4032-ad59-8f62cd7b25fe",
+          attributes = PeopleAttributes(
+            first_names = "Alexis",
+            last_name = "Jones",
+            date_of_birth = LocalDate.of(1996, 7, 23),
+            prison_number = null,
+            criminal_records_office = null,
+            police_national_computer = null
+          ),
+          relationships = null
+        ),
+        Profile(
+          id = "45a2b4a8-38ec-46f4-b882-148a21ebbe6e",
+          relationships = IncludesRelationships(
+            person = Relationship(
+              data = RelationshipData(
+                id = "bd1bf67e-d160-4032-ad59-8f62cd7b25fe",
+                type = "people"
+              )
+            )
+          )
+        ),
+        Location(
+          id = "6c1047cf-c8e8-4034-9899-d05ac1b07038",
+          attributes = LocationAttributes(
+            key = "penrct",
+            title = "Penrith County Court",
+            location_type = "court",
+            nomis_agency_id = "PENRCT"
+          )
+        ),
+        Location(
+          id = "a2bc2abf-75fe-4b7f-bf5a-a755bc290757",
+          attributes = LocationAttributes(
+            key = "nmi",
+            title = "NOTTINGHAM (HMP)",
+            location_type = "prison",
+            nomis_agency_id = "NMI"
+          )
+        ),
         People(
           id = "279ab703-1baa-4bae-b6b9-c8e01675d620",
           attributes = PeopleAttributes(
@@ -83,7 +168,7 @@ class BasmTestData {
             criminal_records_office = "123456/96M",
             police_national_computer = "99/123456J"
           ),
-          relationships = IncludesRelationships(person = null)
+          relationships = null
         ),
         Profile(
           id = "0bb12c9e-69b3-4215-b171-05f0ac9eaaba",
