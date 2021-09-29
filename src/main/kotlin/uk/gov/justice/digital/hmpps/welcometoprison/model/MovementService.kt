@@ -25,9 +25,9 @@ class MovementService(
 
   private fun getMovementsMatchedWithPrisoner(movements: List<Movement>): List<Movement> {
     fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
-      val matchesByPrisonNumber = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
-      if (matchesByPrisonNumber.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matchesByPrisonNumber.size} matched Prison records for $identifier")
-      return matchesByPrisonNumber.firstOrNull()
+      val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
+      if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
+      return matches.firstOrNull()
     }
     fun decorateMovementWithPrisonerMatch(movement: Movement): Movement {
       var prisonNumberToUse = movement.prisonNumber

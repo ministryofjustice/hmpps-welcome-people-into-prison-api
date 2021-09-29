@@ -16,9 +16,9 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 class WebClientConfiguration(
   @Value("\${oauth.endpoint.url}") private val oauthRootUri: String,
-  @Value("\${prison.api.url}") private val prisonApiBaseUrl: String,
+  @Value("\${prison.endpoint.url}") private val prisonApiBaseUrl: String,
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
-  @Value("\${prisoner.search.api.endpoint.url}") private val prisonerSearchApiUrl: String
+  @Value("\${prisoner.search.endpoint.url}") private val prisonerSearchApiUrl: String
 ) {
 
   @Bean
