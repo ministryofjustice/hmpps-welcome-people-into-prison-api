@@ -96,31 +96,6 @@ class MovementServiceTest {
   }
 
   @Test
-  fun `getMovementsMatchedWithPrisoner - doesn't match PRISON_TRANSFER move types`() {
-    val prisonTransferMovement = movementFactory(moveType = PRISON_TRANSFER)
-
-    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns
-      listOf(
-        prisonTransferMovement
-      )
-
-    every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns
-      listOf(
-        prisonTransferMovement
-      )
-
-    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", LocalDate.of(2020, 1, 2))
-
-    verify(exactly = 0) { prisonerSearchService.matchPrisoner(any()) }
-    assertThat(moves).isEqualTo(
-      listOf(
-        prisonTransferMovement,
-        prisonTransferMovement
-      )
-    )
-  }
-
-  @Test
   fun `getMovementsMatchedWithPrisoner - adds Prison Number from PNC match`() {
     val movementWithoutPrisonNumber = movementFactory(prisonNumber = null, pncNumber = "testPncNumber")
 

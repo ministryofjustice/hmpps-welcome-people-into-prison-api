@@ -2,12 +2,12 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType.PRISON_TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
+import java.util.Collections
 
 @Service
 class MovementService(
@@ -46,11 +46,9 @@ class MovementService(
       )
     }
 
-    var movementsMatchedWithPrisoner: List<Movement> = emptyList()
-    movements.forEach {
-      movementsMatchedWithPrisoner += if (it.moveType === PRISON_TRANSFER) it else decorateMovementWithPrisonerMatch(it)
-    }
-    return movementsMatchedWithPrisoner
+    val movementsMatchedWithPrisoner: MutableList<Movement> = emptyList<Movement>().toMutableList()
+    movements.forEach { movementsMatchedWithPrisoner += decorateMovementWithPrisonerMatch(it) }
+    return Collections.unmodifiableList(movementsMatchedWithPrisoner)
   }
 
   companion object {
