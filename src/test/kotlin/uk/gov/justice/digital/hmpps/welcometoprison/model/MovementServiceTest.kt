@@ -99,11 +99,7 @@ class MovementServiceTest {
   fun `getMovementsMatchedWithPrisoner - adds Prison Number from PNC match`() {
     val movementWithoutPrisonNumber = movementFactory(prisonNumber = null, pncNumber = "testPncNumber")
 
-    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns
-      listOf(
-        movementWithoutPrisonNumber
-      )
-
+    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns listOf(movementWithoutPrisonNumber)
     every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns emptyList()
 
     every { prisonerSearchService.matchPrisoner("testPncNumber") } returns listOf(MatchPrisonerResponse("testPrisonNumber", "testPncNumber"))
@@ -111,18 +107,14 @@ class MovementServiceTest {
     val moves = movementService.getMovementsMatchedWithPrisoner("MDI", LocalDate.of(2020, 1, 2))
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPncNumber") }
-    assertThat(moves.get(0).prisonNumber).isEqualTo("testPrisonNumber")
+    assertThat(moves[0].prisonNumber).isEqualTo("testPrisonNumber")
   }
 
   @Test
   fun `getMovementsMatchedWithPrisoner - adds PNC from Prison Number match`() {
     val movementWithoutPnc = movementFactory(prisonNumber = "testPrisonNumber", pncNumber = null)
 
-    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns
-      listOf(
-        movementWithoutPnc
-      )
-
+    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns listOf(movementWithoutPnc)
     every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns emptyList()
 
     every { prisonerSearchService.matchPrisoner("testPrisonNumber") } returns listOf(MatchPrisonerResponse("testPrisonNumber", "testPncNumber"))
@@ -130,18 +122,14 @@ class MovementServiceTest {
     val moves = movementService.getMovementsMatchedWithPrisoner("MDI", LocalDate.of(2020, 1, 2))
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPrisonNumber") }
-    assertThat(moves.get(0).pncNumber).isEqualTo("testPncNumber")
+    assertThat(moves[0].pncNumber).isEqualTo("testPncNumber")
   }
 
   @Test
   fun `getMovementsMatchedWithPrisoner - Prison Number null if no matches`() {
-    val movementWithoutPnc = movementFactory(prisonNumber = "testPrisonNumber", pncNumber = "testPncNumber")
+    val movement = movementFactory(prisonNumber = "testPrisonNumber", pncNumber = "testPncNumber")
 
-    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns
-      listOf(
-        movementWithoutPnc
-      )
-
+    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns listOf(movement)
     every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns emptyList()
 
     every { prisonerSearchService.matchPrisoner("testPrisonNumber") } returns emptyList()
@@ -151,6 +139,24 @@ class MovementServiceTest {
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPrisonNumber") }
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPncNumber") }
-    assertThat(moves.get(0).prisonNumber).isEqualTo(null)
+    assertThat(moves[0].prisonNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun `getMovementsMatchedWithPrisoner - given Prison Number match returned and PNC Number match returned and PNC Numbers don't match between responses, Prison Number and PNC Number are null`() {
+    val movement = movementFactory(prisonNumber = "nonsensePrisonNumber", pncNumber = "nonsensePncNumber")
+
+    every { basmService.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2)) } returns listOf(movement)
+    every { prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2)) } returns emptyList()
+
+    every { prisonerSearchService.matchPrisoner("nonsensePrisonNumber") } returns listOf(MatchPrisonerResponse("testPrisonNumber", "something"))
+    every { prisonerSearchService.matchPrisoner("nonsensePncNumber") } returns listOf(MatchPrisonerResponse("testPrisonNumber", "somethingDifferent"))
+
+    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", LocalDate.of(2020, 1, 2))
+
+    verify(exactly = 1) { prisonerSearchService.matchPrisoner("nonsensePrisonNumber") }
+    verify(exactly = 1) { prisonerSearchService.matchPrisoner("nonsensePncNumber") }
+    assertThat(moves[0].prisonNumber).isEqualTo(null)
+    assertThat(moves[0].pncNumber).isEqualTo(null)
   }
 }

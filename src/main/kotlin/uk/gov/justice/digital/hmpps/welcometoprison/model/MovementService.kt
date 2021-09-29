@@ -39,6 +39,12 @@ class MovementService(
       if (matchByPrisonNumber === null && matchByPncNumber === null) prisonNumberToUse = null
       if (matchByPrisonNumber === null && matchByPncNumber !== null) prisonNumberToUse = matchByPncNumber.prisonerNumber
       if (matchByPrisonNumber !== null && matchByPncNumber === null) pncToUse = matchByPrisonNumber.pncNumber
+      if (matchByPrisonNumber !== null && matchByPncNumber !== null) {
+        if (matchByPrisonNumber.prisonerNumber != matchByPncNumber.prisonerNumber || matchByPrisonNumber.pncNumber != matchByPncNumber.pncNumber) {
+          prisonNumberToUse = null
+          pncToUse = null
+        }
+      }
 
       return movement.copy(
         prisonNumber = prisonNumberToUse,
