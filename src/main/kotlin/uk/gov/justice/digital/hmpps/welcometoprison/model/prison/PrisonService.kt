@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Random
 
 @Service
 class PrisonService(@Autowired private val client: PrisonApiClient, val faker: Faker = Faker()) {
@@ -27,7 +26,7 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
       fromLocation = faker.address().city(),
-      prisonNumber = if (Random().nextBoolean()) letters.get(1) + letters.get(4) + numbers.get(2) else null,
+      prisonNumber = letters.get(1) + letters.get(4) + numbers.get(2),
       pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
       date = date,
       moveType = MoveType.PRISON_TRANSFER,
