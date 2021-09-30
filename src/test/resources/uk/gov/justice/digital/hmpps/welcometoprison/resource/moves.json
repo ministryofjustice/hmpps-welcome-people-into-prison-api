@@ -1,13 +1,11 @@
 [
   {
-    "firstName": "JIM",
-    "lastName": "SMITH",
-    "dateOfBirth": "1991-07-31",
-    "prisonNumber": "A1234AA",
-    "pncNumber": "99/123456J",
-    "date": "2021-04-29",
-    "fromLocation": "BELMARSH (HMP)",
-    "moveType": "PRISON_TRANSFER"
+    "firstName": "Alexis",
+    "lastName": "Jones",
+    "dateOfBirth": "1996-07-23",
+    "date": "2021-09-29",
+    "fromLocation": "Penrith County Court",
+    "moveType": "PRISON_REMAND"
   },
   {
     "firstName": "First",
@@ -16,7 +14,7 @@
     "prisonNumber": "A1278AA",
     "pncNumber": "1234/1234589A",
     "date": "2021-01-02",
-    "moveType": "PRISON_TRANSFER",
-    "fromLocation": "MDI"
+    "fromLocation": "MDI",
+    "moveType": "PRISON_TRANSFER"
   }
 ]

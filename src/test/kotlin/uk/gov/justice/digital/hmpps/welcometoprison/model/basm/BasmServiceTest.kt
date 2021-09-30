@@ -22,14 +22,14 @@ class BasmServiceTest {
     assertThat(moves).isEqualTo(
       listOf(
         Movement(
-          firstName = "JIM",
-          lastName = "SMITH",
-          dateOfBirth = LocalDate.of(1991, 7, 31),
-          prisonNumber = "A1234AA",
-          pncNumber = "99/123456J",
-          date = LocalDate.of(2021, 4, 29),
-          fromLocation = "BELMARSH (HMP)",
-          moveType = MoveType.PRISON_TRANSFER
+          firstName = "Alexis",
+          lastName = "Jones",
+          dateOfBirth = LocalDate.of(1996, 7, 23),
+          prisonNumber = null,
+          pncNumber = null,
+          date = LocalDate.of(2021, 9, 29),
+          fromLocation = "Penrith County Court",
+          moveType = MoveType.PRISON_REMAND
         )
       )
     )

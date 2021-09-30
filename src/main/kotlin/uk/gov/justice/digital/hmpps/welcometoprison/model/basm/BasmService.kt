@@ -39,7 +39,8 @@ class BasmService(private val basmClient: BasmClient) {
         it.relationships.profile.data?.id != null &&
           it.relationships.from_location.data?.id != null &&
           it.relationships.to_location.data?.id != null &&
-          profiles(it.relationships.profile.data.id)?.relationships?.person?.data?.id != null
+          profiles(it.relationships.profile.data.id)?.relationships?.person?.data?.id != null &&
+          it.attributes.move_type != Model.MoveType.PRISON_TRANSFER
       }
       .map {
         val fromLocationUuid = it.relationships.from_location.data?.id
