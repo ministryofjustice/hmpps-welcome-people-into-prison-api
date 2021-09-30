@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import java.time.LocalDate
 
@@ -30,7 +30,7 @@ class BasmServiceTest {
           pncNumber = null,
           date = LocalDate.of(2021, 9, 29),
           fromLocation = "Penrith County Court",
-          moveType = MoveType.PRISON_REMAND
+          fromLocationType = LocationType.COURT
         )
       )
     )

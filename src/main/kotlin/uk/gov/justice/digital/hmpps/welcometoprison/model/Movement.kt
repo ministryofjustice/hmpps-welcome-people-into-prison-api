@@ -24,14 +24,13 @@ data class Movement(
   val date: LocalDate,
   @Schema(description = "From Location", example = "Kingston-upon-Hull Crown Court")
   val fromLocation: String,
-  @Schema(description = "Move type", example = "PRISON_REMAND")
-  val moveType: MoveType
+  @Schema(description = "From location type", example = "COURT")
+  val fromLocationType: LocationType,
 )
 
-enum class MoveType {
-  PRISON_REMAND,
-  COURT_APPEARANCE,
-  PRISON_RECALL,
-  VIDEO_REMAND,
-  PRISON_TRANSFER,
+enum class LocationType {
+  COURT,
+  CUSTODY_SUITE,
+  PRISON,
+  OTHER
 }

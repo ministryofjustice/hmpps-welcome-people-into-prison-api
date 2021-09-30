@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import java.time.LocalDate
@@ -30,7 +30,7 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       prisonNumber = letters.get(1) + letters.get(4) + numbers.get(2),
       pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
       date = date,
-      moveType = MoveType.PRISON_TRANSFER,
+      fromLocationType = LocationType.PRISON,
     )
   }.take((5..20).random()).toList()
 

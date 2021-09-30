@@ -5,7 +5,7 @@
     "dateOfBirth": "1996-07-23",
     "date": "2021-09-29",
     "fromLocation": "Penrith County Court",
-    "moveType": "PRISON_REMAND"
+    "fromLocationType": "COURT"
   },
   {
     "firstName": "First",
@@ -15,6 +15,6 @@
     "pncNumber": "1234/1234589A",
     "date": "2021-01-02",
     "fromLocation": "MDI",
-    "moveType": "PRISON_TRANSFER"
+    "fromLocationType": "PRISON"
   }
 ]
