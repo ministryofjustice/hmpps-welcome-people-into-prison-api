@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Random
 
 @Service
 class PrisonService(@Autowired private val client: PrisonApiClient, val faker: Faker = Faker()) {
