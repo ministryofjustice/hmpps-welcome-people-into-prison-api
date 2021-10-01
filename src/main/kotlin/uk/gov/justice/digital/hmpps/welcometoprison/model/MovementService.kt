@@ -22,24 +22,24 @@ class MovementService(
     return getMovementsMatchedWithPrisoner(movements)
   }
 
-  private fun getMovementsMatchedWithPrisoner(movements: List<Movement>): List<Movement> {
-    fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
-      val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
-      if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
-      return matches.firstOrNull()
-    }
-    fun decorateMovementWithPrisonerMatch(movement: Movement): Movement {
-      val matchByPrisonNumber = findPrisonerMatch(movement.prisonNumber, "Prison Number")
-      val matchByPncNumber = findPrisonerMatch(movement.pncNumber, "PNC Number")
-
-      return movement.copy(
-        prisonNumber = prisonNumberToUse(movement, matchByPrisonNumber, matchByPncNumber),
-        pncNumber = pncToUse(movement, matchByPrisonNumber, matchByPncNumber)
-      )
-    }
-
-    return movements.map(::decorateMovementWithPrisonerMatch)
+  private fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
+    val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
+    if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
+    return matches.firstOrNull()
   }
+
+  private fun decorateMovementWithPrisonerMatch(movement: Movement): Movement {
+    val matchByPrisonNumber = findPrisonerMatch(movement.prisonNumber, "Prison Number")
+    val matchByPncNumber = findPrisonerMatch(movement.pncNumber, "PNC Number")
+
+    return movement.copy(
+      prisonNumber = prisonNumberToUse(movement, matchByPrisonNumber, matchByPncNumber),
+      pncNumber = pncToUse(movement, matchByPrisonNumber, matchByPncNumber)
+    )
+  }
+
+  private fun getMovementsMatchedWithPrisoner(movements: List<Movement>): List<Movement> =
+    movements.map(::decorateMovementWithPrisonerMatch)
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
