@@ -27,7 +27,7 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
       fromLocation = faker.address().city(),
-      prisonNumber = letters.get(1) + letters.get(4) + numbers.get(2),
+      prisonNumber = letters.get(1) + numbers.get(4) + letters.get(2),
       pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
       date = date,
       fromLocationType = LocationType.PRISON,
