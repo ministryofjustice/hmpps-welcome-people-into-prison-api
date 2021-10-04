@@ -17,11 +17,6 @@ class MovementService(
   fun getMovements(agencyId: String, date: LocalDate) =
     getMovementsMatchedWithPrisoner(basmService.getMoves(agencyId, date, date)) + prisonService.getMoves(agencyId, date)
 
-//  fun getMovementsMatchedWithPrisoner(agencyId: String, date: LocalDate): List<Movement> {
-//    val movements = getMovements(agencyId, date)
-//    return getMovementsMatchedWithPrisoner(movements)
-//  }
-
   private fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
     val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
     if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
