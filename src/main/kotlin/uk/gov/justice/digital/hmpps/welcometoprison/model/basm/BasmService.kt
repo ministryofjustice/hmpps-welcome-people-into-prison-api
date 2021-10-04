@@ -1,10 +1,11 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Includes
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.People
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Profile
 import java.time.LocalDate
@@ -40,7 +41,7 @@ class BasmService(private val basmClient: BasmClient) {
           it.relationships.from_location.data?.id != null &&
           it.relationships.to_location.data?.id != null &&
           profiles(it.relationships.profile.data.id)?.relationships?.person?.data?.id != null &&
-          it.attributes.move_type != Model.MoveType.PRISON_TRANSFER
+          it.attributes.move_type != MoveType.PRISON_TRANSFER
       }
       .map {
         val fromLocationUuid = it.relationships.from_location.data?.id
@@ -56,9 +57,17 @@ class BasmService(private val basmClient: BasmClient) {
           prisonNumber = personData.prison_number,
           pncNumber = personData.police_national_computer,
           date = it.attributes.date!!,
-          moveType = MoveType.valueOf(it.attributes.move_type.name),
-          fromLocation = locations(fromLocationUuid!!)?.attributes?.title!!
+          fromLocation = locations(fromLocationUuid!!)?.attributes?.title!!,
+          fromLocationType = mapBasmMoveTypeToLocationType(it.attributes.move_type)
         )
       }
+  }
+
+  private fun mapBasmMoveTypeToLocationType(moveType: MoveType): LocationType = when (moveType) {
+    MoveType.PRISON_REMAND -> LocationType.COURT
+    MoveType.PRISON_RECALL -> LocationType.CUSTODY_SUITE
+    MoveType.VIDEO_REMAND -> LocationType.CUSTODY_SUITE
+    MoveType.PRISON_TRANSFER -> LocationType.PRISON
+    else -> LocationType.OTHER
   }
 }

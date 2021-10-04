@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.LoadJsonHelper.Companion.loadJson
@@ -69,8 +69,8 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
             prisonNumber = "A1278AA",
             pncNumber = "1234/1234589A",
             date = LocalDate.of(2021, 1, 2),
-            moveType = MoveType.PRISON_TRANSFER,
-            fromLocation = "MDI"
+            fromLocation = "MDI",
+            fromLocationType = LocationType.PRISON
           )
         )
       )
