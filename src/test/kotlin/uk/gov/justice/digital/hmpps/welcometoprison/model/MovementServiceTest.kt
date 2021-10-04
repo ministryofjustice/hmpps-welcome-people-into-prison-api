@@ -21,6 +21,14 @@ class MovementServiceTest {
   fun `getMoves - happy path`() {
     every { basmService.getMoves("MDI", date, date) } returns listOf(basmMovement)
     every { prisonService.getMoves("MDI", date) } returns listOf(prisonServiceMovement)
+    every { prisonerSearchService.matchPrisoner("A1234AA") } returns listOf(
+      MatchPrisonerResponse(
+        "A1234AA",
+        "99/123456J"
+      )
+    )
+
+    every { prisonerSearchService.matchPrisoner("99/123456J") } returns listOf()
 
     val moves = movementService.getMovements("MDI", date)
 
@@ -43,7 +51,7 @@ class MovementServiceTest {
       )
     )
 
-    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", date)
+    val moves = movementService.getMovements("MDI", date)
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPncNumber") }
     assertThat(moves[0].prisonNumber).isEqualTo("testPrisonNumber")
@@ -60,7 +68,7 @@ class MovementServiceTest {
       MatchPrisonerResponse("testPrisonNumber", "testPncNumber")
     )
 
-    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", date)
+    val moves = movementService.getMovements("MDI", date)
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPrisonNumber") }
     assertThat(moves[0].pncNumber).isEqualTo("testPncNumber")
@@ -76,7 +84,7 @@ class MovementServiceTest {
     every { prisonerSearchService.matchPrisoner("testPrisonNumber") } returns emptyList()
     every { prisonerSearchService.matchPrisoner("testPncNumber") } returns emptyList()
 
-    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", date)
+    val moves = movementService.getMovements("MDI", date)
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPrisonNumber") }
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("testPncNumber") }
@@ -97,7 +105,7 @@ class MovementServiceTest {
       MatchPrisonerResponse("testPrisonNumber", "somethingDifferent")
     )
 
-    val moves = movementService.getMovementsMatchedWithPrisoner("MDI", date)
+    val moves = movementService.getMovements("MDI", date)
 
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("nonsensePrisonNumber") }
     verify(exactly = 1) { prisonerSearchService.matchPrisoner("nonsensePncNumber") }

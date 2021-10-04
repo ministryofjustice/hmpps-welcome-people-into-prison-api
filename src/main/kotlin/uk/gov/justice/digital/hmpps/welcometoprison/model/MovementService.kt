@@ -15,12 +15,12 @@ class MovementService(
   val prisonerSearchService: PrisonerSearchService
 ) {
   fun getMovements(agencyId: String, date: LocalDate) =
-    basmService.getMoves(agencyId, date, date) + prisonService.getMoves(agencyId, date)
+    getMovementsMatchedWithPrisoner(basmService.getMoves(agencyId, date, date)) + prisonService.getMoves(agencyId, date)
 
-  fun getMovementsMatchedWithPrisoner(agencyId: String, date: LocalDate): List<Movement> {
-    val movements = getMovements(agencyId, date)
-    return getMovementsMatchedWithPrisoner(movements)
-  }
+//  fun getMovementsMatchedWithPrisoner(agencyId: String, date: LocalDate): List<Movement> {
+//    val movements = getMovements(agencyId, date)
+//    return getMovementsMatchedWithPrisoner(movements)
+//  }
 
   private fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
     val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
