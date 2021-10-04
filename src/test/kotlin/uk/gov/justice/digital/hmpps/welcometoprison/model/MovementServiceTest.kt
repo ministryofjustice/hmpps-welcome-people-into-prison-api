@@ -5,8 +5,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType.PRISON_RECALL
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MoveType.PRISON_TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
@@ -119,7 +117,7 @@ class MovementServiceTest {
       pncNumber = "99/123456J",
       date = date,
       fromLocation = "MDI",
-      moveType = PRISON_RECALL
+      fromLocationType = LocationType.CUSTODY_SUITE
     )
 
     private val prisonServiceMovement = basmMovement.copy(
@@ -129,29 +127,7 @@ class MovementServiceTest {
       dateOfBirth = LocalDate.of(1980, 2, 23),
       prisonNumber = "A1278AA",
       pncNumber = "1234/1234589A",
-      moveType = PRISON_TRANSFER
-      listOf(
-        Movement(
-          firstName = "JIM",
-          lastName = "SMITH",
-          dateOfBirth = LocalDate.of(1991, 7, 31),
-          prisonNumber = "A1234AA",
-          pncNumber = "99/123456J",
-          date = LocalDate.of(2021, 1, 2),
-          fromLocation = "MDI",
-          fromLocationType = LocationType.PRISON
-        ),
-        Movement(
-          firstName = "First",
-          lastName = "Last",
-          dateOfBirth = LocalDate.of(1980, 2, 23),
-          prisonNumber = "A1278AA",
-          pncNumber = "1234/1234589A",
-          date = LocalDate.of(2021, 1, 2),
-          fromLocation = "MDI",
-          fromLocationType = LocationType.PRISON
-        )
-      )
+      fromLocationType = LocationType.PRISON
     )
   }
 }
