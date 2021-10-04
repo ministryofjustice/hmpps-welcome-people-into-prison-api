@@ -28,3 +28,7 @@ constructor(@Qualifier("prisonApiHealthWebClient") webClient: WebClient) : Healt
 @Component
 class HmppsAuthApiHealth
 constructor(@Qualifier("oauthApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+
+@Component
+class PrisonerSearchApiHealth
+constructor(@Qualifier("prisonerSearchApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)

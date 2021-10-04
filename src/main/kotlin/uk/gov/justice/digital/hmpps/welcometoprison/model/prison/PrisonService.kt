@@ -22,6 +22,7 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
 
   fun getMoves(agencyId: String, date: LocalDate) = generateSequence {
     Movement(
+      id = null,
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),

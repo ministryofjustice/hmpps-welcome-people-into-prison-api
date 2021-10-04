@@ -8,6 +8,8 @@ import java.time.LocalDate
 @JsonInclude(NON_NULL)
 @Schema(description = "A movement into prison")
 data class Movement(
+  @Schema(description = "Movement ID", example = "0573de83-8a29-42aa-9ede-1068bc433fc5")
+  val id: String?,
   @Schema(description = "First name", example = "Sam")
   val firstName: String,
   @Schema(description = "Last name", example = "Smith")

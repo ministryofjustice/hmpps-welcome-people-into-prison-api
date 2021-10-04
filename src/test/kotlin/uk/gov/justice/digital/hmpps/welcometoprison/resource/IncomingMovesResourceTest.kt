@@ -56,10 +56,13 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
+      prisonerSearchMockServer.stubMatchPrisoners(200)
+      basmApiMockServer.stubGetPrison(200)
 
       whenever(prisonService.getMoves("MDI", LocalDate.of(2020, 1, 2))).thenReturn(
         listOf(
           Movement(
+            id = "1",
             firstName = "First",
             lastName = "Last",
             dateOfBirth = LocalDate.of(1980, 2, 23),
@@ -81,6 +84,9 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls service method with correct args`() {
+      prisonerSearchMockServer.stubMatchPrisoners(200)
+      basmApiMockServer.stubGetPrison(200)
+
       webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
