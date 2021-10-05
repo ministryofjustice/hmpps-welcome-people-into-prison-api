@@ -80,6 +80,48 @@ class IncomingMovesResource(
   ) = movementService.getMovements(agencyId, date)
 
   @PreAuthorize("hasRole('ROLE_VIEW_INCOMING_MOVEMENTS')")
+  @Operation(
+    summary = "Retrieves the movement for a specific movement ID",
+    description = "Retrieves the movement for a specific movement ID, role required is ROLE_VIEW_INCOMING_MOVEMENTS",
+    security = [SecurityRequirement(name = "ROLE_VIEW_INCOMING_MOVEMENTS", scopes = ["read"])],
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The movement",
+        content = [
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = Movement::class))
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to retrieve",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Agency ID not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "500",
+        description = "Unexpected error",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
+      ),
+    ]
+  )
   @GetMapping("/move/{moveId}")
   fun getMove(
     @Schema(description = "Move ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
