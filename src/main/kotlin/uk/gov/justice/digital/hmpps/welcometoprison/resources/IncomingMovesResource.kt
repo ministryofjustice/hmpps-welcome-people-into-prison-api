@@ -106,11 +106,6 @@ class IncomingMovesResource(
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
-        responseCode = "404",
-        description = "Agency ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      ),
-      ApiResponse(
         responseCode = "500",
         description = "Unexpected error",
         content = [
