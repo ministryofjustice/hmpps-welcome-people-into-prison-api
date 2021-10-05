@@ -101,4 +101,41 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       )
     }
   }
+
+  @Nested
+  inner class `Find a single movement by ID` {
+    @Test
+    fun `requires authentication`() {
+      webTestClient.get().uri("/incoming-moves/move/testId")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `requires correct role`() {
+      webTestClient.get().uri("/incoming-moves/move/testId")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
+    fun `requires uuid`() {
+      webTestClient.get().uri("/incoming-moves/move/")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody().jsonPath("userMessage").isEqualTo("Missing request value")
+    }
+
+    @Test
+    fun `returns json in expected formats`() {
+      webTestClient.get().uri("/incoming-moves/move/testId")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("move".loadJson(this))
+    }
+  }
 }

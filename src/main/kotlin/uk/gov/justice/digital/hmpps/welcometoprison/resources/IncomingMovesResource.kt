@@ -78,4 +78,11 @@ class IncomingMovesResource(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
   ) = movementService.getMovements(agencyId, date)
+
+  @PreAuthorize("hasRole('ROLE_VIEW_INCOMING_MOVEMENTS')")
+  @GetMapping("/move/{moveId}")
+  fun getMove(
+    @Schema(description = "Move ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
+    @PathVariable moveId: String,
+  ) = movementService.getMovement(moveId)
 }

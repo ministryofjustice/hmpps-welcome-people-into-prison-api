@@ -9,10 +9,13 @@ import java.time.LocalDate
 @Service
 class BasmService(private val basmClient: BasmClient) {
 
+  fun getMovement(moveId: String): Movement {
+    val movement = basmClient.getMovement(moveId)
+    return toMovement(movement!!)
+  }
+
   fun getMoves(prisonId: String, fromDate: LocalDate, toDate: LocalDate): List<Movement> {
-
     val prison = basmClient.getPrison(prisonId) ?: return emptyList()
-
     val movements = basmClient.getMovements(prison.id, fromDate, toDate)
 
     return movements
@@ -20,21 +23,23 @@ class BasmService(private val basmClient: BasmClient) {
         it.profile?.person != null &&
           it.move_type != MoveType.PRISON_TRANSFER
       }
-      .map {
-        val personData = it.profile?.person!!
+      .map { toMovement(it) }
+  }
 
-        Movement(
-          id = it.id,
-          firstName = personData.first_names!!,
-          lastName = personData.last_name!!,
-          dateOfBirth = personData.date_of_birth!!,
-          prisonNumber = personData.prison_number,
-          pncNumber = personData.police_national_computer,
-          date = it.date!!,
-          fromLocation = it.from_location.title!!,
-          fromLocationType = mapBasmMoveTypeToLocationType(it.move_type)
-        )
-      }
+  private fun toMovement(it: Model.Movement): Movement {
+    val personData = it.profile?.person!!
+
+    return Movement(
+      id = it.id,
+      firstName = personData.first_names!!,
+      lastName = personData.last_name!!,
+      dateOfBirth = personData.date_of_birth!!,
+      prisonNumber = personData.prison_number,
+      pncNumber = personData.police_national_computer,
+      date = it.date!!,
+      fromLocation = it.from_location.title!!,
+      fromLocationType = mapBasmMoveTypeToLocationType(it.move_type)
+    )
   }
 
   private fun mapBasmMoveTypeToLocationType(moveType: MoveType): LocationType = when (moveType) {

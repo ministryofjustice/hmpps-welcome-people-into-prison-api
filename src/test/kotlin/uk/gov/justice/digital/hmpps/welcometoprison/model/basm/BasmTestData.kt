@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_REMAND
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
@@ -58,7 +59,6 @@ class BasmTestData {
           )
         )
       ),
-
       Movement(
         id = "0cb56df1-f421-44a9-9f4d-0b4b5661b29f",
         type = "moves",
@@ -97,6 +97,45 @@ class BasmTestData {
           )
         )
       ),
+    )
+
+    val MOVEMENT = Movement(
+      id = "6052fac2-ea13-408c-9786-02d0dc5e89ff",
+      type = "moves",
+      additional_information = null,
+      date = LocalDate.of(2021, 9, 22),
+      date_from = null,
+      date_to = null,
+      move_type = COURT_APPEARANCE,
+      reference = "MJE8756Y",
+      status = "requested",
+      time_due = null,
+      created_at = "2021-09-22T15:02:38+01:00",
+      updated_at = "2021-09-22T15:02:39+01:00",
+      from_location = Location(
+        id = "fecfd195-21af-4cbc-8ad9-3f8d0345d478",
+        title = "Moorland (HMP & YOI)",
+        location_type = "prison",
+        nomis_agency_id = "MDI"
+      ),
+      to_location = Location(
+        id = "2bffa952-398d-4593-b895-8b9f8492cd7a",
+        title = "Barnstaple Magistrates Court",
+        location_type = "court",
+        nomis_agency_id = "BNSTMC"
+      ),
+      profile = Profile(
+        id = "8e4ff6e6-0d4f-49e2-aff6-f3022501be31",
+        person = People(
+          id = "0482f85c-2216-40ca-a73d-67fcd2ae283f",
+          first_names = "JASON",
+          last_name = "SIMS",
+          date_of_birth = LocalDate.of(1984, 1, 24),
+          prison_number = null,
+          criminal_records_office = null,
+          police_national_computer = null
+        )
+      )
     )
   }
 }
