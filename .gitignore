@@ -5,6 +5,7 @@
 
 .idea/
 .gradle/
+.run/
 build/
 
 # CMake

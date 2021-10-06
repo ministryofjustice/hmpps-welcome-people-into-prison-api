@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.hmpps.welcometoprison.utils.LoadJsonHelper.Companion.loadJson
 
 class BasmApiMockServer : WireMockServer(9004) {
 
@@ -33,7 +34,7 @@ class BasmApiMockServer : WireMockServer(9004) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody("prison".loadJson())
+            .withBody("prison".loadJson(this))
         )
     )
   }
@@ -47,12 +48,8 @@ class BasmApiMockServer : WireMockServer(9004) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody("moves".loadJson())
+            .withBody("moves".loadJson(this))
         )
     )
   }
-
-  private fun String.loadJson(): String =
-    BasmApiMockServer::class.java.getResource("$this.json")?.readText()
-      ?: throw AssertionError("file $this.json not found")
 }
