@@ -105,7 +105,7 @@ class HealthCheckTest : IntegrationTestBase() {
       )
     )
 
-    prisonMockServer.stubFor(
+    prisonApiMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
