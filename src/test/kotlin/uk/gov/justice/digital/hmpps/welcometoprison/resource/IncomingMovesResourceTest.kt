@@ -108,6 +108,16 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `handles 404`() {
+      basmApiMockServer.stubGetMovement("does-not-exist", 404, null)
+      webTestClient.get().uri("/incoming-moves/move/does-not-exist")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isNotFound
+        .expectBody().jsonPath("userMessage").isEqualTo("Resource not found")
+    }
+
+    @Test
     fun `returns json in expected formats`() {
       webTestClient.get().uri("/incoming-moves/move/testId")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))

@@ -18,7 +18,7 @@ class Model {
     val id: String,
     val type: String,
     val additional_information: String?,
-    val date: LocalDate?,
+    val date: LocalDate,
     val date_from: LocalDate?,
     val date_to: LocalDate?,
     val move_type: MoveType,

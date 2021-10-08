@@ -53,16 +53,16 @@ class BasmApiMockServer : WireMockServer(9004) {
     )
   }
 
-  fun stubGetMovement(status: Int) {
+  fun stubGetMovement(id: String, status: Int, body: String? = "move".loadJson(this)) {
     stubFor(
       get(
-        urlPathMatching("/api/moves/test\\\\?.*")
+        urlPathMatching("/api/moves/$id")
       )
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody("move".loadJson(this))
+            .withBody(body)
         )
     )
   }

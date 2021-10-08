@@ -35,7 +35,7 @@ abstract class IntegrationTestBase {
       basmApiMockServer.stubGetPrison(200)
       basmApiMockServer.stubGetMovements(200)
       prisonApiMockServer.start()
-      basmApiMockServer.stubGetMovement(200)
+      basmApiMockServer.stubGetMovement("testId", 200)
       prisonApiMockServer.start()
       prisonerSearchMockServer.start()
       prisonerSearchMockServer.stubMatchPrisoners(200)
