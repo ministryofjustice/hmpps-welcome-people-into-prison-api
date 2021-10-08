@@ -14,6 +14,8 @@ class MovementService(
   val prisonService: PrisonService,
   val prisonerSearchService: PrisonerSearchService
 ) {
+  fun getMovement(moveId: String): Movement = basmService.getMovement(moveId)
+
   fun getMovements(agencyId: String, date: LocalDate) =
     getMovementsMatchedWithPrisoner(basmService.getMoves(agencyId, date, date)) + prisonService.getMoves(agencyId, date)
 

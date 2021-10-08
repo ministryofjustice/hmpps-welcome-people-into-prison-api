@@ -38,6 +38,14 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
     type = object : ParameterizedTypeReference<JsonApiResponse<Movement>>() {}
   ).payload
 
+  fun getMovement(moveId: String): Movement? = get(
+    path = "/api/moves/$moveId",
+    query = `query of`(
+      includes = listOf("profile.person", "from_location", "to_location")
+    ),
+    type = object : ParameterizedTypeReference<JsonApiResponse<Movement>>() {}
+  ).payload.firstOrNull()
+
   private fun <T : Any> get(path: String, query: String = "", type: ParameterizedTypeReference<T>) = webClient.get()
     .uri("$path$query")
     .header("Accept", "application/vnd.api+json; version=2")
