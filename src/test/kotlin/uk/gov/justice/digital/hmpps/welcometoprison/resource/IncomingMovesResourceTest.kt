@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.utils.LoadJsonHelper.Companion.loadJson
+import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 @Suppress("ClassName")
 class IncomingMovesResourceTest : IntegrationTestBase() {

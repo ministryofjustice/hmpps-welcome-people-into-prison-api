@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 class PrisonApiMockServer : WireMockServer(9005) {
 
@@ -15,12 +16,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(200)
-            .withBody("prisonTransfersEnRoute".loadJson())
+            .withBody("prisonTransfersEnRoute".loadJson(this))
         )
     )
   }
-
-  private fun String.loadJson(): String =
-    PrisonApiMockServer::class.java.getResource("$this.json")?.readText()
-      ?: throw AssertionError("file $this.json not found")
 }
