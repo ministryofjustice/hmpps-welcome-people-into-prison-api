@@ -37,7 +37,7 @@ class BasmService(private val basmClient: BasmClient) {
       prisonNumber = personData.prison_number,
       pncNumber = personData.police_national_computer,
       date = it.date!!,
-      fromLocation = it.from_location.title!!,
+      fromLocation = it.from_location.title,
       fromLocationType = mapBasmMoveTypeToLocationType(it.move_type)
     )
   }

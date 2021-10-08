@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.utils.LoadJsonHelper.Companion.loadJson
+import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset

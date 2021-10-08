@@ -20,19 +20,20 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
   private val letters = 'A'..'Z'
   fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString("")
 
-  fun getMoves(agencyId: String, date: LocalDate) = generateSequence {
-    Movement(
-      id = null,
-      firstName = faker.name().firstName(),
-      lastName = faker.name().lastName(),
-      dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-      fromLocation = faker.address().city(),
-      prisonNumber = letters.get(1) + numbers.get(4) + letters.get(2),
-      pncNumber = numbers.get(4) + "/" + numbers.get(7) + letters.get(1),
-      date = date,
-      fromLocationType = LocationType.PRISON,
-    )
-  }.take((5..20).random()).toList()
+  fun getMoves(agencyId: String, date: LocalDate) =
+    client.getPrisonTransfersEnRoute(agencyId).map {
+      Movement(
+        id = null,
+        firstName = it.firstName,
+        lastName = it.lastName,
+        dateOfBirth = it.dateOfBirth,
+        fromLocationType = LocationType.PRISON,
+        fromLocation = it.fromAgencyDescription,
+        prisonNumber = it.offenderNo,
+        date = it.movementDate,
+        pncNumber = null
+      )
+    }
 
   fun getTemporaryAbsences(agencyId: String) = generateSequence {
     TemporaryAbsence(

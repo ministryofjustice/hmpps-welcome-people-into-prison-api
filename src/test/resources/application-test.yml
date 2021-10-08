@@ -8,7 +8,7 @@ oauth:
   endpoint.url: http://localhost:8090/auth
 
 prison:
-  endpoint.url: http://localhost:8092
+  endpoint.url: http://localhost:9005
 
 prisoner:
   search.endpoint.url: http://localhost:8093

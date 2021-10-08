@@ -16,8 +16,6 @@ open class MockServer(port: Int) : WireMockServer(
     .usingFilesUnderDirectory(MAPPINGS_DIRECTORY)
 )
 
-class PrisonMockServer : MockServer(8092)
-
 class HmppsAuthMockServer : MockServer(8090) {
   private val mapper = ObjectMapper()
 

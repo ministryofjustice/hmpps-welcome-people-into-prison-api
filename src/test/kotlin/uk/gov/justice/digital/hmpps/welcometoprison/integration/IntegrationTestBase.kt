@@ -23,7 +23,7 @@ abstract class IntegrationTestBase {
 
   companion object {
     internal val basmApiMockServer = BasmApiMockServer()
-    internal val prisonMockServer = PrisonMockServer()
+    internal val prisonApiMockServer = PrisonApiMockServer()
     internal val hmppsAuthMockServer = HmppsAuthMockServer()
     internal val prisonerSearchMockServer = PrisonerSearchMockServer()
 
@@ -34,8 +34,9 @@ abstract class IntegrationTestBase {
       basmApiMockServer.stubGrantToken()
       basmApiMockServer.stubGetPrison(200)
       basmApiMockServer.stubGetMovements(200)
+      prisonApiMockServer.start()
       basmApiMockServer.stubGetMovement(200)
-      prisonMockServer.start()
+      prisonApiMockServer.start()
       prisonerSearchMockServer.start()
       prisonerSearchMockServer.stubMatchPrisoners(200)
       hmppsAuthMockServer.start()
@@ -45,7 +46,7 @@ abstract class IntegrationTestBase {
     @JvmStatic
     fun stopMocks() {
       basmApiMockServer.stop()
-      prisonMockServer.stop()
+      prisonApiMockServer.stop()
       prisonerSearchMockServer.stop()
       hmppsAuthMockServer.stop()
     }
@@ -59,7 +60,7 @@ abstract class IntegrationTestBase {
   @BeforeEach
   fun resetStubs() {
     hmppsAuthMockServer.resetAll()
-    prisonMockServer.resetAll()
+    prisonApiMockServer.resetAll()
     prisonerSearchMockServer.resetAll()
 
     hmppsAuthMockServer.stubGrantToken()
