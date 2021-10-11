@@ -69,7 +69,7 @@ class BasmClientTest {
 
   @Test
   fun `successful get movement`() {
-    mockServer.stubGetMovement(200)
+    mockServer.stubGetMovement("test", 200)
     val result = basmClient.getMovement("test")
 
     assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENT)
