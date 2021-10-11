@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -24,8 +25,8 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
     client.getPrisonTransfersEnRoute(agencyId).map {
       Movement(
         id = null,
-        firstName = it.firstName,
-        lastName = it.lastName,
+        firstName = properCase(it.firstName),
+        lastName = properCase(it.lastName),
         dateOfBirth = it.dateOfBirth,
         fromLocationType = LocationType.PRISON,
         fromLocation = it.fromAgencyDescription,
