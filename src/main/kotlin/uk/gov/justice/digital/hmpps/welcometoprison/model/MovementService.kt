@@ -33,14 +33,14 @@ class MovementService(
 
   companion object {
     fun Movement.isMatch(move: MatchPrisonerResponse) = when {
-      this.prisonNumber != null && this.pncNumber != null ->
-        this.prisonNumber == move.prisonerNumber && this.pncNumber == move.pncNumber
+      prisonNumber != null && pncNumber != null ->
+        prisonNumber == move.prisonerNumber && pncNumber == move.pncNumber
 
-      this.prisonNumber != null && this.pncNumber == null ->
-        this.prisonNumber == move.prisonerNumber
+      prisonNumber != null && pncNumber == null ->
+        prisonNumber == move.prisonerNumber
 
-      this.prisonNumber == null && this.pncNumber != null ->
-        this.pncNumber == move.pncNumber
+      prisonNumber == null && pncNumber != null ->
+        pncNumber == move.pncNumber
 
       else -> false
     }

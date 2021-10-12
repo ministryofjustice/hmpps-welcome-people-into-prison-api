@@ -54,7 +54,11 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : JsonDeseria
 
     attributes?.let { item.setAll<JsonNode>(attributes) }
     relationships?.let {
-      it.fields().forEach { (name, values) -> item.set<JsonNode>(name, getRelation(inclusions, values["data"])) }
+      it.fields().asSequence()
+        .filter { (_, values) -> values?.get("data") != null }
+        .forEach { (name, values) ->
+          item.set<JsonNode>(name, getRelation(inclusions, values["data"]))
+        }
     }
 
     return item

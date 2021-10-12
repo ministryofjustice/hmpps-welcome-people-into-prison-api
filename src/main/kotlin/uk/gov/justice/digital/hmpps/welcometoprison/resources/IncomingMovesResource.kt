@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 @RestController
 @Validated
-@RequestMapping(name = "Incoming moves", path = ["/incoming-moves"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(name = "Incoming moves", produces = [MediaType.APPLICATION_JSON_VALUE])
 class IncomingMovesResource(
   private val movementService: MovementService,
 ) {
@@ -70,7 +70,7 @@ class IncomingMovesResource(
       ),
     ]
   )
-  @GetMapping("/{agencyId}")
+  @GetMapping(path = ["/incoming-moves/{agencyId}", "/prisons/{agencyId}/arrivals"])
   fun getMoves(
     @Schema(description = "Agency ID", example = "MDI", required = true)
     @PathVariable agencyId: String,
@@ -117,7 +117,8 @@ class IncomingMovesResource(
       ),
     ]
   )
-  @GetMapping("/move/{moveId}")
+
+  @GetMapping(path = ["/incoming-moves/moves/{moveId}", "/arrivals/{moveId}"])
   fun getMove(
     @Schema(description = "Move ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
     @PathVariable moveId: String,
