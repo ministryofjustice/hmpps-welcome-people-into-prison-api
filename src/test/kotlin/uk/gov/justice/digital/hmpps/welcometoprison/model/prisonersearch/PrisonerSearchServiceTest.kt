@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 
-class PrisonerSearchServiceTest() {
+class PrisonerSearchServiceTest {
   private val client: PrisonerSearchApiClient = mockk()
   private val service = PrisonerSearchService(client)
 

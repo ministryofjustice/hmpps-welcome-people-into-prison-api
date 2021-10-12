@@ -14,14 +14,14 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
   inner class `Find movements on day` {
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -30,7 +30,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires date param`() {
-      webTestClient.get().uri("/incoming-moves/MDI")
+      webTestClient.get().uri("/prisons/MDI/arrivals")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isBadRequest
@@ -39,7 +39,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires date param in correct format`() {
-      webTestClient.get().uri("/incoming-moves/MDI?date=wibble")
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=wibble")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isBadRequest
@@ -52,7 +52,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       basmApiMockServer.stubGetPrison(200)
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
-      webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -65,7 +65,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       basmApiMockServer.stubGetPrison(200)
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
-      webTestClient.get().uri("/incoming-moves/MDI?date=2020-01-02")
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -84,14 +84,14 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
   inner class `Find a single movement by ID` {
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/incoming-moves/move/testId")
+      webTestClient.get().uri("/arrivals/testId")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/incoming-moves/move/testId")
+      webTestClient.get().uri("/arrivals/testId")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -100,17 +100,16 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires uuid`() {
-      webTestClient.get().uri("/incoming-moves/move/")
+      webTestClient.get().uri("/arrivals/")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
-        .expectStatus().isBadRequest
-        .expectBody().jsonPath("userMessage").isEqualTo("Missing request value")
+        .expectStatus().isNotFound
     }
 
     @Test
     fun `handles 404`() {
       basmApiMockServer.stubGetMovement("does-not-exist", 404, null)
-      webTestClient.get().uri("/incoming-moves/move/does-not-exist")
+      webTestClient.get().uri("/arrivals/does-not-exist")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isNotFound
@@ -119,7 +118,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected formats`() {
-      webTestClient.get().uri("/incoming-moves/move/testId")
+      webTestClient.get().uri("/arrivals/testId")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk

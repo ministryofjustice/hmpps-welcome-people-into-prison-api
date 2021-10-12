@@ -23,7 +23,8 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     return matches
   }
 
-  private fun matchPrisoner(identifier: String) = client.matchPrisoner(MatchPrisonerRequest(identifier))
+  private fun matchPrisoner(identifier: String): List<MatchPrisonerResponse> =
+    client.matchPrisoner(MatchPrisonerRequest(identifier))
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)

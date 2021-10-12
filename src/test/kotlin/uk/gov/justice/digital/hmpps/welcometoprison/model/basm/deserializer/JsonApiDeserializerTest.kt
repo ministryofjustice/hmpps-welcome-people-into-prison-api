@@ -143,4 +143,36 @@ class JsonApiDeserializerTest {
       )
     )
   }
+
+  @Test
+  fun `handles deserializing null relations`() {
+
+    data class Person(
+      val type: String,
+      val id: String,
+    )
+
+    data class Location(
+      val type: String,
+      val id: String,
+      @JsonProperty("nomis_agency_id") val agencyId: String,
+      val title: String
+    )
+
+    data class Move(
+      var id: String,
+      var reference: String,
+      val person: Person?,
+    )
+
+    val result = readJsonApiResponse(Move::class, "with-null-relations")
+
+    assertThat(result.payload).containsExactly(
+      Move(
+        "476d47a3-013a-4772-94c7-5d043b0d0574",
+        "MUT4738J",
+        null
+      )
+    )
+  }
 }
