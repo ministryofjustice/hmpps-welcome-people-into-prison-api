@@ -57,8 +57,8 @@ class BasmServiceTest {
     assertThat(moves).isEqualTo(
       Movement(
         id = "6052fac2-ea13-408c-9786-02d0dc5e89ff",
-        firstName = "JASON",
-        lastName = "SIMS",
+        firstName = "Jason",
+        lastName = "Sims",
         dateOfBirth = LocalDate.of(1984, 1, 24),
         prisonNumber = null,
         pncNumber = null,
