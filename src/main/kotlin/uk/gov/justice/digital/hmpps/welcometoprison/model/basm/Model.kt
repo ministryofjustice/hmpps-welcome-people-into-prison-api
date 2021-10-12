@@ -41,8 +41,8 @@ class Model {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   data class People(
     val id: String,
-    val first_names: String?,
-    val last_name: String?,
+    val first_names: String,
+    val last_name: String,
     val date_of_birth: LocalDate?,
     val prison_number: String?,
     val criminal_records_office: String?,

@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
 import java.time.LocalDate
 
 @Service
@@ -30,8 +31,8 @@ class BasmService(private val basmClient: BasmClient) {
 
     return Movement(
       id = this.id,
-      firstName = personData.first_names!!,
-      lastName = personData.last_name!!,
+      firstName = properCase(personData.first_names),
+      lastName = properCase(personData.last_name),
       dateOfBirth = personData.date_of_birth!!,
       prisonNumber = personData.prison_number,
       pncNumber = personData.police_national_computer,
