@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
@@ -14,61 +13,36 @@ class MovementService(
   val prisonService: PrisonService,
   val prisonerSearchService: PrisonerSearchService
 ) {
-  fun getMovement(moveId: String): Movement = basmService.getMovement(moveId)
+  fun getMovement(moveId: String): Movement = addPrisonData(basmService.getMovement(moveId))
 
   fun getMovements(agencyId: String, date: LocalDate) =
-    getMovementsMatchedWithPrisoner(basmService.getMoves(agencyId, date, date)) + prisonService.getMoves(agencyId, date)
+    basmService.getMoves(agencyId, date, date).map { addPrisonData(it) } + prisonService.getMoves(agencyId, date)
 
-  private fun findPrisonerMatch(identifier: String?, identifierName: String): MatchPrisonerResponse? {
-    val matches = identifier?.let { prisonerSearchService.matchPrisoner(it) } ?: emptyList()
-    if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
-    return matches.firstOrNull()
+  private fun addPrisonData(movement: Movement): Movement {
+    val candidates = prisonerSearchService.getCandidateMatches(movement)
+
+    val match = candidates.firstOrNull { movement.isMatch(it) }
+
+    return if (match != null)
+      movement.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber)
+
+    // Ignore any provided prison number, but assume PNC is fine
+    else
+      movement.copy(prisonNumber = null)
   }
-
-  private fun decorateMovementWithPrisonerMatch(movement: Movement): Movement {
-    val matchByPrisonNumber = findPrisonerMatch(movement.prisonNumber, "Prison Number")
-    val matchByPncNumber = findPrisonerMatch(movement.pncNumber, "PNC Number")
-
-    return movement.copy(
-      prisonNumber = prisonNumberToUse(movement, matchByPrisonNumber, matchByPncNumber),
-      pncNumber = pncToUse(movement, matchByPrisonNumber, matchByPncNumber)
-    )
-  }
-
-  private fun getMovementsMatchedWithPrisoner(movements: List<Movement>): List<Movement> =
-    movements.map(::decorateMovementWithPrisonerMatch)
 
   companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
+    fun Movement.isMatch(move: MatchPrisonerResponse) = when {
+      this.prisonNumber != null && this.pncNumber != null ->
+        this.prisonNumber == move.prisonerNumber && this.pncNumber == move.pncNumber
 
-    fun prisonNumberToUse(
-      movement: Movement,
-      matchByPrisonNumber: MatchPrisonerResponse?,
-      matchByPncNumber: MatchPrisonerResponse?
-    ): String? = when {
-      matchByPrisonNumber == null && matchByPncNumber == null -> null
-      matchByPrisonNumber == null && matchByPncNumber != null -> matchByPncNumber.prisonerNumber
-      matchByPrisonNumber != null && matchByPncNumber == null -> movement.prisonNumber
-      matchByPrisonNumber != null && matchByPncNumber != null -> when {
-        matchByPrisonNumber.prisonerNumber != matchByPncNumber.prisonerNumber -> null
-        matchByPrisonNumber.pncNumber != matchByPncNumber.pncNumber -> null
-        else -> movement.prisonNumber
-      }
-      else -> movement.prisonNumber
-    }
+      this.prisonNumber != null && this.pncNumber == null ->
+        this.prisonNumber == move.prisonerNumber
 
-    fun pncToUse(
-      movement: Movement,
-      matchByPrisonNumber: MatchPrisonerResponse?,
-      matchByPncNumber: MatchPrisonerResponse?
-    ): String? = when {
-      matchByPrisonNumber != null && matchByPncNumber == null -> matchByPrisonNumber.pncNumber
-      matchByPrisonNumber != null && matchByPncNumber != null -> when {
-        matchByPrisonNumber.prisonerNumber != matchByPncNumber.prisonerNumber -> null
-        matchByPrisonNumber.pncNumber != matchByPncNumber.pncNumber -> null
-        else -> movement.pncNumber
-      }
-      else -> movement.pncNumber
+      this.prisonNumber == null && this.pncNumber != null ->
+        this.pncNumber == move.pncNumber
+
+      else -> false
     }
   }
 }
