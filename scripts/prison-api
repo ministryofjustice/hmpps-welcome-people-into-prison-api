@@ -1,0 +1,179 @@
+#!/usr/bin/env bash
+#set -x
+declare -A AUTH_URL
+declare -A PRSION_API_URL
+
+# DEV
+AUTH_URL['dev']=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+PRSION_API_URL['dev']=https://api-dev.prison.service.justice.gov.uk
+
+# PREPROD
+AUTH_URL['preprod']=https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
+PRSION_API_URL['preprod']=https://api-preprod.prison.service.justice.gov.uk
+
+# PROD
+AUTH_URL['prod']=https://sign-in.hmpps.service.justice.gov.uk/auth
+PRSION_API_URL['prod']=https://api.prison.service.justice.gov.uk
+
+usage() {
+  echo
+  echo "Usage:"
+  echo
+  echo " command line parameters:"
+  echo
+  echo "   -ns <namespace>            One of 'dev', 'preprod' or 'prod'. Selects the kubernetes namespace. "
+  echo "                              If 'prod' is selected the user is asked to confirm the operation"
+  echo "   -txout                     Transfer out"
+  echo "   -txin                      Transfer in"
+  echo "   -o <offenderNo>            The number offender to transfer, G5666UK. Required"
+  echo "   -a <prisonId>              The id of the prison that is the target of the transfer. eg WWI. Required"
+  echo "   -u <user>                  NOMIS user id. eg PBELL_GEN. Required for transfer in only."
+  echo
+  echo "  Examples:"
+  echo
+  echo "  Transfer prisoner G5666UK out. Destination is WWI (Wansdsworth)"
+  echo "  prison-api -ns dev -txout -o G5666UK -a WWI"
+  echo
+  echo "  Transfer prisoner G5666UK into WWI (Wansdsworth)"
+  echo "  prison-api -ns dev -txin -o G5666UK -a WWI -u PBELL_GEN"
+  exit
+}
+
+read_command_line() {
+  if [[ ! $1 ]]; then
+    usage
+  fi
+  while [[ $1 ]]; do
+    case $1 in
+    -ns)
+      shift
+      NS_KEY=$1
+      ;;
+    -a)
+      shift
+      AGENCY_ID=$1
+      ;;
+    -o)
+      shift
+      OFFENDER_NO=$1
+      ;;
+    -u)
+      shift
+      USER_ID=$1
+      ;;
+    -txin)
+      COMMAND=transferIn
+      ;;
+    -txout)
+      COMMAND=transferOut
+      ;;
+    -help)
+      usage
+      ;;
+    *)
+      echo
+      echo "Unknown argument '$1'"
+      echo
+      exit
+      ;;
+    esac
+    shift
+  done
+}
+
+check_namespace() {
+  case "$NS_KEY" in
+  dev | preprod | prod)
+    NAMESPACE=hmpps-welcome-to-prison-${NS_KEY}
+    ;;
+  *)
+    echo "-ns must be 'dev', 'preprod' or 'prod'"
+    exit
+    ;;
+  esac
+}
+
+set_base_url() {
+  if [[ ! $OFFENDER_NO ]]; then
+    echo "Offender number not set"
+    exit
+  fi
+
+  if [[ ! $AGENCY_ID ]]; then
+    echo "Agency ID not set"
+    exit
+  fi
+
+  BASE_URL=${PRSION_API_URL[$NS_KEY]}/api/offenders/${OFFENDER_NO}
+}
+
+set_auth_header() {
+  local NOMIS_AUTH_URL=${AUTH_URL[$NS_KEY]}
+  local SECRETS="$(kubectl -n ${NAMESPACE} get secret hmpps-welcome-people-into-prison-api -o json)"
+  local API_SECRET=$(echo "${SECRETS}" | jq -r ".data.SYSTEM_CLIENT_SECRET | @base64d")
+  local API_ID=$(echo "${SECRETS}" | jq -r ".data.SYSTEM_CLIENT_ID | @base64d")
+  local AUTH_BASIC=$(echo -n ${API_ID}:${API_SECRET} | base64 -b0)
+  local TOKEN=$(curl -s -X POST "${NOMIS_AUTH_URL}/oauth/token?grant_type=client_credentials&username=$USER_ID" -H 'Content-Type: application/json' -H 'Content-Length: 0' -H "Authorization: Basic ${AUTH_BASIC}" | jq -r '.access_token')
+  AUTH_HEADER="Authorization: Bearer $TOKEN"
+}
+
+confirm() {
+  if [[ ${NS_KEY} == "prod" ]]; then
+    local confirm=""
+    echo "This is the PRODUCTION namespace"
+    while [[ ${confirm} != "Y" ]] && [[ ${confirm} != "n" ]]; do
+      read -p 'Continue? Y/n: ' -n 1 confirm
+      echo
+    done
+    if [[ ${confirm} != "Y" ]]; then
+      exit
+    fi
+  fi
+}
+
+transfer_in() {
+  confirm
+    TXIN_BODY=$(jq --null-input \
+              --arg agency "$AGENCY_ID" \
+              '{ "receiveTime": now|todate, "commentText": "Test transfer in" }' )
+  echo "POST ${BASE_URL}/transfer-in"
+  echo "BODY ${TXIN_BODY}"
+  curl -s \
+       -X PUT ${BASE_URL}/transfer-in \
+       -H "${AUTH_HEADER}" \
+       -H 'Content-Type: application/json' \
+       --data "$TXIN_BODY" | jq '{lastName,firstName,dateOfBirth,age,offenderNo,bookingId,agencyId,inOutStatus,status,statusReason,activeFlag,assignedLivingUnit,offenderId,rootOffenderId}'
+}
+
+transfer_out() {
+  confirm
+  TXOUT_BODY=$(jq --null-input \
+            --arg agency "$AGENCY_ID" \
+            '{ "toLocation": $agency, "commentText": "Test transfer out", "escortType": "PECS", "movementTime": now|todate, "transferReasonCode": "NOTR" }' )
+  echo "POST ${BASE_URL}/transfer-out"
+  echo "BODY $TXOUT_BODY"
+  curl -s \
+       -X PUT ${BASE_URL}/transfer-out \
+       -H "${AUTH_HEADER}" \
+       -H 'Content-Type: application/json' \
+       --data "$TXOUT_BODY" | jq '{lastName,firstName,dateOfBirth,age,offenderNo,bookingId,agencyId,inOutStatus,status,statusReason,activeFlag,offenderId,rootOffenderId}'
+}
+
+
+do_command() {
+  case $COMMAND in
+  transferIn)
+    set_base_url
+    transfer_in
+    ;;
+  transferOut)
+    set_base_url
+    transfer_out
+    ;;
+  esac
+}
+
+read_command_line "$@"
+check_namespace
+set_auth_header
+do_command
