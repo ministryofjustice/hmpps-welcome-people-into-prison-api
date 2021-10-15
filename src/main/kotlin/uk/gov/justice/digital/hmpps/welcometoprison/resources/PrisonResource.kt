@@ -65,6 +65,7 @@ class PrisonResource(
       ),
     ]
   )
+
   @GetMapping(value = ["/prisoner/{offenderNumber}/image"], produces = ["image/jpeg"])
   fun getPrisonerImage(
     @Schema(description = "Offender Number", example = "A12345", required = true)

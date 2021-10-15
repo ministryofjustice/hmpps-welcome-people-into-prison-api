@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
@@ -45,4 +46,41 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       reasonForAbsence = faker.expression("reason")
     )
   }.take((5..20).random()).toList()
+
+  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
+  fun createAndAdmitOffender(createAndAdmitOffenderDetail: CreateAndAdmitOffenderDetail): CreateOffenderResponse {
+    val createResponse = client.createOffender(
+      with(createAndAdmitOffenderDetail) {
+        CreateOffenderDetail(
+          firstName = firstName!!,
+          middleName1,
+          middleName2,
+          lastName = lastName!!,
+          dateOfBirth = dateOfBirth!!,
+          gender = gender!!,
+          ethnicity,
+          croNumber,
+          pncNumber,
+          suffix,
+          title
+        )
+      }
+    )
+
+    client.admitOffenderOnNewBooking(
+      createResponse.offenderNo,
+      with(createAndAdmitOffenderDetail) {
+        AdmitOnNewBookingDetail(
+          prisonId = prisonId!!,
+          bookingInTime,
+          fromLocationId,
+          movementReasonCode = movementReasonCode!!,
+          youthOffender,
+          cellLocation,
+          imprisonmentStatus = imprisonmentStatus!!
+        )
+      }
+    )
+    return CreateOffenderResponse(offenderNo = createResponse.offenderNo)
+  }
 }

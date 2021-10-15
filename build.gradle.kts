@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.9"
   kotlin("plugin.spring") version "1.5.31"
@@ -24,6 +26,15 @@ dependencies {
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.mockk:mockk:1.12.0")
+}
+
+/**
+ * Without this Kotlin compiler setting Java Bean validator annotations do not work on Kotlin lists.
+ */
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions {
+    freeCompilerArgs += "-Xemit-jvm-type-annotations"
+  }
 }
 
 tasks {
