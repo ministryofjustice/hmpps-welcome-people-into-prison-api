@@ -132,7 +132,7 @@ class PrisonApiClientTest {
 
     mockServer.stubAdmitOnNewBooking(offenderNumber)
 
-    val response = prisonApiClient.admitOffenderOnNewBooking(
+    prisonApiClient.admitOffenderOnNewBooking(
       offenderNumber,
       AdmitOnNewBookingDetail(
         prisonId = "NMI",

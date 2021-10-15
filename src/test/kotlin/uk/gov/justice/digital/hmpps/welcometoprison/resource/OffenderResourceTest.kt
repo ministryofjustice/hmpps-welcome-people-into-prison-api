@@ -57,7 +57,7 @@ class OffenderResourceTest : IntegrationTestBase() {
           "movementReasonCode": "N",
           "imprisonmentStatus": "SENT03"
         }
-      """.trimIndent()
+        """.trimIndent()
       )
       .exchange()
       .expectStatus().isBadRequest
@@ -68,7 +68,7 @@ class OffenderResourceTest : IntegrationTestBase() {
           "errorCode": null,
           "moreInfo": null
         }
-      """.trimIndent()
+        """.trimIndent()
       )
   }
 

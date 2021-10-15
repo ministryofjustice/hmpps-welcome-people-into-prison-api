@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,6 +25,7 @@ class OffenderResource(val prisonService: PrisonService) {
   fun createOffenderAndBookIntoPrison(
     @RequestBody
     @Valid
+    @NotNull
     createAndBookInmateDetail: CreateAndAdmitOffenderDetail
   ): CreateOffenderResponse = prisonService.createAndAdmitOffender(createAndBookInmateDetail)
 }
