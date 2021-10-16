@@ -21,7 +21,6 @@ class OffenderResource(val prisonService: PrisonService) {
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
-  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
   fun createOffenderAndBookIntoPrison(
     @RequestBody
     @Valid
