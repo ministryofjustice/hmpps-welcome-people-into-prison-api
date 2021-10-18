@@ -6,8 +6,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -20,7 +20,7 @@ class PrisonServiceTest {
   private val prisonImage = "prisonImage".toByteArray()
 
   @Test
-  fun `get moves`() {
+  fun `get transfers`() {
     whenever(client.getPrisonTransfersEnRoute(any())).thenReturn(
       listOf(
         OffenderMovement(
@@ -44,10 +44,10 @@ class PrisonServiceTest {
       )
     )
 
-    val moves = service.getMoves("NMI", LocalDate.now())
+    val moves = service.getTransfers("NMI", LocalDate.now())
 
     assertThat(moves).containsExactly(
-      Movement(
+      Arrival(
         id = null,
         prisonNumber = "G6081VQ",
         dateOfBirth = LocalDate.of(1981, 7, 4),

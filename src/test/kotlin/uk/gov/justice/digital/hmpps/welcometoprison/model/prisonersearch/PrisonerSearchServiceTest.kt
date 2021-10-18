@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType.CUSTODY_SUITE
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 
@@ -33,7 +33,7 @@ class PrisonerSearchServiceTest {
     private val PRISON_NUMBER = "A1234AA"
     private val PNC_NUMBER = "1234/1234589A"
 
-    private val movement = Movement(
+    private val movement = Arrival(
       id = "1",
       firstName = "JIM",
       lastName = "SMITH",

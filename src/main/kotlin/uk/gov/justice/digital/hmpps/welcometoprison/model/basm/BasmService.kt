@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
@@ -11,10 +11,10 @@ import java.time.LocalDate
 @Service
 class BasmService(private val basmClient: BasmClient) {
 
-  fun getMovement(moveId: String): Movement = basmClient.getMovement(moveId)?.toMovement()
+  fun getArrival(moveId: String): Arrival = basmClient.getMovement(moveId)?.toArrival()
     ?: throw NotFoundException("Could not find movement with id: '$moveId'")
 
-  fun getMoves(prisonId: String, fromDate: LocalDate, toDate: LocalDate): List<Movement> {
+  fun getArrivals(prisonId: String, fromDate: LocalDate, toDate: LocalDate): List<Arrival> {
     val prison = basmClient.getPrison(prisonId) ?: return emptyList()
     val movements = basmClient.getMovements(prison.id, fromDate, toDate)
 
@@ -23,13 +23,13 @@ class BasmService(private val basmClient: BasmClient) {
         it.profile?.person != null &&
           it.move_type != MoveType.PRISON_TRANSFER
       }
-      .map { it.toMovement() }
+      .map { it.toArrival() }
   }
 
-  private fun Model.Movement.toMovement(): Movement {
+  private fun Model.Movement.toArrival(): Arrival {
     val personData = this.profile?.person!!
 
-    return Movement(
+    return Arrival(
       id = this.id,
       firstName = properCase(personData.first_names),
       lastName = properCase(personData.last_name),

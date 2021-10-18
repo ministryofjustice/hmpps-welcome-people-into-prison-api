@@ -8,17 +8,17 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.respons
 import java.time.LocalDate
 
 @Service
-class MovementService(
+class ArrivalsService(
   val basmService: BasmService,
   val prisonService: PrisonService,
   val prisonerSearchService: PrisonerSearchService
 ) {
-  fun getMovement(moveId: String): Movement = addPrisonData(basmService.getMovement(moveId))
+  fun getMovement(moveId: String): Arrival = addPrisonData(basmService.getArrival(moveId))
 
   fun getMovements(agencyId: String, date: LocalDate) =
-    basmService.getMoves(agencyId, date, date).map { addPrisonData(it) } + prisonService.getMoves(agencyId, date)
+    basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
 
-  private fun addPrisonData(movement: Movement): Movement {
+  private fun addPrisonData(movement: Arrival): Arrival {
     val candidates = prisonerSearchService.getCandidateMatches(movement)
 
     val match = candidates.firstOrNull { movement.isMatch(it) }
@@ -32,7 +32,7 @@ class MovementService(
   }
 
   companion object {
-    fun Movement.isMatch(move: MatchPrisonerResponse) = when {
+    fun Arrival.isMatch(move: MatchPrisonerResponse) = when {
       prisonNumber != null && pncNumber != null ->
         prisonNumber == move.prisonerNumber && pncNumber == move.pncNumber
 

@@ -4,15 +4,15 @@ import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import java.time.LocalDate
 
 class BasmServiceTest {
   private val basmClient: BasmClient = mockk()
   private val service = BasmService(basmClient)
 
-  private val movement = Movement(
+  private val movement = Arrival(
     id = "476d47a3-013a-4772-94c7-5d043b0d0574",
     firstName = "Alexis",
     lastName = "Jones",
@@ -29,11 +29,11 @@ class BasmServiceTest {
     every { basmClient.getPrison(any()) } returns BasmTestData.PRISON
     every { basmClient.getMovements(any(), any(), any()) } returns BasmTestData.MOVEMENTS
 
-    val moves = service.getMoves("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2))
+    val moves = service.getArrivals("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2))
 
     assertThat(moves).isEqualTo(
       listOf(
-        Movement(
+        Arrival(
           id = "476d47a3-013a-4772-94c7-5d043b0d0574",
           firstName = "Alexis",
           lastName = "Jones",
@@ -52,10 +52,10 @@ class BasmServiceTest {
   fun `getMovement - happy path`() {
     every { basmClient.getMovement(any()) } returns BasmTestData.MOVEMENT
 
-    val moves = service.getMovement("testId")
+    val moves = service.getArrival("testId")
 
     assertThat(moves).isEqualTo(
-      Movement(
+      Arrival(
         id = "6052fac2-ea13-408c-9786-02d0dc5e89ff",
         firstName = "Jason",
         lastName = "Sims",
