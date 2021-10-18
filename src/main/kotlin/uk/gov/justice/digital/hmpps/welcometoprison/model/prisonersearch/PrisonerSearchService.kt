@@ -3,16 +3,16 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
 
-  fun getCandidateMatches(movement: Movement): List<MatchPrisonerResponse> {
-    val matchesByPrisonNumber = findMatches(movement.prisonNumber, "Prison Number")
-    val matchesByPncNumber = findMatches(movement.pncNumber, "PNC Number")
+  fun getCandidateMatches(arrival: Arrival): List<MatchPrisonerResponse> {
+    val matchesByPrisonNumber = findMatches(arrival.prisonNumber, "Prison Number")
+    val matchesByPncNumber = findMatches(arrival.pncNumber, "PNC Number")
 
     return matchesByPrisonNumber + matchesByPncNumber
   }

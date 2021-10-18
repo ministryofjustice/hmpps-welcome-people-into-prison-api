@@ -4,8 +4,8 @@ import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
 import java.time.LocalDate
@@ -22,9 +22,9 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
   private val letters = 'A'..'Z'
   fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString("")
 
-  fun getMoves(agencyId: String, date: LocalDate) =
+  fun getTransfers(agencyId: String, date: LocalDate) =
     client.getPrisonTransfersEnRoute(agencyId).map {
-      Movement(
+      Arrival(
         id = null,
         firstName = properCase(it.firstName),
         lastName = properCase(it.lastName),

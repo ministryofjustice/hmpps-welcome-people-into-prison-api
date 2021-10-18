@@ -6,27 +6,27 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.MovementService.Companion.isMatch
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ArrivalsService.Companion.isMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 
-class MovementServiceTest {
+class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  private val movementService = MovementService(basmService, prisonService, prisonerSearchService)
+  private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc) }
 
   @Test
   fun `getMoves - happy path`() {
-    every { basmService.getMoves("MDI", date, date) } returns listOf(basmMovement)
-    every { prisonService.getMoves("MDI", date) } returns listOf(prisonServiceMovement)
+    every { basmService.getArrivals("MDI", date, date) } returns listOf(basmMovement)
+    every { prisonService.getTransfers("MDI", date) } returns listOf(prisonServiceMovement)
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"))
 
-    val moves = movementService.getMovements("MDI", date)
+    val moves = arrivalsService.getMovements("MDI", date)
 
     assertThat(moves).isEqualTo(
       listOf(basmMovement, prisonServiceMovement)
@@ -38,19 +38,19 @@ class MovementServiceTest {
 
     @BeforeEach
     fun before() {
-      every { prisonService.getMoves("MDI", date) } returns emptyList()
+      every { prisonService.getTransfers("MDI", date) } returns emptyList()
     }
 
     @Test
     fun `finds match from candidates`() {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getMoves("MDI", date, date) } returns listOf(move)
+      every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(move.prisonNumber, move.pncNumber)
       )
 
-      val movement = movementService.getMovements("MDI", date).first()
+      val movement = arrivalsService.getMovements("MDI", date).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(move.prisonNumber, move.pncNumber))
     }
@@ -59,12 +59,12 @@ class MovementServiceTest {
     fun `Doesn't find match from candidates due to prison number mismatch`() {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getMoves("MDI", date, date) } returns listOf(move)
+      every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(ANOTHER_PRISON_NUMBER, move.pncNumber)
       )
 
-      val movement = movementService.getMovements("MDI", date).first()
+      val movement = arrivalsService.getMovements("MDI", date).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, move.pncNumber))
     }
@@ -73,12 +73,12 @@ class MovementServiceTest {
     fun `Doesn't find match from candidates due to PNC mismatch`() {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getMoves("MDI", date, date) } returns listOf(move)
+      every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(move.prisonNumber, ANOTHER_PNC_NUMBER)
       )
 
-      val movement = movementService.getMovements("MDI", date).first()
+      val movement = arrivalsService.getMovements("MDI", date).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
@@ -87,10 +87,10 @@ class MovementServiceTest {
     fun `Doesn't find match as no candidates for new prisoner`() {
       val move = basmMovement.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
 
-      every { basmService.getMoves("MDI", date, date) } returns listOf(move)
+      every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
-      val movement = movementService.getMovements("MDI", date).first()
+      val movement = arrivalsService.getMovements("MDI", date).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
@@ -99,10 +99,10 @@ class MovementServiceTest {
     fun `Doesn't find match as no candidates when prison number provided`() {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getMoves("MDI", date, date) } returns listOf(move)
+      every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
-      val movement = movementService.getMovements("MDI", date).first()
+      val movement = arrivalsService.getMovements("MDI", date).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
@@ -155,7 +155,7 @@ class MovementServiceTest {
     private const val PNC_NUMBER = "99/123456J"
     private const val ANOTHER_PNC_NUMBER = "11/123456J"
 
-    private val basmMovement = Movement(
+    private val basmMovement = Arrival(
       id = "1",
       firstName = "JIM",
       lastName = "SMITH",

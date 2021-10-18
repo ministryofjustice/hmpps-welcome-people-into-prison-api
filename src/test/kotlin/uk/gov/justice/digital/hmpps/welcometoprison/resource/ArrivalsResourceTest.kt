@@ -4,11 +4,12 @@ import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 @Suppress("ClassName")
-class IncomingMovesResourceTest : IntegrationTestBase() {
+class ArrivalsResourceTest : IntegrationTestBase() {
 
   @Nested
   inner class `Find movements on day` {
@@ -53,7 +54,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
       webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("moves".loadJson(this))
@@ -66,7 +67,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
       webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 
@@ -110,7 +111,7 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
     fun `handles 404`() {
       basmApiMockServer.stubGetMovement("does-not-exist", 404, null)
       webTestClient.get().uri("/arrivals/does-not-exist")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isNotFound
         .expectBody().jsonPath("userMessage").isEqualTo("Resource not found")
@@ -119,10 +120,113 @@ class IncomingMovesResourceTest : IntegrationTestBase() {
     @Test
     fun `returns json in expected formats`() {
       webTestClient.get().uri("/arrivals/testId")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("move".loadJson(this))
+    }
+  }
+
+  @Nested
+  inner class `Confirming bookings` {
+    val VALID_REQUEST = """
+        {
+          "firstName": "Alpha",
+          "lastName": "Omega",
+          "dateOfBirth": "1961-05-29",
+          "gender": "M",
+          "prisonId": "NMI",
+          "movementReasonCode": "N",
+          "imprisonmentStatus": "SENT03"
+        }
+      """
+
+    @Test
+    fun `create and book happy path`() {
+      val offenderNo = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(offenderNo)
+      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().jsonPath("offenderNo").isEqualTo(offenderNo)
+    }
+
+    @Test
+    fun `create and book request validation failure`() {
+      val offenderNo = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(offenderNo)
+      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(
+          """
+        {
+          "dateOfBirth": "1961-05-29",
+          "gender": "M",
+          "prisonId": "NMI",
+          "movementReasonCode": "N",
+          "imprisonmentStatus": "SENT03"
+        }
+          """.trimIndent()
+        )
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody().json(
+          """
+        {
+          "status": 400,
+          "errorCode": null,
+          "moreInfo": null
+        }
+          """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `create and book - prison-api create offender fails`() {
+
+      prisonApiMockServer.stubCreateOffenderFails(500)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is5xxServerError
+        .expectBody()
+    }
+
+    @Test
+    fun `create and book - prison-api create booking fails`() {
+      val offenderNo = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(offenderNo)
+      prisonApiMockServer.stubAdmitOnNewBookingFails(offenderNo, 500)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is5xxServerError
+        .expectBody()
     }
   }
 }
