@@ -71,4 +71,43 @@ class PrisonServiceTest {
 
     assertThat(result).isEqualTo(prisonImage)
   }
+
+  @Test
+  fun `Create and admit offender`() {
+    val offenderNo = "A1111AA"
+
+    whenever(client.createOffender(any())).thenReturn(CreateOffenderResponse(offenderNo))
+
+    val response = service.createAndAdmitOffender(
+      CreateAndAdmitOffenderDetail(
+        firstName = "Alpha",
+        lastName = "Omega",
+        dateOfBirth = LocalDate.of(1961, 5, 29),
+        gender = "M",
+        prisonId = "NMI",
+        movementReasonCode = "N",
+        imprisonmentStatus = "SENT03"
+      )
+    )
+
+    assertThat(response.offenderNo).isEqualTo(offenderNo)
+
+    verify(client).createOffender(
+      CreateOffenderDetail(
+        firstName = "Alpha",
+        lastName = "Omega",
+        dateOfBirth = LocalDate.of(1961, 5, 29),
+        gender = "M"
+      )
+    )
+
+    verify(client).admitOffenderOnNewBooking(
+      offenderNo,
+      AdmitOnNewBookingDetail(
+        prisonId = "NMI",
+        movementReasonCode = "N",
+        imprisonmentStatus = "SENT03"
+      )
+    )
+  }
 }

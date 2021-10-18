@@ -2,11 +2,13 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
 import java.time.LocalDate
 import java.time.LocalTime
@@ -104,5 +106,59 @@ class PrisonApiClientTest {
     mockServer.verify(
       WireMock.getRequestedFor(WireMock.urlEqualTo("/api/movements/NMI/enroute"))
     )
+  }
+
+  @Test
+  fun `create offender`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubCreateOffender(offenderNumber)
+
+    val response = prisonApiClient.createOffender(
+      CreateOffenderDetail(
+        firstName = "A",
+        lastName = "Z",
+        dateOfBirth = LocalDate.of(1961, 5, 29),
+        gender = "M"
+      )
+    )
+
+    assertThat(response.offenderNo).isEqualTo(offenderNumber)
+  }
+
+  @Test
+  fun `admit Offender On New Booking`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubAdmitOnNewBooking(offenderNumber)
+
+    prisonApiClient.admitOffenderOnNewBooking(
+      offenderNumber,
+      AdmitOnNewBookingDetail(
+        prisonId = "NMI",
+        imprisonmentStatus = "SENT03",
+        movementReasonCode = "C",
+        youthOffender = false
+      )
+    )
+  }
+
+  @Test
+  fun `admit Offender On New Booking fails`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubAdmitOnNewBookingFails(offenderNumber, 404)
+
+    assertThatThrownBy {
+      prisonApiClient.admitOffenderOnNewBooking(
+        offenderNumber,
+        AdmitOnNewBookingDetail(
+          prisonId = "NMI",
+          imprisonmentStatus = "SENT03",
+          movementReasonCode = "C",
+          youthOffender = false
+        )
+      )
+    }.isInstanceOf(WebClientResponseException::class.java)
   }
 }
