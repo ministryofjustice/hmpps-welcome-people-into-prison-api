@@ -48,7 +48,7 @@ spring:
     group:
       test:
         - "stdout"
-
+        - "h2flyway"
   security:
     oauth2:
       resourceserver:

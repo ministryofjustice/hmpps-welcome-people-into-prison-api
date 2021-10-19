@@ -21,6 +21,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  datasource:
+    endpoint: 'jdbc:h2:mem:pin-phone-monitor-db;MODE=PostgreSQL;SCHEMA=PIN_PHONE_MONITOR;IFEXISTS=TRUE'
+    username: testUser
+    name:  booking
+    password: dummy
+
   security:
     oauth2:
       resourceserver:

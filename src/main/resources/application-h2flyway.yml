@@ -1,0 +1,24 @@
+spring:
+
+  datasource:
+    # This reopens the H2 database prepared by flyway with default schema and user pin_phone_monitor
+    url: 'jdbc:h2:mem:pin-phone-monitor-db;MODE=PostgreSQL;SCHEMA=WELCOME_PEOPLE_TO_PRISON;IFEXISTS=TRUE'
+    continue-on-error: true
+    username: testUser
+    password: dummy
+
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+    schemas: WELCOME_PEOPLE_TO_PRISON
+    locations: classpath:/db/migration/h2,classpath:/db/migration/common
+    url: 'jdbc:h2:mem:pin-phone-monitor-db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1'
+    user: testUser
+    password: dummy
+    placeholders:
+      database_password: dummy
+
+  h2.console.enabled: true
+
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.H2Dialect

@@ -1,6 +1,6 @@
-CREATE TABLE "bookings"
+CREATE TABLE "BOOKING"
 (
-    id serial NOT NULL constraint bookings_pk PRIMARY KEY,
+    id serial NOT NULL constraint booking_pk PRIMARY KEY,
     prison_id VARCHAR(255) NOT NULL,
     movement_id VARCHAR(255) NOT NULL,
     timestamp TIMESTAMP NOT NULL,
@@ -8,4 +8,4 @@ CREATE TABLE "bookings"
     booking_id VARCHAR(255) NOT NULL
 );
 
-CREATE INDEX id_idx ON "bookings"(id);
+CREATE INDEX id_idx ON "BOOKING"(id);
