@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.Booking
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-
 class BookingRepositoryTest : RepositoryTest() {
 
   @Autowired
@@ -52,13 +51,6 @@ class BookingRepositoryTest : RepositoryTest() {
   @Test
   @Sql("classpath:repository/booking.sql")
   fun `find all by booking date and prison id`() {
-    val date = LocalDate.of(2020, 1, 1)
-    val prisonId = "prison id"
-    val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)
-    Assertions.assertThat(bookings.size).isEqualTo(1)
-  }
-  @Test
-  fun `find all by booking date and prison id in empty table`() {
     val date = LocalDate.of(2020, 1, 1)
     val prisonId = "prison id"
     val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)

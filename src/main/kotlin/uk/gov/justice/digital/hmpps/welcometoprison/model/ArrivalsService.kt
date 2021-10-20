@@ -19,10 +19,9 @@ class ArrivalsService(
 
   fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
     val arrivals = basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
-    //val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
-    val bookings = bookingRepository.findAll()
+    val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
 
-    return arrivals.filter { contains(it, bookings) }
+    return arrivals.filterNot { contains(it, bookings) }
   }
 
   fun contains(arrival: Arrival, bookings: List<Booking>) = bookings.stream().anyMatch { arrival.id == it.movementId }

@@ -6,12 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Booking made by the service")
@@ -26,7 +23,7 @@ data class Booking(
   val prisonId: String,
   @Schema(description = "Movement Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val movementId: String,
-  @Schema(description = "Timestamp", example = "123e4567-e89b-12d3-a456-426614174000")
+  @Schema(description = "Timestamp")
   val timestamp: LocalDateTime,
 
   @Schema(description = "Movement Type")
@@ -38,4 +35,4 @@ data class Booking(
   val bookingId: String?,
   @Schema(description = "Booking Date", example = "2020-12-01")
   val bookingDate: LocalDate
-  )
+)
