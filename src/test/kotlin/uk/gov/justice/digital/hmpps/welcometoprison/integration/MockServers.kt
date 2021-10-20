@@ -16,21 +16,6 @@ open class MockServer(port: Int) : WireMockServer(
     .usingFilesUnderDirectory(MAPPINGS_DIRECTORY)
 )
 
-class HmppsAuthMockServer : MockServer(8090) {
-  private val mapper = ObjectMapper()
-
-  fun stubGrantToken() {
-    stubFor(
-      WireMock.post(WireMock.urlEqualTo("/auth/oauth/token"))
-        .willReturn(
-          WireMock.aResponse()
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapper.writeValueAsString(mapOf("access_token" to "ABCDE", "token_type" to "bearer")))
-        )
-    )
-  }
-}
-
 class PrisonerSearchMockServer : MockServer(8093) {
   private val mapper = ObjectMapper()
 

@@ -18,29 +18,29 @@ class ArrivalsService(
   fun getMovements(agencyId: String, date: LocalDate) =
     basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
 
-  private fun addPrisonData(movement: Arrival): Arrival {
-    val candidates = prisonerSearchService.getCandidateMatches(movement)
+  private fun addPrisonData(arrival: Arrival): Arrival {
+    val candidates = prisonerSearchService.getCandidateMatches(arrival)
 
-    val match = candidates.firstOrNull { movement.isMatch(it) }
+    val match = candidates.firstOrNull { arrival.isMatch(it) }
 
     return if (match != null)
-      movement.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber)
+      arrival.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber)
 
     // Ignore any provided prison number, but assume PNC is fine
     else
-      movement.copy(prisonNumber = null)
+      arrival.copy(prisonNumber = null)
   }
 
   companion object {
-    fun Arrival.isMatch(move: MatchPrisonerResponse) = when {
+    fun Arrival.isMatch(result: MatchPrisonerResponse) = when {
       prisonNumber != null && pncNumber != null ->
-        prisonNumber == move.prisonerNumber && pncNumber == move.pncNumber
+        prisonNumber == result.prisonerNumber && pncNumber == result.pncNumber
 
       prisonNumber != null && pncNumber == null ->
-        prisonNumber == move.prisonerNumber
+        prisonNumber == result.prisonerNumber
 
       prisonNumber == null && pncNumber != null ->
-        pncNumber == move.pncNumber
+        pncNumber == result.pncNumber
 
       else -> false
     }

@@ -7,11 +7,11 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 
-abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
+abstract class HealthCheck(private val webClient: WebClient, private val endpoint: String) : HealthIndicator {
 
   override fun health(): Health? {
     return webClient.get()
-      .uri("/health/ping")
+      .uri(endpoint)
       .retrieve()
       .toEntity(String::class.java)
       .flatMap { Mono.just(Health.up().withDetail("HttpStatus", it?.statusCode).build()) }
@@ -23,12 +23,12 @@ abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
 
 @Component
 class PrisonApiHealth
-constructor(@Qualifier("prisonApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
-
-@Component
-class HmppsAuthApiHealth
-constructor(@Qualifier("oauthApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+constructor(@Qualifier("prisonApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")
 
 @Component
 class PrisonerSearchApiHealth
-constructor(@Qualifier("prisonerSearchApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+constructor(@Qualifier("prisonerSearchApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")
+
+@Component
+class BasmApiHealth
+constructor(@Qualifier("basmApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/ping")
