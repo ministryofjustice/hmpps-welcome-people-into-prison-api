@@ -6,17 +6,25 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.welcometoprison.repository.BookingRepository
 
 @Service
 class ArrivalsService(
   val basmService: BasmService,
   val prisonService: PrisonService,
-  val prisonerSearchService: PrisonerSearchService
+  val prisonerSearchService: PrisonerSearchService,
+  val bookingRepository: BookingRepository
 ) {
   fun getMovement(moveId: String): Arrival = addPrisonData(basmService.getArrival(moveId))
 
-  fun getMovements(agencyId: String, date: LocalDate) =
-    basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
+  fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
+    val arrivals = basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
+    val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
+
+    return arrivals.filter { contains(it, bookings) }
+  }
+
+  fun contains(arrival: Arrival, bookings: List<Booking>) = bookings.stream().anyMatch { arrival.id == it.movementId }
 
   private fun addPrisonData(movement: Arrival): Arrival {
     val candidates = prisonerSearchService.getCandidateMatches(movement)

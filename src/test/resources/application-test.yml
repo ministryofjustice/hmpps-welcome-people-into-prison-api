@@ -32,3 +32,9 @@ spring:
       resourceserver:
         jwt:
           public-key-location: classpath:local-public-key.pub
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

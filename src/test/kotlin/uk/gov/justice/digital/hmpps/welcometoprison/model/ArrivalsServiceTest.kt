@@ -12,12 +12,15 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
+import java.util.Date
+import uk.gov.justice.digital.hmpps.welcometoprison.repository.BookingRepository
 
 class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService)
+  private val bookingRepository: BookingRepository = mockk()
+  private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService, bookingRepository)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc) }
 
   @Test

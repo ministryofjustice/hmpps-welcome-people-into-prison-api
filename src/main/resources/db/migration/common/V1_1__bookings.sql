@@ -5,7 +5,9 @@ CREATE TABLE "BOOKING"
     movement_id VARCHAR(255) NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     prisoner_id VARCHAR(255) NOT NULL,
-    booking_id VARCHAR(255) NOT NULL
+    booking_id VARCHAR(255) NOT NULL,
+    booking_date DATE NOT NULL,
+    move_type VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX id_idx ON "BOOKING"(id);

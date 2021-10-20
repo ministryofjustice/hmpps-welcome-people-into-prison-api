@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.repository
 
+import java.time.LocalDate
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +8,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.transaction.TestTransaction
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Booking
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 
 
 class BookingRepositoryTest : RepositoryTest() {
@@ -16,13 +18,15 @@ class BookingRepositoryTest : RepositoryTest() {
 
   @Test
   fun `can insert booking record`() {
-    var booking = Booking(
+    val booking = Booking(
       id = null,
       prisonId = "Prison Id",
       movementId = "Movement Id",
       timestamp = LocalDateTime.now(),
+      moveType = "TEST",
       prisonerId = "Prisoner Id",
       bookingId = "Booking Id",
+      bookingDate = LocalDate.now()
     )
     val id = repository.save(booking).id
     TestTransaction.flagForCommit()
@@ -44,5 +48,15 @@ class BookingRepositoryTest : RepositoryTest() {
       dateTo
     )
     Assertions.assertThat(bookings.size).isEqualTo(2)
+  }
+
+  @Test
+  @Sql("classpath:repository/booking.sql")
+  fun `find all by booking date and prison id`() {
+    val date = LocalDate.of(2020, 1, 1)
+    val prisonId = "prisoner id"
+//    val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)
+    val bookings = repository.findAll()
+    Assertions.assertThat(bookings.size).isEqualTo(1)
   }
 }

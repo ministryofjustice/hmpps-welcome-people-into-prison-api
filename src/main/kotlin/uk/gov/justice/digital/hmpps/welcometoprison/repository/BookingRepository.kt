@@ -27,4 +27,10 @@ interface BookingRepository : JpaRepository<Booking, Long> {
     dateTo: LocalDateTime
   ): List<Booking>
 
+
+  fun findAllByBookingDateAndPrisonId(
+    bookingDate: LocalDate,
+    prisonId: String
+  ): List<Booking>
+
 }
