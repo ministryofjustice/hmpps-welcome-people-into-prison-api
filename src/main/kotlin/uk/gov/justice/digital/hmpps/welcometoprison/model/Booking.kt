@@ -3,12 +3,13 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.media.Schema
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
-import java.math.BigInteger
-import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Booking made by the service")
@@ -25,11 +26,23 @@ data class Booking(
   val movementId: String,
   @Schema(description = "Timestamp", example = "123e4567-e89b-12d3-a456-426614174000")
   val timestamp: LocalDateTime,
+
+  @Schema(description = "Movement Type")
+  @Enumerated(EnumType.STRING)
+  val movementType: MovementType,
+
   @Schema(description = "Prisoner Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val prisonerId: String,
   @Schema(description = "Booking Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val bookingId: String?,
 
 )
+enum class MovementType {
+  COURT,
+  CUSTODY_SUITE,
+  PRISON,
+  OTHER
+}
+
 
 
