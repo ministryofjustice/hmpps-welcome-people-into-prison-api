@@ -1,14 +1,13 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.repository
 
-import java.time.LocalDate
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.transaction.TestTransaction
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Booking
+import java.time.LocalDate
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 
 
 class BookingRepositoryTest : RepositoryTest() {
@@ -54,9 +53,15 @@ class BookingRepositoryTest : RepositoryTest() {
   @Sql("classpath:repository/booking.sql")
   fun `find all by booking date and prison id`() {
     val date = LocalDate.of(2020, 1, 1)
-    val prisonId = "prisoner id"
-//    val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)
-    val bookings = repository.findAll()
+    val prisonId = "prison id"
+    val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)
+    Assertions.assertThat(bookings.size).isEqualTo(1)
+  }
+  @Test
+  fun `find all by booking date and prison id in empty table`() {
+    val date = LocalDate.of(2020, 1, 1)
+    val prisonId = "prison id"
+    val bookings = repository.findAllByBookingDateAndPrisonId(date, prisonId)
     Assertions.assertThat(bookings.size).isEqualTo(1)
   }
 }

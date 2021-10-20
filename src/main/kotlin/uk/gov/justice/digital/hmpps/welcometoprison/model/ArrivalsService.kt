@@ -5,8 +5,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
-import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.welcometoprison.repository.BookingRepository
+import java.time.LocalDate
 
 @Service
 class ArrivalsService(
@@ -19,7 +19,8 @@ class ArrivalsService(
 
   fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
     val arrivals = basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
-    val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
+    //val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
+    val bookings = bookingRepository.findAll()
 
     return arrivals.filter { contains(it, bookings) }
   }

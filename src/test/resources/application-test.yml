@@ -38,3 +38,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+log4j.logger.org.hibernate:
+  SQL: DEBUG
+  type: TRACE

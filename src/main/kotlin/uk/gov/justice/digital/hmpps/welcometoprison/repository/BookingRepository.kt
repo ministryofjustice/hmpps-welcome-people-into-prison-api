@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Booking
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Date
 
 
 @Repository
@@ -26,7 +25,6 @@ interface BookingRepository : JpaRepository<Booking, Long> {
     dateFrom: LocalDateTime,
     dateTo: LocalDateTime
   ): List<Booking>
-
 
   fun findAllByBookingDateAndPrisonId(
     bookingDate: LocalDate,
