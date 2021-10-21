@@ -28,7 +28,7 @@ class JwtAuthHelper() {
   fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
 
   fun setAuthorisation(
-    user: String = "court-reg-client",
+    user: String,
     roles: List<String> = listOf(),
     scopes: List<String> = listOf()
   ): (HttpHeaders) -> Unit {
@@ -39,6 +39,20 @@ class JwtAuthHelper() {
       roles = roles
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
+  }
+
+  fun getAuthorisation(
+    user: String,
+    roles: List<String> = listOf(),
+    scopes: List<String> = listOf()
+  ): String {
+    val token = createJwt(
+      subject = user,
+      scope = scopes,
+      expiryTime = Duration.ofHours(1L),
+      roles = roles
+    )
+    return "Bearer $token"
   }
 
   internal fun createJwt(

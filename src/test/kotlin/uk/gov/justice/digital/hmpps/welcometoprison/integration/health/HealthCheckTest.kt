@@ -22,7 +22,7 @@ class HealthCheckTest : IntegrationTestBase() {
       .isOk
       .expectBody()
       .jsonPath("status").isEqualTo("UP")
-      .jsonPath("components.hmppsAuthApiHealth.details.HttpStatus").isEqualTo("OK")
+      .jsonPath("components.basmApiHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonerSearchApiHealth.details.HttpStatus").isEqualTo("OK")
   }
@@ -91,13 +91,13 @@ class HealthCheckTest : IntegrationTestBase() {
       .is5xxServerError
       .expectBody()
       .jsonPath("status").isEqualTo("DOWN")
-      .jsonPath("components.hmppsAuthApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
+      .jsonPath("components.basmApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
       .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
   }
 
   private fun stubPing(status: Int) {
-    hmppsAuthMockServer.stubFor(
-      get("/auth/health/ping").willReturn(
+    basmApiMockServer.stubFor(
+      get("/ping").willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(if (status == 200) "pong" else "some error")
