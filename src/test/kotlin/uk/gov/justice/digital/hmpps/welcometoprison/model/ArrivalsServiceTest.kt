@@ -167,7 +167,8 @@ class ArrivalsServiceTest {
       pncNumber = "99/123456J",
       date = date,
       fromLocation = "MDI",
-      fromLocationType = LocationType.CUSTODY_SUITE
+      fromLocationType = LocationType.CUSTODY_SUITE,
+      moveType = "PRISON_REMAND"
     )
 
     private val prisonServiceMovement = basmMovement.copy(

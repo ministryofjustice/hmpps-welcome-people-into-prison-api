@@ -42,7 +42,8 @@ class PrisonerSearchServiceTest {
       pncNumber = PNC_NUMBER,
       date = LocalDate.of(2021, 1, 21),
       fromLocation = "MDI",
-      fromLocationType = CUSTODY_SUITE
+      fromLocationType = CUSTODY_SUITE,
+      moveType = "PRISON_REMAND"
     )
   }
 }
