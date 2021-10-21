@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
 import java.time.LocalDate
@@ -21,6 +22,9 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
   private val numbers = '0'..'9'
   private val letters = 'A'..'Z'
   fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString("")
+
+  fun getPrison(prisonId: String) =
+    client.getAgency(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
   fun getTransfers(agencyId: String, date: LocalDate) =
     client.getPrisonTransfersEnRoute(agencyId).map {
