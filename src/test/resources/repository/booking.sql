@@ -1,4 +1,4 @@
-INSERT INTO BOOKING (id, prison_id, movement_id, timestamp, prisoner_id, booking_id, booking_date, move_type) VALUES
+INSERT INTO booking (id, prison_id, movement_id, timestamp, prisoner_id, booking_id, booking_date, move_type) VALUES
 (1, 'prison id', 'movement id',to_timestamp('2020-01-01 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'prisoner id', 'booking id', to_date('2020-01-01', 'yyyy-mm-dd'), 'TEST'),
 (2,'prison id 1', 'movement id 1',to_timestamp('2020-01-02 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'prisoner id 1', 'booking id 1', '2020-01-02','TEST'),
 (3,'prison id 1', 'movement id 1',to_timestamp('2020-01-03 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'prisoner id 1', 'booking id 1', '2020-01-03', 'TEST'),

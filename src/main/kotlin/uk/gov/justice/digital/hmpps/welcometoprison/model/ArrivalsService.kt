@@ -21,10 +21,15 @@ class ArrivalsService(
     val arrivals = basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
     val bookings = bookingRepository.findAllByBookingDateAndPrisonId(date, agencyId)
 
-    return arrivals.filterNot { contains(it, bookings) }
+    return arrivals.filterNot { contains(it, bookings, date) }
   }
 
-  fun contains(arrival: Arrival, bookings: List<Booking>) = bookings.stream().anyMatch { arrival.id == it.movementId }
+  fun contains(arrival: Arrival, bookings: List<Booking>, bookingDate: LocalDate) = bookings.stream().anyMatch {
+    it.bookingDate == bookingDate &&
+    arrival.id == it.movementId &&
+    arrival.prisonNumber == it.prisonId
+    arrival.moveType == it.moveType
+  }
 
   private fun addPrisonData(movement: Arrival): Arrival {
     val candidates = prisonerSearchService.getCandidateMatches(movement)

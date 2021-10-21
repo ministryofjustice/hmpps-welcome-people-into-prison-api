@@ -1,1 +1,1 @@
-DELETE FROM "BOOKING";
+DELETE FROM "booking";

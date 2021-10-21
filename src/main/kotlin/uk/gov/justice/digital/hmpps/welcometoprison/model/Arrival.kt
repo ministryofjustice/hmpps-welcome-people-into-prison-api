@@ -26,6 +26,8 @@ data class Arrival(
   val fromLocation: String,
   @Schema(description = "From location type", example = "COURT")
   val fromLocationType: LocationType,
+  @Schema(description = "Type of arrival", example = "PRISON_REMAND")
+  val moveType: String,
 )
 
 enum class LocationType {
