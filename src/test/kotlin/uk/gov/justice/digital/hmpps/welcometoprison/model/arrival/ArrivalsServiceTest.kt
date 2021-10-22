@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ArrivalsService.Companion.isMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.booking.BookingRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.booking.BookingService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
@@ -18,7 +19,9 @@ class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  private val bookingService: BookingService = mockk()
+  private val bookingRepository: BookingRepository = mockk()
+
+  private val bookingService: BookingService = BookingService(bookingRepository)
   private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService, bookingService)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc) }
 
@@ -26,7 +29,7 @@ class ArrivalsServiceTest {
   fun `getMoves - happy path`() {
     every { basmService.getArrivals("MDI", date, date) } returns listOf(basmMovement)
     every { prisonService.getTransfers("MDI", date) } returns listOf(prisonServiceMovement)
-    every { bookingService.extractExistingBookingsFromArrivals("MDI", date, any()) } returns listOf(basmMovement) + listOf(prisonServiceMovement)
+    every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"))
 
     val moves = arrivalsService.getMovements("MDI", date)
@@ -49,6 +52,7 @@ class ArrivalsServiceTest {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
       every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
+      every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(move.prisonNumber, move.pncNumber)
       )
@@ -63,6 +67,7 @@ class ArrivalsServiceTest {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
       every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
+      every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(ANOTHER_PRISON_NUMBER, move.pncNumber)
       )
@@ -77,6 +82,7 @@ class ArrivalsServiceTest {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
       every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
+      every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
       every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
         result(move.prisonNumber, ANOTHER_PNC_NUMBER)
       )
@@ -91,6 +97,7 @@ class ArrivalsServiceTest {
       val move = basmMovement.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
 
       every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
+      every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
       val movement = arrivalsService.getMovements("MDI", date).first()
@@ -103,6 +110,7 @@ class ArrivalsServiceTest {
       val move = basmMovement.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
       every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
+      every { bookingRepository.findAllByBookingDateAndPrisonId(any(),any())} returns emptyList()
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
       val movement = arrivalsService.getMovements("MDI", date).first()
