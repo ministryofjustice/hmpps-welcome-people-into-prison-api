@@ -4,8 +4,6 @@ import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
