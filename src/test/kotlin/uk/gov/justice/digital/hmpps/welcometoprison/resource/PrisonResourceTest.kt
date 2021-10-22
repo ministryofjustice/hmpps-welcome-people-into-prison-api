@@ -41,7 +41,7 @@ class PrisonResourceTest : IntegrationTestBase() {
         "imageString".toByteArray()
       )
       val response = webTestClient.get().uri("/prison/prisoner/A12345/image")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody(ByteArray::class.java)
@@ -53,7 +53,53 @@ class PrisonResourceTest : IntegrationTestBase() {
     @Test
     fun `calls service method with correct args`() {
       webTestClient.get().uri("/prison/prisoner/A12345/image")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCOMING_MOVEMENTS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+
+      verify(prisonService).getPrisonerImage("A12345")
+    }
+  }
+
+  @Nested
+  inner class `Get Prison` {
+    @Test
+    fun `requires authentication`() {
+      webTestClient.get().uri("/prison/prisoner/A12345/image")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `requires correct role`() {
+      webTestClient.get().uri("/prison/prisoner/A12345/image")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
+    fun `returns json in expected format`() {
+      val image: ByteArray = "imageString".toByteArray()
+
+      whenever(prisonService.getPrisonerImage(any())).thenReturn(
+        "imageString".toByteArray()
+      )
+      val response = webTestClient.get().uri("/prison/prisoner/A12345/image")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody(ByteArray::class.java)
+        .returnResult().responseBody
+
+      assertThat(response).isEqualTo(image)
+    }
+
+    @Test
+    fun `calls service method with correct args`() {
+      webTestClient.get().uri("/prison/prisoner/A12345/image")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 

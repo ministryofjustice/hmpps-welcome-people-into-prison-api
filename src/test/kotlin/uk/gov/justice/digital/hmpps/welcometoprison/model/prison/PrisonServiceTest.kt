@@ -5,7 +5,11 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import java.time.LocalDate
@@ -71,6 +75,22 @@ class PrisonServiceTest {
     val result = service.getPrisonerImage("A12345")
 
     assertThat(result).isEqualTo(prisonImage)
+  }
+
+  @Test
+  fun `get prison`() {
+    whenever(client.getAgency(any())).thenReturn(Prison("Some description"))
+
+    val result = service.getPrison("MDI")
+
+    assertThat(result).isEqualTo(Prison("Some description"))
+  }
+
+  @Test
+  fun `get prison not found`() {
+    whenever(client.getAgency(any())).thenReturn(null)
+
+    assertThatThrownBy { service.getPrison("MDI") }.isInstanceOf(NotFoundException::class.java)
   }
 
   @Test

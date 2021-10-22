@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -76,7 +78,29 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/moves?include=profile.person,from_location,to_location&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc"
           )
-        )
+        ).withHeader("Authorization", equalTo("Bearer ABCDE"))
+      )
+    }
+
+    @Test
+    fun `calls prison API with passed through token`() {
+      prisonerSearchMockServer.stubMatchPrisoners(200)
+      basmApiMockServer.stubGetPrison(200)
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+
+      val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
+
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
+        .withBearerToken(token)
+        .exchange()
+        .expectStatus().isOk
+
+      prisonApiMockServer.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/api/movements/MDI/enroute"
+          )
+        ).withHeader("Authorization", equalTo(token))
       )
     }
   }
@@ -157,6 +181,34 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().isOk
         .expectBody().jsonPath("offenderNo").isEqualTo(offenderNo)
+    }
+
+    @Test
+    fun `create and book passes through auth token`() {
+      val offenderNo = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(offenderNo)
+      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+
+      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write"))
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .withBearerToken(token)
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().jsonPath("offenderNo").isEqualTo(offenderNo)
+
+      prisonApiMockServer.verify(
+        postRequestedFor(
+          urlEqualTo(
+            "/api/offenders"
+          )
+        ).withHeader("Authorization", equalTo(token))
+      )
     }
 
     @Test
