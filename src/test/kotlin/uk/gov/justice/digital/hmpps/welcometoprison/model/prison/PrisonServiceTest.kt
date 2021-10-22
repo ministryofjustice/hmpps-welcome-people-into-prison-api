@@ -33,7 +33,7 @@ class PrisonServiceTest {
           fromAgencyDescription = "Doncaster (HMP)",
           toAgency = "NMI",
           toAgencyDescription = "Nottingham (HMP)",
-          movementType = "TRN",
+          movementType = "PRISON_REMAND",
           movementTypeDescription = "Transfers",
           movementReason = "NOTR",
           movementReasonDescription = "Normal Transfer",

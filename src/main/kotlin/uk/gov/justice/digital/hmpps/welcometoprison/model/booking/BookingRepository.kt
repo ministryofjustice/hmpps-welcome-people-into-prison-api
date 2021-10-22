@@ -11,5 +11,4 @@ interface BookingRepository : JpaRepository<Booking, Long> {
     bookingDate: LocalDate,
     prisonId: String
   ): List<Booking>
-
 }

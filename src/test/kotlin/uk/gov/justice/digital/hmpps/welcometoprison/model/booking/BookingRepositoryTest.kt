@@ -38,7 +38,6 @@ class BookingRepositoryTest : RepositoryTest() {
     Assertions.assertThat(bookingDb.prisonerId).isEqualTo(booking.prisonerId)
     Assertions.assertThat(bookingDb.bookingId).isEqualTo(booking.bookingId)
     Assertions.assertThat(bookingDb.bookingDate).isEqualTo(booking.bookingDate)
-
   }
 
   @Test
