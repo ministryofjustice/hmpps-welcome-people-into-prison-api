@@ -38,7 +38,7 @@ class ArrivalsResource(
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Produces arrivals for a specific prison",
-    description = "Produces arrivals for a specific prison, role required is ROLE_VIEW_INCOMING_MOVEMENTS",
+    description = "Produces arrivals for a specific prison, role required is ROLE_VIEW_ARRIVALS",
     security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
     responses = [
       ApiResponse(
@@ -90,7 +90,7 @@ class ArrivalsResource(
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Retrieves the arrival for a specific ID",
-    description = "Retrieves the arrival for a specific ID, role required is ROLE_VIEW_INCOMING_MOVEMENTS",
+    description = "Retrieves the arrival for a specific ID, role required is ROLE_VIEW_ARRIVALS",
     security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
     responses = [
       ApiResponse(

@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -38,6 +42,8 @@ data class AdmitOnNewBookingDetail(
  */
 data class CreateOffenderResponse(val offenderNo: String)
 
+data class Prison(@JsonProperty("longDescription") val description: String)
+
 @Service
 class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
   fun getPrisonerImage(offenderNumber: String): ByteArray? {
@@ -45,6 +51,15 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
       .retrieve()
       .bodyToMono(ByteArray::class.java).block()
+  }
+
+  fun getAgency(agencyId: String): Prison? {
+    return webClient.get()
+      .uri("/api/agencies/$agencyId")
+      .retrieve()
+      .bodyToMono(typeReference<Prison>())
+      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+      .block()
   }
 
   fun getPrisonTransfersEnRoute(agencyId: String): List<OffenderMovement> {
@@ -77,4 +92,8 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyToMono<Unit>()
       .block()
   }
+
+  fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
+  fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
+    if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 }

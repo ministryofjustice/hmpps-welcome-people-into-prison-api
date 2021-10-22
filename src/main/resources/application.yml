@@ -31,8 +31,6 @@ spring:
             client-secret: ${basm.client.client-secret}
             authorization-grant-type: client_credentials
         provider:
-          hmpps-auth:
-            token-uri: ${oauth.endpoint.url}/oauth/token
           basm-auth:
             token-uri: ${basm.endpoint.url}/oauth/token
 

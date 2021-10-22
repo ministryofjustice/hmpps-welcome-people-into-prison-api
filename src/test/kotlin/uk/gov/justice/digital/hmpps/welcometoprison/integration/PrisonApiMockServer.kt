@@ -23,6 +23,18 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubGetAgency(prisonId: String, status: Int = 200) {
+    stubFor(
+      get("/api/agencies/$prisonId")
+        .willReturn(
+          aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(status)
+            .withBody("agency".loadJson(this))
+        )
+    )
+  }
+
   fun stubCreateOffender(offenderNo: String) {
     stubFor(
       post("/api/offenders")
