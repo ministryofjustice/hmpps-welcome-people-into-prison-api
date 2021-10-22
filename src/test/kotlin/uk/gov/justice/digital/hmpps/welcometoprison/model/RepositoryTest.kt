@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.repository
+package uk.gov.justice.digital.hmpps.welcometoprison.model
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

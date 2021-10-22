@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model
+package uk.gov.justice.digital.hmpps.welcometoprison.model.booking
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
@@ -25,10 +25,8 @@ data class Booking(
   val movementId: String,
   @Schema(description = "Timestamp")
   val timestamp: LocalDateTime,
-
   @Schema(description = "Movement Type")
   val moveType: String,
-
   @Schema(description = "Prisoner Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val prisonerId: String,
   @Schema(description = "Booking Id", example = "123e4567-e89b-12d3-a456-426614174000")

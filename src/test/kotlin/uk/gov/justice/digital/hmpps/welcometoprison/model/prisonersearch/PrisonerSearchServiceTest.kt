@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType.CUSTODY_SUITE
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 

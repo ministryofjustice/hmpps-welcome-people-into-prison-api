@@ -1,11 +1,11 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.repository
+package uk.gov.justice.digital.hmpps.welcometoprison.model.booking
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.transaction.TestTransaction
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Booking
+import uk.gov.justice.digital.hmpps.welcometoprison.model.RepositoryTest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -24,28 +24,21 @@ class BookingRepositoryTest : RepositoryTest() {
       moveType = "TEST",
       prisonerId = "Prisoner Id",
       bookingId = "Booking Id",
-      bookingDate = LocalDate.now()
+      bookingDate = LocalDate.now(),
     )
-    val id = repository.save(booking).id
+    val bookingDb = repository.save(booking.copy())
     TestTransaction.flagForCommit()
     TestTransaction.end()
-    Assertions.assertThat(id).isNotNull()
-  }
 
-  @Test
-  @Sql("classpath:repository/booking.sql")
-  fun `get data between dates`() {
-    val dateFrom = LocalDateTime.of(2020, 1, 1, 0, 0, 0)
-    val dateTo = LocalDateTime.of(2020, 1, 3, 23, 59, 59)
-    val bookings = repository.findIfExistBetweenDates(
-      "prison id 1",
-      "movement id 1",
-      "prisoner id 1",
-      "booking id 1",
-      dateFrom,
-      dateTo
-    )
-    Assertions.assertThat(bookings.size).isEqualTo(2)
+    Assertions.assertThat(booking.id).isNull()
+    Assertions.assertThat(bookingDb).isNotNull
+    Assertions.assertThat(bookingDb.prisonId).isEqualTo(booking.prisonId)
+    Assertions.assertThat(bookingDb.movementId).isEqualTo(booking.movementId)
+    Assertions.assertThat(bookingDb.timestamp).isEqualTo(booking.timestamp)
+    Assertions.assertThat(bookingDb.prisonerId).isEqualTo(booking.prisonerId)
+    Assertions.assertThat(bookingDb.bookingId).isEqualTo(booking.bookingId)
+    Assertions.assertThat(bookingDb.bookingDate).isEqualTo(booking.bookingDate)
+
   }
 
   @Test

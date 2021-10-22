@@ -6,8 +6,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import java.time.LocalDate
 import java.time.LocalTime
 

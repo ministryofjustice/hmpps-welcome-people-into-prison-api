@@ -15,7 +15,6 @@ spring:
 
   jpa:
     open-in-view: false
-
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -27,25 +26,22 @@ spring:
     hibernate:
       ddl-auto: none
 
-  flyway:
-    locations: classpath:/db/migration/postgres,classpath:/db/migration/common
-    url: ${spring.datasource.url}
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
-    schemas: hmpps-welcome-people-into-prison
-    enabled: true
-
   datasource:
-    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=hmpps-welcome-people-into-prison'
+    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer'
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-
     continue-on-error: true
     hikari:
       pool-name: WelcomePeopleIntoPrison-CP
       connectionTimeout: 1000
       validationTimeout: 500
+      schema: ${database.name}
 
+  flyway:
+    locations: classpath:/db/migration/postgres,classpath:/db/migration/common
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
 
   profiles:
     group:
@@ -119,9 +115,3 @@ management:
     info:
       cache:
         time-to-live: 2000ms
-
-logging:
-  level:
-    root: DEBUG
-    org:
-      flywaydb: DEBUG
