@@ -1,1 +1,1 @@
-DELETE FROM "booking";
+DELETE FROM "confirmed_arrival";

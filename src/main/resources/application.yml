@@ -27,7 +27,7 @@ spring:
       ddl-auto: none
 
   datasource:
-    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer'
+    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=${database.name}'
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
     continue-on-error: true

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.booking
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
 
 import io.mockk.every
 import io.mockk.mockk
@@ -9,29 +9,29 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class BookingServiceTest {
+class ConfirmedArrivalServiceTest {
 
-  private val bookingRepository: BookingRepository = mockk()
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mockk()
 
-  private val bookingService: BookingService = BookingService(bookingRepository)
+  private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
 
   @Test
-  fun `getArrivals when booking are empty `() {
+  fun `get arrivals when booking are empty `() {
 
-    every { bookingRepository.findAllByBookingDateAndPrisonId(any(), any()) } returns emptyList()
+    every { confirmedArrivalRepository.findAllByBookingDateAndPrisonNumber(any(), any()) } returns emptyList()
 
-    val arrivals = bookingService.extractExistingBookingsFromArrivals("MDI", date, listOf(arrival))
+    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", date, listOf(arrival))
 
-    assertThat(arrivals.size).isEqualTo(1)
+    assertThat(arrivals).hasSize(1)
   }
   @Test
   fun `remove from arrival when booking date, movement Id, prison id, and move type found in booking`() {
 
-    every { bookingRepository.findAllByBookingDateAndPrisonId(any(), any()) } returns listOf(booking)
+    every { confirmedArrivalRepository.findAllByBookingDateAndPrisonNumber(any(), any()) } returns listOf(confirmedArrival)
 
-    val arrivals = bookingService.extractExistingBookingsFromArrivals("MDI", date, listOf(arrival))
+    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", date, listOf(arrival))
 
-    assertThat(arrivals.size).isEqualTo(0)
+    assertThat(arrivals).hasSize(0)
   }
 
   companion object {
@@ -51,18 +51,18 @@ class BookingServiceTest {
       pncNumber = "99/123456J",
       date = date,
       fromLocation = "MDI",
-      fromLocationType = LocationType.CUSTODY_SUITE,
-      moveType = "PRISON_REMAND"
+      fromLocationType = LocationType.CUSTODY_SUITE
     )
-    private val booking = Booking(
+    private val confirmedArrival = ConfirmedArrival(
       id = null,
-      prisonId = "A1234AA",
+      prisonNumber = "A1234AA",
       movementId = "1",
       timestamp = LocalDateTime.now(),
-      moveType = "PRISON_REMAND",
+      arrivalType = ArrivalType.NEW_TO_PRISON,
       prisonerId = "99/123456J",
       bookingId = "Booking Id",
       bookingDate = date,
     )
   }
 }
+

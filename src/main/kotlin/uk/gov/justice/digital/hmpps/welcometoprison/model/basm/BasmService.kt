@@ -38,8 +38,7 @@ class BasmService(private val basmClient: BasmClient) {
       pncNumber = personData.police_national_computer,
       date = this.date,
       fromLocation = this.from_location.title,
-      fromLocationType = this.move_type.toLocationType(),
-      moveType = this.move_type.name
+      fromLocationType = this.move_type.toLocationType()
     )
   }
 

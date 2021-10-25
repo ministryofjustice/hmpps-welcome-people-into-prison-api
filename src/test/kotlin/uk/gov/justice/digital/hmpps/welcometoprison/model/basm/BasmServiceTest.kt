@@ -21,8 +21,7 @@ class BasmServiceTest {
     pncNumber = null,
     date = LocalDate.of(2021, 9, 29),
     fromLocation = "Penrith County Court",
-    fromLocationType = LocationType.COURT,
-    moveType = "PRISON_REMAND"
+    fromLocationType = LocationType.COURT
   )
 
   @Test
@@ -43,8 +42,7 @@ class BasmServiceTest {
           pncNumber = null,
           date = LocalDate.of(2021, 9, 29),
           fromLocation = "Penrith County Court",
-          fromLocationType = LocationType.COURT,
-          moveType = "PRISON_REMAND"
+          fromLocationType = LocationType.COURT
         )
       )
     )
@@ -66,8 +64,7 @@ class BasmServiceTest {
         pncNumber = null,
         date = LocalDate.of(2021, 9, 22),
         fromLocation = "Moorland (HMP & YOI)",
-        fromLocationType = LocationType.OTHER,
-        moveType = "COURT_APPEARANCE"
+        fromLocationType = LocationType.OTHER
       )
     )
   }
