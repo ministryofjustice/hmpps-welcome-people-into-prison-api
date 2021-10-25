@@ -16,7 +16,7 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
   fun customOpenAPI(): OpenAPI = OpenAPI()
     .servers(
       listOf(
-        Server().url("https://https://welcome-api.prison.service.justice.gov.uk/").description("Prod"),
+        Server().url("https://welcome-api.prison.service.justice.gov.uk/").description("Prod"),
         Server().url("https://welcome-api-preprod.prison.service.justice.gov.uk/").description("PreProd"),
         Server().url("https://welcome-api-dev.prison.service.justice.gov.uk/").description("Development"),
         Server().url("http://localhost:8080").description("Local"),
