@@ -13,9 +13,8 @@ import javax.persistence.Id
 @Schema(description = "Booking made by the service")
 @Entity
 data class ConfirmedArrival(
-
-  @Schema(description = "ID", example = "")
   @Id
+  @Schema(description = "ID", example = "")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long?,
   @Schema(description = "Prison Id", example = "STL")
