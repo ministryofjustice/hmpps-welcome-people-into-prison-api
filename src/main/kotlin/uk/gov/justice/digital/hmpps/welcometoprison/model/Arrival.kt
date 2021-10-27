@@ -10,22 +10,33 @@ import java.time.LocalDate
 data class Arrival(
   @Schema(description = "Movement ID", example = "0573de83-8a29-42aa-9ede-1068bc433fc5")
   val id: String?,
+
   @Schema(description = "First name", example = "Sam")
   val firstName: String,
+
   @Schema(description = "Last name", example = "Smith")
   val lastName: String,
+
   @Schema(description = "Date of birth", example = "1971-02-01")
   val dateOfBirth: LocalDate,
+
   @Schema(description = "Prison number", example = "A1234AA")
   val prisonNumber: String?,
+
   @Schema(description = "PNC number", example = "01/1234X")
   val pncNumber: String?,
+
   @Schema(description = "Date expected", example = "2020-02-23")
   val date: LocalDate,
+
   @Schema(description = "From Location", example = "Kingston-upon-Hull Crown Court")
   val fromLocation: String,
+
   @Schema(description = "From location type", example = "COURT")
   val fromLocationType: LocationType,
+
+  @Schema(description = "Is the arrival in custody according to NOMIS", example = "true")
+  val isCurrentPrisoner: Boolean = false
 )
 
 enum class LocationType {

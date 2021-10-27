@@ -37,7 +37,8 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
         fromLocation = it.fromAgencyDescription,
         prisonNumber = it.offenderNo,
         date = it.movementDate,
-        pncNumber = null
+        pncNumber = null,
+        isCurrentPrisoner = true
       )
     }
 
