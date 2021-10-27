@@ -15,6 +15,5 @@ class ConfirmedArrivalService(
 
   private fun contains(arrival: Arrival, confirmedArrivals: List<ConfirmedArrival>) = confirmedArrivals.stream().anyMatch {
     arrival.id == it.movementId
-
   }
 }
