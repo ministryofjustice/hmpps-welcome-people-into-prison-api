@@ -34,6 +34,7 @@ data class ConfirmedArrival(
   @Schema(description = "Booking Date", example = "2020-12-01")
   val bookingDate: LocalDate
 )
+
 enum class ArrivalType {
   NEW_TO_PRISON
 }
