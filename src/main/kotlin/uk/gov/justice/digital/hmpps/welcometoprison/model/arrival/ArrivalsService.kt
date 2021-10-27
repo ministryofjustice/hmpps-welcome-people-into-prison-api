@@ -28,7 +28,7 @@ class ArrivalsService(
     val match = candidates.firstOrNull { arrival.isMatch(it) }
 
     return if (match != null)
-      arrival.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber)
+      arrival.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber, isCurrentPrisoner = match.currentPrisoner)
 
     // Ignore any provided prison number, but assume PNC is fine
     else

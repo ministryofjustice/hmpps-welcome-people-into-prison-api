@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 
 class PrisonerSearchApiClientTest {
@@ -50,6 +51,7 @@ class PrisonerSearchApiClientTest {
         MatchPrisonerResponse(
           prisonerNumber = "A1278AA",
           pncNumber = "1234/1234589A",
+          status = INACTIVE_OUT
         )
       )
     )

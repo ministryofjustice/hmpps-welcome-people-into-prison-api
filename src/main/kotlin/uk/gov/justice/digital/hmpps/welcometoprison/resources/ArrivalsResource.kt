@@ -85,7 +85,7 @@ class ArrivalsResource(
     @Parameter(description = "Arrivals on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
-  ) = movementService.getMovements(agencyId, date)
+  ): List<Arrival> = movementService.getMovements(agencyId, date)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -130,7 +130,7 @@ class ArrivalsResource(
   fun getMove(
     @Schema(description = "ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
     @PathVariable moveId: String,
-  ) = movementService.getMovement(moveId)
+  ): Arrival = movementService.getMovement(moveId)
 
   @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
   @Operation(

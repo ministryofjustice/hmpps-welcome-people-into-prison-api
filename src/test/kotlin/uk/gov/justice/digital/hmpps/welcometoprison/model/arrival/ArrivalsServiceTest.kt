@@ -23,7 +23,7 @@ class ArrivalsServiceTest {
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
-  val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc) }
+  val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
 
   @Test
   fun `getMoves - happy path`() {
@@ -40,7 +40,7 @@ class ArrivalsServiceTest {
   }
 
   @Nested
-  inner class `Matching Movements`() {
+  inner class `Matching Movements` {
 
     @BeforeEach
     fun before() {
@@ -175,7 +175,8 @@ class ArrivalsServiceTest {
       pncNumber = "99/123456J",
       date = date,
       fromLocation = "MDI",
-      fromLocationType = LocationType.CUSTODY_SUITE
+      fromLocationType = LocationType.CUSTODY_SUITE,
+      isCurrentPrisoner = true
     )
 
     private val prisonServiceMovement = basmMovement.copy(
@@ -185,7 +186,8 @@ class ArrivalsServiceTest {
       dateOfBirth = LocalDate.of(1980, 2, 23),
       prisonNumber = "A1278AA",
       pncNumber = "1234/1234589A",
-      fromLocationType = LocationType.PRISON
+      fromLocationType = LocationType.PRISON,
+      isCurrentPrisoner = true
     )
   }
 }

@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType.CUSTODY_SUITE
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 
@@ -16,16 +17,15 @@ class PrisonerSearchServiceTest {
   @Test
   fun `happy path`() {
     every { client.matchPrisoner(any()) } returnsMany listOf(
-      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER)),
-      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER))
+      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN")),
+      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT))
     )
 
-    val moves = service.getCandidateMatches(movement)
+    val moves = service.getCandidateMatches(arrival)
 
-    assertThat(moves).isEqualTo(
-      listOf(
-        MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER), MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER)
-      )
+    assertThat(moves).containsExactly(
+      MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN"),
+      MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT)
     )
   }
 
@@ -33,7 +33,7 @@ class PrisonerSearchServiceTest {
     private val PRISON_NUMBER = "A1234AA"
     private val PNC_NUMBER = "1234/1234589A"
 
-    private val movement = Arrival(
+    private val arrival = Arrival(
       id = "1",
       firstName = "JIM",
       lastName = "SMITH",
@@ -42,7 +42,8 @@ class PrisonerSearchServiceTest {
       pncNumber = PNC_NUMBER,
       date = LocalDate.of(2021, 1, 21),
       fromLocation = "MDI",
-      fromLocationType = CUSTODY_SUITE
+      fromLocationType = CUSTODY_SUITE,
+      isCurrentPrisoner = false
     )
   }
 }
