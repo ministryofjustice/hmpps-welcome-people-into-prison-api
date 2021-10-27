@@ -5,7 +5,8 @@
     "dateOfBirth": "1996-07-23",
     "date": "2021-09-29",
     "fromLocation": "Penrith County Court",
-    "fromLocationType": "COURT"
+    "fromLocationType": "COURT",
+    "isCurrentPrisoner": false
   },
   {
     "prisonNumber": "G6081VQ",
@@ -14,7 +15,8 @@
     "dateOfBirth": "1981-07-04",
     "date": "2011-09-08",
     "fromLocation": "Doncaster (HMP)",
-    "fromLocationType": "PRISON"
+    "fromLocationType": "PRISON",
+    "isCurrentPrisoner": true
   },
   {
     "prisonNumber": "G1038GO",
@@ -23,7 +25,8 @@
     "dateOfBirth": "1983-06-06",
     "date": "2010-08-20",
     "fromLocation": "Dovegate (HMP)",
-    "fromLocationType": "PRISON"
+    "fromLocationType": "PRISON",
+    "isCurrentPrisoner": true
   },
   {
     "prisonNumber": "G5428GJ",
@@ -32,6 +35,7 @@
     "dateOfBirth": "1980-11-01",
     "date": "2010-05-04",
     "fromLocation": "Doncaster (HMP)",
-    "fromLocationType": "PRISON"
+    "fromLocationType": "PRISON",
+    "isCurrentPrisoner": true
   }
 ]

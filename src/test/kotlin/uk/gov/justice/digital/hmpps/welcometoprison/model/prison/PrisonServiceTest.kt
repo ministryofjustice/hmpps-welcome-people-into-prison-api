@@ -58,7 +58,8 @@ class PrisonServiceTest {
         fromLocation = "Doncaster (HMP)",
         fromLocationType = LocationType.PRISON,
         date = LocalDate.of(2011, 9, 8),
-        pncNumber = null
+        pncNumber = null,
+        isCurrentPrisoner = true
       )
     )
 

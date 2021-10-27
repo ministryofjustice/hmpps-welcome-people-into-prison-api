@@ -15,8 +15,11 @@ class ArrivalsService(
 ) {
   fun getMovement(moveId: String): Arrival = addPrisonData(basmService.getArrival(moveId))
 
-  fun getMovements(agencyId: String, date: LocalDate) =
-    basmService.getArrivals(agencyId, date, date).map { addPrisonData(it) } + prisonService.getTransfers(agencyId, date)
+  fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
+    val arrivals = basmService.getArrivals(agencyId, date, date)
+    return arrivals.map { addPrisonData(it) } +
+      prisonService.getTransfers(agencyId, date)
+  }
 
   private fun addPrisonData(arrival: Arrival): Arrival {
     val candidates = prisonerSearchService.getCandidateMatches(arrival)
@@ -24,7 +27,7 @@ class ArrivalsService(
     val match = candidates.firstOrNull { arrival.isMatch(it) }
 
     return if (match != null)
-      arrival.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber)
+      arrival.copy(pncNumber = match.pncNumber, prisonNumber = match.prisonerNumber, isCurrentPrisoner = match.currentPrisoner)
 
     // Ignore any provided prison number, but assume PNC is fine
     else
