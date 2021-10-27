@@ -26,8 +26,8 @@ data class ConfirmedArrival(
   @Schema(description = "Arrival Type")
   @Enumerated(EnumType.STRING)
   val arrivalType: ArrivalType,
-  @Schema(description = "Prisoner Id", example = "123e4567-e89b-12d3-a456-426614174000")
-  val prisonerId: String,
+  @Schema(description = "Prison Id", example = "MDI")
+  val prisonId: String,
   @Schema(description = "Booking Id", example = "123")
   val bookingId: Int,
   @Schema(description = "Arrival Date", example = "2020-12-01")

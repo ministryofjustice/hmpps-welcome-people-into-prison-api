@@ -4,7 +4,7 @@ CREATE TABLE "confirmed_arrival"
     prison_number VARCHAR(255) NOT NULL,
     movement_id VARCHAR(255) NOT NULL,
     timestamp TIMESTAMP NOT NULL,
-    prisoner_id VARCHAR(255) NOT NULL,
+    prison_id VARCHAR(255) NOT NULL,
     booking_id VARCHAR(255) NOT NULL,
     arrival_date DATE NOT NULL,
     arrival_type VARCHAR(255) NOT NULL

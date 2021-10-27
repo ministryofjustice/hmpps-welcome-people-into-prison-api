@@ -63,7 +63,7 @@ class ConfirmedArrivalServiceTest {
       movementId = "1",
       timestamp = LocalDateTime.now(),
       arrivalType = ArrivalType.NEW_TO_PRISON,
-      prisonerId = "99/123456J",
+      prisonId = "99/123456J",
       bookingId = 123,
       arrivalDate = date,
     )
