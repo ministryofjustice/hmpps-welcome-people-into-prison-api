@@ -23,8 +23,8 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
       timestamp = LocalDateTime.now(),
       arrivalType = ArrivalType.NEW_TO_PRISON,
       prisonerId = "Prisoner Id",
-      bookingId = "Booking Id",
-      bookingDate = LocalDate.now(),
+      bookingId = 123,
+      arrivalDate = LocalDate.now(),
     )
     val bookingDb = repository.save(confirmedArrival.copy())
     TestTransaction.flagForCommit()
@@ -37,7 +37,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     Assertions.assertThat(bookingDb.timestamp).isEqualTo(confirmedArrival.timestamp)
     Assertions.assertThat(bookingDb.prisonerId).isEqualTo(confirmedArrival.prisonerId)
     Assertions.assertThat(bookingDb.bookingId).isEqualTo(confirmedArrival.bookingId)
-    Assertions.assertThat(bookingDb.bookingDate).isEqualTo(confirmedArrival.bookingDate)
+    Assertions.assertThat(bookingDb.arrivalDate).isEqualTo(confirmedArrival.arrivalDate)
   }
 
   @Test
@@ -45,7 +45,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
   fun `find all by confirmed arrival date and prison id`() {
     val date = LocalDate.of(2020, 1, 1)
     val prisonId = "prison id"
-    val bookings = repository.findAllByBookingDateAndPrisonNumber(date, prisonId)
+    val bookings = repository.findAllByArrivalDateAndPrisonNumber(date, prisonId)
     Assertions.assertThat(bookings).hasSize(1)
   }
 }

@@ -6,10 +6,10 @@ CREATE TABLE "confirmed_arrival"
     timestamp TIMESTAMP NOT NULL,
     prisoner_id VARCHAR(255) NOT NULL,
     booking_id VARCHAR(255) NOT NULL,
-    booking_date DATE NOT NULL,
+    arrival_date DATE NOT NULL,
     arrival_type VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX id_idx ON "confirmed_arrival"(id);
-CREATE INDEX booking_date_idx ON "confirmed_arrival"(booking_date);
+CREATE INDEX arrival_date_idx ON "confirmed_arrival"(arrival_date);
 CREATE INDEX prison_number_idx ON "confirmed_arrival"(prison_number);

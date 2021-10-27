@@ -7,8 +7,8 @@ import java.time.LocalDate
 @Repository
 interface ConfirmedArrivalRepository : JpaRepository<ConfirmedArrival, Long> {
 
-  fun findAllByBookingDateAndPrisonNumber(
-    bookingDate: LocalDate,
+  fun findAllByArrivalDateAndPrisonNumber(
+    arrivalDate: LocalDate,
     prisonNumber: String
   ): List<ConfirmedArrival>
 }

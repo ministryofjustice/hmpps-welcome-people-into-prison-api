@@ -17,7 +17,7 @@ data class ConfirmedArrival(
   @Schema(description = "ID", example = "")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long?,
-  @Schema(description = "Prison Id", example = "STL")
+  @Schema(description = "Prison Number", example = "A1234AA")
   val prisonNumber: String,
   @Schema(description = "Movement Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val movementId: String,
@@ -28,10 +28,10 @@ data class ConfirmedArrival(
   val arrivalType: ArrivalType,
   @Schema(description = "Prisoner Id", example = "123e4567-e89b-12d3-a456-426614174000")
   val prisonerId: String,
-  @Schema(description = "Booking Id", example = "123e4567-e89b-12d3-a456-426614174000")
-  val bookingId: String?,
-  @Schema(description = "Booking Date", example = "2020-12-01")
-  val bookingDate: LocalDate
+  @Schema(description = "Booking Id", example = "123")
+  val bookingId: Int,
+  @Schema(description = "Arrival Date", example = "2020-12-01")
+  val arrivalDate: LocalDate
 )
 
 enum class ArrivalType {

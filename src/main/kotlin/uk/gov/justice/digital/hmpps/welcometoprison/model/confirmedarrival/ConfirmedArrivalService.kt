@@ -9,8 +9,8 @@ class ConfirmedArrivalService(
   val confirmedArrivalRepository: ConfirmedArrivalRepository
 ) {
   fun extractConfirmedArrivalFromArrivals(agencyId: String, date: LocalDate, arrivals: List<Arrival>): List<Arrival> {
-    val confirmedArrival = confirmedArrivalRepository.findAllByBookingDateAndPrisonNumber(date, agencyId)
-    return arrivals.filterNot { contains(it, confirmedArrival) }
+    val confirmedArrivals = confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(date, agencyId)
+    return arrivals.filterNot { contains(it, confirmedArrivals) }
   }
 
   private fun contains(arrival: Arrival, confirmedArrivals: List<ConfirmedArrival>) = confirmedArrivals.stream().anyMatch {
