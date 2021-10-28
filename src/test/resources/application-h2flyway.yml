@@ -1,0 +1,16 @@
+spring:
+
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+    schemas: ${spring.datasource.hikari.schema}
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    placeholders:
+      database_password: ${spring.datasource.password}
+
+  h2.console.enabled: true
+
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.H2Dialect

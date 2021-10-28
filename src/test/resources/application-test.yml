@@ -26,3 +26,17 @@ spring:
       resourceserver:
         jwt:
           public-key-location: classpath:local-public-key.pub
+
+  datasource:
+    # This reopens the H2 database prepared by flyway with default schema and user pin_phone_monitor
+    url: 'jdbc:h2:mem:welcome-people-in-prison-db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS WELCOME_PEOPLE_TO_PRISON'
+    username: testUser
+    password: dummy
+    hikari:
+      schema: WELCOME_PEOPLE_TO_PRISON
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

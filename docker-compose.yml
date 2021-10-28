@@ -15,6 +15,19 @@ services:
       - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
       - PRISON_ENDPOINT_URL=http://prison-api:8080
 
+  hmpps-welcome-people-into-prison-api-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: hmpps-welcome-people-into-prison-api-db
+    restart: always
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_USER=test
+      - POSTGRES_DB=hmpps-welcome-people-into-prison-api-db
+
   prison-api:
     image: quay.io/hmpps/prison-api:latest
     networks:

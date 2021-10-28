@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 

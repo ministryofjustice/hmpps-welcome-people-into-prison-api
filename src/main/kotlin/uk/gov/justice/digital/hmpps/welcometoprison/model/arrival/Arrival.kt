@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model
+package uk.gov.justice.digital.hmpps.welcometoprison.model.arrival
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL

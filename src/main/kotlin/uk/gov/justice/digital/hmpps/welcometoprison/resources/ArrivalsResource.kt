@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ArrivalsService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ArrivalsService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.CreateAndAdmitOffenderDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.CreateOffenderResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
