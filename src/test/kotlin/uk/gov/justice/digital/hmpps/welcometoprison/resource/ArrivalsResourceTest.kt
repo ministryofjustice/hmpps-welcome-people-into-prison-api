@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -152,7 +153,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
   }
 
   @Nested
-  inner class `Confirming bookings` {
+  @DisplayName("Admin Arrivals tests")
+  inner class AdmitArrivalTests {
     val VALID_REQUEST = """
         {
           "firstName": "Alpha",

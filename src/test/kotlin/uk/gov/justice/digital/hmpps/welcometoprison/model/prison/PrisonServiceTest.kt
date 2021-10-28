@@ -15,15 +15,14 @@ import java.time.LocalTime
 
 class PrisonServiceTest {
 
-  private val client = mock<PrisonApiClient>()
-
-  private val service = PrisonService(client)
+  private val prisonApiClient = mock<PrisonApiClient>()
+  private val prisonService = PrisonService(prisonApiClient)
 
   private val prisonImage = "prisonImage".toByteArray()
 
   @Test
   fun `get transfers`() {
-    whenever(client.getPrisonTransfersEnRoute(any())).thenReturn(
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(
       listOf(
         OffenderMovement(
           offenderNo = "G6081VQ",
@@ -46,7 +45,7 @@ class PrisonServiceTest {
       )
     )
 
-    val moves = service.getTransfers("NMI", LocalDate.now())
+    val moves = prisonService.getTransfers("NMI", LocalDate.now())
 
     assertThat(moves).containsExactly(
       Arrival(
@@ -63,70 +62,31 @@ class PrisonServiceTest {
       )
     )
 
-    verify(client).getPrisonTransfersEnRoute("NMI")
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
   }
 
   @Test
   fun `gets prisoner image`() {
-    whenever(client.getPrisonerImage(any())).thenReturn(prisonImage)
+    whenever(prisonApiClient.getPrisonerImage(any())).thenReturn(prisonImage)
 
-    val result = service.getPrisonerImage("A12345")
+    val result = prisonService.getPrisonerImage("A12345")
 
     assertThat(result).isEqualTo(prisonImage)
   }
 
   @Test
   fun `get prison`() {
-    whenever(client.getAgency(any())).thenReturn(Prison("Some description"))
+    whenever(prisonApiClient.getAgency(any())).thenReturn(Prison("Some description"))
 
-    val result = service.getPrison("MDI")
+    val result = prisonService.getPrison("MDI")
 
     assertThat(result).isEqualTo(Prison("Some description"))
   }
 
   @Test
   fun `get prison not found`() {
-    whenever(client.getAgency(any())).thenReturn(null)
+    whenever(prisonApiClient.getAgency(any())).thenReturn(null)
 
-    assertThatThrownBy { service.getPrison("MDI") }.isInstanceOf(NotFoundException::class.java)
-  }
-
-  @Test
-  fun `Create and admit offender`() {
-    val offenderNo = "A1111AA"
-
-    whenever(client.createOffender(any())).thenReturn(CreateOffenderResponse(offenderNo))
-
-    val response = service.createAndAdmitOffender(
-      CreateAndAdmitOffenderDetail(
-        firstName = "Alpha",
-        lastName = "Omega",
-        dateOfBirth = LocalDate.of(1961, 5, 29),
-        gender = "M",
-        prisonId = "NMI",
-        movementReasonCode = "N",
-        imprisonmentStatus = "SENT03"
-      )
-    )
-
-    assertThat(response.offenderNo).isEqualTo(offenderNo)
-
-    verify(client).createOffender(
-      CreateOffenderDetail(
-        firstName = "Alpha",
-        lastName = "Omega",
-        dateOfBirth = LocalDate.of(1961, 5, 29),
-        gender = "M"
-      )
-    )
-
-    verify(client).admitOffenderOnNewBooking(
-      offenderNo,
-      AdmitOnNewBookingDetail(
-        prisonId = "NMI",
-        movementReasonCode = "N",
-        imprisonmentStatus = "SENT03"
-      )
-    )
+    assertThatThrownBy { prisonService.getPrison("MDI") }.isInstanceOf(NotFoundException::class.java)
   }
 }

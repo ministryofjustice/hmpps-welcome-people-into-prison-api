@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating an offender record, an associated booking and then adding that offender to a prison's roll")
-data class CreateAndAdmitOffenderDetail(
+data class AdmitArrivalDetail(
   @Schema(
     description = "The offender's PNC (Police National Computer) number.",
     example = "03/11999M",

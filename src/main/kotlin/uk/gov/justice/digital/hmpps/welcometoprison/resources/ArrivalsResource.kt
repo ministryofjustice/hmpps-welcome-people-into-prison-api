@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ArrivalsService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.CreateAndAdmitOffenderDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.CreateOffenderResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalResponse
 import java.time.LocalDate
 import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 @RestController
@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull
 @RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArrivalsResource(
   private val movementService: ArrivalsService,
-  private val prisonService: PrisonService,
+  private val arrivalsService: ArrivalsService
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -144,7 +144,7 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = CreateOffenderResponse::class)
+            schema = Schema(implementation = AdmitArrivalResponse::class)
           )
         ]
       ),
@@ -177,9 +177,12 @@ class ArrivalsResource(
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
   fun confirmArrival(
+    @PathVariable
+    @Valid @NotEmpty
+    moveId: String,
+
     @RequestBody
-    @Valid
-    @NotNull
-    createAndBookInmateDetail: CreateAndAdmitOffenderDetail
-  ): CreateOffenderResponse = prisonService.createAndAdmitOffender(createAndBookInmateDetail)
+    @Valid @NotNull
+    admitArrivalDetail: AdmitArrivalDetail
+  ): AdmitArrivalResponse = arrivalsService.admitArrival(moveId, admitArrivalDetail)
 }
