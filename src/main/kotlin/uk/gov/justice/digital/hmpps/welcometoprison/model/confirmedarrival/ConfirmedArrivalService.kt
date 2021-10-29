@@ -14,11 +14,12 @@ class ConfirmedArrivalService(
     return arrivals.filterNot { contains(it, confirmedArrivals) }
   }
 
-  private fun contains(arrival: Arrival, confirmedArrivals: List<ConfirmedArrival>) = confirmedArrivals.stream().anyMatch {
-    arrival.id == it.movementId
-  }
+  private fun contains(arrival: Arrival, confirmedArrivals: List<ConfirmedArrival>) =
+    confirmedArrivals.stream().anyMatch {
+      arrival.id == it.movementId
+    }
 
-  fun save(
+  fun add(
     movementId: String,
     prisonNumber: String,
     prisonId: String,
