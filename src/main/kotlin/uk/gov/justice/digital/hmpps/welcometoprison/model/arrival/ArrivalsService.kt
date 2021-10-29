@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrival
 
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.respons
 import java.time.LocalDate
 
 @Service
+@Transactional
 class ArrivalsService(
   val basmService: BasmService,
   val prisonService: PrisonService,
