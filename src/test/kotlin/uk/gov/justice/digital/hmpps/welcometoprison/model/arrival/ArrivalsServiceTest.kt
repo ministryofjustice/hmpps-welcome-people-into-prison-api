@@ -2,21 +2,17 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrival
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifySequence
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ArrivalsService.Companion.isMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 
@@ -24,17 +20,17 @@ class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  private val confirmedArrivalService: ConfirmedArrivalService = mockk()
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mockk()
 
-  private val arrivalsService =
-    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
+  private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
+  private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
 
-  /* @Test
+  @Test
    fun `getMoves - happy path`() {
      every { basmService.getArrivals("MDI", date, date) } returns listOf(basmOnlyArrival)
      every { prisonService.getTransfers("MDI", date) } returns listOf(arrivalKnownToNomis)
-     every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
+    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
      every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"))
 
      val moves = arrivalsService.getMovements("MDI", date)
@@ -50,6 +46,7 @@ class ArrivalsServiceTest {
      @BeforeEach
      fun before() {
        every { prisonService.getTransfers("MDI", date) } returns emptyList()
+       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
      }
 
      @Test
@@ -57,7 +54,6 @@ class ArrivalsServiceTest {
        val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
        every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
-       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
        every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
          result(move.prisonNumber, move.pncNumber)
        )
@@ -69,10 +65,10 @@ class ArrivalsServiceTest {
 
      @Test
      fun `Doesn't find match from candidates due to prison number mismatch`() {
+
        val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
        every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
-       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
        every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
          result(ANOTHER_PRISON_NUMBER, move.pncNumber)
        )
@@ -87,7 +83,6 @@ class ArrivalsServiceTest {
        val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
        every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
-       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
        every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
          result(move.prisonNumber, ANOTHER_PNC_NUMBER)
        )
@@ -102,7 +97,6 @@ class ArrivalsServiceTest {
        val move = basmOnlyArrival.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
 
        every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
-       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
        every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
        val movement = arrivalsService.getMovements("MDI", date).first()
@@ -115,7 +109,6 @@ class ArrivalsServiceTest {
        val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
        every { basmService.getArrivals("MDI", date, date) } returns listOf(move)
-       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
        every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
        val movement = arrivalsService.getMovements("MDI", date).first()
@@ -123,9 +116,8 @@ class ArrivalsServiceTest {
        assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
      }
    }
- */
   @Nested
-  inner class `Test movement matching` {
+  inner class TestMovementMatching {
     @Test
     fun `Both fields present from BASM move`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
@@ -160,70 +152,6 @@ class ArrivalsServiceTest {
       assertThat(move.isMatch(result(PRISON_NUMBER, PNC_NUMBER))).isFalse
       assertThat(move.isMatch(result(PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
       assertThat(move.isMatch(result(ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
-    }
-
-    @Nested
-    @DisplayName("Admit arrival tests")
-    inner class AdmitArrivalTest {
-
-      @Test
-      fun `Admit arrival not known to NOMIS`() {
-
-        every { basmService.getArrival(any()) } returns prototypeArrival.copy()
-        every { prisonerSearchService.getCandidateMatches(any()) } returns emptyList()
-        every { prisonService.createOffender(any()) } returns offenderNo
-        every { prisonService.admitOffenderOnNewBooking(any(), any()) } returns Unit
-        every { confirmedArrivalService.add(any(), any(), any(), any(), any(), any()) } returns Unit
-
-        val response = arrivalsService.admitArrival(moveId, admitArrivalDetail)
-
-        assertThat(response.offenderNo).isEqualTo(offenderNo)
-
-        verify { basmService.getArrival(moveId) }
-        verifySequence {
-          prisonService.createOffender(admitArrivalDetail)
-          prisonService.admitOffenderOnNewBooking(offenderNo, admitArrivalDetail)
-        }
-        verify { confirmedArrivalService.add(moveId, offenderNo, prisonId, 0, LocalDate.now(), ArrivalType.NEW_TO_PRISON ) }
-      }
-
-      @Test
-      fun `Admit arrival matched to NOMIS offender who is not in custody`() {
-
-        every { basmService.getArrival(any()) } returns prototypeArrival.copy(
-          prisonNumber = offenderNo,
-          isCurrentPrisoner = false
-        )
-        every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
-          MatchPrisonerResponse(prisonerNumber = offenderNo, pncNumber = null, status = INACTIVE_OUT)
-        )
-        every { prisonService.admitOffenderOnNewBooking(any(), any()) } returns Unit
-        every { confirmedArrivalService.add(any(), any(), any(), any(), any(), any()) } returns Unit
-
-        val response = arrivalsService.admitArrival(moveId, admitArrivalDetail)
-
-        assertThat(response.offenderNo).isEqualTo(offenderNo)
-
-        verify { basmService.getArrival(moveId) }
-        verify { prisonService.admitOffenderOnNewBooking(offenderNo, admitArrivalDetail) }
-        verify { confirmedArrivalService.add(moveId, offenderNo, prisonId,
-          0, LocalDate.now(), ArrivalType.NEW_BOOKING_EXISTING_OFFENDER ) }
-      }
-
-      @Test
-      fun `Admit arrival matched to NOMIS offender who is in custody`() {
-
-        every { basmService.getArrival(any()) } returns prototypeArrival.copy(prisonNumber = offenderNo)
-        every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
-          MatchPrisonerResponse(prisonerNumber = offenderNo, pncNumber = null, status = "ACTIVE IN")
-        )
-
-        Assertions.assertThatThrownBy {
-          arrivalsService.admitArrival(moveId, admitArrivalDetail)
-        }.isInstanceOf(IllegalArgumentException::class.java)
-
-        verify { basmService.getArrival(moveId) }
-      }
     }
   }
 
