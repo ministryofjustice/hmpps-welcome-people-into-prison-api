@@ -3,9 +3,9 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrival
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
@@ -21,7 +21,11 @@ class ArrivalsService(
   fun getMovement(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
 
   fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
-    val arrivals = basmService.getArrivals(agencyId, date, date).map { augmentWithPrisonData(it) } + prisonService.getTransfers(agencyId, date)
+    val arrivals =
+      basmService.getArrivals(agencyId, date, date).map { augmentWithPrisonData(it) } + prisonService.getTransfers(
+        agencyId,
+        date
+      )
     return confirmedArrivalService.extractConfirmedArrivalFromArrivals(agencyId, date, arrivals)
   }
 
