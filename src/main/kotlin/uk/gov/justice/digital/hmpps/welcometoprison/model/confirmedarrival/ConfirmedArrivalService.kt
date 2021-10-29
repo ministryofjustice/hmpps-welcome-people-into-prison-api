@@ -26,7 +26,7 @@ class ConfirmedArrivalService(
     bookingId: Int,
     arrivalDate: LocalDate,
     arrivalType: ArrivalType
-  ): ConfirmedArrival {
+  ) {
     val confirmedArrival = ConfirmedArrival(
       null,
       prisonNumber,
@@ -37,6 +37,6 @@ class ConfirmedArrivalService(
       bookingId,
       arrivalDate
     )
-    return confirmedArrivalRepository.save(confirmedArrival)
+    confirmedArrivalRepository.save(confirmedArrival)
   }
 }
