@@ -18,10 +18,10 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.respons
 import java.time.LocalDate
 
 class ArrivalsServiceConfirmArrivalTest {
-  private val prisonService: PrisonService = mockk()
+  private val prisonService: PrisonService = mockk(relaxUnitFun = true)
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  private val confirmedArrivalService: ConfirmedArrivalService = mockk()
+  private val confirmedArrivalService: ConfirmedArrivalService = mockk(relaxUnitFun = true)
 
   private val arrivalsService =
     ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
@@ -33,8 +33,6 @@ class ArrivalsServiceConfirmArrivalTest {
     every { basmService.getArrival(any()) } returns prototypeArrival.copy()
     every { prisonerSearchService.getCandidateMatches(any()) } returns emptyList()
     every { prisonService.createOffender(any()) } returns OFFENDER_NO
-    every { prisonService.admitOffenderOnNewBooking(any(), any()) } returns Unit
-    every { confirmedArrivalService.add(any(), any(), any(), any(), any(), any()) } returns Unit
 
     val response = arrivalsService.confirmArrival(MOVE_ID, confirmArrivalDetail)
 
@@ -67,8 +65,6 @@ class ArrivalsServiceConfirmArrivalTest {
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
       MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = INACTIVE_OUT)
     )
-    every { prisonService.admitOffenderOnNewBooking(any(), any()) } returns Unit
-    every { confirmedArrivalService.add(any(), any(), any(), any(), any(), any()) } returns Unit
 
     val response = arrivalsService.confirmArrival(MOVE_ID, confirmArrivalDetail)
 
