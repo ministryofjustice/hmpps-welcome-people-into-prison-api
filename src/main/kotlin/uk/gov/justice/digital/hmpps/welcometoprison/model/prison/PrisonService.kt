@@ -43,7 +43,7 @@ class PrisonService(
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-      prisonNumber = fakePrisonNumber(),
+      prisonNumber = randomPrisonNumber(),
       reasonForAbsence = faker.expression("reason")
     )
   }.take((5..20).random()).toList()
@@ -94,6 +94,6 @@ class PrisonService(
     private val letters = 'A'..'Z'
 
     private operator fun CharRange.invoke(n: Int) = this.shuffled().take(n).joinToString("")
-    private fun fakePrisonNumber() = letters(1) + letters(4) + numbers(2)
+    private fun randomPrisonNumber() = letters(1) + numbers(4) + letters(2)
   }
 }

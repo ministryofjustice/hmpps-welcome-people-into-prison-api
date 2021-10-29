@@ -25,10 +25,12 @@ class ArrivalsService(
 
   fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
     val arrivals =
-      basmService.getArrivals(agencyId, date, date).map { augmentWithPrisonData(it) } + prisonService.getTransfers(
-        agencyId,
-        date
-      )
+      basmService
+        .getArrivals(agencyId, date, date)
+        .map { augmentWithPrisonData(it) } +
+        prisonService
+          .getTransfers(agencyId, date)
+
     return confirmedArrivalService.extractConfirmedArrivalFromArrivals(agencyId, date, arrivals)
   }
 
