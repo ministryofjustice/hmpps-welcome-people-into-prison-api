@@ -50,11 +50,11 @@ class PrisonService(
 
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
-    admitArrivalDetail: AdmitArrivalDetail
+    confirmArrivalDetail: ConfirmArrivalDetail
   ) {
     client.admitOffenderOnNewBooking(
       prisonNumber,
-      with(admitArrivalDetail) {
+      with(confirmArrivalDetail) {
         AdmitOnNewBookingDetail(
           prisonId = prisonId!!,
           bookingInTime,
@@ -68,10 +68,10 @@ class PrisonService(
     )
   }
 
-  fun createOffender(admitArrivalDetail: AdmitArrivalDetail): String =
+  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
     client
       .createOffender(
-        with(admitArrivalDetail) {
+        with(confirmArrivalDetail) {
           CreateOffenderDetail(
             firstName = firstName!!,
             middleName1,

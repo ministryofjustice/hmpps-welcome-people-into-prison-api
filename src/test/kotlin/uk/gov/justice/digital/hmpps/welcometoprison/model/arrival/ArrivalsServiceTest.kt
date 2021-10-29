@@ -19,11 +19,13 @@ class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
   private val basmService: BasmService = mockk()
   private val prisonerSearchService: PrisonerSearchService = mockk()
-  //We need to mock repository instead of confirmedArrivalService as we have a problem to generate the list of prisoners with prisonNumber equals null
+
+  // We need to mock repository instead of confirmedArrivalService as we have a problem to generate the list of prisoners with prisonNumber equals null
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mockk()
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
-  private val arrivalsService = ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
+  private val arrivalsService =
+    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
 
   @Test
@@ -116,6 +118,7 @@ class ArrivalsServiceTest {
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
   }
+
   @Nested
   inner class TestMovementMatching {
     @Test

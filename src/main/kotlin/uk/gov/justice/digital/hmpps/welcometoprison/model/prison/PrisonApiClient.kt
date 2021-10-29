@@ -38,9 +38,9 @@ data class AdmitOnNewBookingDetail(
 )
 
 /**
- * The response has many more fields and nested values, but only offenderNo is the only one of interest
+ * The response has many more fields and nested values, but only offenderNo is of interest
  */
-data class AdmitArrivalResponse(val offenderNo: String)
+data class ConfirmArrivalResponse(val offenderNo: String)
 
 data class Prison(@JsonProperty("longDescription") val description: String)
 
@@ -73,12 +73,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE' and scope 'write'.
    */
-  fun createOffender(detail: CreateOffenderDetail): AdmitArrivalResponse {
+  fun createOffender(detail: CreateOffenderDetail): ConfirmArrivalResponse {
     return webClient.post()
       .uri("/api/offenders")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono(AdmitArrivalResponse::class.java).block() ?: throw RuntimeException()
+      .bodyToMono(ConfirmArrivalResponse::class.java).block() ?: throw RuntimeException()
   }
 
   /**

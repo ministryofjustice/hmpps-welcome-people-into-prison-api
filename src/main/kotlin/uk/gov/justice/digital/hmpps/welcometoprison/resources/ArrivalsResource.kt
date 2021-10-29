@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ArrivalsService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import java.time.LocalDate
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
@@ -144,7 +144,7 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = AdmitArrivalResponse::class)
+            schema = Schema(implementation = ConfirmArrivalResponse::class)
           )
         ]
       ),
@@ -183,6 +183,6 @@ class ArrivalsResource(
 
     @RequestBody
     @Valid @NotNull
-    admitArrivalDetail: AdmitArrivalDetail
-  ): AdmitArrivalResponse = arrivalsService.admitArrival(moveId, admitArrivalDetail)
+    confirmArrivalDetail: ConfirmArrivalDetail
+  ): ConfirmArrivalResponse = arrivalsService.confirmArrival(moveId, confirmArrivalDetail)
 }

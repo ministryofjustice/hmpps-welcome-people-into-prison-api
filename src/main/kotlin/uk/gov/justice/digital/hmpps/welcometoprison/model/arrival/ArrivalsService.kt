@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AdmitArrivalResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
@@ -16,10 +16,10 @@ import java.time.LocalDate
 @Service
 @Transactional
 class ArrivalsService(
-  val basmService: BasmService,
-  val prisonService: PrisonService,
-  val prisonerSearchService: PrisonerSearchService,
-  val confirmedArrivalService: ConfirmedArrivalService
+  private val basmService: BasmService,
+  private val prisonService: PrisonService,
+  private val prisonerSearchService: PrisonerSearchService,
+  private val confirmedArrivalService: ConfirmedArrivalService
 ) {
   fun getMovement(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
 
@@ -50,52 +50,53 @@ class ArrivalsService(
   }
 
   @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
-  fun admitArrival(
+  fun confirmArrival(
     moveId: String,
-    admitArrivalDetail: AdmitArrivalDetail
-  ): AdmitArrivalResponse {
+    confirmArrivalDetail: ConfirmArrivalDetail
+  ): ConfirmArrivalResponse {
 
     val arrival = getMovement(moveId)
 
     if (arrival.isCurrentPrisoner) throw IllegalArgumentException("The arrival is known to NOMIS and has a current booking. This scenario is not supported.")
 
     return when (arrival.prisonNumber) {
-      null -> {
-        val prisonNumber = createAndAdmitOffenderOnNewBooking(admitArrivalDetail)
-        confirmedArrivalService.add(
-          movementId = moveId,
-          prisonNumber = prisonNumber,
-          prisonId = admitArrivalDetail.prisonId!!,
-          bookingId = 0,
-          arrivalDate = LocalDate.now(),
-          arrivalType = ArrivalType.NEW_TO_PRISON
-        )
-        AdmitArrivalResponse(offenderNo = prisonNumber)
-      }
-      else -> {
-        admitOffenderOnNewBooking(arrival.prisonNumber, admitArrivalDetail)
-        confirmedArrivalService.add(
-          movementId = moveId,
-          prisonNumber = arrival.prisonNumber,
-          prisonId = admitArrivalDetail.prisonId!!,
-          bookingId = 0,
-          arrivalDate = LocalDate.now(),
-          arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
-        )
-        AdmitArrivalResponse(offenderNo = arrival.prisonNumber)
-      }
+      null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
+      else -> admitOffenderOnNewBooking(confirmArrivalDetail, moveId, arrival.prisonNumber)
     }
   }
 
-  private fun createAndAdmitOffenderOnNewBooking(admitArrivalDetail: AdmitArrivalDetail): String {
-    val prisonNumber = prisonService.createOffender(admitArrivalDetail)
-    prisonService.admitOffenderOnNewBooking(prisonNumber, admitArrivalDetail)
-    return prisonNumber
+  private fun admitOffenderOnNewBooking(
+    confirmArrivalDetail: ConfirmArrivalDetail,
+    moveId: String,
+    prisonNumber: String
+  ): ConfirmArrivalResponse {
+    prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    confirmedArrivalService.add(
+      movementId = moveId,
+      prisonNumber = prisonNumber,
+      prisonId = confirmArrivalDetail.prisonId!!,
+      bookingId = 0,
+      arrivalDate = LocalDate.now(),
+      arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
+    )
+    return ConfirmArrivalResponse(offenderNo = prisonNumber)
   }
 
-  private fun admitOffenderOnNewBooking(prisonNumber: String, admitArrivalDetail: AdmitArrivalDetail): String {
-    prisonService.admitOffenderOnNewBooking(prisonNumber, admitArrivalDetail)
-    return prisonNumber
+  private fun createAndAdmitOffender(
+    confirmArrivalDetail: ConfirmArrivalDetail,
+    moveId: String
+  ): ConfirmArrivalResponse {
+    val prisonNumber = prisonService.createOffender(confirmArrivalDetail)
+    prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    confirmedArrivalService.add(
+      movementId = moveId,
+      prisonNumber = prisonNumber,
+      prisonId = confirmArrivalDetail.prisonId!!,
+      bookingId = 0,
+      arrivalDate = LocalDate.now(),
+      arrivalType = ArrivalType.NEW_TO_PRISON
+    )
+    return ConfirmArrivalResponse(offenderNo = prisonNumber)
   }
 
   companion object {

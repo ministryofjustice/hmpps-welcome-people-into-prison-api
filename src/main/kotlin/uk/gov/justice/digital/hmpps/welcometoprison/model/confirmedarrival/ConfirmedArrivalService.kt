@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 @Service
 class ConfirmedArrivalService(
-  val confirmedArrivalRepository: ConfirmedArrivalRepository
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository
 ) {
   fun extractConfirmedArrivalFromArrivals(agencyId: String, date: LocalDate, arrivals: List<Arrival>): List<Arrival> {
     val confirmedArrivals = confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(date, agencyId)
