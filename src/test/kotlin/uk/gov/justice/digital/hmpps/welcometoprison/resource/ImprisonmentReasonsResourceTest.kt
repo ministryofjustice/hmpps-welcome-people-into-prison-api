@@ -8,6 +8,12 @@ import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestB
 class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
   @Nested
   inner class `Get imprisonment statuses` {
+    @Test
+    fun `requires authentication`() {
+      webTestClient.get().uri("/imprisonment-statuses")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
 
     @Test
     fun `requires correct role`() {
