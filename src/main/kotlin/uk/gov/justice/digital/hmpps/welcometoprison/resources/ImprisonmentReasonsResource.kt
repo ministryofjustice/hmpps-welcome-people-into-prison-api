@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
@@ -62,15 +63,29 @@ class ImprisonmentReasonsResource {
   fun getStatuses(): List<ImprisonmentStatus> = imprisonmentStatuses
 }
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "The reason for a movement into prison")
 data class MovementReason(
-  val description: String? = "",
+  @Schema(description = "Reason for movement, (if required)", example = "Intermittent custodial sentence")
+  val description: String? = null,
+
+  @Schema(description = "Associated Nomis code", example = "INTER")
   val movementReasonCode: String,
 )
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "The imprisonment status")
 data class ImprisonmentStatus(
+  @Schema(description = "The imprisonment status", example = "Determinate sentence")
   val description: String,
+
+  @Schema(description = "Associated Nomis code", example = "SENT")
   val imprisonmentStatusCode: String,
-  val secondLevelTitle: String? = "",
+
+  @Schema(description = "Title for Movement reasons page, (if required)", example = "What is the type of determinate sentence?")
+  val secondLevelTitle: String? = null,
+
+  @Schema(description = "Movement reasons data", example = "Intermittent custodial sentence, INTER ")
   val movementReasons: List<MovementReason>,
 )
 
