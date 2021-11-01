@@ -13,7 +13,10 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.Confi
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import java.time.Clock
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 class ArrivalsServiceTest {
   private val prisonService: PrisonService = mockk()
@@ -25,7 +28,7 @@ class ArrivalsServiceTest {
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService =
-    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService)
+    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService, FIXED_CLOCK)
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
 
   @Test
@@ -166,6 +169,10 @@ class ArrivalsServiceTest {
     private const val PNC_NUMBER = "99/123456J"
     private const val ANOTHER_PNC_NUMBER = "11/123456J"
     private val DOB = LocalDate.of(1980, 2, 23)
+
+    private val FIXED_NOW: Instant = Instant.now()
+    private val ZONE_ID: ZoneId = ZoneId.systemDefault()
+    private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
 
     private val basmOnlyArrival = Arrival(
       id = "1",

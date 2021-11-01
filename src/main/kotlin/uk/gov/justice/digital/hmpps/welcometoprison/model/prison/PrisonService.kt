@@ -51,7 +51,7 @@ class PrisonService(
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
-  ) {
+  ): Long =
     client.admitOffenderOnNewBooking(
       prisonNumber,
       with(confirmArrivalDetail) {
@@ -65,8 +65,7 @@ class PrisonService(
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    )
-  }
+    ).bookingId
 
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
     client

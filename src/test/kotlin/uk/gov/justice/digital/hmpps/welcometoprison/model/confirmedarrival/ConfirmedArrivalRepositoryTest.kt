@@ -16,17 +16,9 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
 
   @Test
   fun `can insert confirmed arrival record`() {
-    val confirmedArrival = ConfirmedArrival(
-      id = null,
-      prisonNumber = "Prison Number",
-      movementId = "Movement Id",
-      timestamp = LocalDateTime.now(),
-      arrivalType = ArrivalType.NEW_TO_PRISON,
-      prisonId = "Prison Id",
-      bookingId = 123,
-      arrivalDate = LocalDate.now(),
-    )
-    val bookingDb = repository.save(confirmedArrival.copy())
+    val confirmedArrival = confirmedArrival()
+
+    val bookingDb = repository.save(confirmedArrival())
     TestTransaction.flagForCommit()
     TestTransaction.end()
 
@@ -47,5 +39,21 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     val prisonNumber = "prison number"
     val bookings = repository.findAllByArrivalDateAndPrisonNumber(date, prisonNumber)
     Assertions.assertThat(bookings).hasSize(1)
+  }
+
+  companion object {
+    private val TIMESTAMP_NOW: LocalDateTime = LocalDateTime.now()
+    private val ARRIVAL_DATE: LocalDate = TIMESTAMP_NOW.toLocalDate()
+
+    fun confirmedArrival() = ConfirmedArrival(
+      id = null,
+      prisonNumber = "Prison Number",
+      movementId = "Movement Id",
+      timestamp = TIMESTAMP_NOW,
+      arrivalType = ArrivalType.NEW_TO_PRISON,
+      prisonId = "Prison Id",
+      bookingId = 123,
+      arrivalDate = ARRIVAL_DATE,
+    )
   }
 }

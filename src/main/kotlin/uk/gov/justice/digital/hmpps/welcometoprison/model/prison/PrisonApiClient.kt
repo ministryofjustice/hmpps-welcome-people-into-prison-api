@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
@@ -42,6 +41,11 @@ data class AdmitOnNewBookingDetail(
  */
 data class ConfirmArrivalResponse(val offenderNo: String)
 
+/*
+ * The response has many more fields and nested values but currently only bookingId is needed.
+ */
+data class InmateDetail(val bookingId: Long)
+
 data class Prison(@JsonProperty("longDescription") val description: String)
 
 @Service
@@ -73,25 +77,24 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE' and scope 'write'.
    */
-  fun createOffender(detail: CreateOffenderDetail): ConfirmArrivalResponse {
-    return webClient.post()
+  fun createOffender(detail: CreateOffenderDetail): ConfirmArrivalResponse =
+    webClient.post()
       .uri("/api/offenders")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono(ConfirmArrivalResponse::class.java).block() ?: throw RuntimeException()
-  }
+      .bodyToMono(ConfirmArrivalResponse::class.java)
+      .block() ?: throw RuntimeException()
 
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE', scope 'write' and a (NOMIS) username.
    */
-  fun admitOffenderOnNewBooking(offenderNo: String, detail: AdmitOnNewBookingDetail) {
+  fun admitOffenderOnNewBooking(offenderNo: String, detail: AdmitOnNewBookingDetail): InmateDetail =
     webClient.post()
       .uri("/api/offenders/$offenderNo/booking")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono<Unit>()
-      .block()
-  }
+      .bodyToMono(InmateDetail::class.java)
+      .block() ?: throw RuntimeException()
 
   fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
   fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =

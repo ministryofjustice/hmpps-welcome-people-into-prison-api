@@ -59,7 +59,7 @@ class ConfirmedArrivalServiceTest {
 
     private const val PRISON_NUMBER = "A1234AA"
     private const val PNC_NUMBER = "99/123456J"
-    private const val BOOKING_ID = 123
+    private const val BOOKING_ID = 123L
     private const val MOVEMENT_ID = "1"
 
     private val arrival = Arrival(

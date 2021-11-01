@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalR
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import java.time.Clock
 import java.time.LocalDate
 
 @Service
@@ -19,7 +20,8 @@ class ArrivalsService(
   private val basmService: BasmService,
   private val prisonService: PrisonService,
   private val prisonerSearchService: PrisonerSearchService,
-  private val confirmedArrivalService: ConfirmedArrivalService
+  private val confirmedArrivalService: ConfirmedArrivalService,
+  private val clock: Clock
 ) {
   fun getMovement(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
 
@@ -72,13 +74,13 @@ class ArrivalsService(
     moveId: String,
     prisonNumber: String
   ): ConfirmArrivalResponse {
-    prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    val bookingId = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     confirmedArrivalService.add(
       movementId = moveId,
       prisonNumber = prisonNumber,
       prisonId = confirmArrivalDetail.prisonId!!,
-      bookingId = 0,
-      arrivalDate = LocalDate.now(),
+      bookingId = bookingId,
+      arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
     )
     return ConfirmArrivalResponse(offenderNo = prisonNumber)
@@ -89,13 +91,13 @@ class ArrivalsService(
     moveId: String
   ): ConfirmArrivalResponse {
     val prisonNumber = prisonService.createOffender(confirmArrivalDetail)
-    prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    val bookingId = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     confirmedArrivalService.add(
       movementId = moveId,
       prisonNumber = prisonNumber,
       prisonId = confirmArrivalDetail.prisonId!!,
-      bookingId = 0,
-      arrivalDate = LocalDate.now(),
+      bookingId = bookingId,
+      arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
     return ConfirmArrivalResponse(offenderNo = prisonNumber)
