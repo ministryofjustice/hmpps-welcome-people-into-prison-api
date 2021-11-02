@@ -19,7 +19,7 @@ class ConfirmedArrivalServiceTest {
   @Test
   fun `get arrivals when booking are empty`() {
 
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
+    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
 
     val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", DATE, listOf(arrival))
 
@@ -29,7 +29,7 @@ class ConfirmedArrivalServiceTest {
   @Test
   fun `remove from arrival when booking date and movement Id found in booking`() {
 
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns listOf(
+    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns listOf(
       confirmedArrival
     )
 

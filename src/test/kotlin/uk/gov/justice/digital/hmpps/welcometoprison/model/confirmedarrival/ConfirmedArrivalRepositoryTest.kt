@@ -34,10 +34,10 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
 
   @Test
   @Sql("classpath:repository/confirmed-arrival.sql")
-  fun `find all by confirmed arrival date and prison number`() {
+  fun `find all by confirmed arrival date and prison id`() {
     val date = LocalDate.of(2020, 1, 1)
-    val prisonNumber = "prison number"
-    val bookings = repository.findAllByArrivalDateAndPrisonNumber(date, prisonNumber)
+    val prisonId = "MDI"
+    val bookings = repository.findAllByArrivalDateAndPrisonId(date, prisonId)
     Assertions.assertThat(bookings).hasSize(1)
   }
 
