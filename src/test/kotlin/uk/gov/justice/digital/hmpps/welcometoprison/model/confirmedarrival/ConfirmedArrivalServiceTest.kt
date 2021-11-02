@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
@@ -20,30 +21,46 @@ class ConfirmedArrivalServiceTest {
 
     every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
 
-    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", date, listOf(arrival))
+    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", DATE, listOf(arrival))
 
     assertThat(arrivals).hasSize(1)
   }
 
   @Test
-  fun `remove from arrival when booking date, movement Id, prison id, and move type found in booking`() {
+  fun `remove from arrival when booking date and movement Id found in booking`() {
 
     every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns listOf(
       confirmedArrival
     )
 
-    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", date, listOf(arrival))
+    val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", DATE, listOf(arrival))
 
     assertThat(arrivals).hasSize(0)
   }
 
+  @Test
+  fun `add new confirmed arrival`() {
+
+    every { confirmedArrivalRepository.save(any()) } returns confirmedArrivalDb
+
+    confirmedArrivalService.add(
+      movementId = "MDI",
+      prisonNumber = PRISON_NUMBER,
+      prisonId = PNC_NUMBER,
+      bookingId = 1,
+      arrivalDate = LocalDate.of(2021, 1, 1),
+      arrivalType = ArrivalType.NEW_TO_PRISON
+    )
+    verify(exactly = 1) { confirmedArrivalRepository.save(any()) }
+  }
+
   companion object {
-    private val date = LocalDate.of(2021, 1, 2)
+    private val DATE = LocalDate.of(2021, 1, 2)
 
     private const val PRISON_NUMBER = "A1234AA"
-    private const val ANOTHER_PRISON_NUMBER = "A1234BB"
     private const val PNC_NUMBER = "99/123456J"
-    private const val ANOTHER_PNC_NUMBER = "11/123456J"
+    private const val BOOKING_ID = 123L
+    private const val MOVEMENT_ID = "1"
 
     private val arrival = Arrival(
       id = "1",
@@ -52,20 +69,30 @@ class ConfirmedArrivalServiceTest {
       dateOfBirth = LocalDate.of(1991, 7, 31),
       prisonNumber = "A1234AA",
       pncNumber = "99/123456J",
-      date = date,
+      date = DATE,
       fromLocation = "MDI",
       fromLocationType = LocationType.CUSTODY_SUITE
     )
 
     private val confirmedArrival = ConfirmedArrival(
       id = null,
-      prisonNumber = "A1234AA",
-      movementId = "1",
+      prisonNumber = PRISON_NUMBER,
+      movementId = MOVEMENT_ID,
       timestamp = LocalDateTime.now(),
       arrivalType = ArrivalType.NEW_TO_PRISON,
-      prisonId = "99/123456J",
-      bookingId = 123,
-      arrivalDate = date,
+      prisonId = PNC_NUMBER,
+      bookingId = BOOKING_ID,
+      arrivalDate = DATE,
+    )
+    private val confirmedArrivalDb = ConfirmedArrival(
+      id = 1,
+      prisonNumber = PRISON_NUMBER,
+      movementId = MOVEMENT_ID,
+      timestamp = LocalDateTime.now(),
+      arrivalType = ArrivalType.NEW_TO_PRISON,
+      prisonId = PNC_NUMBER,
+      bookingId = BOOKING_ID,
+      arrivalDate = DATE,
     )
   }
 }

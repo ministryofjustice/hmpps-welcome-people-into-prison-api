@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test
 class MatchPrisonerResponseTest {
   @Test
   fun `given null status then prisoner is not current`() {
-    assertThat(reference.currentPrisoner).isFalse
+    assertThat(reference.isCurrentPrisoner).isFalse
   }
 
   @Test
   fun `given INACTIVE OUT status then prisoner is not current`() {
-    assertThat(reference.copy(status = "INACTIVE OUT").currentPrisoner).isFalse
+    assertThat(reference.copy(status = "INACTIVE OUT").isCurrentPrisoner).isFalse
   }
 
   @Test
   fun `given status is present but not INACTIVE OUT then prisoner is current`() {
-    assertThat(reference.copy(status = "XXXXX").currentPrisoner).isTrue
+    assertThat(reference.copy(status = "XXXXX").isCurrentPrisoner).isTrue
   }
 
   companion object {

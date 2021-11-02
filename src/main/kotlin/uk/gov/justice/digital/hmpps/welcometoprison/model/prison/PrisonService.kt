@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
@@ -13,15 +12,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 @Service
-class PrisonService(@Autowired private val client: PrisonApiClient, val faker: Faker = Faker()) {
+class PrisonService(
+  @Autowired private val client: PrisonApiClient,
+  val faker: Faker = Faker()
+) {
 
-  fun getPrisonerImage(offenderNumber: String): ByteArray? {
-    return client.getPrisonerImage(offenderNumber)
-  }
-
-  private val numbers = '0'..'9'
-  private val letters = 'A'..'Z'
-  fun CharRange.get(n: Int) = this.shuffled().take(n).joinToString("")
+  fun getPrisonerImage(offenderNumber: String): ByteArray? = client.getPrisonerImage(offenderNumber)
 
   fun getPrison(prisonId: String) =
     client.getAgency(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
@@ -47,34 +43,18 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
       firstName = faker.name().firstName(),
       lastName = faker.name().lastName(),
       dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-      prisonNumber = letters.get(1) + letters.get(4) + numbers.get(2),
+      prisonNumber = randomPrisonNumber(),
       reasonForAbsence = faker.expression("reason")
     )
   }.take((5..20).random()).toList()
 
-  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
-  fun createAndAdmitOffender(createAndAdmitOffenderDetail: CreateAndAdmitOffenderDetail): CreateOffenderResponse {
-    val createResponse = client.createOffender(
-      with(createAndAdmitOffenderDetail) {
-        CreateOffenderDetail(
-          firstName = firstName!!,
-          middleName1,
-          middleName2,
-          lastName = lastName!!,
-          dateOfBirth = dateOfBirth!!,
-          gender = gender!!,
-          ethnicity,
-          croNumber,
-          pncNumber,
-          suffix,
-          title
-        )
-      }
-    )
-
+  fun admitOffenderOnNewBooking(
+    prisonNumber: String,
+    confirmArrivalDetail: ConfirmArrivalDetail
+  ): Long =
     client.admitOffenderOnNewBooking(
-      createResponse.offenderNo,
-      with(createAndAdmitOffenderDetail) {
+      prisonNumber,
+      with(confirmArrivalDetail) {
         AdmitOnNewBookingDetail(
           prisonId = prisonId!!,
           bookingInTime,
@@ -85,7 +65,34 @@ class PrisonService(@Autowired private val client: PrisonApiClient, val faker: F
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    )
-    return CreateOffenderResponse(offenderNo = createResponse.offenderNo)
+    ).bookingId
+
+  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
+    client
+      .createOffender(
+        with(confirmArrivalDetail) {
+          CreateOffenderDetail(
+            firstName = firstName!!,
+            middleName1,
+            middleName2,
+            lastName = lastName!!,
+            dateOfBirth = dateOfBirth!!,
+            gender = gender!!,
+            ethnicity,
+            croNumber,
+            pncNumber,
+            suffix,
+            title
+          )
+        }
+      )
+      .offenderNo
+
+  companion object {
+    private val numbers = '0'..'9'
+    private val letters = 'A'..'Z'
+
+    private operator fun CharRange.invoke(n: Int) = this.shuffled().take(n).joinToString("")
+    private fun randomPrisonNumber() = letters(1) + numbers(4) + letters(2)
   }
 }

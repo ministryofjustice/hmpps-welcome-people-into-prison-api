@@ -11,6 +11,6 @@ data class MatchPrisonerResponse(
   val pncNumber: String?,
   val status: String?
 ) {
-  val currentPrisoner: Boolean
+  val isCurrentPrisoner: Boolean
     get() = status != null && status != INACTIVE_OUT
 }
