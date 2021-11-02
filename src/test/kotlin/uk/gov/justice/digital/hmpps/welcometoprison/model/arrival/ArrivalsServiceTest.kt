@@ -35,7 +35,7 @@ class ArrivalsServiceTest {
   fun `getMoves - happy path`() {
     every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(basmOnlyArrival)
     every { prisonService.getTransfers("MDI", DATE) } returns listOf(arrivalKnownToNomis)
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
+    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"))
 
     val moves = arrivalsService.getMovements("MDI", DATE)
@@ -51,7 +51,7 @@ class ArrivalsServiceTest {
     @BeforeEach
     fun before() {
       every { prisonService.getTransfers("MDI", DATE) } returns emptyList()
-      every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonNumber(any(), any()) } returns emptyList()
+      every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
     }
 
     @Test
