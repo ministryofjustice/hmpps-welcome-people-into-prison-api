@@ -24,6 +24,7 @@ class HealthCheckTest : IntegrationTestBase() {
       .jsonPath("status").isEqualTo("UP")
       .jsonPath("components.basmApiHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("OK")
+      .jsonPath("components.prisonRegisterHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonerSearchApiHealth.details.HttpStatus").isEqualTo("OK")
   }
 
@@ -109,7 +110,33 @@ class HealthCheckTest : IntegrationTestBase() {
       get("/health/ping").willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(if (status == 200) "pong" else "some error")
+          .withBody(
+            if (status == 200)
+              """
+                {
+                  "status": "UP"
+                }
+              """.trimIndent()
+            else
+              "some error"
+          )
+          .withStatus(status)
+      )
+    )
+
+    prisonRegisterMockServer.stubFor(
+      get("/health/ping").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(
+            if (status == 200)
+              """
+                {
+                  "status": "UP"
+                }
+              """.trimIndent()
+            else "some error"
+          )
           .withStatus(status)
       )
     )
@@ -118,7 +145,15 @@ class HealthCheckTest : IntegrationTestBase() {
       get("/health/ping").willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(if (status == 200) "pong" else "some error")
+          .withBody(
+            if (status == 200)
+              """
+                {
+                  "status": "UP"
+                }
+              """.trimIndent()
+            else "some error"
+          )
           .withStatus(status)
       )
     )

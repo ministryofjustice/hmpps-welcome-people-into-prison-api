@@ -22,7 +22,8 @@ import org.springframework.web.reactive.function.client.WebClient
 class WebClientConfiguration(
   @Value("\${prison.endpoint.url}") private val prisonApiBaseUrl: String,
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
-  @Value("\${prisoner.search.endpoint.url}") private val prisonerSearchApiUrl: String
+  @Value("\${prisoner.search.endpoint.url}") private val prisonerSearchApiUrl: String,
+  @Value("\${prison.register.endpoint.url}") private val prisonRegisterApiUrl: String
 ) {
 
   @Bean
@@ -84,6 +85,9 @@ class WebClientConfiguration(
   fun basmApiHealthWebClient(): WebClient {
     return WebClient.builder().baseUrl(basmRootUri).build()
   }
+
+  @Bean
+  fun prisonRegisterWebClient(): WebClient = WebClient.builder().baseUrl(prisonRegisterApiUrl).build()
 
   @Bean
   fun authorizedClientManager(

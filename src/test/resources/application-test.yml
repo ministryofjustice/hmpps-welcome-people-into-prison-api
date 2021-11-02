@@ -9,6 +9,7 @@ oauth:
 
 prison:
   endpoint.url: http://localhost:9005
+  register.endpoint.url: http://localhost:9006
 
 prisoner:
   search.endpoint.url: http://localhost:8093

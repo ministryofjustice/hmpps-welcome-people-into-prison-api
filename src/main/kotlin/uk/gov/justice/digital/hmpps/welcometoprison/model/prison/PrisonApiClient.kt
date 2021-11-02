@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
@@ -46,33 +45,32 @@ data class ConfirmArrivalResponse(val offenderNo: String)
  */
 data class InmateDetail(val bookingId: Long)
 
-data class Prison(@JsonProperty("longDescription") val description: String)
+fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
+fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
+  if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-@Service
+@Component
 class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
-  fun getPrisonerImage(offenderNumber: String): ByteArray? {
-    return webClient.get()
+  fun getPrisonerImage(offenderNumber: String): ByteArray? =
+    webClient.get()
       .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
       .retrieve()
       .bodyToMono(ByteArray::class.java).block()
-  }
 
-  fun getAgency(agencyId: String): Prison? {
-    return webClient.get()
+  fun getAgency(agencyId: String): Prison? =
+    webClient.get()
       .uri("/api/agencies/$agencyId")
       .retrieve()
       .bodyToMono(typeReference<Prison>())
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
       .block()
-  }
 
-  fun getPrisonTransfersEnRoute(agencyId: String): List<OffenderMovement> {
-    return webClient.get()
+  fun getPrisonTransfersEnRoute(agencyId: String): List<OffenderMovement> =
+    webClient.get()
       .uri("/api/movements/$agencyId/enroute")
       .retrieve()
       .bodyToMono(typeReference<List<OffenderMovement>>())
       .block() ?: emptyList()
-  }
 
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE' and scope 'write'.
@@ -95,8 +93,4 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw RuntimeException()
-
-  fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
-  fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
-    if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 }
