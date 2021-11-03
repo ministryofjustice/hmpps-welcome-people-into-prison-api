@@ -45,5 +45,6 @@ class ConfirmedArrival(
 
 enum class ArrivalType {
   NEW_TO_PRISON,
-  NEW_BOOKING_EXISTING_OFFENDER
+  NEW_BOOKING_EXISTING_OFFENDER,
+  RECALL
 }

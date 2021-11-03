@@ -68,6 +68,25 @@ class PrisonService(
       }
     ).bookingId
 
+  fun recallOffender(
+    prisonNumber: String,
+    confirmArrivalDetail: ConfirmArrivalDetail
+  ): Long =
+    prisonApiClient.recallOffender(
+      prisonNumber,
+      with(confirmArrivalDetail) {
+        RecallBooking(
+          prisonId = prisonId!!,
+          bookingInTime,
+          fromLocationId,
+          movementReasonCode = movementReasonCode!!,
+          youthOffender,
+          cellLocation,
+          imprisonmentStatus = imprisonmentStatus!!
+        )
+      }
+    ).bookingId
+
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
     prisonApiClient
       .createOffender(
