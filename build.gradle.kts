@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.9"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.12"
   kotlin("plugin.spring") version "1.5.31"
   kotlin("plugin.jpa") version "1.5.31"
 }
@@ -20,13 +20,13 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.github.javafaker:javafaker:1.0.2")
 
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.10")
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.12")
+  implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
 
   runtimeOnly("com.h2database:h2:1.4.200")
-  runtimeOnly("org.flywaydb:flyway-core:8.0.2")
-  runtimeOnly("org.postgresql:postgresql:42.3.0")
+  runtimeOnly("org.flywaydb:flyway-core:8.0.3")
+  runtimeOnly("org.postgresql:postgresql:42.3.1")
 
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")

@@ -13,17 +13,18 @@ import java.time.ZoneId
 
 @Service
 class PrisonService(
-  @Autowired private val client: PrisonApiClient,
+  @Autowired private val prisonApiClient: PrisonApiClient,
+  @Autowired private val prisonRegisterClient: PrisonRegisterClient,
   val faker: Faker = Faker()
 ) {
 
-  fun getPrisonerImage(offenderNumber: String): ByteArray? = client.getPrisonerImage(offenderNumber)
+  fun getPrisonerImage(offenderNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(offenderNumber)
 
   fun getPrison(prisonId: String) =
-    client.getAgency(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
+    prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
   fun getTransfers(agencyId: String, date: LocalDate) =
-    client.getPrisonTransfersEnRoute(agencyId).map {
+    prisonApiClient.getPrisonTransfersEnRoute(agencyId).map {
       Arrival(
         id = null,
         firstName = properCase(it.firstName),
@@ -52,7 +53,7 @@ class PrisonService(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
   ): Long =
-    client.admitOffenderOnNewBooking(
+    prisonApiClient.admitOffenderOnNewBooking(
       prisonNumber,
       with(confirmArrivalDetail) {
         AdmitOnNewBookingDetail(
@@ -68,7 +69,7 @@ class PrisonService(
     ).bookingId
 
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
-    client
+    prisonApiClient
       .createOffender(
         with(confirmArrivalDetail) {
           CreateOffenderDetail(

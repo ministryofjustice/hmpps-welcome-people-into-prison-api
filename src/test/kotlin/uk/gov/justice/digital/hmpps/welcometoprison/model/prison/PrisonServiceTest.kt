@@ -16,7 +16,8 @@ import java.time.LocalTime
 class PrisonServiceTest {
 
   private val prisonApiClient = mock<PrisonApiClient>()
-  private val prisonService = PrisonService(prisonApiClient)
+  private val prisonRegisterClient = mock<PrisonRegisterClient>()
+  private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient)
 
   private val prisonImage = "prisonImage".toByteArray()
 
@@ -76,7 +77,7 @@ class PrisonServiceTest {
 
   @Test
   fun `get prison`() {
-    whenever(prisonApiClient.getAgency(any())).thenReturn(Prison("Some description"))
+    whenever(prisonRegisterClient.getPrison(any())).thenReturn(Prison("Some description"))
 
     val result = prisonService.getPrison("MDI")
 

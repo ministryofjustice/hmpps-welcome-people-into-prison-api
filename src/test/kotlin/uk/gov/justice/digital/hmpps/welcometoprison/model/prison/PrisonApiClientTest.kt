@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
@@ -39,30 +38,6 @@ class PrisonApiClientTest {
     mockServer.resetAll()
     val webClient = WebClient.create("http://localhost:${mockServer.port()}")
     prisonApiClient = PrisonApiClient(webClient)
-  }
-
-  @Test
-  fun `get agency`() {
-    mockServer.stubGetAgency("MDI")
-
-    val agency = prisonApiClient.getAgency("MDI")
-
-    assertThat(agency).isEqualTo(
-      Prison(description = "Moorland long description (HMP & YOI)")
-    )
-
-    mockServer.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/agencies/MDI"))
-    )
-  }
-
-  @Test
-  fun `get agency when missing`() {
-    mockServer.stubGetAgency("MDI", NOT_FOUND.value())
-
-    val agency = prisonApiClient.getAgency("MDI")
-
-    assertThat(agency).isNull()
   }
 
   @Test

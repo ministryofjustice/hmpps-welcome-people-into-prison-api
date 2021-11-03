@@ -1,4 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.health
+
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.actuate.health.Health
 import org.springframework.boot.actuate.health.HealthIndicator
@@ -15,20 +16,27 @@ abstract class HealthCheck(private val webClient: WebClient, private val endpoin
       .retrieve()
       .toEntity(String::class.java)
       .flatMap { Mono.just(Health.up().withDetail("HttpStatus", it?.statusCode).build()) }
-      .onErrorResume(WebClientResponseException::class.java) { Mono.just(Health.down(it).withDetail("body", it.responseBodyAsString).withDetail("HttpStatus", it.statusCode).build()) }
+      .onErrorResume(WebClientResponseException::class.java) {
+        Mono.just(
+          Health.down(it).withDetail("body", it.responseBodyAsString).withDetail("HttpStatus", it.statusCode).build()
+        )
+      }
       .onErrorResume(Exception::class.java) { Mono.just(Health.down(it).build()) }
       .block()
   }
 }
 
 @Component
-class PrisonApiHealth
-constructor(@Qualifier("prisonApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")
+class PrisonApiHealth(@Qualifier("prisonApiHealthWebClient") webClient: WebClient) :
+  HealthCheck(webClient, "/health/ping")
 
 @Component
-class PrisonerSearchApiHealth
-constructor(@Qualifier("prisonerSearchApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")
+class PrisonRegisterHealth(@Qualifier("prisonRegisterWebClient") webClient: WebClient) :
+  HealthCheck(webClient, "/health/ping")
 
 @Component
-class BasmApiHealth
-constructor(@Qualifier("basmApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/ping")
+class PrisonerSearchApiHealth(@Qualifier("prisonerSearchApiHealthWebClient") webClient: WebClient) :
+  HealthCheck(webClient, "/health/ping")
+
+@Component
+class BasmApiHealth(@Qualifier("basmApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/ping")
