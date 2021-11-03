@@ -7,6 +7,8 @@ import io.mockk.verifySequence
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalService
@@ -125,38 +127,40 @@ class ArrivalsServiceConfirmArrivalTest {
     verify { basmService.getArrival(MOVE_ID) }
   }
 
-  @Test
-  fun `Offender should be assign to existing booking when movementReasonCode`() {
+  @ParameterizedTest
+  @ValueSource(strings = ["ETRB", "Y", "ETRLR", "ETRRIE", "ETB", "B", "H", "24", "L"])
+  fun `Offender should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
     every { basmService.getArrival(any()) } returns prototypeArrival.copy(
       prisonNumber = OFFENDER_NO
     )
-    every { prisonService.recallOffender(any(), any()) } returns 1
+    every { prisonService.recallOffender(any(), any()) } returns BOOKING_ID
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
-      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "INACTIVE OUT",)
+      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "INACTIVE OUT")
     )
     arrivalsService.confirmArrival(
-      MOVE_ID, confirmArrivalDetail.copy(
+      MOVE_ID,
+      confirmArrivalDetail.copy(
         bookingInTime = LocalDateTime.now(FIXED_CLOCK),
-        movementReasonCode = "xyz"
+        movementReasonCode = movementReasonCode
       )
     )
     verify { prisonService.recallOffender(any(), any()) }
     verify { confirmedArrivalService.add(any(), any(), any(), any(), any(), ArrivalType.RECALL) }
-
   }
 
   @Test
-  fun `Exising offender with no booking should be admit to new booking`() {
+  fun `Exising offender with no booking should be admitted on a new booking`() {
 
     every { basmService.getArrival(any()) } returns prototypeArrival.copy(
       prisonNumber = OFFENDER_NO
     )
     every { prisonService.admitOffenderOnNewBooking(any(), any()) } returns 1
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
-      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "INACTIVE OUT",)
+      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "INACTIVE OUT")
     )
     arrivalsService.confirmArrival(
-      MOVE_ID, confirmArrivalDetail.copy(
+      MOVE_ID,
+      confirmArrivalDetail.copy(
         bookingInTime = LocalDateTime.now(FIXED_CLOCK),
         movementReasonCode = "TXF"
       )
@@ -164,7 +168,6 @@ class ArrivalsServiceConfirmArrivalTest {
     verify { prisonService.admitOffenderOnNewBooking(any(), any()) }
     verify { confirmedArrivalService.add(any(), any(), any(), any(), any(), ArrivalType.NEW_BOOKING_EXISTING_OFFENDER) }
   }
-
 
   companion object {
     private const val MOVE_ID = "beae6404-de16-406f-844a-7e043960d9ec"

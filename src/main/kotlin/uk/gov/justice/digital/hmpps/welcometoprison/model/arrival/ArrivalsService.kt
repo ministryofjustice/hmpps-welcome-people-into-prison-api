@@ -74,7 +74,7 @@ class ArrivalsService(
     moveId: String,
     prisonNumber: String
   ): ConfirmArrivalResponse = when (confirmArrivalDetail.movementReasonCode) {
-    "xyz" -> recallOffender(confirmArrivalDetail, moveId, prisonNumber)
+    in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmArrivalDetail, moveId, prisonNumber)
     else -> admitOffenderOnNewBooking(confirmArrivalDetail, moveId, prisonNumber)
   }
 
@@ -130,6 +130,8 @@ class ArrivalsService(
   }
 
   companion object {
+    val RECALL_MOVEMENT_REASON_CODES = setOf("ETRB", "Y", "ETRLR", "ETRRIE", "ETB", "B", "H", "24", "L")
+
     fun Arrival.isMatch(result: MatchPrisonerResponse) = when {
       prisonNumber != null && pncNumber != null ->
         prisonNumber == result.prisonerNumber && pncNumber == result.pncNumber
@@ -143,5 +145,4 @@ class ArrivalsService(
       else -> false
     }
   }
-
 }

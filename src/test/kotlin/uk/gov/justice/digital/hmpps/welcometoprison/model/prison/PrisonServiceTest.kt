@@ -94,10 +94,10 @@ class PrisonServiceTest {
 
   @Test
   fun `admit Offender On New Booking`() {
-    val confirmArrivalDetail =  ConfirmArrivalDetail(
+    val confirmArrivalDetail = ConfirmArrivalDetail(
       firstName = "Fist",
       lastName = "Last",
-      dateOfBirth = LocalDate.of(1978,1,1),
+      dateOfBirth = LocalDate.of(1978, 1, 1),
       gender = "M",
       prisonId = "MNI",
       movementReasonCode = "N",
@@ -125,10 +125,10 @@ class PrisonServiceTest {
 
   @Test
   fun `recall Offender`() {
-    val confirmArrivalDetail =  ConfirmArrivalDetail(
+    val confirmArrivalDetail = ConfirmArrivalDetail(
       firstName = "Fist",
       lastName = "Last",
-      dateOfBirth = LocalDate.of(1978,1,1),
+      dateOfBirth = LocalDate.of(1978, 1, 1),
       gender = "M",
       prisonId = "MNI",
       movementReasonCode = "N",
@@ -153,6 +153,4 @@ class PrisonServiceTest {
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result).isEqualTo(expectedBookingId)
   }
-
-
 }

@@ -209,6 +209,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
   fun stubRecallOffenderFails(offenderNo: String, status: Int) {
     stubFor(
       put("/api/offenders/$offenderNo/recall")
@@ -228,6 +229,4 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
-
-
 }

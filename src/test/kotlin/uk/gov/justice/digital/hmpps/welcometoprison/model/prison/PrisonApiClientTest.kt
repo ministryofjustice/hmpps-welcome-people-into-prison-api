@@ -168,7 +168,7 @@ class PrisonApiClientTest {
 
     mockServer.stubRecallOffender(offenderNumber)
 
-    prisonApiClient.recallOffender (
+    prisonApiClient.recallOffender(
       offenderNumber,
       RecallBooking(
         prisonId = "NMI",
@@ -197,9 +197,4 @@ class PrisonApiClientTest {
       )
     }.isInstanceOf(WebClientResponseException::class.java)
   }
-
-
-
-
-
 }
