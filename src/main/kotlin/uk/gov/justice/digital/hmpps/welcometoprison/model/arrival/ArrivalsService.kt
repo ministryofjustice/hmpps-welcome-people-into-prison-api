@@ -130,8 +130,6 @@ class ArrivalsService(
   }
 
   companion object {
-    val RECALL_MOVEMENT_REASON_CODES = setOf("ETRB", "Y", "ETRLR", "ETRRIE", "ETB", "B", "H", "24", "L")
-
     fun Arrival.isMatch(result: MatchPrisonerResponse) = when {
       prisonNumber != null && pncNumber != null ->
         prisonNumber == result.prisonerNumber && pncNumber == result.pncNumber
