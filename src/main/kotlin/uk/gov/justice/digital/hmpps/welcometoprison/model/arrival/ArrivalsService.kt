@@ -65,8 +65,17 @@ class ArrivalsService(
 
     return when (arrival.prisonNumber) {
       null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
-      else -> admitOffenderOnNewBooking(confirmArrivalDetail, moveId, arrival.prisonNumber)
+      else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
     }
+  }
+
+  private fun admitOffender(
+    confirmArrivalDetail: ConfirmArrivalDetail,
+    moveId: String,
+    prisonNumber: String
+  ): ConfirmArrivalResponse = when (confirmArrivalDetail.movementReasonCode) {
+    in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmArrivalDetail, moveId, prisonNumber)
+    else -> admitOffenderOnNewBooking(confirmArrivalDetail, moveId, prisonNumber)
   }
 
   private fun admitOffenderOnNewBooking(
@@ -82,6 +91,23 @@ class ArrivalsService(
       bookingId = bookingId,
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
+    )
+    return ConfirmArrivalResponse(offenderNo = prisonNumber)
+  }
+
+  private fun recallOffender(
+    confirmArrivalDetail: ConfirmArrivalDetail,
+    moveId: String,
+    prisonNumber: String
+  ): ConfirmArrivalResponse {
+    val bookingId = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
+    confirmedArrivalService.add(
+      movementId = moveId,
+      prisonNumber = prisonNumber,
+      prisonId = confirmArrivalDetail.prisonId!!,
+      bookingId = bookingId,
+      arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+      arrivalType = ArrivalType.RECALL
     )
     return ConfirmArrivalResponse(offenderNo = prisonNumber)
   }

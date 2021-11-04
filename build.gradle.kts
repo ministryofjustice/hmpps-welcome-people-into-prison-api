@@ -34,6 +34,14 @@ dependencies {
   testImplementation("io.mockk:mockk:1.12.0")
 }
 
+allOpen {
+  annotations(
+    "javax.persistence.Entity",
+    "javax.persistence.MappedSuperclass",
+    "javax.persistence.Embeddable"
+  )
+}
+
 /**
  * Without this Kotlin compiler setting Java Bean validator annotations do not work on Kotlin lists.
  */

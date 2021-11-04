@@ -161,4 +161,40 @@ class PrisonApiClientTest {
       )
     }.isInstanceOf(WebClientResponseException::class.java)
   }
+
+  @Test
+  fun `Recall offender`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubRecallOffender(offenderNumber)
+
+    prisonApiClient.recallOffender(
+      offenderNumber,
+      RecallBooking(
+        prisonId = "NMI",
+        imprisonmentStatus = "SENT03",
+        movementReasonCode = "C",
+        youthOffender = false
+      )
+    )
+  }
+
+  @Test
+  fun `Recall offender fails`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubRecallOffenderFails(offenderNumber, 404)
+
+    assertThatThrownBy {
+      prisonApiClient.recallOffender(
+        offenderNumber,
+        RecallBooking(
+          prisonId = "NMI",
+          imprisonmentStatus = "SENT03",
+          movementReasonCode = "C",
+          youthOffender = false
+        )
+      )
+    }.isInstanceOf(WebClientResponseException::class.java)
+  }
 }
