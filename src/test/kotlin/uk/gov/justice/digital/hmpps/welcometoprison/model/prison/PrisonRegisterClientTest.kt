@@ -47,7 +47,7 @@ class PrisonRegisterClientTest {
     val agency = prisonRegisterClient.getPrison(PRISON_ID)
 
     Assertions.assertThat(agency).isEqualTo(
-      Prison(description = "Nottingham (HMP)")
+      Prison(prisonName = "Nottingham (HMP)")
     )
 
     mockServer.verify(
