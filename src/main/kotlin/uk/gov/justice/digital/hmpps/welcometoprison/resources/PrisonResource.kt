@@ -121,5 +121,7 @@ class PrisonResource(
   fun getPrison(
     @Schema(description = "Prison ID", example = "MDI", required = true)
     @PathVariable prisonId: String
-  ) = prisonService.getPrison(prisonId)
+  ): PrisonView = PrisonView(prisonService.getPrison(prisonId).prisonName)
 }
+
+data class PrisonView(val description: String)

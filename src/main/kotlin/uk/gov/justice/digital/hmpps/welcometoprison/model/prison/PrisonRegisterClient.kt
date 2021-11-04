@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 
-data class Prison(@JsonProperty("prisonName") val description: String)
+data class Prison(@JsonProperty("prisonName") val prisonName: String)
 
 @Component
 class PrisonRegisterClient(

@@ -20,7 +20,7 @@ class PrisonService(
 
   fun getPrisonerImage(offenderNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(offenderNumber)
 
-  fun getPrison(prisonId: String) =
+  fun getPrison(prisonId: String): Prison =
     prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
   fun getTransfers(agencyId: String, date: LocalDate) =
