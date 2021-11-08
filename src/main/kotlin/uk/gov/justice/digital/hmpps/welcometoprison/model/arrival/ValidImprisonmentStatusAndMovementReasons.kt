@@ -40,27 +40,33 @@ val RECALL_MOVEMENT_REASONS = listOf(
 )
 
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
+  code = "recall",
   description = "Recall from licence or temporary release",
   imprisonmentStatusCode = "LR_ORA",
   secondLevelTitle = "Where is the prisoner being recalled from?",
+  secondLevelValidationMessage = "Select where the person is being recalled from",
   movementReasons = RECALL_MOVEMENT_REASONS
 )
 
 val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
+    code = "on-remand",
     description = "On remand",
     imprisonmentStatusCode = "RX",
     movementReasons = listOf(MovementReason(movementReasonCode = "R"))
   ),
   ImprisonmentStatus(
+    code = "convicted-unsentenced",
     description = "Convicted unsentenced",
     imprisonmentStatusCode = "JR",
     movementReasons = listOf(MovementReason(movementReasonCode = "V"))
   ),
   ImprisonmentStatus(
+    code = "determinate-sentence",
     description = "Determinate sentence",
     imprisonmentStatusCode = "SENT",
     secondLevelTitle = "What is the type of determinate sentence?",
+    secondLevelValidationMessage = "Select the type of determinate sentence",
     movementReasons = listOf(
       MovementReason(
         description = "Extended sentence for public protection",
@@ -81,9 +87,11 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "indeterminate-sentence",
     description = "Indeterminate sentence",
     imprisonmentStatusCode = "SENT",
     secondLevelTitle = "What is the type of indeterminate sentence?",
+    secondLevelValidationMessage = "Select the type of indeterminate sentence",
     movementReasons = listOf(
       MovementReason(
         description = "Custody for life - aged under 18",
@@ -106,9 +114,11 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   RECALL_STATUS_AND_MOVEMENT_REASONS,
 
   ImprisonmentStatus(
+    code = "transfer",
     description = "Transfer from another establishment",
     imprisonmentStatusCode = "SENT",
     secondLevelTitle = "Where is the prisoner being transferred from?",
+    secondLevelValidationMessage = "Select the type of transfer",
     movementReasons = listOf(
       MovementReason(
         description = "Another establishment",
@@ -121,9 +131,11 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "temporary-stay",
     description = "Temporary stay enroute to another establishment",
     imprisonmentStatusCode = "SENT",
     secondLevelTitle = "Why is the prisoner staying at this establishment?",
+    secondLevelValidationMessage = "Select why the person is staying at this establishment",
     movementReasons = listOf(
       MovementReason(
         description = "Sameday stopover enroute to another establishment",
@@ -140,6 +152,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "awaiting-transfer-to-hospital",
     description = "Awaiting transfer to hospital",
     imprisonmentStatusCode = "S35MHA",
     movementReasons = listOf(
@@ -149,9 +162,11 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "late-return",
     description = "Late return from licence",
     imprisonmentStatusCode = "LR_ORA",
     secondLevelTitle = "What is the type of late return?",
+    secondLevelValidationMessage = "Select the type of late return",
     movementReasons = listOf(
       MovementReason(
         description = "Voluntary",
@@ -164,6 +179,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "detention-under-immigration-powers",
     description = "Detention under immigration powers",
     imprisonmentStatusCode = "DET",
     movementReasons = listOf(
@@ -173,6 +189,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "youth-offender",
     description = "Detention in Youth Offender Institution",
     imprisonmentStatusCode = "YOI",
     movementReasons = listOf(
@@ -182,6 +199,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "recapture",
     description = "Recapture after escape",
     imprisonmentStatusCode = "SENT03",
     movementReasons = listOf(
@@ -191,9 +209,11 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     )
   ),
   ImprisonmentStatus(
+    code = "civil-offence",
     description = "Civil offence",
     imprisonmentStatusCode = "CIVIL",
     secondLevelTitle = "What is the civil offence?",
+    secondLevelValidationMessage = "Select the civil offence",
     movementReasons = listOf(
       MovementReason(
         description = "Civil committal",
