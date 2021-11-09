@@ -2,10 +2,6 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrival
 
 val RECALL_MOVEMENT_REASONS = listOf(
   MovementReason(
-    description = "Breach of emergency temporary release",
-    movementReasonCode = "ETRB"
-  ),
-  MovementReason(
     description = "Detention and Training Order",
     movementReasonCode = "Y"
   ),
