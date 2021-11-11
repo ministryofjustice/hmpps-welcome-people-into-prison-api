@@ -6,21 +6,21 @@ import java.time.LocalDate
 
 class AgeTest {
   @Test
-  fun `18 tomorrow`() {
+  fun `21 tomorrow`() {
     assertThat(
-      Age.lessThanEighteenYears(
+      Age.lessThanTwentyOneYears(
         LocalDate.of(1961, 5, 29),
-        LocalDate.of(1979, 5, 28)
+        LocalDate.of(1982, 5, 28)
       )
     ).isTrue
   }
 
   @Test
-  fun `18 today`() {
+  fun `21 today`() {
     assertThat(
-      Age.lessThanEighteenYears(
+      Age.lessThanTwentyOneYears(
         LocalDate.of(1961, 5, 29),
-        LocalDate.of(1979, 5, 29)
+        LocalDate.of(1982, 5, 29)
       )
     ).isFalse
   }
