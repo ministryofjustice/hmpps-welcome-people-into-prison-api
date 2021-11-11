@@ -6,6 +6,8 @@ generic-service:
 
   ingress:
     host: welcome-api.prison.service.justice.gov.uk
+    annotations:
+      external-dns.alpha.kubernetes.io/set-identifier: hmpps-welcome-people-into-prison-api-prod-blue
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     OAUTH_ENDPOINT_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
