@@ -6,8 +6,6 @@ generic-service:
 
   ingress:
     host: welcome-api-preprod.prison.service.justice.gov.uk
-    annotations:
-      external-dns.alpha.kubernetes.io/set-identifier: hmpps-welcome-people-into-prison-api-hmpps-welcome-to-prison-preprod-blue
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json

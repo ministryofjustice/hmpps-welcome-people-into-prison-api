@@ -13,8 +13,6 @@ generic-service:
     enabled: true
     host: app-hostname.local    # override per environment
     tlsSecretName: hmpps-welcome-to-prison-cert
-    path: /
-    external-dns.alpha.kubernetes.io/aws-weight: "100"
 
   # Environment variables to load into the deployment
   env:
