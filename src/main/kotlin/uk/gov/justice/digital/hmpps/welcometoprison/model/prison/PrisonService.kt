@@ -108,6 +108,22 @@ class PrisonService(
       )
       .offenderNo
 
+  fun transferInOffender(
+    prisonNumber: String,
+    transferInDetail: TransferInDetail
+  ) {
+    prisonApiClient.transferIn(
+      prisonNumber,
+      with(transferInDetail) {
+        TransferIn(
+          cellLocation,
+          commentText,
+          receiveTime
+        )
+      }
+    )
+  }
+
   companion object {
     private val numbers = '0'..'9'
     private val letters = 'A'..'Z'

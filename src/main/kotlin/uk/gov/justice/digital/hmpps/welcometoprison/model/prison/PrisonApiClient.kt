@@ -44,6 +44,12 @@ data class RecallBooking(
   val imprisonmentStatus: String
 )
 
+data class TransferIn(
+  val cellLocation: String? = null,
+  val commentText: String? = null,
+  val receiveTime: LocalDateTime? = null
+)
+
 /**
  * The response has many more fields and nested values, but only offenderNo is of interest
  */
@@ -112,5 +118,16 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
+      .block() ?: throw RuntimeException()
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun transferIn(offenderNo: String, detail: TransferIn) =
+    webClient.put()
+      .uri("/api/offenders/$offenderNo/transfer-in")
+      .bodyValue(detail)
+      .retrieve()
+      .toBodilessEntity()
       .block() ?: throw RuntimeException()
 }
