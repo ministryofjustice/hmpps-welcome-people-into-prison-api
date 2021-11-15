@@ -6,7 +6,8 @@
     "date": "2021-09-29",
     "fromLocation": "Penrith County Court",
     "fromLocationType": "COURT",
-    "isCurrentPrisoner": false
+    "isCurrentPrisoner": false,
+    "gender": "MALE"
   },
   {
     "prisonNumber": "G6081VQ",

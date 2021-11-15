@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Gender
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_REMAND
@@ -55,7 +56,8 @@ class BasmTestData {
             date_of_birth = LocalDate.of(1996, 7, 23),
             prison_number = null,
             criminal_records_office = null,
-            police_national_computer = null
+            police_national_computer = null,
+            Gender(key = "male", title = "Male", description = null, disabled_at = null, nomis_code = "M")
           )
         )
       ),
@@ -93,7 +95,8 @@ class BasmTestData {
             date_of_birth = LocalDate.of(1991, 7, 31),
             prison_number = "A1234AA",
             criminal_records_office = "123456/96M",
-            police_national_computer = "99/123456J"
+            police_national_computer = "99/123456J",
+            gender = null
           )
         )
       ),
@@ -133,7 +136,8 @@ class BasmTestData {
           date_of_birth = LocalDate.of(1984, 1, 24),
           prison_number = null,
           criminal_records_office = null,
-          police_national_computer = null
+          police_national_computer = null,
+          null
         )
       )
     )

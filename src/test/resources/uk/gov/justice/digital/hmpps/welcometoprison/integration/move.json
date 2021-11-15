@@ -244,12 +244,6 @@
             "id": "318cbc7b-d8d9-4798-9430-a588872446aa",
             "type": "ethnicities"
           }
-        },
-        "gender": {
-          "data": {
-            "id": "ffac6763-26d6-4425-8005-6e5d052aed88",
-            "type": "genders"
-          }
         }
       }
     },

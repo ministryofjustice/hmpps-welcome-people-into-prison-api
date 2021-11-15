@@ -47,6 +47,16 @@ class Model {
     val prison_number: String?,
     val criminal_records_office: String?,
     val police_national_computer: String?,
+    val gender: Gender?
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class Gender(
+    val key: String,
+    val title: String,
+    val description: String?,
+    val disabled_at: String?,
+    val nomis_code: String?
   )
 
   enum class MoveType {

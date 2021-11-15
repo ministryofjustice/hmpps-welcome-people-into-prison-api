@@ -35,7 +35,8 @@ class PrisonService(
         prisonNumber = it.offenderNo,
         date = it.movementDate,
         pncNumber = null,
-        isCurrentPrisoner = true
+        isCurrentPrisoner = true,
+        gender = null
       )
     }
 

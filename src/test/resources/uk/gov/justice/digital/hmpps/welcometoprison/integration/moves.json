@@ -124,6 +124,17 @@
   ],
   "included": [
     {
+      "id": "ffac6763-26d6-4425-8005-6e5d052aed88",
+      "type": "genders",
+      "attributes": {
+        "key": "male",
+        "title": "Male",
+        "description": null,
+        "disabled_at": null,
+        "nomis_code": "M"
+      }
+    },
+    {
       "id": "bd1bf67e-d160-4032-ad59-8f62cd7b25fe",
       "type": "people",
       "attributes": {
@@ -190,6 +201,14 @@
         ],
         "identifiers": [],
         "gender_additional_information": null
+      },
+      "relationships": {
+        "gender": {
+          "data": {
+            "id": "ffac6763-26d6-4425-8005-6e5d052aed88",
+            "type": "genders"
+          }
+        }
       }
     },
     {

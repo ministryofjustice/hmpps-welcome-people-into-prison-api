@@ -38,7 +38,7 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
       sort = "date" to asc,
       page = 1,
       perPage = 200,
-      includes = listOf("profile.person", "from_location", "to_location")
+      includes = listOf("profile.person", "from_location", "to_location", "person.gender")
     ),
     type = typeReference<JsonApiResponse<Movement>>()
   ).block() ?: emptyList()
@@ -46,7 +46,7 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
   fun getMovement(moveId: String): Movement? = get(
     path = "/api/moves/$moveId",
     query = `query of`(
-      includes = listOf("profile.person", "from_location", "to_location")
+      includes = listOf("profile.person", "from_location", "to_location", "person.gender")
     ),
     type = typeReference<JsonApiResponse<Movement>>()
   ).onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }

@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
+import com.nimbusds.openid.connect.sdk.claims.Gender.MALE
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Gender
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
@@ -38,7 +40,12 @@ class BasmService(private val basmClient: BasmClient) {
       pncNumber = personData.police_national_computer,
       date = this.date,
       fromLocation = this.from_location.title,
-      fromLocationType = this.move_type.toLocationType()
+      fromLocationType = this.move_type.toLocationType(),
+      gender = when (this.profile.person.gender?.nomis_code) {
+        "M" -> Gender.MALE
+        "F" -> Gender.FEMALE
+        else -> null
+      }
     )
   }
 
