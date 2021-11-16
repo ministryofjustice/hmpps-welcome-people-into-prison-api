@@ -229,4 +229,86 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
+  fun stubTransferInOffender(offenderNo: String) {
+    stubFor(
+      put("/api/offenders/$offenderNo/transfer-in")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              {
+                "offenderNo": "$offenderNo",
+                "bookingId": 1201493,
+                "bookingNo": "38639A",
+                "offenderId": 2582523,
+                "rootOffenderId": 2582523,
+                "firstName": "D",
+                "lastName": "RAP",
+                "dateOfBirth": "1961-01-04",
+                "age": 60,
+                "activeFlag": true,
+                "agencyId": "NMI",
+                "assignedLivingUnitId": 4019,
+                "alertsCodes": [],
+                "activeAlertCount": 0,
+                "inactiveAlertCount": 0,
+                "alerts": [],
+                "assignedLivingUnit": {
+                  "agencyId": "NMI",
+                  "locationId": 4019,
+                  "description": "RECP",
+                  "agencyName": "Nottingham (HMP)"
+                },
+                "physicalAttributes": {
+                  "sexCode": "F",
+                  "gender": "Female"
+                },
+                "profileInformation": [],
+                "inOutStatus": "IN",
+                "identifiers": [],
+                "sentenceDetail": {
+                  "bookingId": 1201493
+                },
+                "sentenceTerms": [],
+                "status": "ACTIVE IN",
+                "statusReason": "ADM-C",
+                "lastMovementTypeCode": "ADM",
+                "lastMovementReasonCode": "C",
+                "privilegeSummary": {
+                  "bookingId": 1201493,
+                  "iepLevel": "Entry",
+                  "iepDate": "2021-10-14",
+                  "iepTime": "2021-10-14T15:44:44.523286308",
+                  "daysSinceReview": 0,
+                  "iepDetails": []
+                }
+              }
+              """.trimIndent()
+            )
+        )
+    )
+  }
+
+  fun stubTransferInOffenderFails(offenderNo: String, status: Int) {
+    stubFor(
+      put("/api/offenders/$offenderNo/transfer-in")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(status)
+            .withBody(
+              """
+              {
+                "status": $status,
+                "userMessage": "No prisoner found for prisoner number A0001AA",
+                "developerMessage": "No prisoner found for prisoner number A0001AA"
+              }
+            """
+            )
+        )
+    )
+  }
 }

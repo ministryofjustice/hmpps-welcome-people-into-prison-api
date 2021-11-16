@@ -34,6 +34,7 @@ data class AdmitOnNewBookingDetail(
   val cellLocation: String? = null,
   val imprisonmentStatus: String
 )
+
 data class RecallBooking(
   val prisonId: String,
   val recallTime: LocalDateTime? = null,
@@ -42,6 +43,12 @@ data class RecallBooking(
   val youthOffender: Boolean = false,
   val cellLocation: String? = null,
   val imprisonmentStatus: String
+)
+
+data class TransferIn(
+  val cellLocation: String? = null,
+  val commentText: String? = null,
+  val receiveTime: LocalDateTime? = null
 )
 
 /**
@@ -112,5 +119,16 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw RuntimeException()
+      .block() ?: throw IllegalStateException("No response from prison api")
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun transferIn(offenderNo: String, detail: TransferIn) =
+    webClient.put()
+      .uri("/api/offenders/$offenderNo/transfer-in")
+      .bodyValue(detail)
+      .retrieve()
+      .toBodilessEntity()
+      .block() ?: throw IllegalStateException("No response from prison api")
 }

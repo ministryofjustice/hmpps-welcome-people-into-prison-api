@@ -153,4 +153,26 @@ class PrisonServiceTest {
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result).isEqualTo(expectedBookingId)
   }
+
+  @Test
+  fun `transfer-in offender`() {
+
+    val transferInDetail = TransferInDetail(
+      cellLocation = "MDI-RECP",
+      commentText = "some transfer notes",
+      receiveTime = LocalDateTime.now()
+    )
+
+    val transferIn = with(transferInDetail) {
+      TransferIn(
+        cellLocation,
+        commentText,
+        receiveTime
+      )
+    }
+
+    val prisonNumber = "ABC123A"
+    prisonService.transferInOffender(prisonNumber, transferInDetail)
+    verify(prisonApiClient).transferIn(prisonNumber, transferIn)
+  }
 }

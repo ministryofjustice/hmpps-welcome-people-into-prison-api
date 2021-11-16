@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class PrisonApiClientTest {
@@ -193,6 +194,38 @@ class PrisonApiClientTest {
           imprisonmentStatus = "SENT03",
           movementReasonCode = "C",
           youthOffender = false
+        )
+      )
+    }.isInstanceOf(WebClientResponseException::class.java)
+  }
+
+  @Test
+  fun `Transfer in offender`() {
+    val offenderNumber = "ABC123A"
+    mockServer.stubTransferInOffender(offenderNumber)
+
+    prisonApiClient.transferIn(
+      offenderNumber,
+      TransferIn(
+        cellLocation = "MDI-RECP",
+        commentText = "Prisoner was transferred to a new prison",
+        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+    )
+  }
+
+  @Test
+  fun `Transfer in offender fails`() {
+    val offenderNumber = "ABC123A"
+    mockServer.stubTransferInOffenderFails(offenderNumber, 404)
+
+    assertThatThrownBy {
+      prisonApiClient.transferIn(
+        offenderNumber,
+        TransferIn(
+          cellLocation = "MDI-RECP",
+          commentText = "Prisoner was transferred to a new prison",
+          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
         )
       )
     }.isInstanceOf(WebClientResponseException::class.java)
