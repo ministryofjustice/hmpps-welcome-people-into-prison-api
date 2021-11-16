@@ -36,7 +36,10 @@ data class Arrival(
   val fromLocationType: LocationType,
 
   @Schema(description = "Is the arrival in custody according to NOMIS", example = "true")
-  val isCurrentPrisoner: Boolean = false
+  val isCurrentPrisoner: Boolean = false,
+
+  @Schema(description = "Gender of the arrival according to Book a Secure Move. Only returns MALE or FEMALE. If Book a Secure Move returns Trans, this resource will return null as we will need to capture legal gender information", example = "MALE")
+  val gender: Gender? = null
 )
 
 enum class LocationType {
@@ -44,4 +47,9 @@ enum class LocationType {
   CUSTODY_SUITE,
   PRISON,
   OTHER
+}
+
+enum class Gender {
+  MALE,
+  FEMALE,
 }

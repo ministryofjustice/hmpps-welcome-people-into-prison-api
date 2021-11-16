@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm.deserializer
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -105,11 +106,21 @@ class JsonApiDeserializerTest {
   @Test
   fun `check relationships and inclusions deserialization`() {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class Gender(
+      val key: String,
+      val title: String,
+      val description: String?,
+      val disabled_at: String?,
+      val nomis_code: String?
+    )
+
     data class Person(
       val type: String,
       val id: String,
       @JsonProperty("first_names") val firstName: String,
-      @JsonProperty("last_name") val lastName: String
+      @JsonProperty("last_name") val lastName: String,
+      val gender: Gender?
     )
 
     data class Location(
@@ -137,9 +148,12 @@ class JsonApiDeserializerTest {
         "476d47a3-013a-4772-94c7-5d043b0d0574",
         "MUT4738J",
         OffsetDateTime.of(LocalDateTime.of(2021, 9, 29, 8, 5, 9), ZoneOffset.UTC),
-        Person("people", "bd1bf67e-d160-4032-ad59-8f62cd7b25fe", "Alexis", "Jones"),
+        Person(
+          "people", "bd1bf67e-d160-4032-ad59-8f62cd7b25fe", "Alexis", "Jones",
+          Gender("male", "Male", null, null, "M")
+        ),
         Location("locations", "6c1047cf-c8e8-4034-9899-d05ac1b07038", "PENRCT", "Penrith County Court"),
-        Location("locations", "a2bc2abf-75fe-4b7f-bf5a-a755bc290757", "NMI", "NOTTINGHAM (HMP)")
+        Location("locations", "a2bc2abf-75fe-4b7f-bf5a-a755bc290757", "NMI", "NOTTINGHAM (HMP)"),
       )
     )
   }
