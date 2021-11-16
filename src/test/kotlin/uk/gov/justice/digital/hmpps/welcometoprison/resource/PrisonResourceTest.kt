@@ -143,7 +143,7 @@ class PrisonResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("prison/prisoner/A1234BC/transfer-in")
-        .headers(setAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .bodyValue(transferInDetail)
         .exchange()
         .expectStatus().isOk

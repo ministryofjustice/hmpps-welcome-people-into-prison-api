@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
+@PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
 class PrisonResource(
   private val prisonService: PrisonService,
 ) {
@@ -70,7 +71,7 @@ class PrisonResource(
       ),
     ]
   )
-  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
+
   @GetMapping(
     value = ["/prison/prisoner/{offenderNumber}/image", "/prisoner/{offenderNumber}/image"],
     produces = ["image/jpeg"]
@@ -122,7 +123,7 @@ class PrisonResource(
       ),
     ]
   )
-  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
+
   @GetMapping(value = ["/prison/{prisonId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getPrison(
     @Schema(description = "Prison ID", example = "MDI", required = true)
@@ -172,7 +173,6 @@ class PrisonResource(
     ]
   )
 
-  @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @PostMapping(
     "/prison/prisoner/{prisonNumber}/transfer-in",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
