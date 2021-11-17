@@ -78,7 +78,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       basmApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/moves?include=profile.person,from_location,to_location,person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc"
+            "/api/moves?include=profile.person,from_location,to_location,profile.person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc"
           )
         ).withHeader("Authorization", equalTo("Bearer ABCDE"))
       )
