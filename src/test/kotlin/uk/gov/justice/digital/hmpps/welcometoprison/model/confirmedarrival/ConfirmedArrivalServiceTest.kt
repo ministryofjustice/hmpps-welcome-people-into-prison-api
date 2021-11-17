@@ -41,7 +41,9 @@ class ConfirmedArrivalServiceTest {
   @Test
   fun `add new confirmed arrival`() {
 
-    every { confirmedArrivalRepository.save(any()) } returns confirmedArrivalDb
+    every {
+      confirmedArrivalRepository.save(any())
+    } returns confirmedArrivalDb
 
     confirmedArrivalService.add(
       movementId = "MDI",

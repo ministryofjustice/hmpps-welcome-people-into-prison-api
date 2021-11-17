@@ -57,7 +57,7 @@ class BasmTestData {
             prison_number = null,
             criminal_records_office = null,
             police_national_computer = null,
-            Gender(key = "male", title = "Male", description = null, disabled_at = null, nomis_code = "M")
+            gender = Gender.MALE
           )
         )
       ),

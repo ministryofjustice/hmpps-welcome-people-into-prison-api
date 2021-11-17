@@ -32,7 +32,6 @@ import javax.validation.constraints.NotNull
 @Validated
 @RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArrivalsResource(
-  private val movementService: ArrivalsService,
   private val arrivalsService: ArrivalsService
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -85,7 +84,7 @@ class ArrivalsResource(
     @Parameter(description = "Arrivals on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
-  ): List<Arrival> = movementService.getMovements(agencyId, date)
+  ): List<Arrival> = arrivalsService.getMovements(agencyId, date)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -130,7 +129,7 @@ class ArrivalsResource(
   fun getMove(
     @Schema(description = "ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
     @PathVariable moveId: String,
-  ): Arrival = movementService.getMovement(moveId)
+  ): Arrival = arrivalsService.getMovement(moveId)
 
   @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
   @Operation(
