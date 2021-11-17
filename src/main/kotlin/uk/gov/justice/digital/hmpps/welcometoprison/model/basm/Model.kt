@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonNode
 import java.time.LocalDate
 
 class Model {
@@ -50,14 +52,19 @@ class Model {
     val gender: Gender?
   )
 
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class Gender(
-    val key: String,
-    val title: String,
-    val description: String?,
-    val disabled_at: String?,
-    val nomis_code: String?
-  )
+  enum class Gender {
+    MALE, FEMALE;
+
+    companion object {
+      @JvmStatic
+      @JsonCreator
+      fun create(value: JsonNode?) = when (value?.get("nomis_code")?.asText()) {
+        "M" -> MALE
+        "F" -> FEMALE
+        else -> null
+      }
+    }
+  }
 
   enum class MoveType {
     @JsonProperty("prison_remand")
