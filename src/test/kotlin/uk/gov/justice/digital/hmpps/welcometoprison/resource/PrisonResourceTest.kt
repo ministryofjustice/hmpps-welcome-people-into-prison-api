@@ -10,8 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferInDetail
-import java.time.LocalDateTime
 
 @Suppress("ClassName")
 class PrisonResourceTest : IntegrationTestBase() {
@@ -96,59 +94,6 @@ class PrisonResourceTest : IntegrationTestBase() {
         .jsonPath("description").isEqualTo("Nottingham (HMP)")
 
       verify(prisonService).getPrison("NMI")
-    }
-  }
-
-  companion object {
-    val transferInDetail = TransferInDetail(
-      "MDI-RECP",
-      "some comment",
-      LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-    )
-  }
-
-  @Nested
-  inner class `Transfer in` {
-    @Test
-    fun `Requires authentication`() {
-      webTestClient
-        .post()
-        .uri("prison/prisoner/A1234BC/transfer-in")
-        .exchange()
-        .expectStatus().isUnauthorized
-    }
-
-    @Test
-    fun `Requires correct role`() {
-
-      webTestClient
-        .post()
-        .uri("prison/prisoner/A1234BC/transfer-in")
-        .headers(setAuthorisation(roles = listOf(), scopes = listOf("write")))
-        .bodyValue(transferInDetail)
-        .exchange()
-        .expectStatus().isForbidden
-        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
-    }
-
-    @Test
-    fun `Should call prison service with correct args`() {
-
-      val transferInDetails = TransferInDetail(
-        "MDI-RECP",
-        "some comment",
-        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-      )
-
-      webTestClient
-        .post()
-        .uri("prison/prisoner/A1234BC/transfer-in")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
-        .bodyValue(transferInDetail)
-        .exchange()
-        .expectStatus().isOk
-
-      verify(prisonService).transferInOffender("A1234BC", transferInDetails)
     }
   }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -20,6 +22,8 @@ abstract class IntegrationTestBase {
   @Autowired
   lateinit var webTestClient: WebTestClient
 
+  val objectMapper: ObjectMapper by lazy { ObjectMapper().registerModule(JavaTimeModule()) }
+
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
 
@@ -36,7 +40,6 @@ abstract class IntegrationTestBase {
       basmApiMockServer.stubGrantToken()
       basmApiMockServer.stubGetPrison(200)
       basmApiMockServer.stubGetMovements(200)
-      prisonApiMockServer.start()
       basmApiMockServer.stubGetMovement("testId", 200)
       prisonApiMockServer.start()
       prisonRegisterMockServer.start()

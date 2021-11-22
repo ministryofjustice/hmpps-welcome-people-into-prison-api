@@ -23,15 +23,13 @@ class ArrivalsService(
   private val confirmedArrivalService: ConfirmedArrivalService,
   private val clock: Clock
 ) {
-  fun getMovement(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
+  fun getArrival(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
 
-  fun getMovements(agencyId: String, date: LocalDate): List<Arrival> {
+  fun getArrivals(agencyId: String, date: LocalDate): List<Arrival> {
     val arrivals =
       basmService
         .getArrivals(agencyId, date, date)
-        .map { augmentWithPrisonData(it) } +
-        prisonService
-          .getTransfers(agencyId, date)
+        .map { augmentWithPrisonData(it) }
 
     return confirmedArrivalService.extractConfirmedArrivalFromArrivals(agencyId, date, arrivals)
   }
@@ -59,7 +57,7 @@ class ArrivalsService(
     confirmArrivalDetail: ConfirmArrivalDetail
   ): ConfirmArrivalResponse {
 
-    val arrival = getMovement(moveId)
+    val arrival = getArrival(moveId)
 
     if (arrival.isCurrentPrisoner) throw IllegalArgumentException("The arrival is known to NOMIS and has a current booking. This scenario is not supported.")
 

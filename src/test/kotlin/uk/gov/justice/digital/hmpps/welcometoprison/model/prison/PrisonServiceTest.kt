@@ -8,11 +8,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 class PrisonServiceTest {
 
@@ -21,51 +18,6 @@ class PrisonServiceTest {
   private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient)
 
   private val prisonImage = "prisonImage".toByteArray()
-
-  @Test
-  fun `get transfers`() {
-    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(
-      listOf(
-        OffenderMovement(
-          offenderNo = "G6081VQ",
-          bookingId = 472195,
-          dateOfBirth = LocalDate.of(1981, 7, 4),
-          firstName = "IRUNCEKAS",
-          lastName = "BRONSERIA",
-          fromAgency = "DNI",
-          fromAgencyDescription = "Doncaster (HMP)",
-          toAgency = "NMI",
-          toAgencyDescription = "Nottingham (HMP)",
-          movementType = "PRISON_REMAND",
-          movementTypeDescription = "Transfers",
-          movementReason = "NOTR",
-          movementReasonDescription = "Normal Transfer",
-          directionCode = "OUT",
-          movementTime = LocalTime.of(12, 0, 0),
-          movementDate = LocalDate.of(2011, 9, 8)
-        ),
-      )
-    )
-
-    val moves = prisonService.getTransfers("NMI", LocalDate.now())
-
-    assertThat(moves).containsExactly(
-      Arrival(
-        id = null,
-        prisonNumber = "G6081VQ",
-        dateOfBirth = LocalDate.of(1981, 7, 4),
-        firstName = "Iruncekas",
-        lastName = "Bronseria",
-        fromLocation = "Doncaster (HMP)",
-        fromLocationType = LocationType.PRISON,
-        date = LocalDate.of(2011, 9, 8),
-        pncNumber = null,
-        isCurrentPrisoner = true
-      )
-    )
-
-    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
-  }
 
   @Test
   fun `gets prisoner image`() {
@@ -152,27 +104,5 @@ class PrisonServiceTest {
     val result = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result).isEqualTo(expectedBookingId)
-  }
-
-  @Test
-  fun `transfer-in offender`() {
-
-    val transferInDetail = TransferInDetail(
-      cellLocation = "MDI-RECP",
-      commentText = "some transfer notes",
-      receiveTime = LocalDateTime.now()
-    )
-
-    val transferIn = with(transferInDetail) {
-      TransferIn(
-        cellLocation,
-        commentText,
-        receiveTime
-      )
-    }
-
-    val prisonNumber = "ABC123A"
-    prisonService.transferInOffender(prisonNumber, transferInDetail)
-    verify(prisonApiClient).transferIn(prisonNumber, transferIn)
   }
 }

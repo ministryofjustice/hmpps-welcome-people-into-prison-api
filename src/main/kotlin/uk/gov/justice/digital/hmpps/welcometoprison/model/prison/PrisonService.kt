@@ -5,10 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
-import java.time.LocalDate
 import java.time.ZoneId
 
 @Service
@@ -17,28 +13,10 @@ class PrisonService(
   @Autowired private val prisonRegisterClient: PrisonRegisterClient,
   val faker: Faker = Faker()
 ) {
-
-  fun getPrisonerImage(offenderNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(offenderNumber)
+  fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
 
   fun getPrison(prisonId: String): Prison =
     prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
-
-  fun getTransfers(agencyId: String, date: LocalDate) =
-    prisonApiClient.getPrisonTransfersEnRoute(agencyId).map {
-      Arrival(
-        id = null,
-        firstName = properCase(it.firstName),
-        lastName = properCase(it.lastName),
-        dateOfBirth = it.dateOfBirth,
-        fromLocationType = LocationType.PRISON,
-        fromLocation = it.fromAgencyDescription,
-        prisonNumber = it.offenderNo,
-        date = it.movementDate,
-        pncNumber = null,
-        isCurrentPrisoner = true,
-        gender = null
-      )
-    }
 
   fun getTemporaryAbsences(agencyId: String) = generateSequence {
     TemporaryAbsence(
@@ -108,22 +86,6 @@ class PrisonService(
         }
       )
       .offenderNo
-
-  fun transferInOffender(
-    prisonNumber: String,
-    transferInDetail: TransferInDetail
-  ) {
-    prisonApiClient.transferIn(
-      prisonNumber,
-      with(transferInDetail) {
-        TransferIn(
-          cellLocation,
-          commentText,
-          receiveTime
-        )
-      }
-    )
-  }
 
   companion object {
     private val numbers = '0'..'9'
