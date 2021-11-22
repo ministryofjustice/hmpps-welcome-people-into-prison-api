@@ -1,0 +1,12 @@
+[
+  {
+    "firstName": "Alexis",
+    "lastName": "Jones",
+    "dateOfBirth": "1996-07-23",
+    "date": "2021-09-29",
+    "fromLocation": "Penrith County Court",
+    "fromLocationType": "COURT",
+    "isCurrentPrisoner": false,
+    "gender": "MALE"
+  }
+]

@@ -32,25 +32,23 @@ class ArrivalsServiceTest {
   val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
 
   @Test
-  fun `getMoves - happy path`() {
-    every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(basmOnlyArrival)
-    every { prisonService.getTransfers("MDI", DATE) } returns listOf(arrivalKnownToNomis)
+  fun `getArrivals - happy path`() {
+    every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(basmOnlyArrival, arrivalKnownToNomis)
     every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
-    every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"))
+    every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"), result("A1234BB", "11/123456J"))
 
-    val moves = arrivalsService.getMovements("MDI", DATE)
+    val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
-    assertThat(moves).isEqualTo(
+    assertThat(arrivals).isEqualTo(
       listOf(basmOnlyArrival, arrivalKnownToNomis)
     )
   }
 
   @Nested
-  inner class MatchingMovements {
+  inner class MatchingArrivals {
 
     @BeforeEach
     fun before() {
-      every { prisonService.getTransfers("MDI", DATE) } returns emptyList()
       every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
     }
 
@@ -63,7 +61,7 @@ class ArrivalsServiceTest {
         result(move.prisonNumber, move.pncNumber)
       )
 
-      val movement = arrivalsService.getMovements("MDI", DATE).first()
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(move.prisonNumber, move.pncNumber))
     }
@@ -78,7 +76,7 @@ class ArrivalsServiceTest {
         result(ANOTHER_PRISON_NUMBER, move.pncNumber)
       )
 
-      val movement = arrivalsService.getMovements("MDI", DATE).first()
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, move.pncNumber))
     }
@@ -92,7 +90,7 @@ class ArrivalsServiceTest {
         result(move.prisonNumber, ANOTHER_PNC_NUMBER)
       )
 
-      val movement = arrivalsService.getMovements("MDI", DATE).first()
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
@@ -104,7 +102,7 @@ class ArrivalsServiceTest {
       every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
-      val movement = arrivalsService.getMovements("MDI", DATE).first()
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }
@@ -116,7 +114,7 @@ class ArrivalsServiceTest {
       every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
       every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
 
-      val movement = arrivalsService.getMovements("MDI", DATE).first()
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
       assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
     }

@@ -55,20 +55,18 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
       basmApiMockServer.stubGetPrison(200)
       basmApiMockServer.stubGetMovements(200)
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
       webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
-        .expectBody().json("moves".loadJson(this))
+        .expectBody().json("arrivals".loadJson(this))
     }
 
     @Test
     fun `calls service method with correct args`() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
       basmApiMockServer.stubGetPrison(200)
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
       webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
@@ -81,28 +79,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
             "/api/moves?include=profile.person,from_location,to_location,profile.person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc"
           )
         ).withHeader("Authorization", equalTo("Bearer ABCDE"))
-      )
-    }
-
-    @Test
-    fun `calls prison API with passed through token`() {
-      prisonerSearchMockServer.stubMatchPrisoners(200)
-      basmApiMockServer.stubGetPrison(200)
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
-
-      val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
-
-      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
-        .withBearerToken(token)
-        .exchange()
-        .expectStatus().isOk
-
-      prisonApiMockServer.verify(
-        getRequestedFor(
-          urlEqualTo(
-            "/api/movements/MDI/enroute"
-          )
-        ).withHeader("Authorization", equalTo(token))
       )
     }
   }
@@ -150,13 +126,13 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
-        .expectBody().json("move".loadJson(this))
+        .expectBody().json("arrival".loadJson(this))
     }
   }
 
   @Nested
-  @DisplayName("Admin Arrivals tests")
-  inner class AdmitArrivalTests {
+  @DisplayName("Confirm arrivals tests")
+  inner class ConfirmArrivalTests {
     val VALID_REQUEST = """
         {
           "firstName": "Alpha",
