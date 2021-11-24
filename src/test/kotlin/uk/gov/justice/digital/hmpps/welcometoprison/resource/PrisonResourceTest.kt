@@ -124,7 +124,9 @@ class PrisonResourceTest : IntegrationTestBase() {
           UserCaseLoad(
             caseLoadId = "MDI",
             description = "Moorland Closed (HMP & YOI)"
-          )))
+          )
+        )
+      )
 
       webTestClient.get()
         .uri("/prison/users/me/caseLoads")
@@ -132,7 +134,7 @@ class PrisonResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().isOk
         .expectBody()
-        .jsonPath("$[0].caseLoadId").isEqualTo( "MDI")
+        .jsonPath("$[0].caseLoadId").isEqualTo("MDI")
         .jsonPath("$[0].description").isEqualTo("Moorland Closed (HMP & YOI)")
     }
   }

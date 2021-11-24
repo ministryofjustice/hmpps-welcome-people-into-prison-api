@@ -51,10 +51,11 @@ class PrisonApiClientTest {
       UserCaseLoad(
         caseLoadId = "MDI",
         description = "Moorland Closed (HMP & YOI)"
-      ), UserCaseLoad(
-      caseLoadId = "NMI",
-      description = "Nottingham (HMP)"
-    )
+      ),
+      UserCaseLoad(
+        caseLoadId = "NMI",
+        description = "Nottingham (HMP)"
+      )
     )
 
     mockServer.verify(

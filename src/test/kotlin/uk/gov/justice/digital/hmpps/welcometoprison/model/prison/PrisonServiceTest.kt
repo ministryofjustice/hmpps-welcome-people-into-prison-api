@@ -35,14 +35,18 @@ class PrisonServiceTest {
         UserCaseLoad(
           caseLoadId = "MDI",
           description = "Moorland Closed (HMP & YOI)"
-        )))
+        )
+      )
+    )
 
     val result: List<UserCaseLoad> = prisonService.getUserCaseLoads()
 
-    assertThat(result).containsExactly(UserCaseLoad(
-      caseLoadId = "MDI",
-      description = "Moorland Closed (HMP & YOI)"
-    ))
+    assertThat(result).containsExactly(
+      UserCaseLoad(
+        caseLoadId = "MDI",
+        description = "Moorland Closed (HMP & YOI)"
+      )
+    )
   }
 
   @Test

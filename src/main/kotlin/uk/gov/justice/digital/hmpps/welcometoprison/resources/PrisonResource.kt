@@ -168,8 +168,7 @@ class PrisonResource(
   )
 
   @GetMapping(value = ["/prison/users/me/caseLoads"], produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getUserCaseLoads(
-  ): List<UserCaseLoad> = prisonService.getUserCaseLoads()
+  fun getUserCaseLoads(): List<UserCaseLoad> = prisonService.getUserCaseLoads()
 }
 
 data class PrisonView(val description: String)

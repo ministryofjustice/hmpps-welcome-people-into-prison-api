@@ -19,7 +19,7 @@ class PrisonService(
     prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
   fun getUserCaseLoads(): List<UserCaseLoad> =
-  prisonApiClient.getUserCaseLoads()
+    prisonApiClient.getUserCaseLoads()
 
   fun getTemporaryAbsences(agencyId: String) = generateSequence {
     TemporaryAbsence(
