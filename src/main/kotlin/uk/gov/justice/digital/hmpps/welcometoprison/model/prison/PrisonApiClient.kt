@@ -61,6 +61,11 @@ data class ConfirmArrivalResponse(val offenderNo: String)
  */
 data class InmateDetail(val bookingId: Long)
 
+data class UserCaseLoad(
+  val caseLoadId: String,
+  val description: String,
+)
+
 fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
 fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
@@ -78,6 +83,14 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/agencies/$agencyId")
       .retrieve()
       .bodyToMono(typeReference<Prison>())
+      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+      .block()
+
+  fun getUserCaseLoads(): List<UserCaseLoad> =
+    webClient.get()
+      .uri("/api/users/me/caseLoads")
+      .retrieve()
+      .bodyToMono(typeReference<List<UserCaseLoad>>())
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
       .block()
 

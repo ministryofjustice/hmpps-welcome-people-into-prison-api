@@ -12,6 +12,18 @@ import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 class PrisonApiMockServer : WireMockServer(9005) {
 
+  fun stubGetUserCaseLoads() {
+    stubFor(
+      get("/api/users/me/caseLoads")
+        .willReturn(
+          aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(200)
+            .withBody("userCaseLoads".loadJson(this))
+        )
+    )
+  }
+
   fun stubGetPrisonTransfersEnRoute(prisonId: String) {
     stubFor(
       get("/api/movements/$prisonId/enroute")

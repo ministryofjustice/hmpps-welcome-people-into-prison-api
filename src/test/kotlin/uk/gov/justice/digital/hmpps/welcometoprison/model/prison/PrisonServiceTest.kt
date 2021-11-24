@@ -29,6 +29,23 @@ class PrisonServiceTest {
   }
 
   @Test
+  fun `gets user case loads`() {
+    whenever(prisonApiClient.getUserCaseLoads()).thenReturn(
+      listOf(
+        UserCaseLoad(
+          caseLoadId = "MDI",
+          description = "Moorland Closed (HMP & YOI)"
+        )))
+
+    val result: List<UserCaseLoad> = prisonService.getUserCaseLoads()
+
+    assertThat(result).containsExactly(UserCaseLoad(
+      caseLoadId = "MDI",
+      description = "Moorland Closed (HMP & YOI)"
+    ))
+  }
+
+  @Test
   fun `get prison`() {
     whenever(prisonRegisterClient.getPrison(any())).thenReturn(Prison("Some description"))
 

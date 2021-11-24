@@ -42,6 +42,27 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `get user case loads`() {
+    mockServer.stubGetUserCaseLoads()
+
+    val userCaseLoads = prisonApiClient.getUserCaseLoads()
+
+    assertThat(userCaseLoads).containsExactly(
+      UserCaseLoad(
+        caseLoadId = "MDI",
+        description = "Moorland Closed (HMP & YOI)"
+      ), UserCaseLoad(
+      caseLoadId = "NMI",
+      description = "Nottingham (HMP)"
+    )
+    )
+
+    mockServer.verify(
+      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/users/me/caseLoads"))
+    )
+  }
+
+  @Test
   fun `get prison transfers en-route happy path`() {
     mockServer.stubGetPrisonTransfersEnRoute("NMI")
 

@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
 
 @Suppress("ClassName")
 class PrisonResourceTest : IntegrationTestBase() {
@@ -94,6 +95,45 @@ class PrisonResourceTest : IntegrationTestBase() {
         .jsonPath("description").isEqualTo("Nottingham (HMP)")
 
       verify(prisonService).getPrison("NMI")
+    }
+  }
+
+  @Nested
+  inner class `Get user case loads` {
+    @Test
+    fun `Requires authentication`() {
+      webTestClient.get().uri("/prison/users/me/caseLoads")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `Requires correct role`() {
+      webTestClient.get().uri("/prison/users/me/caseLoads")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
+    fun `Returns case loads for a user`() {
+
+      whenever(prisonService.getUserCaseLoads()).thenReturn(
+        listOf(
+          UserCaseLoad(
+            caseLoadId = "MDI",
+            description = "Moorland Closed (HMP & YOI)"
+          )))
+
+      webTestClient.get()
+        .uri("/prison/users/me/caseLoads")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("$[0].caseLoadId").isEqualTo( "MDI")
+        .jsonPath("$[0].description").isEqualTo("Moorland Closed (HMP & YOI)")
     }
   }
 }

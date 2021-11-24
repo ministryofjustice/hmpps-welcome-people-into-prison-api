@@ -18,6 +18,9 @@ class PrisonService(
   fun getPrison(prisonId: String): Prison =
     prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
+  fun getUserCaseLoads(): List<UserCaseLoad> =
+  prisonApiClient.getUserCaseLoads()
+
   fun getTemporaryAbsences(agencyId: String) = generateSequence {
     TemporaryAbsence(
       firstName = faker.name().firstName(),
