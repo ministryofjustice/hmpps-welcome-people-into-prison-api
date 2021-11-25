@@ -108,15 +108,6 @@ class PrisonResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `Requires correct role`() {
-      webTestClient.get().uri("/prison/users/me/caseLoads")
-        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
-        .exchange()
-        .expectStatus().isForbidden
-        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
-    }
-
-    @Test
     fun `Returns case loads for a user`() {
 
       whenever(prisonService.getUserCaseLoads()).thenReturn(
@@ -130,7 +121,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
       webTestClient.get()
         .uri("/prison/users/me/caseLoads")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody()
