@@ -19,10 +19,11 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
 
 @RestController
 @Validated
-@PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
+
 class PrisonResource(
   private val prisonService: PrisonService,
 ) {
+  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Retrieves latest front-facing image of an offenders face",
     description = "Retrieves latest front-facing image of an offenders face, role required is ROLE_VIEW_ARRIVALS",
@@ -75,6 +76,7 @@ class PrisonResource(
     @PathVariable prisonNumber: String
   ) = prisonService.getPrisonerImage(prisonNumber)
 
+  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Retrieves prison info for a specific Prison ID",
     description = "Retrieves prison info for a specific Prison ID, role required is ROLE_VIEW_ARRIVALS",
@@ -126,8 +128,7 @@ class PrisonResource(
 
   @Operation(
     summary = "Retrieves caseloads info for a specific user",
-    description = "Retrieves caseloads info for a specific user, role required is ROLE_VIEW_ARRIVALS",
-    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
+    description = "Retrieves caseloads info for a specific user",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -142,11 +143,6 @@ class PrisonResource(
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      ),
-      ApiResponse(
-        responseCode = "403",
-        description = "Incorrect permissions to retrieve",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
