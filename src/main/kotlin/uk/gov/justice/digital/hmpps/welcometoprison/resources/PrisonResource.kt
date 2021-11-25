@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
 
 @RestController
 @Validated
@@ -122,6 +123,52 @@ class PrisonResource(
     @Schema(description = "Prison ID", example = "MDI", required = true)
     @PathVariable prisonId: String
   ): PrisonView = PrisonView(prisonService.getPrison(prisonId).prisonName)
+
+  @Operation(
+    summary = "Retrieves caseloads info for a specific user",
+    description = "Retrieves caseloads info for a specific user, role required is ROLE_VIEW_ARRIVALS",
+    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns caseload for a specific user",
+        content = [
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = UserCaseLoad::class))
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to retrieve",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "No caseloads found for user",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "500",
+        description = "Unexpected error",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
+      ),
+    ]
+  )
+
+  @GetMapping(value = ["/prison/users/me/caseLoads"], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getUserCaseLoads(): List<UserCaseLoad> = prisonService.getUserCaseLoads()
 }
 
 data class PrisonView(val description: String)
