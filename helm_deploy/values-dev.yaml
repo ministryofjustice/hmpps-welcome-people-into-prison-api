@@ -5,7 +5,8 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: welcome-api-dev.prison.service.justice.gov.uk$NL    contextColour: green
+    host: welcome-api-dev.prison.service.justice.gov.uk
+    contextColour: green
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
