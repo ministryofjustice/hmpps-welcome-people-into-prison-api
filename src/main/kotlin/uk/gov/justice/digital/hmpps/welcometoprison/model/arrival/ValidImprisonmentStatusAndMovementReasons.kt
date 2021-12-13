@@ -38,7 +38,7 @@ val RECALL_MOVEMENT_REASONS = listOf(
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
   code = "recall",
   description = "Recall from licence or temporary release",
-  imprisonmentStatusCode = "LR_ORA",
+  imprisonmentStatusCode = "RECEP_REC",
   secondLevelTitle = "Where is the prisoner being recalled from?",
   secondLevelValidationMessage = "Select where the person is being recalled from",
   movementReasons = RECALL_MOVEMENT_REASONS
@@ -48,19 +48,19 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "on-remand",
     description = "On remand",
-    imprisonmentStatusCode = "RX",
-    movementReasons = listOf(MovementReason(movementReasonCode = "R"))
+    imprisonmentStatusCode = "RECEP_REM",
+    movementReasons = listOf(MovementReason(movementReasonCode = "N"))
   ),
   ImprisonmentStatus(
     code = "convicted-unsentenced",
     description = "Convicted unsentenced",
-    imprisonmentStatusCode = "JR",
+    imprisonmentStatusCode = "RECEP_UNS",
     movementReasons = listOf(MovementReason(movementReasonCode = "V"))
   ),
   ImprisonmentStatus(
     code = "determinate-sentence",
     description = "Determinate sentence",
-    imprisonmentStatusCode = "SENT",
+    imprisonmentStatusCode = "RECEP_DET",
     secondLevelTitle = "What is the type of determinate sentence?",
     secondLevelValidationMessage = "Select the type of determinate sentence",
     movementReasons = listOf(
@@ -85,7 +85,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "indeterminate-sentence",
     description = "Indeterminate sentence",
-    imprisonmentStatusCode = "SENT",
+    imprisonmentStatusCode = "RECEP_IND",
     secondLevelTitle = "What is the type of indeterminate sentence?",
     secondLevelValidationMessage = "Select the type of indeterminate sentence",
     movementReasons = listOf(
@@ -112,7 +112,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "transfer",
     description = "Transfer from another establishment",
-    imprisonmentStatusCode = "SENT",
+    imprisonmentStatusCode = "RECEP_TRA",
     secondLevelTitle = "Where is the prisoner being transferred from?",
     secondLevelValidationMessage = "Select the type of transfer",
     movementReasons = listOf(
@@ -129,7 +129,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "temporary-stay",
     description = "Temporary stay enroute to another establishment",
-    imprisonmentStatusCode = "SENT",
+    imprisonmentStatusCode = "RECEP_TEM",
     secondLevelTitle = "Why is the prisoner staying at this establishment?",
     secondLevelValidationMessage = "Select why the person is staying at this establishment",
     movementReasons = listOf(
@@ -150,7 +150,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "awaiting-transfer-to-hospital",
     description = "Awaiting transfer to hospital",
-    imprisonmentStatusCode = "S35MHA",
+    imprisonmentStatusCode = "RECEP_HOS",
     movementReasons = listOf(
       MovementReason(
         movementReasonCode = "O"
@@ -160,7 +160,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "late-return",
     description = "Late return from licence",
-    imprisonmentStatusCode = "LR_ORA",
+    imprisonmentStatusCode = "RECEP_LAT",
     secondLevelTitle = "What is the type of late return?",
     secondLevelValidationMessage = "Select the type of late return",
     movementReasons = listOf(
@@ -177,7 +177,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "detention-under-immigration-powers",
     description = "Detention under immigration powers",
-    imprisonmentStatusCode = "DET",
+    imprisonmentStatusCode = "RECEP_IMM",
     movementReasons = listOf(
       MovementReason(
         movementReasonCode = "E"
@@ -187,7 +187,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "youth-offender",
     description = "Detention in Youth Offender Institution",
-    imprisonmentStatusCode = "YOI",
+    imprisonmentStatusCode = "RECEP_YOI",
     movementReasons = listOf(
       MovementReason(
         movementReasonCode = "W"
@@ -197,7 +197,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "recapture",
     description = "Recapture after escape",
-    imprisonmentStatusCode = "SENT03",
+    imprisonmentStatusCode = "RECEP_CAP",
     movementReasons = listOf(
       MovementReason(
         movementReasonCode = "RECA"
@@ -207,7 +207,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ImprisonmentStatus(
     code = "civil-offence",
     description = "Civil offence",
-    imprisonmentStatusCode = "CIVIL",
+    imprisonmentStatusCode = "RECEP_CIV",
     secondLevelTitle = "What is the civil offence?",
     secondLevelValidationMessage = "Select the civil offence",
     movementReasons = listOf(
