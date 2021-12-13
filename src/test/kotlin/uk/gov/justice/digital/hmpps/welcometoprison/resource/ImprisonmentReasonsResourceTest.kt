@@ -41,8 +41,8 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .exchange()
         .expectBody()
         .jsonPath("$[0].description").isEqualTo("On remand")
-        .jsonPath("$[0].imprisonmentStatusCode").isEqualTo("RX")
-        .jsonPath("$[0].movementReasons[0].movementReasonCode").isEqualTo("R")
+        .jsonPath("$[0].imprisonmentStatusCode").isEqualTo("RECEP_REM")
+        .jsonPath("$[0].movementReasons[0].movementReasonCode").isEqualTo("N")
     }
 
     @Test
@@ -52,7 +52,7 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .exchange()
         .expectBody()
         .jsonPath("$[2].description").isEqualTo("Determinate sentence")
-        .jsonPath("$[2].imprisonmentStatusCode").isEqualTo("SENT")
+        .jsonPath("$[2].imprisonmentStatusCode").isEqualTo("RECEP_DET")
         .jsonPath("$[2].secondLevelTitle").isEqualTo("What is the type of determinate sentence?")
         .jsonPath("$[2].movementReasons[0].description").isEqualTo("Extended sentence for public protection")
         .jsonPath("$[2].movementReasons[0].movementReasonCode").isEqualTo("26")
