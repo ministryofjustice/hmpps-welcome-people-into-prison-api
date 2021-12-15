@@ -136,7 +136,7 @@ class ArrivalsService(
         prisonNumber == result.prisonerNumber
 
       prisonNumber == null && pncNumber != null ->
-        pncNumber == result.pncNumber
+        result.pncNumber.equals(pncNumber, ignoreCase = true)
 
       else -> false
     }
