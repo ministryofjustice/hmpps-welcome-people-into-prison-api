@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
 class PrisonerSearchServiceTest {
@@ -15,7 +16,7 @@ class PrisonerSearchServiceTest {
   private val service = PrisonerSearchService(client)
 
   @Test
-  fun `happy path`() {
+  fun `getCandidateMatches - happy path`() {
     every { client.matchPrisoner(any()) } returnsMany listOf(
       listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN")),
       listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT))
@@ -27,6 +28,26 @@ class PrisonerSearchServiceTest {
       MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN"),
       MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT)
     )
+  }
+
+  @Test
+  fun `getPncNumbers - happy path when PNC Number available`() {
+    every { client.matchPncNumbersByPrisonerNumbers(any()) } returns
+      listOf(PrisonerAndPncNumber(PRISON_NUMBER, PNC_NUMBER))
+
+    val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
+
+    assertThat(prisonerAndPncNumbers).isEqualTo(mapOf(PRISON_NUMBER to PNC_NUMBER))
+  }
+
+  @Test
+  fun `getPncNumbers - happy path when no PNC Number available`() {
+    every { client.matchPncNumbersByPrisonerNumbers(any()) } returns
+      listOf(PrisonerAndPncNumber(PRISON_NUMBER))
+
+    val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
+
+    assertThat(prisonerAndPncNumbers).isEqualTo(mapOf(PRISON_NUMBER to null))
   }
 
   companion object {

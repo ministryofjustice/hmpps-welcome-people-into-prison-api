@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchByPrisonerNumberRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 
 @Component
@@ -16,6 +18,16 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       .bodyValue(matchPrisonerRequest)
       .retrieve()
       .bodyToMono(typeReference<List<MatchPrisonerResponse>>())
+      .block()
+      ?: emptyList()
+  }
+
+  fun matchPncNumbersByPrisonerNumbers(matchByPrisonerNumberRequest: MatchByPrisonerNumberRequest): List<PrisonerAndPncNumber> {
+    return webClient.post()
+      .uri("/prisoner-search/prisoner-numbers")
+      .bodyValue(matchByPrisonerNumberRequest)
+      .retrieve()
+      .bodyToMono(typeReference<List<PrisonerAndPncNumber>>())
       .block()
       ?: emptyList()
   }

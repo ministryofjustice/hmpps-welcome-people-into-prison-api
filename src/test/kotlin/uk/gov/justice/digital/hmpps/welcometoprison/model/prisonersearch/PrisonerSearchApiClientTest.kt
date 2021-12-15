@@ -9,9 +9,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 
 class PrisonerSearchApiClientTest {
 
@@ -58,6 +60,43 @@ class PrisonerSearchApiClientTest {
 
     mockServer.verify(
       postRequestedFor(urlEqualTo("/prisoner-search/match-prisoners"))
+    )
+  }
+
+  @Test
+  fun `successful match by prisoner number when PNC Number available`() {
+    mockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")))
+    val result = client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(listOf("A1278AA")))
+
+    assertThat(result).isEqualTo(
+      listOf(
+        PrisonerAndPncNumber(
+          prisonerNumber = "A1278AA",
+          pncNumber = "1234/1234589A",
+        )
+      )
+    )
+
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
+    )
+  }
+
+  @Test
+  fun `successful match by prisoner number when no PNC Number available`() {
+    mockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA")))
+    val result = client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(listOf("A1278AA")))
+
+    assertThat(result).isEqualTo(
+      listOf(
+        PrisonerAndPncNumber(
+          prisonerNumber = "A1278AA",
+        )
+      )
+    )
+
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
     )
   }
 }

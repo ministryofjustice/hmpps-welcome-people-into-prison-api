@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.INACTIVE_OUT
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
 
 private const val MAPPINGS_DIRECTORY = "src/testIntegration/resources"
@@ -40,6 +41,26 @@ class PrisonerSearchMockServer : MockServer(8093) {
                     status = INACTIVE_OUT,
                   )
                 )
+              )
+            )
+        )
+    )
+  }
+
+  fun stubMatchByPrisonerNumbers(status: Int, prisonerAndPncNumbers: List<PrisonerAndPncNumber>) {
+    stubFor(
+      WireMock.post(
+        WireMock.urlPathMatching(
+          "/prisoner-search/prisoner-numbers"
+        )
+      )
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(status)
+            .withBody(
+              mapper.writeValueAsString(
+                prisonerAndPncNumbers
               )
             )
         )
