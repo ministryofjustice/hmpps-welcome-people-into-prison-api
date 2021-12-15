@@ -67,6 +67,20 @@ class ArrivalsServiceTest {
     }
 
     @Test
+    fun `finds match from candidates when PNC number includes lower case character`() {
+      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = "99/123456j")
+
+      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
+      every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
+        result(move.prisonNumber, "99/123456J")
+      )
+
+      val movement = arrivalsService.getArrivals("MDI", DATE).first()
+
+      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(move.prisonNumber, "99/123456J"))
+    }
+
+    @Test
     fun `Doesn't find match from candidates due to prison number mismatch`() {
 
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
