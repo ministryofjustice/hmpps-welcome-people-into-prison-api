@@ -130,10 +130,13 @@ class ArrivalsService(
   companion object {
     fun Arrival.isMatch(result: MatchPrisonerResponse) = when {
       prisonNumber != null && pncNumber != null ->
-        prisonNumber == result.prisonerNumber && pncNumber == result.pncNumber
+        result.prisonerNumber.equals(prisonNumber, ignoreCase = true) && result.pncNumber.equals(
+          pncNumber,
+          ignoreCase = true
+        )
 
       prisonNumber != null && pncNumber == null ->
-        prisonNumber == result.prisonerNumber
+        result.prisonerNumber.equals(prisonNumber, ignoreCase = true)
 
       prisonNumber == null && pncNumber != null ->
         result.pncNumber.equals(pncNumber, ignoreCase = true)
