@@ -18,18 +18,18 @@ class TransfersService(
 
   fun getTransfers(agencyId: String): List<Transfer> {
     val transfers = prisonApiClient.getPrisonTransfersEnRoute(agencyId)
-    val pncNumbers = prisonerSearchService.getPncNumbers(transfers.map{it.offenderNo})
+    val pncNumbers = prisonerSearchService.getPncNumbers(transfers.map { it.offenderNo })
 
     return transfers.map {
-        Transfer(
-          firstName = Name.properCase(it.firstName),
-          lastName = Name.properCase(it.lastName),
-          dateOfBirth = it.dateOfBirth,
-          fromLocation = it.fromAgencyDescription,
-          prisonNumber = it.offenderNo,
-          date = it.movementDate,
-          pncNumber = pncNumbers[it.offenderNo],
-        )
+      Transfer(
+        firstName = Name.properCase(it.firstName),
+        lastName = Name.properCase(it.lastName),
+        dateOfBirth = it.dateOfBirth,
+        fromLocation = it.fromAgencyDescription,
+        prisonNumber = it.offenderNo,
+        date = it.movementDate,
+        pncNumber = pncNumbers[it.offenderNo],
+      )
     }
   }
 

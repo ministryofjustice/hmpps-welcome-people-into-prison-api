@@ -3,9 +3,9 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 

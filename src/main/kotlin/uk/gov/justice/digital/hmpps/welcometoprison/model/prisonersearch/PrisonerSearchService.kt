@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.request.MatchPrisonerRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
@@ -39,5 +39,4 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
 
   private fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> =
     client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(prisonerNumbers))
-
 }
