@@ -13,7 +13,6 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersSpec
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
