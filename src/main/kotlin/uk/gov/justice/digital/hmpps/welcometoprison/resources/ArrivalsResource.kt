@@ -125,7 +125,7 @@ class ArrivalsResource(
     ]
   )
 
-  @GetMapping(path = [ "/arrivals/{moveId}"])
+  @GetMapping(path = ["/arrivals/{moveId}"])
   fun getMove(
     @Schema(description = "ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
     @PathVariable moveId: String,

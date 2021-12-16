@@ -252,4 +252,38 @@ class PrisonApiClientTest {
       )
     }.isInstanceOf(WebClientResponseException::class.java)
   }
+
+  @Test
+  fun `Transfer from court successful`() {
+    val offenderNumber = "A1234BC"
+    mockServer.stubCourtTransferInOffender(offenderNumber)
+
+    prisonApiClient.courtTransferIn(
+      offenderNumber,
+      CourtTransferIn(
+        agencyId = "MDI",
+        movementReasonCode = "CA",
+        commentText = "Prisoner was transferred from court",
+        dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+    )
+  }
+
+  @Test
+  fun `Transfer from Court fails`() {
+    val offenderNumber = "A1234BC"
+    mockServer.stubCourtTransferInOffenderFails(offenderNumber, 404)
+
+    assertThatThrownBy {
+      prisonApiClient.courtTransferIn(
+        offenderNumber,
+        CourtTransferIn(
+          agencyId = "MDI",
+          movementReasonCode = "CA",
+          commentText = "Prisoner was transferred from court",
+          dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+        )
+      )
+    }.isInstanceOf(WebClientResponseException::class.java)
+  }
 }

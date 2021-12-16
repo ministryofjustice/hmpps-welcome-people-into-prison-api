@@ -127,6 +127,10 @@ data class ConfirmArrivalDetail(
   @field:NotNull
   val movementReasonCode: String? = null,
 
+  @Schema(name = "Comments", example = "Prisoner arrived from court")
+  @field:Length(max = 240, message = "comment text size is a maximum of 240 characters")
+  val commentText: String? = null,
+
   @Schema(
     name = "Cell location where recalled prisoner should be housed, default will be reception",
     example = "MDI-RECP",
