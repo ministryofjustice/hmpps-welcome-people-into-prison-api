@@ -74,11 +74,15 @@ class ArrivalsServiceConfirmArrivalTest {
   }
 
   @Test
-  fun `Confirm arrival matched to NOMIS offender who is in custody is rejected`() {
-
-    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(prisonNumber = OFFENDER_NO)
+  fun `Confirm arrival matched to NOMIS offender who is in custody and is a non-court transfer, is rejected`() {
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
       MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
+    )
+
+    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(
+      prisonNumber = OFFENDER_NO,
+      isCurrentPrisoner = true,
+      fromLocationType = LocationType.PRISON
     )
 
     Assertions.assertThatThrownBy {
@@ -89,9 +93,72 @@ class ArrivalsServiceConfirmArrivalTest {
   }
 
   @Test
+  fun `Confirm arrival of court transfer for prisoner who is already in custody, calls prison service with correct args`() {
+
+    every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
+      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
+    )
+
+    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(
+      prisonNumber = OFFENDER_NO,
+      isCurrentPrisoner = true,
+    )
+    every { prisonService.transferInFromCourt(any(), any()) } returns BOOKING_ID
+
+    arrivalsService.confirmArrival(
+      MOVE_ID,
+      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+    )
+
+    verify {
+      prisonService.transferInFromCourt(
+        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE,
+        ARRIVAL_PROTOTYPE.copy(
+          prisonNumber = OFFENDER_NO,
+          isCurrentPrisoner = true,
+        )
+      )
+    }
+  }
+
+  @Test
+  fun `Confirm arrival of court transfer for prisoner who is already in custody, records the arrival as an event`() {
+
+    every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
+      MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
+    )
+
+    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(
+      prisonNumber = OFFENDER_NO,
+      isCurrentPrisoner = true,
+    )
+    every { prisonService.transferInFromCourt(any(), any()) } returns BOOKING_ID
+
+    arrivalsService.confirmArrival(
+      MOVE_ID,
+      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+    )
+
+    verify {
+      confirmedArrivalService.add(
+        MOVE_ID,
+        OFFENDER_NO,
+        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
+        BOOKING_ID,
+        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.bookingInTime?.toLocalDate()!!,
+        ArrivalType.COURT_TRANSFER
+      )
+    }
+  }
+
+  @Test
   fun `Confirm arrival matched to NOMIS offender who is in custody is rejected - default arrival time`() {
 
-    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(prisonNumber = OFFENDER_NO)
+    every { basmService.getArrival(any()) } returns ARRIVAL_PROTOTYPE.copy(
+      prisonNumber = OFFENDER_NO,
+      isCurrentPrisoner = true,
+      fromLocationType = LocationType.PRISON
+    )
     every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(
       MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
     )
@@ -198,7 +265,13 @@ class ArrivalsServiceConfirmArrivalTest {
       prisonId = PRISON_ID,
       movementReasonCode = "N",
       imprisonmentStatus = "SENT03",
-      bookingInTime = BOOKING_IN_TIME
+      bookingInTime = BOOKING_IN_TIME,
+      suffix = "",
+      ethnicity = "",
+      croNumber = "",
+      fromLocationId = "",
+      commentText = "",
+      cellLocation = "",
     )
 
     @JvmStatic

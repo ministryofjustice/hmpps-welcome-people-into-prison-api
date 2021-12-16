@@ -59,12 +59,34 @@ class ArrivalsService(
 
     val arrival = getArrival(moveId)
 
-    if (arrival.isCurrentPrisoner) throw IllegalArgumentException("The arrival is known to NOMIS and has a current booking. This scenario is not supported.")
+    return if (arrival.isCurrentPrisoner)
+      when (arrival.fromLocationType) {
+        LocationType.COURT -> transferInFromCourt(moveId, confirmArrivalDetail, arrival)
+        else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
+      } else
+      when (arrival.prisonNumber) {
+        null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
+        else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
+      }
+  }
 
-    return when (arrival.prisonNumber) {
-      null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
-      else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
-    }
+  private fun transferInFromCourt(
+    moveId: String,
+    confirmArrivalDetail: ConfirmArrivalDetail,
+    arrival: Arrival
+  ): ConfirmArrivalResponse {
+
+    val bookingId = prisonService.transferInFromCourt(confirmArrivalDetail, arrival)
+
+    confirmedArrivalService.add(
+      moveId,
+      arrival.prisonNumber!!,
+      confirmArrivalDetail.prisonId!!,
+      bookingId,
+      confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+      ArrivalType.COURT_TRANSFER
+    )
+    return ConfirmArrivalResponse(offenderNo = arrival.prisonNumber)
   }
 
   private fun admitOffender(

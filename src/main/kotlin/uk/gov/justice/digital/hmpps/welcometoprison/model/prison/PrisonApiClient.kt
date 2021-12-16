@@ -51,6 +51,13 @@ data class TransferIn(
   val receiveTime: LocalDateTime? = null
 )
 
+data class CourtTransferIn(
+  val agencyId: String,
+  val movementReasonCode: String? = null,
+  val commentText: String? = null,
+  val dateTime: LocalDateTime? = null
+)
+
 /**
  * The response has many more fields and nested values, but only offenderNo is of interest
  */
@@ -143,5 +150,13 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .toBodilessEntity()
+      .block() ?: throw IllegalStateException("No response from prison api")
+
+  fun courtTransferIn(offenderNo: String, detail: CourtTransferIn): InmateDetail =
+    webClient.put()
+      .uri("/api/offenders/$offenderNo/court-transfer-in")
+      .bodyValue(detail)
+      .retrieve()
+      .bodyToMono(InmateDetail::class.java)
       .block() ?: throw IllegalStateException("No response from prison api")
 }

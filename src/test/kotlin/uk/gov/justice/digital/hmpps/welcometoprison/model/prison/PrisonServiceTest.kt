@@ -8,6 +8,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Gender
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -125,5 +128,48 @@ class PrisonServiceTest {
     val result = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result).isEqualTo(expectedBookingId)
+  }
+
+  @Test
+  fun `transferInFromCourt calls prisonApi correctly and returns the bookingId`() {
+    val confirmArrivalDetail = ConfirmArrivalDetail(
+      firstName = "First",
+      lastName = "Last",
+      dateOfBirth = LocalDate.of(1978, 1, 1),
+      gender = "M",
+      prisonId = "MNI",
+      movementReasonCode = "N",
+      imprisonmentStatus = "SENT03",
+      bookingInTime = LocalDateTime.now(),
+      commentText = " Some comments"
+    )
+    val arrival = Arrival(
+      id = "0573de83-8a29-42aa-9ede-1068bc433fc5",
+      firstName = "First",
+      lastName = "last",
+      dateOfBirth = LocalDate.of(1978, 1, 1),
+      prisonNumber = "A1234AA",
+      pncNumber = "01/1234X",
+      date = LocalDate.now(),
+      fromLocation = "Kingston-upon-Hull Crown Court",
+      fromLocationType = LocationType.COURT,
+      isCurrentPrisoner = true,
+      gender = Gender.MALE
+    )
+
+    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(InmateDetail(1L))
+
+    val result = prisonService.transferInFromCourt(confirmArrivalDetail, arrival)
+
+    verify(prisonApiClient).courtTransferIn(
+      arrival.prisonNumber!!,
+      CourtTransferIn(
+        confirmArrivalDetail.prisonId!!,
+        confirmArrivalDetail.movementReasonCode,
+        confirmArrivalDetail.commentText,
+        confirmArrivalDetail.bookingInTime
+      )
+    )
+    assertThat(result).isEqualTo(1L)
   }
 }
