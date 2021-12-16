@@ -8,17 +8,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 class TransfersServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
-  private val transfersService = TransfersService(prisonApiClient)
+  private val prisonerSearchService: PrisonerSearchService = mock()
+  private val transfersService = TransfersService(prisonApiClient, prisonerSearchService)
 
   @Test
-  fun `getTransfers - happy path`() {
+  fun `getTransfers - happy path if prisoner has no PNC Number`() {
     whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonerSearchService.getPncNumbers(any())).thenReturn(mapOf("G6081VQ" to null))
 
     val transfers = transfersService.getTransfers("NMI")
 
@@ -35,6 +38,30 @@ class TransfersServiceTest {
     )
 
     verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
+    verify(prisonerSearchService).getPncNumbers(listOf("G6081VQ"))
+  }
+
+  @Test
+  fun `getTransfers - happy path if prisoner has PNC Number`() {
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonerSearchService.getPncNumbers(any())).thenReturn(mapOf("G6081VQ" to "12/394773H"))
+
+    val transfers = transfersService.getTransfers("NMI")
+
+    assertThat(transfers).containsExactly(
+      Transfer(
+        prisonNumber = "G6081VQ",
+        dateOfBirth = LocalDate.of(1981, 7, 4),
+        firstName = "Iruncekas",
+        lastName = "Bronseria",
+        fromLocation = "Doncaster (HMP)",
+        date = LocalDate.of(2011, 9, 8),
+        pncNumber = "12/394773H",
+      )
+    )
+
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
+    verify(prisonerSearchService).getPncNumbers(listOf("G6081VQ"))
   }
 
   @Test

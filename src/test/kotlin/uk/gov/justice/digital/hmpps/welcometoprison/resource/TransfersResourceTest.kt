@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferInDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDateTime
 
@@ -21,6 +22,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     @BeforeEach
     fun beforeEach() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonerSearchMockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")))
     }
 
     @Test
@@ -76,6 +78,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     @BeforeEach
     fun beforeEach() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonerSearchMockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")))
     }
 
     @Test
