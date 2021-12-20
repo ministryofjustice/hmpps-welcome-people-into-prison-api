@@ -53,14 +53,15 @@ class Model {
   )
 
   enum class Gender {
-    MALE, FEMALE;
+    MALE, FEMALE, TRANS;
 
     companion object {
       @JvmStatic
       @JsonCreator
-      fun create(value: JsonNode?) = when (value?.get("nomis_code")?.asText()) {
-        "M" -> MALE
-        "F" -> FEMALE
+      fun create(value: JsonNode?) = when (value?.get("key")?.asText()) {
+        "male" -> MALE
+        "female" -> FEMALE
+        "trans" -> TRANS
         else -> null
       }
     }
