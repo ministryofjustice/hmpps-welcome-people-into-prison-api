@@ -52,4 +52,5 @@ enum class LocationType {
 enum class Gender {
   MALE,
   FEMALE,
+  TRANS,
 }
