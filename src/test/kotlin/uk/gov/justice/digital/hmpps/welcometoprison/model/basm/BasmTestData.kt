@@ -51,7 +51,7 @@ class BasmTestData {
           id = "45a2b4a8-38ec-46f4-b882-148a21ebbe6e",
           person = People(
             id = "bd1bf67e-d160-4032-ad59-8f62cd7b25fe",
-            first_names = "Alexis",
+            first_names = "Alexis robert",
             last_name = "Jones",
             date_of_birth = LocalDate.of(1996, 7, 23),
             prison_number = null,
@@ -131,7 +131,7 @@ class BasmTestData {
         id = "8e4ff6e6-0d4f-49e2-aff6-f3022501be31",
         person = People(
           id = "0482f85c-2216-40ca-a73d-67fcd2ae283f",
-          first_names = "JASON",
+          first_names = "JASON harry",
           last_name = "SIMS",
           date_of_birth = LocalDate.of(1984, 1, 24),
           prison_number = null,
