@@ -1,24 +1,17 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.util.stream.Stream
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.junit.jupiter.params.provider.NullSource
-import org.junit.jupiter.params.provider.ValueSource
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.ALL_MOVEMENT_REASON_CODES
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.RECALL_MOVEMENT_REASON_CODES
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Gender
+import java.util.stream.Stream
 
 class ModelTest {
 
-  private val mapper: ObjectMapper = ObjectMapper().setSerializationInclusion(Include.NON_NULL)
+  private val mapper: ObjectMapper = ObjectMapper()
 
   @ParameterizedTest
   @MethodSource("genderKeysAndValues")
