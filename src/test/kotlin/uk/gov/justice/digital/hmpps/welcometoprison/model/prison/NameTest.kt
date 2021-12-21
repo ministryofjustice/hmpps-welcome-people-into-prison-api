@@ -13,7 +13,14 @@ class NameTest {
     "AB,Ab",
     "ABCDEF,Abcdef",
     "SARAH-LOUISE,Sarah-Louise",
-    "D'ARRAS,D'Arras"
+    "D'ARRAS,D'Arras",
+    "Tom Jim Baker,Tom Jim Baker",
+    "tom Jim Baker,Tom Jim Baker",
+    "Tom jim baker,Tom Jim Baker",
+    "'Tom, Jim Baker', 'Tom, Jim Baker'",
+    "'Tom, jim, Baker','Tom, Jim, Baker'",
+    "'tom, jim baker', 'Tom, Jim Baker'",
+    "'tom, Jim, baker','Tom, Jim, Baker'"
   )
   fun `scenarios`(nomisName: String, expectedResult: String) {
     assertThat(properCase(nomisName)).isEqualTo(expectedResult)
