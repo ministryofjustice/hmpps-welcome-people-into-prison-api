@@ -36,7 +36,7 @@ class BasmServiceTest {
       listOf(
         Arrival(
           id = "476d47a3-013a-4772-94c7-5d043b0d0574",
-          firstName = "Alexis",
+          firstName = "Alexis Robert",
           lastName = "Jones",
           dateOfBirth = LocalDate.of(1996, 7, 23),
           prisonNumber = null,
@@ -59,7 +59,7 @@ class BasmServiceTest {
     assertThat(moves).isEqualTo(
       Arrival(
         id = "6052fac2-ea13-408c-9786-02d0dc5e89ff",
-        firstName = "Jason",
+        firstName = "Jason Harry",
         lastName = "Sims",
         dateOfBirth = LocalDate.of(1984, 1, 24),
         prisonNumber = null,
