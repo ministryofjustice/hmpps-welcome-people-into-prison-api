@@ -1,18 +1,15 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
-import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
-import java.time.ZoneId
 
 @Service
 class PrisonService(
   @Autowired private val prisonApiClient: PrisonApiClient,
   @Autowired private val prisonRegisterClient: PrisonRegisterClient,
 ) {
-  private val faker: Faker = Faker()
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
 
@@ -22,15 +19,8 @@ class PrisonService(
   fun getUserCaseLoads(): List<UserCaseLoad> =
     prisonApiClient.getUserCaseLoads()
 
-  fun getTemporaryAbsences(agencyId: String) = generateSequence {
-    TemporaryAbsence(
-      firstName = faker.name().firstName(),
-      lastName = faker.name().lastName(),
-      dateOfBirth = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-      prisonNumber = randomPrisonNumber(),
-      reasonForAbsence = faker.expression("reason")
-    )
-  }.take((5..20).random()).toList()
+  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> =
+    prisonApiClient.getTemporaryAbsences(agencyId)
 
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
