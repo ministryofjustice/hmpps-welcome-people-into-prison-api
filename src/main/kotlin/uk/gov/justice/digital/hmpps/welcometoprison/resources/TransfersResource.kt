@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Transfer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferInDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransfersService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Transfer
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull

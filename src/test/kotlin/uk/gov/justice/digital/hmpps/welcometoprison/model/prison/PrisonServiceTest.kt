@@ -8,9 +8,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Gender
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
 import java.time.LocalDate
 import java.time.LocalDateTime
 

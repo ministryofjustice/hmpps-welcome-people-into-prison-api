@@ -9,8 +9,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferInDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prisonersearch.response.PrisonerAndPncNumber
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDateTime
 

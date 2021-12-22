@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Gender
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name.properCase
 import java.time.LocalDate
