@@ -106,39 +106,39 @@ data class ConfirmArrivalDetail(
   @field:Length(max = 20)
   val croNumber: String? = null,
 
-  @Schema(name = "Received Prison ID", example = "MDI", required = true)
+  @Schema(description = "Received Prison ID", example = "MDI", required = true)
   @field:Length(max = 3, message = "Prison ID is 3 character code")
   @field:NotNull
   val prisonId: String? = null,
 
   @Schema(
     required = true,
-    name = "The time the booking in occurred, if not supplied it will be the current time",
+    description = "The time the booking in occurred, if not supplied it will be the current time",
     example = "2020-03-24T12:13:40"
   )
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   val bookingInTime: LocalDateTime? = null,
 
-  @Schema(name = "Where the prisoner has moved from (default OUT)", example = "OUT")
+  @Schema(description = "Where the prisoner has moved from (default OUT)", example = "OUT")
   @field:Length(max = 6, message = "From location")
   val fromLocationId: String? = null,
 
-  @Schema(name = "Reason for in movement (e.g. Unconvicted Remand)", example = "N")
+  @Schema(description = "Reason for in movement (e.g. Unconvicted Remand)", example = "N")
   @field:NotNull
   val movementReasonCode: String? = null,
 
-  @Schema(name = "Comments", example = "Prisoner arrived from court")
+  @Schema(description = "Comments", example = "Prisoner arrived from court")
   @field:Length(max = 240, message = "comment text size is a maximum of 240 characters")
   val commentText: String? = null,
 
   @Schema(
-    name = "Cell location where recalled prisoner should be housed, default will be reception",
+    description = "Cell location where recalled prisoner should be housed, default will be reception",
     example = "MDI-RECP",
   )
   @field:Length(max = 240, message = "Cell Location description cannot be more than 240 characters")
   val cellLocation: String? = null,
 
-  @Schema(name = "Require imprisonment status (e.g Adult Imprisonment Without Option CJA03)", example = "SENT03")
+  @Schema(description = "Require imprisonment status (e.g Adult Imprisonment Without Option CJA03)", example = "SENT03")
   @field:Length(max = 12, message = "Imprisonment status cannot be more than 12 characters")
   val imprisonmentStatus: String? = null
 ) {

@@ -4,8 +4,7 @@ import com.github.javafaker.Faker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.TemporaryAbsence
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrival.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import java.time.ZoneId
 
 @Service
