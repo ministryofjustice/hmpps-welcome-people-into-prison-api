@@ -405,4 +405,32 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
+  fun stubTemporaryAbsencesSuccess(agencyId: String) {
+    stubFor(
+      get("/api/movements/agency/$agencyId/temporary-absences")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+                {
+                  "offenderNo": "G1310UO",
+                  "firstName": "EGURZTOF",
+                  "lastName": "TOBONICA",
+                  "dateOfBirth": "1990-10-15",
+                  "movementTime": "2017-04-02T14:08:00",
+                  "toCity": "Sheffield",
+                  "movementReasonCode": "C6",
+                  "movementReason": "Medical/Dental Inpatient Appointment",
+                  "commentText": "pHnuWeNNnALpHnuWeNNnA"
+                }
+              ]
+              """.trimIndent()
+            )
+        )
+    )
+  }
 }

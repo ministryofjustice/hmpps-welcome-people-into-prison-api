@@ -286,4 +286,22 @@ class PrisonApiClientTest {
       )
     }.isInstanceOf(WebClientResponseException::class.java)
   }
+
+  @Test
+  fun `Temporary Absences successful`() {
+    val agencyId = "MDI"
+    val temporaryAbsence = TemporaryAbsence(
+      prisonNumber = "G1310UO",
+      firstName = "EGURZTOF",
+      lastName = "TOBONICA",
+      dateOfBirth = LocalDate.of(1990, 10, 15),
+      reasonForAbsence = "Medical/Dental Inpatient Appointment",
+    )
+
+    mockServer.stubTemporaryAbsencesSuccess(agencyId)
+
+    val response = prisonApiClient.getTemporaryAbsences(agencyId)[0]
+
+    assertThat(response).isEqualTo(temporaryAbsence)
+  }
 }

@@ -18,7 +18,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("com.github.javafaker:javafaker:1.0.2")
 
   implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.12")
   implementation("org.springdoc:springdoc-openapi-ui:1.5.12")

@@ -159,4 +159,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw IllegalStateException("No response from prison api")
+
+  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> =
+    webClient.get()
+      .uri("/api/movements/agency/$agencyId/temporary-absences")
+      .retrieve()
+      .bodyToMono(typeReference<List<TemporaryAbsence>>())
+      .block()
 }
