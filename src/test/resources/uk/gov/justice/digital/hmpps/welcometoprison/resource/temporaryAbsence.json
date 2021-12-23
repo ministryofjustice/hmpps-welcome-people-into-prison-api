@@ -3,14 +3,14 @@
     "firstName": "Jim",
     "lastName": "Smith",
     "dateOfBirth": "1991-07-31",
-    "offenderNo": "A1234AA",
-    "movementReason": "Hospital"
+    "prisonNumber": "A1234AA",
+    "reasonForAbsence": "Hospital"
   },
   {
     "firstName": "First",
     "lastName": "Last",
     "dateOfBirth": "1980-02-23",
-    "offenderNo": "A1278AA",
-    "movementReason": "Dentist"
+    "prisonNumber": "A1278AA",
+    "reasonForAbsence": "Dentist"
   }
 ]
