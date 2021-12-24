@@ -73,7 +73,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .withStatus(status)
-            .withBody("{}")
+            .withBody("""{"message":"exception message"}""")
         )
     )
   }

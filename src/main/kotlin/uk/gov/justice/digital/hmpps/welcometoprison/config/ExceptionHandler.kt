@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import javax.validation.ValidationException
 
@@ -95,6 +96,21 @@ class ExceptionHandler {
         ErrorResponse(
           status = BAD_REQUEST,
           userMessage = "Argument type mismatch",
+        )
+      )
+  }
+
+  @ExceptionHandler(ClientException::class)
+  fun handleClientException(e: ClientException): ResponseEntity<ErrorResponse> {
+    log.warn("Client exception: {} {}", e.message, e.cause.responseBodyAsString, e)
+    val message = "Exception calling up-stream service from Wpip-Api"
+    return ResponseEntity
+      .status(e.httpStatusCode)
+      .body(
+        ErrorResponse(
+          status = e.httpStatusCode,
+          userMessage = message,
+          developerMessage = message
         )
       )
   }

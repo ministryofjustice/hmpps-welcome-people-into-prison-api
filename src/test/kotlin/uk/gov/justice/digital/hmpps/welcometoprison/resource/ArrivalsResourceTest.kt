@@ -244,6 +244,22 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `create and book - prison-api create offender fails on a client error`() {
+
+      prisonApiMockServer.stubCreateOffenderFails(400)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is4xxClientError
+        .expectBody()
+    }
+
+    @Test
     fun `create and book - prison-api create booking fails`() {
       val offenderNo = "AA1111A"
 
