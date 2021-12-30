@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -182,7 +182,7 @@ class PrisonApiClientTest {
           youthOffender = false
         )
       )
-    }.isInstanceOf(WebClientResponseException::class.java)
+    }.isInstanceOf(ClientException::class.java)
   }
 
   @Test
@@ -218,7 +218,7 @@ class PrisonApiClientTest {
           youthOffender = false
         )
       )
-    }.isInstanceOf(WebClientResponseException::class.java)
+    }.isInstanceOf(ClientException::class.java)
   }
 
   @Test
@@ -250,7 +250,7 @@ class PrisonApiClientTest {
           receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
         )
       )
-    }.isInstanceOf(WebClientResponseException::class.java)
+    }.isInstanceOf(ClientException::class.java)
   }
 
   @Test
@@ -284,7 +284,7 @@ class PrisonApiClientTest {
           dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
         )
       )
-    }.isInstanceOf(WebClientResponseException::class.java)
+    }.isInstanceOf(ClientException::class.java)
   }
 
   @Test
