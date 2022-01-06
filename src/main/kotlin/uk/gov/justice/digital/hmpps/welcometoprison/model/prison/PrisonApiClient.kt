@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime

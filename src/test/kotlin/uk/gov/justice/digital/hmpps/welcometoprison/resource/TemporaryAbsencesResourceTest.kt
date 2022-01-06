@@ -6,22 +6,22 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDate
 
 @Suppress("ClassName")
 class TemporaryAbsencesResourceTest : IntegrationTestBase() {
   @MockBean
-  private lateinit var prisonService: PrisonService
+  private lateinit var temporaryAbsenceService: TemporaryAbsenceService
 
   @Nested
-  inner class `Get Temporary absence` {
+  inner class `Get Temporary absences` {
 
     @Test
     fun `returns json in expected format`() {
-      whenever(prisonService.getTemporaryAbsences("MDI")).thenReturn(
+      whenever(temporaryAbsenceService.getTemporaryAbsences("MDI")).thenReturn(
         listOf(
           TemporaryAbsence(
             firstName = "Jim",
@@ -43,7 +43,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
-        .expectBody().json("temporaryAbsence".loadJson(this))
+        .expectBody().json("temporaryAbsences".loadJson(this))
     }
 
     @Test
@@ -53,7 +53,39 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().isOk
 
-      verify(prisonService).getTemporaryAbsences("MDI")
+      verify(temporaryAbsenceService).getTemporaryAbsences("MDI")
+    }
+  }
+
+  @Nested
+  inner class `Get Temporary absence` {
+
+    @Test
+    fun `returns json in expected format`() {
+      whenever(temporaryAbsenceService.getTemporaryAbsence("MDI", "A1234AA")).thenReturn(
+        TemporaryAbsence(
+          firstName = "Jim",
+          lastName = "Smith",
+          dateOfBirth = LocalDate.of(1991, 7, 31),
+          prisonNumber = "A1234AA",
+          reasonForAbsence = "Hospital"
+        )
+      )
+      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("temporaryAbsence".loadJson(this))
+    }
+
+    @Test
+    fun `calls service method with correct args`() {
+      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+
+      verify(temporaryAbsenceService).getTemporaryAbsence("MDI", "A1234AA")
     }
   }
 }

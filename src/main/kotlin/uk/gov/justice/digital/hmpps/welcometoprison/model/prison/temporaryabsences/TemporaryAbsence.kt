@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
+package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonInclude
