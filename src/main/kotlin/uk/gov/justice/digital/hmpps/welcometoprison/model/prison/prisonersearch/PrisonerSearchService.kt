@@ -38,5 +38,5 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   }
 
   private fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> =
-    client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(prisonerNumbers))
+    if (prisonerNumbers.isEmpty()) emptyList() else client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(prisonerNumbers))
 }

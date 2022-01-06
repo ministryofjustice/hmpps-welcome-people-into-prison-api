@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
@@ -48,6 +50,17 @@ class PrisonerSearchServiceTest {
     val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
 
     assertThat(prisonerAndPncNumbers).isEqualTo(mapOf(PRISON_NUMBER to null))
+
+    verify { client.matchPncNumbersByPrisonerNumbers(any()) }
+  }
+
+  @Test
+  fun `getPncNumbers - search with no matches`() {
+    val prisonerAndPncNumbers = service.getPncNumbers(emptyList())
+
+    assertThat(prisonerAndPncNumbers).isEmpty()
+
+    verify { client wasNot Called }
   }
 
   companion object {
