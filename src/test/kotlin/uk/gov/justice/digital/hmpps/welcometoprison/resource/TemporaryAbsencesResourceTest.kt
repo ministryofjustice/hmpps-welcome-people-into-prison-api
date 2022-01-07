@@ -20,6 +20,22 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
   inner class `Get Temporary absences` {
 
     @Test
+    fun `requires authentication`() {
+      webTestClient.get().uri("/temporary-absences/MDI")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `requires correct role`() {
+      webTestClient.get().uri("/temporary-absences/MDI")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
     fun `returns json in expected format`() {
       whenever(temporaryAbsenceService.getTemporaryAbsences("MDI")).thenReturn(
         listOf(
@@ -59,6 +75,22 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
   @Nested
   inner class `Get Temporary absence` {
+
+    @Test
+    fun `requires authentication`() {
+      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `requires correct role`() {
+      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
 
     @Test
     fun `returns json in expected format`() {
