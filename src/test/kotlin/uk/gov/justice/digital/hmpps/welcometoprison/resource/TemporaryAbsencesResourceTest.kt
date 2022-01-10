@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
@@ -18,8 +20,6 @@ import java.time.LocalDateTime
 class TemporaryAbsencesResourceTest : IntegrationTestBase() {
   @MockBean
   private lateinit var temporaryAbsenceService: TemporaryAbsenceService
-  @MockBean
-  private lateinit var temporaryAbsencesService: TemporaryAbsencesService
 
   @Nested
   inner class `Get Temporary absences` {
@@ -131,7 +131,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `confirm arrival`() {
-    whenever(temporaryAbsencesService.temporaryAbsencesArrival(eq("G5666UK"), any())).thenReturn(InmateDetail(1L))
+      whenever(temporaryAbsenceService.temporaryAbsencesArrival(eq("G5666UK"), any())).thenReturn(InmateDetail(1L))
       val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("write"))
       val temporaryAbsencesArrival = TemporaryAbsencesArrival(
         "NMI",
@@ -148,7 +148,5 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().isOk
     }
-
   }
-
 }

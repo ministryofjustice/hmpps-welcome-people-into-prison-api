@@ -322,5 +322,4 @@ class PrisonApiClientTest {
     )
     assertThat(response.bookingId).isEqualTo(1201493L)
   }
-
 }

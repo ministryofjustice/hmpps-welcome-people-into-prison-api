@@ -52,6 +52,7 @@ data class TransferIn(
   val commentText: String? = null,
   val receiveTime: LocalDateTime? = null
 )
+
 data class TemporaryAbsencesArrival(
   val agencyId: String? = null,
   val movementReasonCode: String? = null,
@@ -203,7 +204,6 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
         )
       }
       .block() ?: throw IllegalStateException("No response from prison api")
-
 
   fun courtTransferIn(offenderNo: String, detail: CourtTransferIn): InmateDetail =
     webClient.put()

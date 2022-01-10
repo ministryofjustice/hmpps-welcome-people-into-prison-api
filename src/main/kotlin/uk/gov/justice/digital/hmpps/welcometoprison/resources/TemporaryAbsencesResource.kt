@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 
@@ -24,8 +26,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsenc
 @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
 @RequestMapping(name = "Prison", path = ["/temporary-absences"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TemporaryAbsencesResource(
-  private val temporaryAbsenceService: TemporaryAbsenceService,
-  private val temporaryAbsencesService: TemporaryAbsencesService
+  private val temporaryAbsenceService: TemporaryAbsenceService
 ) {
   @Operation(
     summary = "Retrieves the temporary absences for a prison",
@@ -126,6 +127,49 @@ class TemporaryAbsencesResource(
     @PathVariable prisonNumber: String
   ): TemporaryAbsence = temporaryAbsenceService.getTemporaryAbsence(agencyId, prisonNumber)
 
+  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
+  @Operation(
+    summary = "Confirm return from temporary absence",
+    description = "Confirm return from temporary absence, role required is ROLE_VIEW_ARRIVALS",
+    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["write"])],
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Confirm return from temporary absence",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = InmateDetail::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to retrieve",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Temporary absence data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "500",
+        description = "Unexpected error",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
+      ),
+    ]
+  )
   @PostMapping(
     "/prisoner/{prisonNumber}/temporary-absence-arrival",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
@@ -133,15 +177,12 @@ class TemporaryAbsencesResource(
   )
   fun temporaryAbsencesArrival(
     @PathVariable
-    @Valid @NotEmpty
     prisonNumber: String,
 
     @RequestBody
-    @Valid @NotNull
     temporaryAbsencesArrival: TemporaryAbsencesArrival
   ) {
 
-    temporaryAbsencesService.temporaryAbsencesArrival(prisonNumber, temporaryAbsencesArrival)
+    temporaryAbsenceService.temporaryAbsencesArrival(prisonNumber, temporaryAbsencesArrival)
   }
-
 }
