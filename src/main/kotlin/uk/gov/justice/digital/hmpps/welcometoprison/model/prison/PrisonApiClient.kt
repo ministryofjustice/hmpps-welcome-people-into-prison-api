@@ -51,6 +51,12 @@ data class TransferIn(
   val commentText: String? = null,
   val receiveTime: LocalDateTime? = null
 )
+data class TemporaryAbsencesArrival(
+  val agencyId: String? = null,
+  val movementReasonCode: String? = null,
+  val commentText: String? = null,
+  val receiveTime: LocalDateTime? = null
+)
 
 data class CourtTransferIn(
   val agencyId: String,
@@ -179,6 +185,24 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
         )
       }
       .block() ?: throw IllegalStateException("No response from prison api")
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun temporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): InmateDetail =
+    webClient.put()
+      .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
+      .bodyValue(detail)
+      .retrieve()
+      .bodyToMono(InmateDetail::class.java)
+      .onErrorResume(WebClientResponseException::class.java) {
+        propogateClientError(
+          it,
+          "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival"
+        )
+      }
+      .block() ?: throw IllegalStateException("No response from prison api")
+
 
   fun courtTransferIn(offenderNo: String, detail: CourtTransferIn): InmateDetail =
     webClient.put()

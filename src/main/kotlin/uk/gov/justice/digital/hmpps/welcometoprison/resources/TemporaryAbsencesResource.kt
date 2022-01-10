@@ -11,11 +11,18 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.TemporaryAbsencesService
+import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
@@ -23,6 +30,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsenc
 @RequestMapping(name = "Prison", path = ["/temporary-absences"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TemporaryAbsencesResource(
   private val prisonService: PrisonService,
+  private val temporaryAbsencesService: TemporaryAbsencesService
 ) {
   @Operation(
     summary = "Retrieves the temporary absences for a prison",
@@ -71,4 +79,23 @@ class TemporaryAbsencesResource(
     @Schema(description = "AgencyId", example = "MDI", required = true)
     @PathVariable agencyId: String
   ) = prisonService.getTemporaryAbsences(agencyId)
+
+  @PostMapping(
+    "/prisoner/{prisonNumber}/temporary-absence-arrival",
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
+    produces = [MediaType.APPLICATION_JSON_VALUE]
+  )
+  fun temporaryAbsencesArrival(
+    @PathVariable
+    @Valid @NotEmpty
+    prisonNumber: String,
+
+    @RequestBody
+    @Valid @NotNull
+    temporaryAbsencesArrival: TemporaryAbsencesArrival
+  ) {
+
+    temporaryAbsencesService.temporaryAbsencesArrival(prisonNumber, temporaryAbsencesArrival)
+  }
+
 }
