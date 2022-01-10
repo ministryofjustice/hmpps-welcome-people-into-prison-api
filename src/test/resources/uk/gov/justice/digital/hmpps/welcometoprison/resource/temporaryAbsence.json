@@ -1,16 +1,7 @@
-[
-  {
-    "firstName": "Jim",
-    "lastName": "Smith",
-    "dateOfBirth": "1991-07-31",
-    "prisonNumber": "A1234AA",
-    "reasonForAbsence": "Hospital"
-  },
-  {
-    "firstName": "First",
-    "lastName": "Last",
-    "dateOfBirth": "1980-02-23",
-    "prisonNumber": "A1278AA",
-    "reasonForAbsence": "Dentist"
-  }
-]
+{
+  "firstName": "Jim",
+  "lastName": "Smith",
+  "dateOfBirth": "1991-07-31",
+  "prisonNumber": "A1234AA",
+  "reasonForAbsence": "Hospital"
+}

@@ -19,9 +19,6 @@ class PrisonService(
   fun getUserCaseLoads(): List<UserCaseLoad> =
     prisonApiClient.getUserCaseLoads()
 
-  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> =
-    prisonApiClient.getTemporaryAbsences(agencyId)
-
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail

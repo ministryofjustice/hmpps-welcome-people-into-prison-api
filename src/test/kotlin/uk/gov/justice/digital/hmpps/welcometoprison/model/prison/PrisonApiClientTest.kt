@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
