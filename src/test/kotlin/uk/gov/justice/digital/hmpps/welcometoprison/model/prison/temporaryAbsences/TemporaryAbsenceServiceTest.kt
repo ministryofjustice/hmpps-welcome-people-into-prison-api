@@ -67,8 +67,8 @@ class TemporaryAbsenceServiceTest {
   companion object {
 
     private val arrivalKnownToNomis = TemporaryAbsence(
-      firstName = "Jim",
-      lastName = "Smith",
+      firstName = "JIM",
+      lastName = "SMITH",
       dateOfBirth = LocalDate.of(1991, 7, 31),
       prisonNumber = "A1234AA",
       reasonForAbsence = "Hospital"
