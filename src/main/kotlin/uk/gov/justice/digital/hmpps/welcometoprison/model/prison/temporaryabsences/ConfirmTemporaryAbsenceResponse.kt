@@ -6,4 +6,3 @@ import com.fasterxml.jackson.annotation.JsonInclude
 data class ConfirmTemporaryAbsenceResponse(
   val prisonerNumber: String,
 )
-
