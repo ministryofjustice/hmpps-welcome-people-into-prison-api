@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.16"
-  kotlin("plugin.spring") version "1.5.31"
-  kotlin("plugin.jpa") version "1.5.31"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.1"
+  kotlin("plugin.spring") version "1.6.10"
+  kotlin("plugin.jpa") version "1.6.10"
 }
 
 configurations {
@@ -19,18 +19,18 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.12")
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.4")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.4")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.4")
 
   runtimeOnly("com.h2database:h2:1.4.200")
-  runtimeOnly("org.flywaydb:flyway-core:8.0.3")
+  runtimeOnly("org.flywaydb:flyway-core:8.4.1")
   runtimeOnly("org.postgresql:postgresql:42.3.1")
 
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("io.mockk:mockk:1.12.0")
+  testImplementation("io.mockk:mockk:1.12.2")
 }
 
 allOpen {

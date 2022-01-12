@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
@@ -18,7 +18,7 @@ class TemporaryAbsenceServiceTest {
   private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient)
 
   @Test
-  fun `getTemporaryAbsences`() {
+  fun getTemporaryAbsences() {
     whenever(prisonApiClient.getTemporaryAbsences(any())).thenReturn(listOf(arrivalKnownToNomis))
 
     val temporaryAbsences = temporaryAbsenceService.getTemporaryAbsences("MDI")
