@@ -7,8 +7,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
@@ -133,7 +133,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
       whenever(
         temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
       ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK"))
-      val token = getAuthorisation(roles = listOf("TRANSFER_PRISONER"), scopes = listOf("write"))
+      val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
         "ET",

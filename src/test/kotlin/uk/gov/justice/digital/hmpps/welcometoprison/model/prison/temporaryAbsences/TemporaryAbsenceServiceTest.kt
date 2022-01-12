@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences
+package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -9,8 +9,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import java.time.LocalDate
 
 class TemporaryAbsenceServiceTest {

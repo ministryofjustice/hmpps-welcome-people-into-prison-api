@@ -6,8 +6,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceResponse
 
 @Service
 @Transactional
