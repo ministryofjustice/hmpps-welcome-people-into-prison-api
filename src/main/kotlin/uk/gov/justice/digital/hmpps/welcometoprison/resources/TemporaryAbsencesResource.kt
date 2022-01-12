@@ -127,11 +127,11 @@ class TemporaryAbsencesResource(
     @PathVariable prisonNumber: String
   ): TemporaryAbsence = temporaryAbsenceService.getTemporaryAbsence(agencyId, prisonNumber)
 
-  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
+  @PreAuthorize("hasRole('TRANSFER_PRISONER')")
   @Operation(
     summary = "Confirm return from temporary absence",
-    description = "Confirm return from temporary absence, role required is ROLE_VIEW_ARRIVALS",
-    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["write"])],
+    description = "Confirm return from temporary absence, role required is TRANSFER_PRISONER",
+    security = [SecurityRequirement(name = "TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -171,7 +171,7 @@ class TemporaryAbsencesResource(
     ]
   )
   @PostMapping(
-    "/prisoner/{offenderNo}/temporary-absence-arrival",
+    "/{offenderNo}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )

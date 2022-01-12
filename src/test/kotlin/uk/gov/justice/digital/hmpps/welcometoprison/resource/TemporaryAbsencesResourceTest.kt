@@ -133,7 +133,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
       whenever(
         temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
       ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK"))
-      val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("write"))
+      val token = getAuthorisation(roles = listOf("TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
         "ET",
@@ -142,7 +142,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
       )
       webTestClient
         .post()
-        .uri("/temporary-absences/prisoner/G5666UK/temporary-absence-arrival")
+        .uri("/temporary-absences/G5666UK/confirm")
         .bodyValue(confirmTemporaryAbsenceRequest)
         .withBearerToken(token)
         .exchange()
@@ -159,7 +159,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         LocalDateTime.of(2021, 11, 15, 1, 0, 0)
       )
 
-      webTestClient.post().uri("/temporary-absences/prisoner/G5666UK/temporary-absence-arrival")
+      webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
         .bodyValue(confirmTemporaryAbsenceRequest)
         .exchange()
         .expectStatus().isUnauthorized
@@ -175,7 +175,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         LocalDateTime.of(2021, 11, 15, 1, 0, 0)
       )
 
-      webTestClient.post().uri("/temporary-absences/prisoner/G5666UK/temporary-absence-arrival")
+      webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
         .bodyValue(confirmTemporaryAbsenceRequest)
         .withBearerToken(token)
         .exchange()
