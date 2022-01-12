@@ -23,7 +23,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.4")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.4")
 
-  runtimeOnly("com.h2database:h2:1.4.200")
+  runtimeOnly("com.h2database:h2:2.0.206")
   runtimeOnly("org.flywaydb:flyway-core:8.4.1")
   runtimeOnly("org.postgresql:postgresql:42.3.1")
 
