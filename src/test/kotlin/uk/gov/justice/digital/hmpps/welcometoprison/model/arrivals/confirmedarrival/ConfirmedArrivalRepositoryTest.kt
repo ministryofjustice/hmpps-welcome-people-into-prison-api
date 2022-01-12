@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -18,18 +18,17 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
   fun `can insert confirmed arrival record`() {
     val confirmedArrival = confirmedArrival()
 
-    val bookingDb = repository.save(confirmedArrival())
+    val persistedArrival = repository.save(confirmedArrival)
     TestTransaction.flagForCommit()
     TestTransaction.end()
 
-    Assertions.assertThat(confirmedArrival.id).isNull()
-    Assertions.assertThat(bookingDb).isNotNull
-    Assertions.assertThat(bookingDb.prisonNumber).isEqualTo(confirmedArrival.prisonNumber)
-    Assertions.assertThat(bookingDb.movementId).isEqualTo(confirmedArrival.movementId)
-    Assertions.assertThat(bookingDb.timestamp).isEqualTo(confirmedArrival.timestamp)
-    Assertions.assertThat(bookingDb.prisonId).isEqualTo(confirmedArrival.prisonId)
-    Assertions.assertThat(bookingDb.bookingId).isEqualTo(confirmedArrival.bookingId)
-    Assertions.assertThat(bookingDb.arrivalDate).isEqualTo(confirmedArrival.arrivalDate)
+    assertThat(persistedArrival.id).isNotNull
+    assertThat(persistedArrival.prisonNumber).isEqualTo(confirmedArrival.prisonNumber)
+    assertThat(persistedArrival.movementId).isEqualTo(confirmedArrival.movementId)
+    assertThat(persistedArrival.timestamp).isEqualTo(confirmedArrival.timestamp)
+    assertThat(persistedArrival.prisonId).isEqualTo(confirmedArrival.prisonId)
+    assertThat(persistedArrival.bookingId).isEqualTo(confirmedArrival.bookingId)
+    assertThat(persistedArrival.arrivalDate).isEqualTo(confirmedArrival.arrivalDate)
   }
 
   @Test
@@ -37,8 +36,8 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
   fun `find all by confirmed arrival date and prison id`() {
     val date = LocalDate.of(2020, 1, 1)
     val prisonId = "MDI"
-    val bookings = repository.findAllByArrivalDateAndPrisonId(date, prisonId)
-    Assertions.assertThat(bookings).hasSize(1)
+    val arrivals = repository.findAllByArrivalDateAndPrisonId(date, prisonId)
+    assertThat(arrivals).hasSize(1)
   }
 
   companion object {
