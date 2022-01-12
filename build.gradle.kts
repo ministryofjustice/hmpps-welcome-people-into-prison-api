@@ -32,9 +32,6 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.mockk:mockk:1.12.2")
 }
-repositories {
-  mavenCentral()
-}
 
 allOpen {
   annotations(
