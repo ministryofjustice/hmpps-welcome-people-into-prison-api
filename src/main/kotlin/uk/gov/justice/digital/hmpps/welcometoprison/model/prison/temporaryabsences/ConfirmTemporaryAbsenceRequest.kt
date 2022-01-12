@@ -39,4 +39,3 @@ data class ConfirmTemporaryAbsenceRequest(
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   val receiveTime: LocalDateTime? = null
 )
-

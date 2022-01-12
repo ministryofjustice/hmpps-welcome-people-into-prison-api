@@ -37,16 +37,17 @@ class TemporaryAbsenceService(
     offenderNo: String,
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ): ConfirmTemporaryAbsenceResponse {
-    return ConfirmTemporaryAbsenceResponse(prisonApiClient.confirmTemporaryAbsencesArrival(
-      offenderNo,
-      with(confirmTemporaryAbsenceRequest) {
-        TemporaryAbsencesArrival(
-          agencyId,
-          movementReasonCode,
-          commentText,
-          receiveTime
-        )
-      }
-    ).offenderNo)
+    return ConfirmTemporaryAbsenceResponse(
+      prisonApiClient.confirmTemporaryAbsencesArrival(
+        offenderNo,
+        with(confirmTemporaryAbsenceRequest) {
+          TemporaryAbsencesArrival(
+            agencyId,
+            movementReasonCode,
+            commentText,
+            receiveTime
+          )
+        }
+      ).offenderNo)
   }
 }
