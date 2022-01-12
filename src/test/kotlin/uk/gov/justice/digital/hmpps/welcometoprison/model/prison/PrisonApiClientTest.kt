@@ -311,7 +311,7 @@ class PrisonApiClientTest {
     val offenderNumber = "ABC123A"
     mockServer.stubConfirmTemporaryAbsencesSuccess(offenderNumber)
 
-    val response = prisonApiClient.temporaryAbsencesArrival(
+    val response = prisonApiClient.confirmTemporaryAbsencesArrival(
       offenderNumber,
       TemporaryAbsencesArrival(
         agencyId = "NMI",
@@ -320,6 +320,6 @@ class PrisonApiClientTest {
         receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
       )
     )
-    assertThat(response.bookingId).isEqualTo(1201493L)
+    assertThat(response.offenderNo).isEqualTo(offenderNumber)
   }
 }

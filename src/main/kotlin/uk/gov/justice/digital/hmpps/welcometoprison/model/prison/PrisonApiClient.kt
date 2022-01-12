@@ -77,6 +77,8 @@ data class ConfirmArrivalResponse(val offenderNo: String)
  */
 data class InmateDetail(val bookingId: Long)
 
+data class OffenderDetail(val offenderNo: String)
+
 data class UserCaseLoad(
   val caseLoadId: String,
   val description: String,
@@ -191,12 +193,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
    */
-  fun temporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): InmateDetail =
+  fun confirmTemporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): OffenderDetail =
     webClient.put()
       .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono(InmateDetail::class.java)
+      .bodyToMono(OffenderDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,

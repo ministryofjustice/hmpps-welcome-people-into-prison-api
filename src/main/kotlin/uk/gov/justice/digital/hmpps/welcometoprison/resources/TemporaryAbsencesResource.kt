@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 
@@ -139,7 +139,7 @@ class TemporaryAbsencesResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = InmateDetail::class)
+            schema = Schema(implementation = ConfirmTemporaryAbsenceResponse::class)
           )
         ]
       ),
@@ -171,18 +171,17 @@ class TemporaryAbsencesResource(
     ]
   )
   @PostMapping(
-    "/prisoner/{prisonNumber}/temporary-absence-arrival",
+    "/prisoner/{offenderNo}/temporary-absence-arrival",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
   fun temporaryAbsencesArrival(
     @PathVariable
-    prisonNumber: String,
+    offenderNo: String,
 
     @RequestBody
-    temporaryAbsencesArrival: TemporaryAbsencesArrival
+    confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ) {
-
-    temporaryAbsenceService.temporaryAbsencesArrival(prisonNumber, temporaryAbsencesArrival)
+    temporaryAbsenceService.confirmTemporaryAbsencesArrival(offenderNo, confirmTemporaryAbsenceRequest)
   }
 }

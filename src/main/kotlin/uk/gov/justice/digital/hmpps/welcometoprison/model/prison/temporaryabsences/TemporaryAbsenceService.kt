@@ -3,10 +3,11 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsen
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryAbsences.ConfirmTemporaryAbsenceResponse
 
 @Service
 @Transactional
@@ -32,13 +33,13 @@ class TemporaryAbsenceService(
     }
   }
 
-  fun temporaryAbsencesArrival(
-    prisonNumber: String,
-    temporaryAbsencesArrival: TemporaryAbsencesArrival
-  ): InmateDetail {
-    return prisonApiClient.temporaryAbsencesArrival(
-      prisonNumber,
-      with(temporaryAbsencesArrival) {
+  fun confirmTemporaryAbsencesArrival(
+    offenderNo: String,
+    confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
+  ): ConfirmTemporaryAbsenceResponse {
+    return ConfirmTemporaryAbsenceResponse(prisonApiClient.confirmTemporaryAbsencesArrival(
+      offenderNo,
+      with(confirmTemporaryAbsenceRequest) {
         TemporaryAbsencesArrival(
           agencyId,
           movementReasonCode,
@@ -46,6 +47,6 @@ class TemporaryAbsenceService(
           receiveTime
         )
       }
-    )
+    ).offenderNo)
   }
 }
