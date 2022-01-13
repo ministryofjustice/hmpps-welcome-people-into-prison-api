@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
-import io.mockk.every
-import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.isMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
@@ -19,12 +20,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class ArrivalsServiceTest {
-  private val prisonService: PrisonService = mockk()
-  private val basmService: BasmService = mockk()
-  private val prisonerSearchService: PrisonerSearchService = mockk()
+  private val prisonService: PrisonService = mock()
+  private val basmService: BasmService = mock()
+  private val prisonerSearchService: PrisonerSearchService = mock()
 
   // We need to mock repository instead of confirmedArrivalService as we have a problem to generate the list of prisoners with prisonNumber equals null
-  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mockk()
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService =
@@ -33,9 +34,9 @@ class ArrivalsServiceTest {
 
   @Test
   fun `getArrivals - happy path`() {
-    every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(basmOnlyArrival, arrivalKnownToNomis)
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
-    every { prisonerSearchService.getCandidateMatches(any()) } returns listOf(result("A1234AA", "99/123456J"), result("A1234BB", "11/123456J"))
+    whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(basmOnlyArrival, arrivalKnownToNomis))
+    whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(emptyList())
+    whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(listOf(result("A1234AA", "99/123456J"), result("A1234BB", "11/123456J")))
 
     val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
@@ -49,16 +50,18 @@ class ArrivalsServiceTest {
 
     @BeforeEach
     fun before() {
-      every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
+      whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(emptyList())
     }
 
     @Test
     fun `finds match from candidates`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
-        result(move.prisonNumber, move.pncNumber)
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
+        listOf(
+          result(move.prisonNumber, move.pncNumber)
+        )
       )
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
@@ -70,9 +73,12 @@ class ArrivalsServiceTest {
     fun `finds match from candidates when PNC number includes lower case character`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = "99/123456j")
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
-        result(move.prisonNumber, "99/123456J")
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
+        listOf(
+          result(move.prisonNumber, "99/123456J")
+        )
       )
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
@@ -85,9 +91,11 @@ class ArrivalsServiceTest {
 
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
-        result(ANOTHER_PRISON_NUMBER, move.pncNumber)
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
+        listOf(
+          result(ANOTHER_PRISON_NUMBER, move.pncNumber)
+        )
       )
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
@@ -99,9 +107,11 @@ class ArrivalsServiceTest {
     fun `Doesn't find match from candidates due to PNC mismatch`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns listOf(
-        result(move.prisonNumber, ANOTHER_PNC_NUMBER)
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
+        listOf(
+          result(move.prisonNumber, ANOTHER_PNC_NUMBER)
+        )
       )
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
@@ -113,8 +123,8 @@ class ArrivalsServiceTest {
     fun `Doesn't find match as no candidates for new prisoner`() {
       val move = basmOnlyArrival.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(emptyList())
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
 
@@ -125,8 +135,8 @@ class ArrivalsServiceTest {
     fun `Doesn't find match as no candidates when prison number provided`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      every { basmService.getArrivals("MDI", DATE, DATE) } returns listOf(move)
-      every { prisonerSearchService.getCandidateMatches(move) } returns emptyList()
+      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
+      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(emptyList())
 
       val movement = arrivalsService.getArrivals("MDI", DATE).first()
 

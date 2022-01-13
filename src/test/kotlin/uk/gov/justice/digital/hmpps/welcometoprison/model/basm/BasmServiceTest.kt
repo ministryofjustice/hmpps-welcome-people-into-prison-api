@@ -1,22 +1,23 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
-import io.mockk.every
-import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
 import java.time.LocalDate
 
 class BasmServiceTest {
-  private val basmClient: BasmClient = mockk()
+  private val basmClient: BasmClient = mock()
   private val service = BasmService(basmClient)
 
   @Test
   fun `getMoves - happy path`() {
-    every { basmClient.getPrison(any()) } returns BasmTestData.PRISON
-    every { basmClient.getMovements(any(), any(), any()) } returns BasmTestData.MOVEMENTS
+    whenever(basmClient.getPrison(any())).thenReturn(BasmTestData.PRISON)
+    whenever(basmClient.getMovements(any(), any(), any())).thenReturn(BasmTestData.MOVEMENTS)
 
     val moves = service.getArrivals("MDI", LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 2))
 
@@ -40,7 +41,7 @@ class BasmServiceTest {
 
   @Test
   fun `getMovement - happy path`() {
-    every { basmClient.getMovement(any()) } returns BasmTestData.MOVEMENT
+    whenever(basmClient.getMovement(any())).thenReturn(BasmTestData.MOVEMENT)
 
     val moves = service.getArrival("testId")
 

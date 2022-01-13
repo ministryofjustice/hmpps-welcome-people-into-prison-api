@@ -34,7 +34,8 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute")
+      webTestClient.get()
+        .uri("/prisons/MDI/transfers/enroute")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -171,7 +172,7 @@ class TransfersResourceTest : IntegrationTestBase() {
         LocalDateTime.of(2021, 11, 15, 1, 0, 0)
       )
 
-      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("write"))
+      val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
 
       webTestClient
         .post()

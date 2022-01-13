@@ -1,10 +1,11 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
 import java.time.LocalDate
@@ -12,14 +13,14 @@ import java.time.LocalDateTime
 
 class ConfirmedArrivalServiceTest {
 
-  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mockk()
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
 
   @Test
   fun `get arrivals when booking are empty`() {
 
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns emptyList()
+    whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(emptyList())
 
     val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", DATE, listOf(arrival))
 
@@ -29,8 +30,8 @@ class ConfirmedArrivalServiceTest {
   @Test
   fun `remove from arrival when booking date and movement Id found in booking`() {
 
-    every { confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any()) } returns listOf(
-      confirmedArrival
+    whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(
+      listOf(confirmedArrival)
     )
 
     val arrivals = confirmedArrivalService.extractConfirmedArrivalFromArrivals("MDI", DATE, listOf(arrival))
@@ -41,9 +42,7 @@ class ConfirmedArrivalServiceTest {
   @Test
   fun `add new confirmed arrival`() {
 
-    every {
-      confirmedArrivalRepository.save(any())
-    } returns confirmedArrivalDb
+    whenever(confirmedArrivalRepository.save(any())).thenReturn(confirmedArrivalDb)
 
     confirmedArrivalService.add(
       movementId = "MDI",
@@ -53,7 +52,7 @@ class ConfirmedArrivalServiceTest {
       arrivalDate = LocalDate.of(2021, 1, 1),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
-    verify(exactly = 1) { confirmedArrivalRepository.save(any()) }
+    verify(confirmedArrivalRepository).save(any())
   }
 
   companion object {
