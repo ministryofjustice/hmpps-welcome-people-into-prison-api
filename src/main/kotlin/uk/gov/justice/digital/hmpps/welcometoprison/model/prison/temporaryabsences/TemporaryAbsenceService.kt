@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
 
 @Service
 @Transactional
@@ -28,5 +29,24 @@ class TemporaryAbsenceService(
         reasonForAbsence = it.reasonForAbsence,
       )
     }
+  }
+
+  fun confirmTemporaryAbsencesArrival(
+    offenderNo: String,
+    confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
+  ): ConfirmTemporaryAbsenceResponse {
+    return ConfirmTemporaryAbsenceResponse(
+      prisonApiClient.confirmTemporaryAbsencesArrival(
+        offenderNo,
+        with(confirmTemporaryAbsenceRequest) {
+          TemporaryAbsencesArrival(
+            agencyId,
+            movementReasonCode,
+            commentText,
+            receiveTime
+          )
+        }
+      ).offenderNo
+    )
   }
 }

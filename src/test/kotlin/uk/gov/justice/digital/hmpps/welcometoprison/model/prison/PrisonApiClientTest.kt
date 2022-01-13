@@ -289,7 +289,7 @@ class PrisonApiClientTest {
   }
 
   @Test
-  fun `Temporary Absences successful`() {
+  fun `Get temporary absences successful`() {
     val agencyId = "MDI"
     val temporaryAbsence = TemporaryAbsence(
       prisonNumber = "G1310UO",
@@ -299,10 +299,27 @@ class PrisonApiClientTest {
       reasonForAbsence = "Medical/Dental Inpatient Appointment",
     )
 
-    mockServer.stubTemporaryAbsencesSuccess(agencyId)
+    mockServer.stubGetTemporaryAbsencesSuccess(agencyId)
 
     val response = prisonApiClient.getTemporaryAbsences(agencyId)[0]
 
     assertThat(response).isEqualTo(temporaryAbsence)
+  }
+
+  @Test
+  fun `Confirm return from temporary absences successful`() {
+    val offenderNumber = "ABC123A"
+    mockServer.stubConfirmTemporaryAbsencesSuccess(offenderNumber)
+
+    val response = prisonApiClient.confirmTemporaryAbsencesArrival(
+      offenderNumber,
+      TemporaryAbsencesArrival(
+        agencyId = "NMI",
+        movementReasonCode = "ET",
+        commentText = "",
+        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+    )
+    assertThat(response.offenderNo).isEqualTo(offenderNumber)
   }
 }

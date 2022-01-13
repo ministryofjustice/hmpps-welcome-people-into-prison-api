@@ -2,14 +2,18 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Suppress("ClassName")
 class TemporaryAbsencesResourceTest : IntegrationTestBase() {
@@ -118,6 +122,65 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .expectStatus().isOk
 
       verify(temporaryAbsenceService).getTemporaryAbsence("MDI", "A1234AA")
+    }
+  }
+
+  @Nested
+  inner class `Confirm arrival from temporary absence` {
+
+    @Test
+    fun `confirm arrival`() {
+      whenever(
+        temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
+      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK"))
+      val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
+      val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
+        "NMI",
+        "ET",
+        "Comment",
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+      webTestClient
+        .post()
+        .uri("/temporary-absences/G5666UK/confirm")
+        .bodyValue(confirmTemporaryAbsenceRequest)
+        .withBearerToken(token)
+        .exchange()
+        .expectStatus().isOk
+      verify(temporaryAbsenceService).confirmTemporaryAbsencesArrival("G5666UK", confirmTemporaryAbsenceRequest)
+    }
+
+    @Test
+    fun `requires authentication`() {
+      val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
+        "NMI",
+        "ET",
+        "Comment",
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+
+      webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
+        .bodyValue(confirmTemporaryAbsenceRequest)
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `requires correct role`() {
+      val token = getAuthorisation(roles = listOf(), scopes = listOf("write"))
+      val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
+        "NMI",
+        "ET",
+        "Comment",
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      )
+
+      webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
+        .bodyValue(confirmTemporaryAbsenceRequest)
+        .withBearerToken(token)
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
     }
   }
 }
