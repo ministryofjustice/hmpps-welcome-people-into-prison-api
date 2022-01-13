@@ -10,20 +10,20 @@ import java.time.LocalDateTime
 @Schema(description = "Data for creating transferring in an offender and adding to the prison roll")
 data class TransferInDetail(
   @Schema(
-    name = "Cell location where transferred prisoner should be housed, default will be reception",
+    description = "Cell location where transferred prisoner should be housed, default will be reception",
     example = "MDI-RECP",
   )
   @field:Length(max = 240, message = "Cell Location description cannot be more than 240 characters")
   val cellLocation: String? = null,
 
   @Schema(
-    name = "Additional comments about the transfer",
+    description = "Additional comments about the transfer",
     example = "Prisoner was transferred in from HMP Nottingham",
   )
   val commentText: String? = null,
 
   @Schema(
-    name = "The time the booking in occurred, if not supplied it will be the current time",
+    description = "The time the booking in occurred, if not supplied it will be the current time",
     example = "2020-03-24T12:13:40"
   )
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
