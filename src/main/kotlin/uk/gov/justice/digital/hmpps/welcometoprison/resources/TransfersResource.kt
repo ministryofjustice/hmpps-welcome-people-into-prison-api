@@ -130,11 +130,11 @@ class TransfersResource(
     @PathVariable prisonNumber: String
   ): Transfer = transfersService.getTransfer(agencyId, prisonNumber)
 
-  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
+  @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = " Completes transfer-in for a specific prisoner",
-    description = "Completes transfer-in of prisoner, roles required are BOOKING_CREATE",
-    security = [SecurityRequirement(name = "BOOKING_CREATE", scopes = ["write"])],
+    description = "Completes transfer-in of prisoner, roles required are ROLE_TRANSFER_PRISONER, requires token associated with a username",
+    security = [SecurityRequirement(name = "ROLE_TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",

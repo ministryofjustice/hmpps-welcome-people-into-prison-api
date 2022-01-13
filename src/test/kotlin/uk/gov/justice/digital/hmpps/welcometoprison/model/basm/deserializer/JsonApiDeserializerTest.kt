@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 class JsonApiDeserializerTest {
 
   private val mapper = ObjectMapper()
-    .registerModule(KotlinModule())
+    .registerModule(KotlinModule.Builder().build())
     .registerModule(JavaTimeModule())
     .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
 

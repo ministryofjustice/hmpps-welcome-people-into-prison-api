@@ -30,7 +30,6 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("io.mockk:mockk:1.12.2")
 }
 
 allOpen {

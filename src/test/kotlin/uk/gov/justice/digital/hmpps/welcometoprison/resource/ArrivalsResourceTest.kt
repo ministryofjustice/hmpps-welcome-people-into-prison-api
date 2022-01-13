@@ -155,7 +155,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -170,7 +170,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubCreateOffender(offenderNo)
       prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
 
-      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write"))
+      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write"))
 
       webTestClient
         .post()
@@ -201,7 +201,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
           """
@@ -235,7 +235,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -251,7 +251,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -269,7 +269,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE"), scopes = listOf("read", "write")))
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()

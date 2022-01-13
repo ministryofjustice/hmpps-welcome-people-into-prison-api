@@ -112,8 +112,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/users/me/caseLoads")
       .retrieve()
       .bodyToMono(typeReference<List<UserCaseLoad>>())
-      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()
+      .block() ?: emptyList()
 
   fun getPrisonTransfersEnRoute(agencyId: String): List<OffenderMovement> =
     webClient.get()
@@ -226,5 +225,5 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/movements/agency/$agencyId/temporary-absences")
       .retrieve()
       .bodyToMono(typeReference<List<TemporaryAbsence>>())
-      .block()
+      .block() ?: emptyList()
 }

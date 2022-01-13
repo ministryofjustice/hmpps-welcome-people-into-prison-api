@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
@@ -51,7 +50,6 @@ class ArrivalsService(
       arrival.copy(prisonNumber = null)
   }
 
-  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
   fun confirmArrival(
     moveId: String,
     confirmArrivalDetail: ConfirmArrivalDetail

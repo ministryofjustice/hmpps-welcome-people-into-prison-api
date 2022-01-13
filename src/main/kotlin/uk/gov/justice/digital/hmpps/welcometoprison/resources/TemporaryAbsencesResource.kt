@@ -130,8 +130,8 @@ class TemporaryAbsencesResource(
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Confirm return from temporary absence",
-    description = "Confirm return from temporary absence, role required is TRANSFER_PRISONER",
-    security = [SecurityRequirement(name = "TRANSFER_PRISONER", scopes = ["write"])],
+    description = "Confirm return from temporary absence, role required is ROLE_TRANSFER_PRISONER, requires token associated with a username",
+    security = [SecurityRequirement(name = "ROLE_TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",
