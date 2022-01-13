@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 
-import io.mockk.Called
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
@@ -14,12 +15,12 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 import java.time.LocalDate
 
 class PrisonerSearchServiceTest {
-  private val client: PrisonerSearchApiClient = mockk()
+  private val client: PrisonerSearchApiClient = mock()
   private val service = PrisonerSearchService(client)
 
   @Test
   fun `getCandidateMatches - happy path`() {
-    every { client.matchPrisoner(any()) } returnsMany listOf(
+    whenever(client.matchPrisoner(any())).thenReturn(
       listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN")),
       listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT))
     )
@@ -34,9 +35,9 @@ class PrisonerSearchServiceTest {
 
   @Test
   fun `getPncNumbers - happy path when PNC Number available`() {
-    every { client.matchPncNumbersByPrisonerNumbers(any()) } returns
+    whenever(client.matchPncNumbersByPrisonerNumbers(any())).thenReturn(
       listOf(PrisonerAndPncNumber(PRISON_NUMBER, PNC_NUMBER))
-
+    )
     val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
 
     assertThat(prisonerAndPncNumbers).isEqualTo(mapOf(PRISON_NUMBER to PNC_NUMBER))
@@ -44,14 +45,13 @@ class PrisonerSearchServiceTest {
 
   @Test
   fun `getPncNumbers - happy path when no PNC Number available`() {
-    every { client.matchPncNumbersByPrisonerNumbers(any()) } returns
-      listOf(PrisonerAndPncNumber(PRISON_NUMBER))
+    whenever(client.matchPncNumbersByPrisonerNumbers(any())).thenReturn(listOf(PrisonerAndPncNumber(PRISON_NUMBER)))
 
     val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
 
     assertThat(prisonerAndPncNumbers).isEqualTo(mapOf(PRISON_NUMBER to null))
 
-    verify { client.matchPncNumbersByPrisonerNumbers(any()) }
+    verify(client).matchPncNumbersByPrisonerNumbers(any())
   }
 
   @Test
@@ -60,7 +60,7 @@ class PrisonerSearchServiceTest {
 
     assertThat(prisonerAndPncNumbers).isEmpty()
 
-    verify { client wasNot Called }
+    verifyNoMoreInteractions(client)
   }
 
   companion object {

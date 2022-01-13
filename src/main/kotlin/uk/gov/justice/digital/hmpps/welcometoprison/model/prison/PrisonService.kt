@@ -78,14 +78,6 @@ class PrisonService(
       )
       .offenderNo
 
-  companion object {
-    private val numbers = '0'..'9'
-    private val letters = 'A'..'Z'
-
-    private operator fun CharRange.invoke(n: Int) = this.shuffled().take(n).joinToString("")
-    private fun randomPrisonNumber() = letters(1) + numbers(4) + letters(2)
-  }
-
   fun transferInFromCourt(confirmArrivalDetail: ConfirmArrivalDetail, arrival: Arrival): Long {
 
     return prisonApiClient.courtTransferIn(

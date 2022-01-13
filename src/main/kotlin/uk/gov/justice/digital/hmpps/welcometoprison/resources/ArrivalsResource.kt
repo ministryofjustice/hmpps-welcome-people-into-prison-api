@@ -131,11 +131,11 @@ class ArrivalsResource(
     @PathVariable moveId: String,
   ): Arrival = arrivalsService.getArrival(moveId)
 
-  @PreAuthorize("hasRole('BOOKING_CREATE') and hasAuthority('SCOPE_write')")
+  @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Confirms the arrival for a specific ID",
-    description = "Confirms the arrival for a specific ID, role required is BOOKING_CREATE, scope = write",
-    security = [SecurityRequirement(name = "BOOKING_CREATE,VIEW_ARRIVALS", scopes = ["write"])],
+    description = "Confirms the arrival for a specific ID, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
+    security = [SecurityRequirement(name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",
