@@ -49,7 +49,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
             dateOfBirth = LocalDate.of(1991, 7, 31),
             prisonNumber = "A1234AA",
             reasonForAbsence = "Hospital",
-            movementDateTime = LocalDateTime.of(2022,1,18,8,0)
+            movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
           ),
           TemporaryAbsenceResponse(
             firstName = "First",
@@ -57,7 +57,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
             dateOfBirth = LocalDate.of(1980, 2, 23),
             prisonNumber = "A1278AA",
             reasonForAbsence = "Dentist",
-            movementDateTime = LocalDateTime.of(2022,1,20,8,0)
+            movementDateTime = LocalDateTime.of(2022, 1, 20, 8, 0)
           )
         )
       )
@@ -107,7 +107,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
           dateOfBirth = LocalDate.of(1991, 7, 31),
           prisonNumber = "A1234AA",
           reasonForAbsence = "Hospital",
-          movementDateTime = LocalDateTime.of(2022,1,18,8,0)
+          movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
         )
       )
       webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
