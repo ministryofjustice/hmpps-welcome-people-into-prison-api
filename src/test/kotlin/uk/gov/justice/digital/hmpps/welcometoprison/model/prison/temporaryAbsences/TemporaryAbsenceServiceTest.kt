@@ -9,7 +9,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class TemporaryAbsenceServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
@@ -22,12 +24,13 @@ class TemporaryAbsenceServiceTest {
     val temporaryAbsences = temporaryAbsenceService.getTemporaryAbsences("MDI")
 
     assertThat(temporaryAbsences).containsExactly(
-      TemporaryAbsence(
+      TemporaryAbsenceResponse(
         firstName = "Jim",
         lastName = "Smith",
         dateOfBirth = LocalDate.of(1991, 7, 31),
         prisonNumber = "A1234AA",
-        reasonForAbsence = "Hospital"
+        reasonForAbsence = "Hospital",
+        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
       )
     )
 
@@ -41,12 +44,13 @@ class TemporaryAbsenceServiceTest {
     val temporaryAbsence = temporaryAbsenceService.getTemporaryAbsence("MDI", "A1234AA")
 
     assertThat(temporaryAbsence).isEqualTo(
-      TemporaryAbsence(
+      TemporaryAbsenceResponse(
         firstName = "Jim",
         lastName = "Smith",
         dateOfBirth = LocalDate.of(1991, 7, 31),
         prisonNumber = "A1234AA",
-        reasonForAbsence = "Hospital"
+        reasonForAbsence = "Hospital",
+        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
       )
     )
 
@@ -65,11 +69,15 @@ class TemporaryAbsenceServiceTest {
   companion object {
 
     private val arrivalKnownToNomis = TemporaryAbsence(
-      firstName = "JIM",
-      lastName = "SMITH",
+      firstName = "Jim",
+      lastName = "Smith",
       dateOfBirth = LocalDate.of(1991, 7, 31),
-      prisonNumber = "A1234AA",
-      reasonForAbsence = "Hospital"
+      offenderNo = "A1234AA",
+      movementTime = LocalDateTime.of(2022, 1, 18, 8, 0),
+      toAgency = "ABRYMC",
+      toAgencyDescription = "Aberystwyth Magistrates Court",
+      movementReasonCode = "RO",
+      movementReason = "Hospital"
     )
   }
 }

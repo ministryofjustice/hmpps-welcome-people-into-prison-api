@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @JsonInclude(NON_NULL)
 @Schema(description = "A temporary absence from a prison")
-data class TemporaryAbsence(
+data class TemporaryAbsenceResponse(
   @Schema(description = "First name", example = "Sam")
   val firstName: String,
   @Schema(description = "Last name", example = "Smith")
@@ -20,5 +21,8 @@ data class TemporaryAbsence(
   val prisonNumber: String?,
   @JsonAlias("movementReason")
   @Schema(description = "Reason", example = "Medical/Dental Outpatient Appointment")
-  val reasonForAbsence: String
+  val reasonForAbsence: String,
+  @JsonAlias("movementDateTime")
+  @Schema(description = "Date and time when prisoner left prison", example = "2022-01-18T14:00:00")
+  val movementDateTime: LocalDateTime?
 )

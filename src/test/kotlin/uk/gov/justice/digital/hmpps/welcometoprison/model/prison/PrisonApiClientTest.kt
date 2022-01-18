@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -292,11 +291,17 @@ class PrisonApiClientTest {
   fun `Get temporary absences successful`() {
     val agencyId = "MDI"
     val temporaryAbsence = TemporaryAbsence(
-      prisonNumber = "G1310UO",
+      offenderNo = "G1310UO",
       firstName = "EGURZTOF",
       lastName = "TOBONICA",
       dateOfBirth = LocalDate.of(1990, 10, 15),
-      reasonForAbsence = "Medical/Dental Inpatient Appointment",
+      movementReason = "Medical/Dental Inpatient Appointment",
+      movementReasonCode = "C6",
+      toCity = "City",
+      toAgency = "ABRYMC",
+      toAgencyDescription = "Aberystwyth Magistrates Court",
+      movementTime = LocalDateTime.of(2022, 1, 18, 8, 0),
+      commentText = "pHnuWeNNnALpHnuWeNNnA"
     )
 
     mockServer.stubGetTemporaryAbsencesSuccess(agencyId)

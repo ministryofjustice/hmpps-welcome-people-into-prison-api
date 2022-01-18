@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDate
@@ -43,19 +43,21 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     fun `returns json in expected format`() {
       whenever(temporaryAbsenceService.getTemporaryAbsences("MDI")).thenReturn(
         listOf(
-          TemporaryAbsence(
+          TemporaryAbsenceResponse(
             firstName = "Jim",
             lastName = "Smith",
             dateOfBirth = LocalDate.of(1991, 7, 31),
             prisonNumber = "A1234AA",
-            reasonForAbsence = "Hospital"
+            reasonForAbsence = "Hospital",
+            movementDateTime = LocalDateTime.of(2022,1,18,8,0)
           ),
-          TemporaryAbsence(
+          TemporaryAbsenceResponse(
             firstName = "First",
             lastName = "Last",
             dateOfBirth = LocalDate.of(1980, 2, 23),
             prisonNumber = "A1278AA",
-            reasonForAbsence = "Dentist"
+            reasonForAbsence = "Dentist",
+            movementDateTime = LocalDateTime.of(2022,1,20,8,0)
           )
         )
       )
@@ -99,12 +101,13 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     @Test
     fun `returns json in expected format`() {
       whenever(temporaryAbsenceService.getTemporaryAbsence("MDI", "A1234AA")).thenReturn(
-        TemporaryAbsence(
+        TemporaryAbsenceResponse(
           firstName = "Jim",
           lastName = "Smith",
           dateOfBirth = LocalDate.of(1991, 7, 31),
           prisonNumber = "A1234AA",
-          reasonForAbsence = "Hospital"
+          reasonForAbsence = "Hospital",
+          movementDateTime = LocalDateTime.of(2022,1,18,8,0)
         )
       )
       webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
