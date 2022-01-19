@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -67,10 +66,28 @@ data class CourtTransferIn(
   val dateTime: LocalDateTime? = null
 )
 
+data class TemporaryAbsence(
+  val offenderNo: String? = null,
+  val firstName: String,
+  val lastName: String,
+  val dateOfBirth: LocalDate,
+  val movementTime: LocalDateTime? = null,
+  val toCity: String? = null,
+  val toAgency: String? = null,
+  val toAgencyDescription: String? = null,
+  val movementReasonCode: String,
+  val movementReason: String,
+  val commentText: String? = null
+
+)
+
 /**
  * The response has many more fields and nested values, but only offenderNo is of interest
  */
-data class ConfirmArrivalResponse(val offenderNo: String)
+data class ConfirmArrivalResponse(
+
+  val offenderNo: String
+)
 
 /*
  * The response has many more fields and nested values but currently only bookingId is needed.

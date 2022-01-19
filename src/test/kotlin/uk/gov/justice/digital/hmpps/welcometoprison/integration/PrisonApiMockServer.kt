@@ -421,8 +421,10 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "firstName": "EGURZTOF",
                   "lastName": "TOBONICA",
                   "dateOfBirth": "1990-10-15",
-                  "movementTime": "2017-04-02T14:08:00",
-                  "toCity": "Sheffield",
+                  "movementTime": "2022-01-18T08:00:00",
+                  "toCity": "City",
+                  "toAgency": "ABRYMC",
+                  "toAgencyDescription": "Aberystwyth Magistrates Court",
                   "movementReasonCode": "C6",
                   "movementReason": "Medical/Dental Inpatient Appointment",
                   "commentText": "pHnuWeNNnALpHnuWeNNnA"

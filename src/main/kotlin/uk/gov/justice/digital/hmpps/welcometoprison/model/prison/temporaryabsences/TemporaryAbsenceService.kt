@@ -13,20 +13,21 @@ class TemporaryAbsenceService(
   private val prisonApiClient: PrisonApiClient,
 ) {
 
-  fun getTemporaryAbsence(agencyId: String, prisonNumber: String): TemporaryAbsence =
+  fun getTemporaryAbsence(agencyId: String, prisonNumber: String): TemporaryAbsenceResponse =
     getTemporaryAbsences(agencyId).find { it.prisonNumber == prisonNumber }
       ?: throw NotFoundException("Could not find temporary absence with prisonNumber: '$prisonNumber'")
 
-  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> {
+  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsenceResponse> {
     val temporaryAbsences = prisonApiClient.getTemporaryAbsences(agencyId)
 
     return temporaryAbsences.map {
-      TemporaryAbsence(
+      TemporaryAbsenceResponse(
         firstName = Name.properCase(it.firstName),
         lastName = Name.properCase(it.lastName),
         dateOfBirth = it.dateOfBirth,
-        prisonNumber = it.prisonNumber,
-        reasonForAbsence = it.reasonForAbsence,
+        prisonNumber = it.offenderNo,
+        reasonForAbsence = it.movementReason,
+        movementDateTime = it.movementTime
       )
     }
   }

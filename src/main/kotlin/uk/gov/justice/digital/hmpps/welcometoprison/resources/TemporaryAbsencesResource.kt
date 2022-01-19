@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 
 @RestController
@@ -39,7 +39,7 @@ class TemporaryAbsencesResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = TemporaryAbsence::class))
+            array = ArraySchema(schema = Schema(implementation = TemporaryAbsenceResponse::class))
           )
         ]
       ),
@@ -88,7 +88,7 @@ class TemporaryAbsencesResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = TemporaryAbsence::class)
+            schema = Schema(implementation = TemporaryAbsenceResponse::class)
           )
         ]
       ),
@@ -125,7 +125,7 @@ class TemporaryAbsencesResource(
     @PathVariable agencyId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable prisonNumber: String
-  ): TemporaryAbsence = temporaryAbsenceService.getTemporaryAbsence(agencyId, prisonNumber)
+  ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(agencyId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
