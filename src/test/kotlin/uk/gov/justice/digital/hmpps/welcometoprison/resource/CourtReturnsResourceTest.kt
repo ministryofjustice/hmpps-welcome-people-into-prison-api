@@ -20,8 +20,8 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   private val confirmCourtReturnRequest = ConfirmCourtReturnRequest(
     "NMI"
   )
-  private val moveId ="06274b73-6aa9-490e-ab0e-2a25b3638068"
-  private val url ="/court-returns/${moveId}/confirm"
+  private val moveId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
+  private val url = "/court-returns/$moveId/confirm"
 
   @Test
   fun `confirm court return`() {
