@@ -84,12 +84,7 @@ class PrisonService(
     return prisonApiClient.courtTransferIn(
       arrival.prisonNumber!!,
       with(confirmCourtReturnRequest) {
-        CourtTransferIn(
-          prisonId!!,
-          null,
-          null,
-          null
-        )
+        CourtTransferIn(prisonId!!)
       }
     ).bookingId
   }

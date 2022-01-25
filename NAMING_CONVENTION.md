@@ -11,13 +11,3 @@ prisonerNumber
 ####prisonId
 @Deprecated  
 agencyId
-
-
-
-
-
-
-
-
-
-

@@ -64,7 +64,7 @@ class ArrivalsService(
         null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
         else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
       } else
-      throw IllegalArgumentException("Feature not available.")
+      throw IllegalArgumentException("Confirming arrival of active prisoner: '${arrival.prisonNumber}' is not supported.")
   }
 
   fun confirmReturnFromCourt(
@@ -79,7 +79,7 @@ class ArrivalsService(
         LocationType.COURT -> returnFromCourt(moveId, confirmCourtReturnRequest, arrival)
         else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
       } else
-      throw IllegalArgumentException("Feature not available.")
+      throw IllegalArgumentException("Confirming court return of inactive prisoner: '${arrival.prisonNumber}' is not supported.")
   }
 
   private fun returnFromCourt(

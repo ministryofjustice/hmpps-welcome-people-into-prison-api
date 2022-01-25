@@ -156,12 +156,7 @@ class PrisonServiceTest {
 
     verify(prisonApiClient).courtTransferIn(
       arrival.prisonNumber!!,
-      CourtTransferIn(
-        confirmCourtReturnRequest.prisonId!!,
-        null,
-        null,
-        null
-      )
+      CourtTransferIn(confirmCourtReturnRequest.prisonId!!)
     )
     assertThat(result).isEqualTo(1L)
   }
