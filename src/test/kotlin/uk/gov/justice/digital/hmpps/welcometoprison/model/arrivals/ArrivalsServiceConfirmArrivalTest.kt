@@ -93,7 +93,7 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     assertThatThrownBy {
-      arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+      arrivalsService.confirmArrivalFromCourt(MOVE_ID, CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE)
     }.isInstanceOf(IllegalArgumentException::class.java)
 
     verify(basmService).getArrival(MOVE_ID)
@@ -116,9 +116,9 @@ class ArrivalsServiceConfirmArrivalTest {
     )
     whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrival(
+    arrivalsService.confirmArrivalFromCourt(
       MOVE_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
@@ -153,7 +153,7 @@ class ArrivalsServiceConfirmArrivalTest {
 
     arrivalsService.confirmArrivalFromCourt(
       MOVE_ID,
-      CONFIRMED_COURT_RETURN_REQUEST
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
@@ -187,9 +187,9 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     assertThatThrownBy {
-      arrivalsService.confirmArrival(
+      arrivalsService.confirmArrivalFromCourt(
         MOVE_ID,
-        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(bookingInTime = LocalDateTime.now(FIXED_CLOCK))
+        CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
       )
     }.isInstanceOf(IllegalArgumentException::class.java)
 
@@ -304,7 +304,7 @@ class ArrivalsServiceConfirmArrivalTest {
       commentText = "",
       cellLocation = "",
     )
-    val CONFIRMED_COURT_RETURN_REQUEST = ConfirmCourtReturnRequest(
+    val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
       prisonId = PRISON_ID,
     )
 
