@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarri
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
@@ -123,7 +124,7 @@ class ArrivalsServiceConfirmArrivalTest {
     verify(
       prisonService
     ).transferInFromCourt(
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE,
+      CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE,
       ARRIVAL_PROTOTYPE.copy(
         prisonNumber = OFFENDER_NO,
         isCurrentPrisoner = true,
@@ -150,9 +151,9 @@ class ArrivalsServiceConfirmArrivalTest {
     )
     whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrival(
+    arrivalsService.confirmArrivalFromCourt(
       MOVE_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST
     )
 
     verify(
@@ -162,7 +163,7 @@ class ArrivalsServiceConfirmArrivalTest {
       OFFENDER_NO,
       CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
       BOOKING_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.bookingInTime?.toLocalDate()!!,
+      LocalDate.now(FIXED_CLOCK),
       ArrivalType.COURT_TRANSFER
     )
   }
@@ -302,6 +303,13 @@ class ArrivalsServiceConfirmArrivalTest {
       fromLocationId = "",
       commentText = "",
       cellLocation = "",
+    )
+    val CONFIRMED_COURT_RETURN_REQUEST = ConfirmCourtReturnRequest(
+      prisonId = PRISON_ID,
+    )
+
+    val CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
+    prisonId = PRISON_ID
     )
 
     @JvmStatic

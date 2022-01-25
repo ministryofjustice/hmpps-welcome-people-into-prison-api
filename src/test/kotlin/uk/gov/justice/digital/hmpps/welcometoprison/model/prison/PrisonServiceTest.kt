@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -132,16 +133,8 @@ class PrisonServiceTest {
 
   @Test
   fun `transferInFromCourt calls prisonApi correctly and returns the bookingId`() {
-    val confirmArrivalDetail = ConfirmArrivalDetail(
-      firstName = "First",
-      lastName = "Last",
-      dateOfBirth = LocalDate.of(1978, 1, 1),
-      gender = "M",
-      prisonId = "MNI",
-      movementReasonCode = "N",
-      imprisonmentStatus = "SENT03",
-      bookingInTime = LocalDateTime.now(),
-      commentText = " Some comments"
+    val confirmCourtReturnRequest = ConfirmCourtReturnRequest(
+      prisonId = "MNI"
     )
     val arrival = Arrival(
       id = "0573de83-8a29-42aa-9ede-1068bc433fc5",
@@ -159,15 +152,15 @@ class PrisonServiceTest {
 
     whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(InmateDetail(1L))
 
-    val result = prisonService.transferInFromCourt(confirmArrivalDetail, arrival)
+    val result = prisonService.transferInFromCourt(confirmCourtReturnRequest, arrival)
 
     verify(prisonApiClient).courtTransferIn(
       arrival.prisonNumber!!,
       CourtTransferIn(
-        confirmArrivalDetail.prisonId!!,
-        confirmArrivalDetail.movementReasonCode,
-        confirmArrivalDetail.commentText,
-        confirmArrivalDetail.bookingInTime
+        confirmCourtReturnRequest.prisonId!!,
+        null,
+        null,
+        null
       )
     )
     assertThat(result).isEqualTo(1L)

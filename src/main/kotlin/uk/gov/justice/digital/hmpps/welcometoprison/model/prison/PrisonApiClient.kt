@@ -223,16 +223,16 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       }
       .block() ?: throw IllegalStateException("No response from prison api")
 
-  fun courtTransferIn(offenderNo: String, detail: CourtTransferIn): InmateDetail =
+  fun courtTransferIn(prisonNumber: String, detail: CourtTransferIn): InmateDetail =
     webClient.put()
-      .uri("/api/offenders/$offenderNo/court-transfer-in")
+      .uri("/api/offenders/$prisonNumber/court-transfer-in")
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,
-          "Client error when posting to /api/offenders/$offenderNo/court-transfer-in"
+          "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in"
         )
       }
       .block() ?: throw IllegalStateException("No response from prison api")

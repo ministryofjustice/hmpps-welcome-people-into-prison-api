@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 
 @Service
 class PrisonService(
   @Autowired private val prisonApiClient: PrisonApiClient,
-  @Autowired private val prisonRegisterClient: PrisonRegisterClient,
-) {
+  @Autowired private val prisonRegisterClient: PrisonRegisterClient
+  ) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
 
@@ -78,16 +79,16 @@ class PrisonService(
       )
       .offenderNo
 
-  fun transferInFromCourt(confirmArrivalDetail: ConfirmArrivalDetail, arrival: Arrival): Long {
+  fun transferInFromCourt(confirmCourtReturnRequest: ConfirmCourtReturnRequest, arrival: Arrival): Long {
 
     return prisonApiClient.courtTransferIn(
       arrival.prisonNumber!!,
-      with(confirmArrivalDetail) {
+      with(confirmCourtReturnRequest) {
         CourtTransferIn(
           prisonId!!,
-          movementReasonCode,
-          commentText,
-          bookingInTime
+          null,
+          null,
+          null
         )
       }
     ).bookingId
