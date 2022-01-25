@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import java.time.Clock
@@ -57,34 +59,46 @@ class ArrivalsService(
 
     val arrival = getArrival(moveId)
 
-    return if (arrival.isCurrentPrisoner)
-      when (arrival.fromLocationType) {
-        LocationType.COURT -> transferInFromCourt(moveId, confirmArrivalDetail, arrival)
-        else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
-      } else
+    return if (!arrival.isCurrentPrisoner)
       when (arrival.prisonNumber) {
         null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
         else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
-      }
+      } else
+      throw IllegalArgumentException("Confirming arrival of active prisoner: '${arrival.prisonNumber}' is not supported.")
   }
 
-  private fun transferInFromCourt(
+  fun confirmReturnFromCourt(
     moveId: String,
-    confirmArrivalDetail: ConfirmArrivalDetail,
-    arrival: Arrival
-  ): ConfirmArrivalResponse {
+    confirmCourtReturnRequest: ConfirmCourtReturnRequest
+  ): ConfirmCourtReturnResponse {
 
-    val bookingId = prisonService.transferInFromCourt(confirmArrivalDetail, arrival)
+    val arrival = getArrival(moveId)
+
+    return if (arrival.isCurrentPrisoner)
+      when (arrival.fromLocationType) {
+        LocationType.COURT -> returnFromCourt(moveId, confirmCourtReturnRequest, arrival)
+        else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
+      } else
+      throw IllegalArgumentException("Confirming court return of inactive prisoner: '${arrival.prisonNumber}' is not supported.")
+  }
+
+  private fun returnFromCourt(
+    moveId: String,
+    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
+    arrival: Arrival
+  ): ConfirmCourtReturnResponse {
+
+    val bookingId = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
     confirmedArrivalService.add(
       moveId,
       arrival.prisonNumber!!,
-      confirmArrivalDetail.prisonId!!,
+      confirmCourtReturnRequest.prisonId!!,
       bookingId,
-      confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+      LocalDate.now(clock),
       ArrivalType.COURT_TRANSFER
     )
-    return ConfirmArrivalResponse(offenderNo = arrival.prisonNumber)
+    return ConfirmCourtReturnResponse(prisonNumber = arrival.prisonNumber)
   }
 
   private fun admitOffender(

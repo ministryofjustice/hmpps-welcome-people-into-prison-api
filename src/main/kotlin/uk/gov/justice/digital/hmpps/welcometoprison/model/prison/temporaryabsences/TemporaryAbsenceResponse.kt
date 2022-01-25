@@ -22,7 +22,7 @@ data class TemporaryAbsenceResponse(
   @JsonAlias("movementReason")
   @Schema(description = "Reason", example = "Medical/Dental Outpatient Appointment")
   val reasonForAbsence: String,
-  @JsonAlias("movementDateTime")
+
   @Schema(description = "Date and time when prisoner left prison", example = "2022-01-18T14:00:00")
   val movementDateTime: LocalDateTime?
 )

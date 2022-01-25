@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarri
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
@@ -71,7 +72,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       BOOKING_IN_TIME,
       { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -113,17 +114,17 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrival(
+    arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
       prisonService
-    ).transferInFromCourt(
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE,
+    ).returnFromCourt(
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE,
       ARRIVAL_PROTOTYPE.copy(
         prisonNumber = OFFENDER_NO,
         isCurrentPrisoner = true,
@@ -148,11 +149,11 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrival(
+    arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
@@ -162,7 +163,7 @@ class ArrivalsServiceConfirmArrivalTest {
       OFFENDER_NO,
       CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
       BOOKING_ID,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.bookingInTime?.toLocalDate()!!,
+      LocalDate.now(FIXED_CLOCK),
       ArrivalType.COURT_TRANSFER
     )
   }
@@ -186,9 +187,9 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     assertThatThrownBy {
-      arrivalsService.confirmArrival(
+      arrivalsService.confirmReturnFromCourt(
         MOVE_ID,
-        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(bookingInTime = LocalDateTime.now(FIXED_CLOCK))
+        CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
       )
     }.isInstanceOf(IllegalArgumentException::class.java)
 
@@ -203,7 +204,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.RECALL,
       null,
       { whenever(prisonService.recallOffender(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).recallOffender(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).recallOffender(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -215,7 +216,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       null,
       { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -302,6 +303,9 @@ class ArrivalsServiceConfirmArrivalTest {
       fromLocationId = "",
       commentText = "",
       cellLocation = "",
+    )
+    val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
+      prisonId = PRISON_ID,
     )
 
     @JvmStatic
