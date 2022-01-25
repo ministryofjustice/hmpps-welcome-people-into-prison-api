@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
-@RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(name = "Court returns", produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourtReturnsResource(
   private val arrivalsService: ArrivalsService
 ) {
 
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
-    summary = "Confirms the arrival for a specific ID",
-    description = "Confirms the arrival for a specific ID, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
+    summary = "Confirm court return to prison id ",
+    description = "Confirm court return for a specific prisoner to prison, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
     security = [SecurityRequirement(name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Information about the created offender",
+        description = "Confirmation about successful court return",
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ConfirmArrivalResponse::class)
+            schema = Schema(implementation = ConfirmCourtReturnResponse::class)
           )
         ]
       ),
@@ -68,7 +68,7 @@ class CourtReturnsResource(
   )
 
   @PostMapping(
-    "/court-returns/{prisonNumber}/confirm",
+    "/court-returns/{moveId}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
@@ -80,5 +80,5 @@ class CourtReturnsResource(
     @RequestBody
     @Valid @NotNull
     confirmCourtReturnRequest: ConfirmCourtReturnRequest
-  ): ConfirmArrivalResponse = arrivalsService.confirmArrivalFromCourt(moveId, confirmCourtReturnRequest)
+  ): ConfirmCourtReturnResponse = arrivalsService.confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
 }

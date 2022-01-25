@@ -152,7 +152,7 @@ class PrisonServiceTest {
 
     whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(InmateDetail(1L))
 
-    val result = prisonService.transferInFromCourt(confirmCourtReturnRequest, arrival)
+    val result = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
     verify(prisonApiClient).courtTransferIn(
       arrival.prisonNumber!!,

@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 class PrisonService(
   @Autowired private val prisonApiClient: PrisonApiClient,
   @Autowired private val prisonRegisterClient: PrisonRegisterClient
-  ) {
+) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
 
@@ -79,7 +79,7 @@ class PrisonService(
       )
       .offenderNo
 
-  fun transferInFromCourt(confirmCourtReturnRequest: ConfirmCourtReturnRequest, arrival: Arrival): Long {
+  fun returnFromCourt(confirmCourtReturnRequest: ConfirmCourtReturnRequest, arrival: Arrival): Long {
 
     return prisonApiClient.courtTransferIn(
       arrival.prisonNumber!!,

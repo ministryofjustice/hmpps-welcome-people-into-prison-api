@@ -72,7 +72,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       BOOKING_IN_TIME,
       { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -93,7 +93,7 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     assertThatThrownBy {
-      arrivalsService.confirmArrivalFromCourt(MOVE_ID, CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE)
+      arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
     }.isInstanceOf(IllegalArgumentException::class.java)
 
     verify(basmService).getArrival(MOVE_ID)
@@ -114,16 +114,16 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrivalFromCourt(
+    arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
       prisonService
-    ).transferInFromCourt(
+    ).returnFromCourt(
       CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE,
       ARRIVAL_PROTOTYPE.copy(
         prisonNumber = OFFENDER_NO,
@@ -149,9 +149,9 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.transferInFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
 
-    arrivalsService.confirmArrivalFromCourt(
+    arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
@@ -187,7 +187,7 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     assertThatThrownBy {
-      arrivalsService.confirmArrivalFromCourt(
+      arrivalsService.confirmReturnFromCourt(
         MOVE_ID,
         CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
       )
@@ -204,7 +204,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.RECALL,
       null,
       { whenever(prisonService.recallOffender(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).recallOffender(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).recallOffender(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -216,7 +216,7 @@ class ArrivalsServiceConfirmArrivalTest {
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       null,
       { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
-      { confirmArrialDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrialDetail) }
+      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
 
@@ -309,7 +309,7 @@ class ArrivalsServiceConfirmArrivalTest {
     )
 
     val CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
-    prisonId = PRISON_ID
+      prisonId = PRISON_ID
     )
 
     @JvmStatic

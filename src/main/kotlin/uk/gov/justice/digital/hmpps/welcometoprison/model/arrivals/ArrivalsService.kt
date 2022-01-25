@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalD
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import java.time.Clock
@@ -58,35 +59,36 @@ class ArrivalsService(
 
     val arrival = getArrival(moveId)
 
-    return if (arrival.isCurrentPrisoner)
+    return if (!arrival.isCurrentPrisoner)
       when (arrival.prisonNumber) {
         null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
         else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
       } else
       throw IllegalArgumentException("Feature not available.")
   }
-  fun confirmArrivalFromCourt(
+
+  fun confirmReturnFromCourt(
     moveId: String,
     confirmCourtReturnRequest: ConfirmCourtReturnRequest
-  ): ConfirmArrivalResponse {
+  ): ConfirmCourtReturnResponse {
 
     val arrival = getArrival(moveId)
 
     return if (arrival.isCurrentPrisoner)
       when (arrival.fromLocationType) {
-        LocationType.COURT -> transferInFromCourt(moveId, confirmCourtReturnRequest, arrival)
+        LocationType.COURT -> returnFromCourt(moveId, confirmCourtReturnRequest, arrival)
         else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
       } else
       throw IllegalArgumentException("Feature not available.")
   }
 
-  private fun transferInFromCourt(
+  private fun returnFromCourt(
     moveId: String,
     confirmCourtReturnRequest: ConfirmCourtReturnRequest,
     arrival: Arrival
-  ): ConfirmArrivalResponse {
+  ): ConfirmCourtReturnResponse {
 
-    val bookingId = prisonService.transferInFromCourt(confirmCourtReturnRequest, arrival)
+    val bookingId = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
     confirmedArrivalService.add(
       moveId,
@@ -96,7 +98,7 @@ class ArrivalsService(
       LocalDate.now(clock),
       ArrivalType.COURT_TRANSFER
     )
-    return ConfirmArrivalResponse(offenderNo = arrival.prisonNumber)
+    return ConfirmCourtReturnResponse(prisonNumber = arrival.prisonNumber)
   }
 
   private fun admitOffender(
