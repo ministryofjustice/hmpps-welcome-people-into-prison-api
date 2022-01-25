@@ -124,7 +124,7 @@ class ArrivalsServiceConfirmArrivalTest {
     verify(
       prisonService
     ).returnFromCourt(
-      CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE,
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE,
       ARRIVAL_PROTOTYPE.copy(
         prisonNumber = OFFENDER_NO,
         isCurrentPrisoner = true,
@@ -306,10 +306,6 @@ class ArrivalsServiceConfirmArrivalTest {
     )
     val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
       prisonId = PRISON_ID,
-    )
-
-    val CONFIRM_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
-      prisonId = PRISON_ID
     )
 
     @JvmStatic

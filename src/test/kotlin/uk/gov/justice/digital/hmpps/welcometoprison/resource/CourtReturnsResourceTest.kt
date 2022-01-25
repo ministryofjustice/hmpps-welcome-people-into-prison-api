@@ -20,16 +20,18 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   private val confirmCourtReturnRequest = ConfirmCourtReturnRequest(
     "NMI"
   )
+  private val moveId ="06274b73-6aa9-490e-ab0e-2a25b3638068"
+  private val url ="/court-returns/${moveId}/confirm"
 
   @Test
   fun `confirm court return`() {
     val prisonNumber = "AA1111A"
     whenever(
       arrivalsService.confirmReturnFromCourt(any(), any())
-    ).thenReturn(ConfirmCourtReturnResponse("AA1111A"))
+    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber))
     webTestClient
       .post()
-      .uri("/court-returns/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+      .uri(url)
       .headers(
         setAuthorisation(
           roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
@@ -42,12 +44,12 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
 
-    verify(arrivalsService).confirmReturnFromCourt("06274b73-6aa9-490e-ab0e-2a25b3638068", confirmCourtReturnRequest)
+    verify(arrivalsService).confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
   }
 
   @Test
   fun `requires authentication`() {
-    webTestClient.post().uri("/court-returns/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+    webTestClient.post().uri(url)
       .bodyValue(confirmCourtReturnRequest)
       .exchange()
       .expectStatus().isUnauthorized
@@ -57,7 +59,7 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   fun `requires correct role`() {
     val token = getAuthorisation(roles = listOf(), scopes = listOf("write"))
 
-    webTestClient.post().uri("/court-returns/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+    webTestClient.post().uri(url)
       .bodyValue(confirmCourtReturnRequest)
       .withBearerToken(token)
       .exchange()
