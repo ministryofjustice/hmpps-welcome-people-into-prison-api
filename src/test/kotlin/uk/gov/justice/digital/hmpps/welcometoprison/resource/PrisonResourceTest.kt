@@ -21,14 +21,14 @@ class PrisonResourceTest : IntegrationTestBase() {
   inner class `Get Prisoner image` {
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/prison/prisoner/A12345/image")
+      webTestClient.get().uri("/prisoners/A12345/image")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/prison/prisoner/A12345/image")
+      webTestClient.get().uri("/prisoners/A12345/image")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -42,7 +42,7 @@ class PrisonResourceTest : IntegrationTestBase() {
       whenever(prisonService.getPrisonerImage(any())).thenReturn(
         "imageString".toByteArray()
       )
-      val response = webTestClient.get().uri("/prison/prisoner/A12345/image")
+      val response = webTestClient.get().uri("/prisoners/A12345/image")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -54,7 +54,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls service method with correct args`() {
-      webTestClient.get().uri("/prison/prisoner/A12345/image")
+      webTestClient.get().uri("/prisoners/A12345/image")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk

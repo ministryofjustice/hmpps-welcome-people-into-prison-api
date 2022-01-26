@@ -77,7 +77,7 @@ class ArrivalsResource(
       ),
     ]
   )
-  @GetMapping(path = ["/incoming-moves/{agencyId}", "/prisons/{agencyId}/arrivals"])
+  @GetMapping(path = [ "/prisons/{agencyId}/arrivals"])
   fun getMoves(
     @Schema(description = "Prison ID", example = "MDI", required = true)
     @PathVariable agencyId: String,
