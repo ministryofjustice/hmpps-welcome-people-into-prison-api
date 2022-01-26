@@ -6,8 +6,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 
 private const val MAPPINGS_DIRECTORY = "src/testIntegration/resources"
@@ -33,15 +31,14 @@ class PrisonerSearchMockServer : MockServer(8093) {
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
             .withBody(
-              mapper.writeValueAsString(
-                listOf(
-                  MatchPrisonerResponse(
-                    prisonerNumber = "A1278AA",
-                    pncNumber = "1234/1234589A",
-                    status = INACTIVE_OUT,
-                  )
-                )
-              )
+              """[{
+                        "firstName": "JIM",
+                        "lastName": "SMITH", 
+                        "dateOfBirth": "1991-07-31",
+                        "prisonerNumber": "A1278AA",
+                        "pncNumber": "1234/1234589A",
+                        "status": "INACTIVE OUT"
+                       }]"""
             )
         )
     )

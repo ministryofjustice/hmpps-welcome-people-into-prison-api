@@ -38,18 +38,9 @@ class ArrivalsService(
   private fun augmentWithPrisonData(arrival: Arrival): Arrival {
     val candidates = prisonerSearchService.getCandidateMatches(arrival)
 
-    val match = candidates.firstOrNull { arrival.isMatch(it) }
+    val matches = candidates.filter { arrival.isMatch(it) }.distinctBy { it.prisonerNumber }
 
-    return if (match != null)
-      arrival.copy(
-        pncNumber = match.pncNumber,
-        prisonNumber = match.prisonerNumber,
-        isCurrentPrisoner = match.isCurrentPrisoner
-      )
-
-    // Ignore any provided prison number, but assume PNC is fine
-    else
-      arrival.copy(prisonNumber = null)
+    return arrival.copy(potentialMatches = matches.map { it.toPotentialMatch() })
   }
 
   fun confirmArrival(
@@ -177,5 +168,13 @@ class ArrivalsService(
 
       else -> false
     }
+
+    fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
+      this.firstName,
+      this.lastName,
+      this.dateOfBirth,
+      this.prisonerNumber,
+      this.pncNumber,
+    )
   }
 }
