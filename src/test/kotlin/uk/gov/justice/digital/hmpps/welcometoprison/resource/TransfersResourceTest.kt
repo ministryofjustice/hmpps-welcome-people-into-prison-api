@@ -180,7 +180,8 @@ class TransfersResourceTest : IntegrationTestBase() {
         .bodyValue(transferInDetail)
         .withBearerToken(token)
         .exchange()
-        .expectStatus().isOk
+        .expectStatus().isNoContent
+        .expectBody().isEmpty
 
       prisonApiMockServer.verify(
         putRequestedFor(
