@@ -39,7 +39,7 @@ data class Arrival(
   val isCurrentPrisoner: Boolean = false,
 
   @Schema(
-    description = "Gender of the arrival according to Book a Secure Move. Only returns MALE or FEMALE. If Book a Secure Move returns Trans, this resource will return null as we will need to capture legal gender information",
+    description = "Gender of the arrival according to Book a Secure Move",
     example = "MALE"
   )
   val gender: Gender? = null,
