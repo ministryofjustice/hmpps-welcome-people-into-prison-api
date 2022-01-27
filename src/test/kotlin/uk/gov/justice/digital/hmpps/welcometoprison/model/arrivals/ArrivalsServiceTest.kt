@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.isMatch
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.toPotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
@@ -30,118 +30,54 @@ class ArrivalsServiceTest {
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService =
     ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService, FIXED_CLOCK)
-  val result = { prisonNumber: String?, pnc: String? -> MatchPrisonerResponse(prisonNumber, pnc, "ACTIVE IN") }
+  val result = { firstName: String, lastName: String, dateOfBirth: LocalDate, prisonNumber: String?, pnc: String? ->
+    MatchPrisonerResponse(
+      firstName,
+      lastName,
+      dateOfBirth,
+      prisonNumber,
+      pnc,
+      "ACTIVE IN"
+    )
+  }
 
   @Test
-  fun `getArrivals - happy path`() {
+  fun getArrivals() {
+    val noMatch = result("JIM", "SMITH", LocalDate.of(1980, 2, 23), "NA", "NA")
+    val match =
+      result("JIM", "SMITH", LocalDate.of(1980, 2, 23), arrivalKnownToNomis.prisonNumber, arrivalKnownToNomis.pncNumber)
+
     whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(basmOnlyArrival, arrivalKnownToNomis))
-    whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(emptyList())
-    whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(listOf(result("A1234AA", "99/123456J"), result("A1234BB", "11/123456J")))
+    whenever(prisonerSearchService.getCandidateMatches(any()))
+      .thenReturn(emptyList())
+      .thenReturn(listOf(noMatch, match))
 
     val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
     assertThat(arrivals).isEqualTo(
-      listOf(basmOnlyArrival, arrivalKnownToNomis)
+      listOf(
+        basmOnlyArrival.copy(potentialMatches = emptyList()),
+        arrivalKnownToNomis.copy(potentialMatches = listOf(match.toPotentialMatch()))
+      )
     )
   }
 
-  @Nested
-  inner class MatchingArrivals {
+  @Test
+  fun `getArrivals will remove duplicate search results`() {
+    val match =
+      result("JIM", "SMITH", LocalDate.of(1980, 2, 23), arrivalKnownToNomis.prisonNumber, arrivalKnownToNomis.pncNumber)
 
-    @BeforeEach
-    fun before() {
-      whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(emptyList())
-    }
+    whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonerSearchService.getCandidateMatches(any()))
+      .thenReturn(listOf(match, match))
 
-    @Test
-    fun `finds match from candidates`() {
-      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
+    val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
-        listOf(
-          result(move.prisonNumber, move.pncNumber)
-        )
+    assertThat(arrivals).isEqualTo(
+      listOf(
+        arrivalKnownToNomis.copy(potentialMatches = listOf(match.toPotentialMatch()))
       )
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(move.prisonNumber, move.pncNumber))
-    }
-
-    @Test
-    fun `finds match from candidates when PNC number includes lower case character`() {
-      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = "99/123456j")
-
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
-        listOf(
-          result(move.prisonNumber, "99/123456J")
-        )
-      )
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(move.prisonNumber, "99/123456J"))
-    }
-
-    @Test
-    fun `Doesn't find match from candidates due to prison number mismatch`() {
-
-      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
-
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
-        listOf(
-          result(ANOTHER_PRISON_NUMBER, move.pncNumber)
-        )
-      )
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, move.pncNumber))
-    }
-
-    @Test
-    fun `Doesn't find match from candidates due to PNC mismatch`() {
-      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
-
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(
-        listOf(
-          result(move.prisonNumber, ANOTHER_PNC_NUMBER)
-        )
-      )
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
-    }
-
-    @Test
-    fun `Doesn't find match as no candidates for new prisoner`() {
-      val move = basmOnlyArrival.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
-
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(emptyList())
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
-    }
-
-    @Test
-    fun `Doesn't find match as no candidates when prison number provided`() {
-      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
-
-      whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(move))
-      whenever(prisonerSearchService.getCandidateMatches(move)).thenReturn(emptyList())
-
-      val movement = arrivalsService.getArrivals("MDI", DATE).first()
-
-      assertThat(movement).extracting("prisonNumber", "pncNumber").isEqualTo(listOf(null, movement.pncNumber))
-    }
+    )
   }
 
   @Nested
@@ -150,42 +86,55 @@ class ArrivalsServiceTest {
     fun `Both fields present from BASM move`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
 
-      assertThat(move.isMatch(result(PRISON_NUMBER, PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(result(PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(result(ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isTrue
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
     }
 
     @Test
     fun `PNC absent from BASM move`() {
       val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER, pncNumber = null)
 
-      assertThat(move.isMatch(result(PRISON_NUMBER, PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(result(PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(result(ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isTrue
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isTrue
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
     }
 
     @Test
     fun `prison number absent from BASM move`() {
       val move = basmOnlyArrival.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
 
-      assertThat(move.isMatch(result(PRISON_NUMBER, PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(result(PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(result(ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isTrue
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isTrue
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isTrue
     }
 
     @Test
     fun `prison number and PNC absent from BASM move`() {
       val move = basmOnlyArrival.copy(prisonNumber = null, pncNumber = null)
 
-      assertThat(move.isMatch(result(PRISON_NUMBER, PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(result(PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(result(ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, ANOTHER_PNC_NUMBER))).isFalse
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, ANOTHER_PRISON_NUMBER, PNC_NUMBER))).isFalse
+    }
+
+    @Test
+    fun `Case insensitive pnc match`() {
+      val move = basmOnlyArrival.copy(pncNumber = PNC_NUMBER.lowercase())
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isTrue
+    }
+
+    @Test
+    fun `Case insensitive prisonNumber match`() {
+      val move = basmOnlyArrival.copy(prisonNumber = PRISON_NUMBER.lowercase())
+      assertThat(move.isMatch(result(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER))).isTrue
     }
   }
 
   companion object {
     private val DATE = LocalDate.of(2021, 1, 2)
-
+    private const val FIRST_NAME = "HARRY"
+    private const val LAST_NAME = "SMITH"
     private const val PRISON_NUMBER = "A1234AA"
     private const val ANOTHER_PRISON_NUMBER = "A1234BB"
     private const val PNC_NUMBER = "99/123456J"

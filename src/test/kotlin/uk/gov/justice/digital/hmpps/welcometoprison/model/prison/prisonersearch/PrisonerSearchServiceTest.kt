@@ -21,15 +21,15 @@ class PrisonerSearchServiceTest {
   @Test
   fun `getCandidateMatches - happy path`() {
     whenever(client.matchPrisoner(any())).thenReturn(
-      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN")),
-      listOf(MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT))
+      listOf(MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN")),
+      listOf(MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT))
     )
 
     val moves = service.getCandidateMatches(arrival)
 
     assertThat(moves).containsExactly(
-      MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN"),
-      MatchPrisonerResponse(PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT)
+      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, "ACTIVE IN"),
+      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, INACTIVE_OUT)
     )
   }
 
@@ -64,14 +64,17 @@ class PrisonerSearchServiceTest {
   }
 
   companion object {
-    private val PRISON_NUMBER = "A1234AA"
-    private val PNC_NUMBER = "1234/1234589A"
+    private const val PRISON_NUMBER = "A1234AA"
+    private const val PNC_NUMBER = "1234/1234589A"
+    private const val FIRST_NAME = "JIM"
+    private const val LAST_NAME = "SMITH"
+    private val DOB = LocalDate.of(1991, 7, 31)
 
     private val arrival = Arrival(
       id = "1",
-      firstName = "JIM",
-      lastName = "SMITH",
-      dateOfBirth = LocalDate.of(1991, 7, 31),
+      firstName = FIRST_NAME,
+      lastName = LAST_NAME,
+      dateOfBirth = DOB,
       prisonNumber = PRISON_NUMBER,
       pncNumber = PNC_NUMBER,
       date = LocalDate.of(2021, 1, 21),

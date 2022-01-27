@@ -38,8 +38,34 @@ data class Arrival(
   @Schema(description = "Is the arrival in custody according to NOMIS", example = "true")
   val isCurrentPrisoner: Boolean = false,
 
-  @Schema(description = "Gender of the arrival according to Book a Secure Move. Only returns MALE or FEMALE. If Book a Secure Move returns Trans, this resource will return null as we will need to capture legal gender information", example = "MALE")
-  val gender: Gender? = null
+  @Schema(
+    description = "Gender of the arrival according to Book a Secure Move. Only returns MALE or FEMALE. If Book a Secure Move returns Trans, this resource will return null as we will need to capture legal gender information",
+    example = "MALE"
+  )
+  val gender: Gender? = null,
+
+  @Schema(
+    description = "A list of all potential matches",
+    example = "[firstName: \"Sam\",lastName: \"Smith\",dateOfBirth: \"1971-02-01\",prisonNumber: \"A1234BC\",pncNumber: \"01/1234X\"]"
+  )
+  var potentialMatches: List<PotentialMatch>? = null
+)
+
+data class PotentialMatch(
+  @Schema(description = "First name", example = "Sam")
+  val firstName: String,
+
+  @Schema(description = "Last name", example = "Smith")
+  val lastName: String,
+
+  @Schema(description = "Date of birth", example = "1971-02-01")
+  val dateOfBirth: LocalDate,
+
+  @Schema(description = "Prison number", example = "A1234AA")
+  val prisonNumber: String?,
+
+  @Schema(description = "PNC number", example = "01/1234X")
+  val pncNumber: String?
 )
 
 enum class LocationType {

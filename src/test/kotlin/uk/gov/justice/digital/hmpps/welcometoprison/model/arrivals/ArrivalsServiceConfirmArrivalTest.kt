@@ -80,7 +80,14 @@ class ArrivalsServiceConfirmArrivalTest {
   fun `Confirm arrival matched to NOMIS offender who is in custody and is a non-court transfer, is rejected`() {
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
       listOf(
-        MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
+        MatchPrisonerResponse(
+          firstName = FIRST_NAME,
+          lastName = LAST_NAME,
+          dateOfBirth = DATE_OF_BIRTH,
+          prisonerNumber = OFFENDER_NO,
+          pncNumber = null,
+          status = "ACTIVE IN"
+        )
       )
     )
 
@@ -104,7 +111,14 @@ class ArrivalsServiceConfirmArrivalTest {
 
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
       listOf(
-        MatchPrisonerResponse(prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN")
+        MatchPrisonerResponse(
+          firstName = FIRST_NAME,
+          lastName = LAST_NAME,
+          dateOfBirth = DATE_OF_BIRTH,
+          prisonerNumber = OFFENDER_NO,
+          pncNumber = null,
+          status = "ACTIVE IN"
+        )
       )
     )
 
@@ -138,7 +152,12 @@ class ArrivalsServiceConfirmArrivalTest {
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
       listOf(
         MatchPrisonerResponse(
-          prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN"
+          firstName = FIRST_NAME,
+          lastName = LAST_NAME,
+          dateOfBirth = DATE_OF_BIRTH,
+          prisonerNumber = OFFENDER_NO,
+          pncNumber = null,
+          status = "ACTIVE IN"
         )
       )
     )
@@ -181,6 +200,7 @@ class ArrivalsServiceConfirmArrivalTest {
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
       listOf(
         MatchPrisonerResponse(
+          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = OFFENDER_NO, pncNumber = null, status = "ACTIVE IN"
         )
       )
@@ -231,6 +251,7 @@ class ArrivalsServiceConfirmArrivalTest {
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
       listOf(
         MatchPrisonerResponse(
+          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = OFFENDER_NO, pncNumber = null, status = INACTIVE_OUT
         )
       )
@@ -285,7 +306,16 @@ class ArrivalsServiceConfirmArrivalTest {
       date = LocalDate.now(FIXED_CLOCK),
       fromLocation = "Kingston-upon-Hull Crown Court",
       fromLocationType = LocationType.COURT,
-      isCurrentPrisoner = false
+      isCurrentPrisoner = false,
+      potentialMatches = listOf(
+        PotentialMatch(
+          firstName = FIRST_NAME,
+          lastName = LAST_NAME,
+          dateOfBirth = DATE_OF_BIRTH,
+          prisonNumber = OFFENDER_NO,
+          pncNumber = null
+        )
+      )
     )
 
     val CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE = ConfirmArrivalDetail(

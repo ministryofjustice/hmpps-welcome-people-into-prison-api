@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class MatchPrisonerResponseTest {
   @Test
@@ -20,6 +21,6 @@ class MatchPrisonerResponseTest {
   }
 
   companion object {
-    val reference = MatchPrisonerResponse("A123AA", "123/456", null)
+    val reference = MatchPrisonerResponse("JIM", "SMITH", LocalDate.of(1961, 4, 1), "A123AA", "123/456", null)
   }
 }
