@@ -40,7 +40,10 @@ class ArrivalsService(
 
     val matches = candidates.filter { arrival.isMatch(it) }.distinctBy { it.prisonerNumber }
 
-    return arrival.copy(potentialMatches = matches.map { it.toPotentialMatch() })
+    return arrival.copy(
+      isCurrentPrisoner = matches.isNotEmpty() && matches.all { it.isCurrentPrisoner },
+      potentialMatches = matches.map { it.toPotentialMatch() }
+    )
   }
 
   fun confirmArrival(
