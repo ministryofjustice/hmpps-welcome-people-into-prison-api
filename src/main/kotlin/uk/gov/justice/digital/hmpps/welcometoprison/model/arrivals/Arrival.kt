@@ -44,10 +44,6 @@ data class Arrival(
   )
   val gender: Gender? = null,
 
-  @Schema(
-    description = "A list of all potential matches",
-    example = "[firstName: \"Sam\",lastName: \"Smith\",dateOfBirth: \"1971-02-01\",prisonNumber: \"A1234BC\",pncNumber: \"01/1234X\"]"
-  )
   var potentialMatches: List<PotentialMatch>? = null
 )
 
