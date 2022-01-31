@@ -19,12 +19,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+  implementation("org.apache.commons:commons-text:1.9")
   implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.5")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.5")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.5")
 
-  runtimeOnly("com.h2database:h2:2.0.206")
-  runtimeOnly("org.flywaydb:flyway-core:8.4.1")
+  runtimeOnly("com.h2database:h2:2.1.210")
+  runtimeOnly("org.flywaydb:flyway-core:8.4.3")
   runtimeOnly("org.postgresql:postgresql:42.3.1")
 
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
