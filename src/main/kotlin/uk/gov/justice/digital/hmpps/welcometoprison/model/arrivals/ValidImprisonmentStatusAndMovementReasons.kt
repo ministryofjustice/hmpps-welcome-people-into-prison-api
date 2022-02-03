@@ -37,7 +37,7 @@ val RECALL_MOVEMENT_REASONS = listOf(
 
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
   code = "recall",
-  description = "Recall from licence or temporary release",
+  description = "Recall",
   imprisonmentStatusCode = "RECEP_REC",
   secondLevelTitle = "Where is the prisoner being recalled from?",
   secondLevelValidationMessage = "Select where the person is being recalled from",
@@ -159,7 +159,7 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ),
   ImprisonmentStatus(
     code = "late-return",
-    description = "Late return from licence",
+    description = "Late return from Release on Temporary Licence (ROTL)",
     imprisonmentStatusCode = "RECEP_LAT",
     secondLevelTitle = "What is the type of late return?",
     secondLevelValidationMessage = "Select the type of late return",

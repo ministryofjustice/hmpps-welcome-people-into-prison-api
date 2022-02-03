@@ -35,6 +35,28 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `returns the expected status descriptions`() {
+      webTestClient.get().uri("/imprisonment-statuses")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("$[0].description").isEqualTo("On remand")
+        .jsonPath("$[1].description").isEqualTo("Convicted unsentenced")
+        .jsonPath("$[2].description").isEqualTo("Determinate sentence")
+        .jsonPath("$[3].description").isEqualTo("Indeterminate sentence")
+        .jsonPath("$[4].description").isEqualTo("Recall")
+        .jsonPath("$[5].description").isEqualTo("Transfer from another establishment")
+        .jsonPath("$[6].description").isEqualTo("Temporary stay enroute to another establishment")
+        .jsonPath("$[7].description").isEqualTo("Awaiting transfer to hospital")
+        .jsonPath("$[8].description").isEqualTo("Late return from Release on Temporary Licence (ROTL)")
+        .jsonPath("$[9].description").isEqualTo("Detention under immigration powers")
+        .jsonPath("$[10].description").isEqualTo("Detention in Youth Offender Institution")
+        .jsonPath("$[11].description").isEqualTo("Recapture after escape")
+        .jsonPath("$[12].description").isEqualTo("Civil offence")
+    }
+
+    @Test
     fun `returns ImprisonmentStatus with single movement reason`() {
       webTestClient.get().uri("/imprisonment-statuses")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
