@@ -26,9 +26,11 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   @Test
   fun `confirm court return`() {
     val prisonNumber = "AA1111A"
+    val location = "RECEP"
+    val bookingId = 1L
     whenever(
       arrivalsService.confirmReturnFromCourt(any(), any())
-    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber))
+    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber, location, bookingId))
     webTestClient
       .post()
       .uri(url)

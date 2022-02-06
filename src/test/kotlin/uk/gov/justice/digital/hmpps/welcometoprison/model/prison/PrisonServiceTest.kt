@@ -22,6 +22,7 @@ class PrisonServiceTest {
   private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient)
 
   private val prisonImage = "prisonImage".toByteArray()
+  private val inmateDetail = mock<InmateDetail>()
 
   @Test
   fun `gets prisoner image`() {
@@ -94,7 +95,8 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(InmateDetail(expectedBookingId))
+    whenever(inmateDetail.bookingId).thenReturn(expectedBookingId)
+    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(inmateDetail)
     val result = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).admitOffenderOnNewBooking(prisonNumber, admitOnNewBookingDetail)
     assertThat(result).isEqualTo(expectedBookingId)
@@ -125,7 +127,8 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(InmateDetail(expectedBookingId))
+    whenever(inmateDetail.bookingId).thenReturn(expectedBookingId)
+    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(inmateDetail)
     val result = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result).isEqualTo(expectedBookingId)
@@ -149,8 +152,9 @@ class PrisonServiceTest {
       isCurrentPrisoner = true,
       gender = Gender.MALE
     )
-
-    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(InmateDetail(1L))
+    val expectedBookingId = 1L
+    whenever(inmateDetail.bookingId).thenReturn(expectedBookingId)
+    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(inmateDetail)
 
     val result = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
@@ -158,6 +162,6 @@ class PrisonServiceTest {
       arrival.prisonNumber!!,
       CourtTransferIn(confirmCourtReturnRequest.prisonId!!)
     )
-    assertThat(result).isEqualTo(1L)
+    assertThat(result).isEqualTo(expectedBookingId)
   }
 }

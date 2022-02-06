@@ -36,18 +36,22 @@ class TemporaryAbsenceService(
     offenderNo: String,
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ): ConfirmTemporaryAbsenceResponse {
-    return ConfirmTemporaryAbsenceResponse(
-      prisonApiClient.confirmTemporaryAbsencesArrival(
-        offenderNo,
-        with(confirmTemporaryAbsenceRequest) {
-          TemporaryAbsencesArrival(
-            agencyId,
-            movementReasonCode,
-            commentText,
-            receiveTime
-          )
-        }
-      ).offenderNo
+    val inmateDetail = prisonApiClient.confirmTemporaryAbsencesArrival(
+      offenderNo,
+      with(confirmTemporaryAbsenceRequest) {
+        TemporaryAbsencesArrival(
+          agencyId,
+          movementReasonCode,
+          commentText,
+          receiveTime
+        )
+      }
     )
+    return with(inmateDetail) {
+      ConfirmTemporaryAbsenceResponse(
+        prisonerNumber = offenderNo,
+        location = assignedLivingUnit.description
+      )
+    }
   }
 }

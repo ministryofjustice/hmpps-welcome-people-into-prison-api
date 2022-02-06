@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import java.time.LocalDate
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty

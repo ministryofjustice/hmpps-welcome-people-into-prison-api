@@ -135,7 +135,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     fun `confirm arrival`() {
       whenever(
         temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
-      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK"))
+      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK", "RECP"))
       val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",

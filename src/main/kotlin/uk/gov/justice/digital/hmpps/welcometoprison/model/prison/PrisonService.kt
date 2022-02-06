@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 
 @Service
 class PrisonService(
@@ -23,7 +24,7 @@ class PrisonService(
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): Long =
+  ): InmateDetail =
     prisonApiClient.admitOffenderOnNewBooking(
       prisonNumber,
       with(confirmArrivalDetail) {
@@ -37,12 +38,12 @@ class PrisonService(
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    ).bookingId
+    )
 
   fun recallOffender(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): Long =
+  ): InmateDetail =
     prisonApiClient.recallOffender(
       prisonNumber,
       with(confirmArrivalDetail) {
@@ -56,7 +57,7 @@ class PrisonService(
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    ).bookingId
+    )
 
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
     prisonApiClient
@@ -79,13 +80,21 @@ class PrisonService(
       )
       .offenderNo
 
-  fun returnFromCourt(confirmCourtReturnRequest: ConfirmCourtReturnRequest, arrival: Arrival): Long {
+  fun returnFromCourt(
+    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
+    arrival: Arrival
+  ): ConfirmCourtReturnResponse {
 
-    return prisonApiClient.courtTransferIn(
+    var inmateDetail = prisonApiClient.courtTransferIn(
       arrival.prisonNumber!!,
       with(confirmCourtReturnRequest) {
         CourtTransferIn(prisonId!!)
       }
-    ).bookingId
+    )
+    return ConfirmCourtReturnResponse(
+      prisonNumber = inmateDetail.offenderNo,
+      location = inmateDetail.assignedLivingUnit.description,
+      bookingId = inmateDetail.bookingId
+    )
   }
 }
