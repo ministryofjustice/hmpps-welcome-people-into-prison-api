@@ -131,11 +131,13 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
   @Nested
   inner class `Confirm arrival from temporary absence` {
 
+    // TODO this test need to be refactor to end to end test please  follow ArrivalResourceTest
+
     @Test
     fun `confirm arrival`() {
       whenever(
         temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
-      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK", "RECP"))
+      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK", "Reception"))
       val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
@@ -150,6 +152,9 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .withBearerToken(token)
         .exchange()
         .expectStatus().isOk
+        .expectBody()
+        .jsonPath("prisonNumber").isEqualTo("G5666UK")
+        .jsonPath("location").isEqualTo("Reception")
       verify(temporaryAbsenceService).confirmTemporaryAbsencesArrival("G5666UK", confirmTemporaryAbsenceRequest)
     }
 

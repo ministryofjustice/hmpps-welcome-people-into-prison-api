@@ -181,7 +181,5 @@ class TemporaryAbsencesResource(
 
     @RequestBody
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
-  ) {
-    temporaryAbsenceService.confirmTemporaryAbsencesArrival(offenderNo, confirmTemporaryAbsenceRequest)
-  }
+  ): ConfirmTemporaryAbsenceResponse = temporaryAbsenceService.confirmTemporaryAbsencesArrival(offenderNo, confirmTemporaryAbsenceRequest)
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsen
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsenc
 @Transactional
 class TemporaryAbsenceService(
   private val prisonApiClient: PrisonApiClient,
+  private val locationFormatter: LocationFormatter
 ) {
 
   fun getTemporaryAbsence(agencyId: String, prisonNumber: String): TemporaryAbsenceResponse =
@@ -49,8 +51,8 @@ class TemporaryAbsenceService(
     )
     return with(inmateDetail) {
       ConfirmTemporaryAbsenceResponse(
-        prisonerNumber = offenderNo,
-        location = assignedLivingUnit.description
+        prisonNumber = offenderNo,
+        location = locationFormatter.format(inmateDetail.assignedLivingUnit.description)
       )
     }
   }

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
@@ -10,7 +11,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 @Service
 class PrisonService(
   @Autowired private val prisonApiClient: PrisonApiClient,
-  @Autowired private val prisonRegisterClient: PrisonRegisterClient
+  @Autowired private val prisonRegisterClient: PrisonRegisterClient,
+  @Autowired private val locationFormatter: LocationFormatter
+
 ) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
@@ -93,7 +96,7 @@ class PrisonService(
     )
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
-      location = inmateDetail.assignedLivingUnit.description,
+      location = locationFormatter.format(inmateDetail.assignedLivingUnit.description),
       bookingId = inmateDetail.bookingId
     )
   }

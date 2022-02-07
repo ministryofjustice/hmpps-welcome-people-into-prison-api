@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
@@ -21,6 +22,7 @@ class ArrivalsService(
   private val prisonService: PrisonService,
   private val prisonerSearchService: PrisonerSearchService,
   private val confirmedArrivalService: ConfirmedArrivalService,
+  private val locationFormatter: LocationFormatter,
   private val clock: Clock
 ) {
   fun getArrival(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
@@ -117,7 +119,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = inmateDetail.assignedLivingUnit.description)
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
   }
 
   private fun recallOffender(
@@ -134,7 +136,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.RECALL
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = inmateDetail.assignedLivingUnit.description)
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
   }
 
   private fun createAndAdmitOffender(
@@ -151,7 +153,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = inmateDetail.assignedLivingUnit.description)
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
   }
 
   companion object {

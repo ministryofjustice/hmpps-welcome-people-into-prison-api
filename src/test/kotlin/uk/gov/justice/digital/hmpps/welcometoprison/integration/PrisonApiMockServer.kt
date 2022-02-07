@@ -54,6 +54,13 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "dateOfBirth": "1961-01-04",
                   "age": 60,
                   "activeFlag": false,
+                  "assignedLivingUnit": {
+                    "agencyId": "NMI",
+                    "locationId": 1,
+                    "description": "RECEP",
+                    "agencyName": "Nottingham (HMP)"
+                     
+                  },
                   "physicalAttributes": {
                     "sexCode": "F",
                     "gender": "Female"

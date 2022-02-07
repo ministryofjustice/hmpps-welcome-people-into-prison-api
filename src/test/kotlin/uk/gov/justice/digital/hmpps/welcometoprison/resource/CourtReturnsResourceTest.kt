@@ -26,7 +26,7 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   @Test
   fun `confirm court return`() {
     val prisonNumber = "AA1111A"
-    val location = "RECEP"
+    val location = "Reception"
     val bookingId = 1L
     whenever(
       arrivalsService.confirmReturnFromCourt(any(), any())
@@ -45,6 +45,7 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
+      .jsonPath("location").isEqualTo(location)
 
     verify(arrivalsService).confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
   }

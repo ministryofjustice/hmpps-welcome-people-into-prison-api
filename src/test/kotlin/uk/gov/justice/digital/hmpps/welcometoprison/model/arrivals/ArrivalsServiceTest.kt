@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.isMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.toPotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
@@ -25,10 +26,11 @@ class ArrivalsServiceTest {
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
+  private val locationFormatter: LocationFormatter = mock()
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService =
-    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService, FIXED_CLOCK)
+    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK)
 
   @Test
   fun getArrivals() {

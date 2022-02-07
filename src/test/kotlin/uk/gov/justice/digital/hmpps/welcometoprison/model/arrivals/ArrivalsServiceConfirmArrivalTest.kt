@@ -10,6 +10,7 @@ import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
@@ -34,9 +35,10 @@ class ArrivalsServiceConfirmArrivalTest {
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalService: ConfirmedArrivalService = mock()
+  private val locationFormatter: LocationFormatter = mock()
 
   private val arrivalsService = ArrivalsService(
-    basmService, prisonService, prisonerSearchService, confirmedArrivalService, FIXED_CLOCK
+    basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK
   )
 
   @Test
