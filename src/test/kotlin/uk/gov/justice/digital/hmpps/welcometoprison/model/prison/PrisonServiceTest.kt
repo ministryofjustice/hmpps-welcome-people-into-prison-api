@@ -30,7 +30,7 @@ class PrisonServiceTest {
     assignedLivingUnit = AssignedLivingUnit(
       "134",
       1,
-      "RECEP",
+      "RECP",
       "Nottingham (HMP)"
     )
   )

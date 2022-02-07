@@ -57,7 +57,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "assignedLivingUnit": {
                     "agencyId": "NMI",
                     "locationId": 1,
-                    "description": "RECEP",
+                    "description": "RECP",
                     "agencyName": "Nottingham (HMP)"
                      
                   },
