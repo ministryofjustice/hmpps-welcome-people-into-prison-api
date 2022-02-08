@@ -35,7 +35,7 @@ class ArrivalsServiceConfirmArrivalTest {
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalService: ConfirmedArrivalService = mock()
-  private val locationFormatter: LocationFormatter = mock()
+  private val locationFormatter: LocationFormatter = LocationFormatter()
 
   private val arrivalsService = ArrivalsService(
     basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK

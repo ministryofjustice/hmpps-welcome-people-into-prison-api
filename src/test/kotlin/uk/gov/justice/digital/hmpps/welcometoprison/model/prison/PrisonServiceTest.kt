@@ -20,7 +20,7 @@ class PrisonServiceTest {
 
   private val prisonApiClient = mock<PrisonApiClient>()
   private val prisonRegisterClient = mock<PrisonRegisterClient>()
-  private val locationFormatter = mock<LocationFormatter>()
+  private val locationFormatter: LocationFormatter = LocationFormatter()
   private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient, locationFormatter)
 
   private val prisonImage = "prisonImage".toByteArray()

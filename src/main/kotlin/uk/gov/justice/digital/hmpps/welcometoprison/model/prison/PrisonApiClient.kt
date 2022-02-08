@@ -90,10 +90,10 @@ data class InmateDetail(
   val assignedLivingUnit: AssignedLivingUnit
 )
 data class AssignedLivingUnit(
-  val agencyId: String? = null,
-  val locationId: Int? = null,
-  val description: String? = null,
-  val agencyName: String? = null
+  val agencyId: String,
+  val locationId: Int,
+  val description: String,
+  val agencyName: String
 )
 
 data class UserCaseLoad(
@@ -192,12 +192,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
    */
-  fun transferIn(offenderNo: String, detail: TransferIn) =
+  fun transferIn(offenderNo: String, detail: TransferIn): InmateDetail =
     webClient.put()
       .uri("/api/offenders/$offenderNo/transfer-in")
       .bodyValue(detail)
       .retrieve()
-      .toBodilessEntity()
+      .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,

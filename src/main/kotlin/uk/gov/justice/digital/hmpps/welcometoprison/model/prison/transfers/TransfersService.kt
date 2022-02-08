@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
@@ -39,7 +40,7 @@ class TransfersService(
   fun transferInOffender(
     prisonNumber: String,
     transferInDetail: TransferInDetail
-  ) {
+  ): InmateDetail =
     prisonApiClient.transferIn(
       prisonNumber,
       with(transferInDetail) {
@@ -50,5 +51,4 @@ class TransfersService(
         )
       }
     )
-  }
 }
