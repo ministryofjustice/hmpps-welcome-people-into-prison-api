@@ -18,4 +18,9 @@ data class ConfirmCourtReturnResponse(
   fun getOffenderNo(): String {
     return this.prisonNumber
   }
+  @Deprecated("Please use prisonNumber instead", replaceWith = ReplaceWith("prisonNumber"))
+  @Schema(description = "prison number", example = "G6081VQ")
+  fun getPrisonerNumber(): String {
+    return this.prisonNumber
+  }
 }
