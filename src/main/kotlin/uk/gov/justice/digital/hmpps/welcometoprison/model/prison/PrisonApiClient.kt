@@ -91,8 +91,8 @@ data class InmateDetail(
 )
 data class AssignedLivingUnit(
   val agencyId: String,
-  val locationId: Int,
-  val description: String,
+  val locationId: Int?,
+  val description: String?,
   val agencyName: String
 )
 

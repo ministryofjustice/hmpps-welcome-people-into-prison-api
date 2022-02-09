@@ -119,7 +119,9 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   private fun recallOffender(
@@ -136,7 +138,9 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.RECALL
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   private fun createAndAdmitOffender(
@@ -153,7 +157,9 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
-    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(inmateDetail.assignedLivingUnit.description))
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   companion object {

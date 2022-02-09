@@ -94,9 +94,11 @@ class PrisonService(
         CourtTransferIn(prisonId!!)
       }
     )
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("prisoner: '${arrival.prisonNumber}' do not have assigned living unit")
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
-      location = locationFormatter.format(inmateDetail.assignedLivingUnit.description),
+      location = locationFormatter.format(livingUnitName),
       bookingId = inmateDetail.bookingId
     )
   }
