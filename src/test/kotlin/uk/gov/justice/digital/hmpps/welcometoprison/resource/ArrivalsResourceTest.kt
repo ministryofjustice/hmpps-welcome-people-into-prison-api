@@ -147,10 +147,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book happy path`() {
-      val offenderNo = "AA1111A"
-
-      prisonApiMockServer.stubCreateOffender(offenderNo)
-      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+      val prisonNumber = "AA1111A"
+      val location = "Reception"
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -160,15 +160,17 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .bodyValue(VALID_REQUEST)
         .exchange()
         .expectStatus().isOk
-        .expectBody().jsonPath("offenderNo").isEqualTo(offenderNo)
+        .expectBody()
+        .jsonPath("prisonNumber").isEqualTo(prisonNumber)
+        .jsonPath("location").isEqualTo(location)
     }
 
     @Test
     fun `create and book passes through auth token`() {
-      val offenderNo = "AA1111A"
+      val prisonNumber = "AA1111A"
 
-      prisonApiMockServer.stubCreateOffender(offenderNo)
-      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write"))
 
@@ -180,7 +182,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .bodyValue(VALID_REQUEST)
         .exchange()
         .expectStatus().isOk
-        .expectBody().jsonPath("offenderNo").isEqualTo(offenderNo)
+        .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
 
       prisonApiMockServer.verify(
         postRequestedFor(
@@ -193,10 +195,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book request validation failure`() {
-      val offenderNo = "AA1111A"
+      val prisonNumber = "AA1111A"
 
-      prisonApiMockServer.stubCreateOffender(offenderNo)
-      prisonApiMockServer.stubAdmitOnNewBooking(offenderNo)
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -261,10 +263,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book - prison-api create booking fails`() {
-      val offenderNo = "AA1111A"
+      val prisonNumber = "AA1111A"
 
-      prisonApiMockServer.stubCreateOffender(offenderNo)
-      prisonApiMockServer.stubAdmitOnNewBookingFails(offenderNo, 500)
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBookingFails(prisonNumber, 500)
 
       webTestClient
         .post()

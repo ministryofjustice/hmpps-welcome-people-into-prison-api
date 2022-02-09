@@ -2,11 +2,11 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
@@ -22,6 +22,7 @@ class ArrivalsService(
   private val prisonService: PrisonService,
   private val prisonerSearchService: PrisonerSearchService,
   private val confirmedArrivalService: ConfirmedArrivalService,
+  private val locationFormatter: LocationFormatter,
   private val clock: Clock
 ) {
   fun getArrival(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
@@ -82,17 +83,17 @@ class ArrivalsService(
     arrival: Arrival
   ): ConfirmCourtReturnResponse {
 
-    val bookingId = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
+    val confirmCourtReturnResponse = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
     confirmedArrivalService.add(
       moveId,
       arrival.prisonNumber!!,
       confirmCourtReturnRequest.prisonId!!,
-      bookingId,
+      confirmCourtReturnResponse.bookingId,
       LocalDate.now(clock),
       ArrivalType.COURT_TRANSFER
     )
-    return ConfirmCourtReturnResponse(prisonNumber = arrival.prisonNumber)
+    return confirmCourtReturnResponse
   }
 
   private fun admitOffender(
@@ -109,16 +110,18 @@ class ArrivalsService(
     moveId: String,
     prisonNumber: String
   ): ConfirmArrivalResponse {
-    val bookingId = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    val inmateDetail = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     confirmedArrivalService.add(
       movementId = moveId,
       prisonNumber = prisonNumber,
       prisonId = confirmArrivalDetail.prisonId!!,
-      bookingId = bookingId,
+      bookingId = inmateDetail.bookingId,
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
     )
-    return ConfirmArrivalResponse(offenderNo = prisonNumber)
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   private fun recallOffender(
@@ -126,16 +129,18 @@ class ArrivalsService(
     moveId: String,
     prisonNumber: String
   ): ConfirmArrivalResponse {
-    val bookingId = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
+    val inmateDetail = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     confirmedArrivalService.add(
       movementId = moveId,
       prisonNumber = prisonNumber,
       prisonId = confirmArrivalDetail.prisonId!!,
-      bookingId = bookingId,
+      bookingId = inmateDetail.bookingId,
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.RECALL
     )
-    return ConfirmArrivalResponse(offenderNo = prisonNumber)
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   private fun createAndAdmitOffender(
@@ -143,16 +148,18 @@ class ArrivalsService(
     moveId: String
   ): ConfirmArrivalResponse {
     val prisonNumber = prisonService.createOffender(confirmArrivalDetail)
-    val bookingId = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+    val inmateDetail = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     confirmedArrivalService.add(
       movementId = moveId,
       prisonNumber = prisonNumber,
       prisonId = confirmArrivalDetail.prisonId!!,
-      bookingId = bookingId,
+      bookingId = inmateDetail.bookingId,
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
-    return ConfirmArrivalResponse(offenderNo = prisonNumber)
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
 
   companion object {

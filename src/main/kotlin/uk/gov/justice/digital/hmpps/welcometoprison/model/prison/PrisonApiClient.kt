@@ -81,20 +81,20 @@ data class TemporaryAbsence(
 
 )
 
-/**
- * The response has many more fields and nested values, but only offenderNo is of interest
- */
-data class ConfirmArrivalResponse(
-
-  val offenderNo: String
-)
-
 /*
  * The response has many more fields and nested values but currently only bookingId is needed.
  */
-data class InmateDetail(val bookingId: Long)
-
-data class OffenderDetail(val offenderNo: String)
+data class InmateDetail(
+  val bookingId: Long,
+  val offenderNo: String,
+  val assignedLivingUnit: AssignedLivingUnit
+)
+data class AssignedLivingUnit(
+  val agencyId: String,
+  val locationId: Int?,
+  val description: String?,
+  val agencyName: String
+)
 
 data class UserCaseLoad(
   val caseLoadId: String,
@@ -141,12 +141,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE' and scope 'write'.
    */
-  fun createOffender(detail: CreateOffenderDetail): ConfirmArrivalResponse =
+  fun createOffender(detail: CreateOffenderDetail): InmateDetail =
     webClient.post()
       .uri("/api/offenders")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono(ConfirmArrivalResponse::class.java)
+      .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,
@@ -192,12 +192,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
    */
-  fun transferIn(offenderNo: String, detail: TransferIn) =
+  fun transferIn(offenderNo: String, detail: TransferIn): InmateDetail =
     webClient.put()
       .uri("/api/offenders/$offenderNo/transfer-in")
       .bodyValue(detail)
       .retrieve()
-      .toBodilessEntity()
+      .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,
@@ -209,12 +209,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
   /**
    * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
    */
-  fun confirmTemporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): OffenderDetail =
+  fun confirmTemporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): InmateDetail =
     webClient.put()
       .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
       .bodyValue(detail)
       .retrieve()
-      .bodyToMono(OffenderDetail::class.java)
+      .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
         propogateClientError(
           it,

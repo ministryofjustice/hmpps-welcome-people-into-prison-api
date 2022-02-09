@@ -7,7 +7,10 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.OffenderMovement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
@@ -19,7 +22,15 @@ import java.time.LocalTime
 class TransfersServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
-  private val transfersService = TransfersService(prisonApiClient, prisonerSearchService)
+  private val locationFormatter: LocationFormatter = LocationFormatter()
+  private val transfersService = TransfersService(prisonApiClient, prisonerSearchService, locationFormatter)
+
+  private val inmateDetail = InmateDetail(
+    offenderNo = "G6081VQ", bookingId = 1L,
+    assignedLivingUnit = AssignedLivingUnit(
+      "NMI", 1, "RECP", "Nottingham (HMP)"
+    )
+  )
 
   @Test
   fun `getTransfers - happy path if prisoner has no PNC Number`() {
@@ -137,6 +148,7 @@ class TransfersServiceTest {
     }
 
     val prisonNumber = "ABC123A"
+    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
     transfersService.transferInOffender(prisonNumber, transferInDetail)
     verify(prisonApiClient).transferIn(prisonNumber, transferIn)
   }

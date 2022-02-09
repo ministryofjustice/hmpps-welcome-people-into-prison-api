@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 class TransfersService(
   private val prisonApiClient: PrisonApiClient,
   private val prisonerSearchService: PrisonerSearchService,
+  private val locationFormatter: LocationFormatter,
 ) {
 
   fun getTransfer(agencyId: String, prisonNumber: String): Transfer =
@@ -39,8 +41,9 @@ class TransfersService(
   fun transferInOffender(
     prisonNumber: String,
     transferInDetail: TransferInDetail
-  ) {
-    prisonApiClient.transferIn(
+  ): TransferResponse {
+
+    var inmateDetail = prisonApiClient.transferIn(
       prisonNumber,
       with(transferInDetail) {
         TransferIn(
@@ -49,6 +52,12 @@ class TransfersService(
           receiveTime
         )
       }
+    )
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+    return TransferResponse(
+      prisonNumber = inmateDetail.offenderNo,
+      location = locationFormatter.format(livingUnitName)
     )
   }
 }

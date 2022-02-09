@@ -7,6 +7,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
@@ -15,7 +16,8 @@ import java.time.LocalDateTime
 
 class TemporaryAbsenceServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
-  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient)
+  private val locationFormatter: LocationFormatter = mock()
+  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter)
 
   @Test
   fun getTemporaryAbsences() {

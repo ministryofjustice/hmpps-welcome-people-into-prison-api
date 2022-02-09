@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsen
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsenc
 @Transactional
 class TemporaryAbsenceService(
   private val prisonApiClient: PrisonApiClient,
+  private val locationFormatter: LocationFormatter
 ) {
 
   fun getTemporaryAbsence(agencyId: String, prisonNumber: String): TemporaryAbsenceResponse =
@@ -36,18 +38,24 @@ class TemporaryAbsenceService(
     offenderNo: String,
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ): ConfirmTemporaryAbsenceResponse {
-    return ConfirmTemporaryAbsenceResponse(
-      prisonApiClient.confirmTemporaryAbsencesArrival(
-        offenderNo,
-        with(confirmTemporaryAbsenceRequest) {
-          TemporaryAbsencesArrival(
-            agencyId,
-            movementReasonCode,
-            commentText,
-            receiveTime
-          )
-        }
-      ).offenderNo
+    val inmateDetail = prisonApiClient.confirmTemporaryAbsencesArrival(
+      offenderNo,
+      with(confirmTemporaryAbsenceRequest) {
+        TemporaryAbsencesArrival(
+          agencyId,
+          movementReasonCode,
+          commentText,
+          receiveTime
+        )
+      }
     )
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("Prisoner: '$offenderNo' do not have assigned living unit")
+    return with(inmateDetail) {
+      ConfirmTemporaryAbsenceResponse(
+        prisonNumber = offenderNo,
+        location = locationFormatter.format(livingUnitName)
+      )
+    }
   }
 }

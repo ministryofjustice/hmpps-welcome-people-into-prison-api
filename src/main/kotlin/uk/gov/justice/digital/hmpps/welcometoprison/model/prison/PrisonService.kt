@@ -2,14 +2,18 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 
 @Service
 class PrisonService(
   @Autowired private val prisonApiClient: PrisonApiClient,
-  @Autowired private val prisonRegisterClient: PrisonRegisterClient
+  @Autowired private val prisonRegisterClient: PrisonRegisterClient,
+  @Autowired private val locationFormatter: LocationFormatter
+
 ) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
@@ -23,7 +27,7 @@ class PrisonService(
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): Long =
+  ): InmateDetail =
     prisonApiClient.admitOffenderOnNewBooking(
       prisonNumber,
       with(confirmArrivalDetail) {
@@ -37,12 +41,12 @@ class PrisonService(
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    ).bookingId
+    )
 
   fun recallOffender(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): Long =
+  ): InmateDetail =
     prisonApiClient.recallOffender(
       prisonNumber,
       with(confirmArrivalDetail) {
@@ -56,7 +60,7 @@ class PrisonService(
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
-    ).bookingId
+    )
 
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
     prisonApiClient
@@ -79,13 +83,23 @@ class PrisonService(
       )
       .offenderNo
 
-  fun returnFromCourt(confirmCourtReturnRequest: ConfirmCourtReturnRequest, arrival: Arrival): Long {
+  fun returnFromCourt(
+    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
+    arrival: Arrival
+  ): ConfirmCourtReturnResponse {
 
-    return prisonApiClient.courtTransferIn(
+    var inmateDetail = prisonApiClient.courtTransferIn(
       arrival.prisonNumber!!,
       with(confirmCourtReturnRequest) {
         CourtTransferIn(prisonId!!)
       }
-    ).bookingId
+    )
+    val livingUnitName = inmateDetail.assignedLivingUnit.description
+      ?: throw IllegalArgumentException("prisoner: '${arrival.prisonNumber}' do not have assigned living unit")
+    return ConfirmCourtReturnResponse(
+      prisonNumber = inmateDetail.offenderNo,
+      location = locationFormatter.format(livingUnitName),
+      bookingId = inmateDetail.bookingId
+    )
   }
 }

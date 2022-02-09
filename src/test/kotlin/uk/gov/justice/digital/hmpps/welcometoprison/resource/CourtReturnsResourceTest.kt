@@ -23,12 +23,15 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   private val moveId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
   private val url = "/court-returns/$moveId/confirm"
 
+  // TODO this test need to be refactor to end to end test please  follow ArrivalResourceTest
   @Test
   fun `confirm court return`() {
     val prisonNumber = "AA1111A"
+    val location = "Reception"
+    val bookingId = 1L
     whenever(
       arrivalsService.confirmReturnFromCourt(any(), any())
-    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber))
+    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber, location, bookingId))
     webTestClient
       .post()
       .uri(url)
@@ -43,6 +46,7 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
+      .jsonPath("location").isEqualTo(location)
 
     verify(arrivalsService).confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
   }

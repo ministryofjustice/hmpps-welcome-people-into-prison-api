@@ -10,12 +10,16 @@ import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
@@ -31,9 +35,10 @@ class ArrivalsServiceConfirmArrivalTest {
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalService: ConfirmedArrivalService = mock()
+  private val locationFormatter: LocationFormatter = LocationFormatter()
 
   private val arrivalsService = ArrivalsService(
-    basmService, prisonService, prisonerSearchService, confirmedArrivalService, FIXED_CLOCK
+    basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK
   )
 
   @Test
@@ -42,11 +47,11 @@ class ArrivalsServiceConfirmArrivalTest {
     whenever(basmService.getArrival(any())).thenReturn(ARRIVAL_PROTOTYPE.copy())
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(emptyList())
     whenever(prisonService.createOffender(any())).thenReturn(OFFENDER_NO)
-    whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
 
     val response = arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
 
-    assertThat(response.offenderNo).isEqualTo(OFFENDER_NO)
+    assertThat(response.prisonNumber).isEqualTo(OFFENDER_NO)
 
     verify(basmService).getArrival(MOVE_ID)
 
@@ -71,7 +76,7 @@ class ArrivalsServiceConfirmArrivalTest {
       "",
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       BOOKING_IN_TIME,
-      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
+      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
       { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
@@ -128,7 +133,7 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
@@ -168,7 +173,7 @@ class ArrivalsServiceConfirmArrivalTest {
         isCurrentPrisoner = true,
       )
     )
-    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(BOOKING_ID)
+    whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     arrivalsService.confirmReturnFromCourt(
       MOVE_ID,
@@ -223,7 +228,7 @@ class ArrivalsServiceConfirmArrivalTest {
       movementReasonCode,
       ArrivalType.RECALL,
       null,
-      { whenever(prisonService.recallOffender(any(), any())).thenReturn(BOOKING_ID) },
+      { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
       { confirmArrivalDetail -> verify(prisonService).recallOffender(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
@@ -235,7 +240,7 @@ class ArrivalsServiceConfirmArrivalTest {
       movementReasonCode,
       ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
       null,
-      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(BOOKING_ID) },
+      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
       { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(OFFENDER_NO, confirmArrivalDetail) }
     )
   }
@@ -245,7 +250,7 @@ class ArrivalsServiceConfirmArrivalTest {
     expectedArrivalType: ArrivalType,
     bookingInTime: LocalDateTime?,
     stubbing: () -> Unit,
-    verification: (ConfirmArrivalDetail) -> Long
+    verification: (ConfirmArrivalDetail) -> InmateDetail
   ) {
     whenever(basmService.getArrival(any())).thenReturn(ARRIVAL_PROTOTYPE.copy(prisonNumber = OFFENDER_NO))
     whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(
@@ -265,7 +270,7 @@ class ArrivalsServiceConfirmArrivalTest {
 
     val response = arrivalsService.confirmArrival(MOVE_ID, confirmArrivalDetail)
 
-    assertThat(response.offenderNo).isEqualTo(OFFENDER_NO)
+    assertThat(response.prisonNumber).isEqualTo(OFFENDER_NO)
 
     verification(confirmArrivalDetail)
 
@@ -291,11 +296,20 @@ class ArrivalsServiceConfirmArrivalTest {
     private val BOOKING_IN_TIME: LocalDateTime = LocalDateTime.of(2021, 10, 30, 13, 30)
     private const val GENDER = "M"
     private const val PRISON_ID = "NMI"
+    private const val LOCATION_ID = 1
 
     private val FIXED_NOW: Instant = Instant.now()
     private val ZONE_ID: ZoneId = ZoneId.systemDefault()
     private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
-
+    private val LOCATION = "RECP"
+    private val INMATE_DETAIL = InmateDetail(
+      offenderNo = OFFENDER_NO, bookingId = BOOKING_ID,
+      assignedLivingUnit = AssignedLivingUnit(
+        PRISON_ID, LOCATION_ID, LOCATION, "Nottingham (HMP)"
+      )
+    )
+    private val CONFIRM_COURT_RETURN_RESPONSE =
+      ConfirmCourtReturnResponse(prisonNumber = OFFENDER_NO, location = LOCATION, bookingId = BOOKING_ID)
     val ARRIVAL_PROTOTYPE = Arrival(
       id = MOVE_ID,
       firstName = FIRST_NAME,

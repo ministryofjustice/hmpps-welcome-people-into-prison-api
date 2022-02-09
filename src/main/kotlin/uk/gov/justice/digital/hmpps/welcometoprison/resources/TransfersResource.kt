@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Transfer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
@@ -138,8 +137,14 @@ class TransfersResource(
     security = [SecurityRequirement(name = "ROLE_TRANSFER_PRISONER", scopes = ["write"])],
     responses = [
       ApiResponse(
-        responseCode = "204",
+        responseCode = "200",
         description = "The prisoner transferred in",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = TransferResponse::class)
+          )
+        ]
       ),
       ApiResponse(
         responseCode = "401",
@@ -172,8 +177,8 @@ class TransfersResource(
   @PostMapping(
     "/transfers/{prisonNumber}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
+    produces = [MediaType.APPLICATION_JSON_VALUE]
   )
-  @ResponseStatus(value = HttpStatus.NO_CONTENT)
   fun transferIn(
     @PathVariable
     @Valid @NotEmpty
@@ -182,7 +187,5 @@ class TransfersResource(
     @RequestBody
     @Valid @NotNull
     transferInDetail: TransferInDetail
-  ) {
-    transfersService.transferInOffender(prisonNumber, transferInDetail)
-  }
+  ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail)
 }

@@ -7,6 +7,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
@@ -19,9 +20,20 @@ class PrisonServiceTest {
 
   private val prisonApiClient = mock<PrisonApiClient>()
   private val prisonRegisterClient = mock<PrisonRegisterClient>()
-  private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient)
+  private val locationFormatter: LocationFormatter = LocationFormatter()
+  private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient, locationFormatter)
 
   private val prisonImage = "prisonImage".toByteArray()
+  private val INMATE_DETAIL = InmateDetail(
+    offenderNo = "ABC123A",
+    bookingId = 1L,
+    assignedLivingUnit = AssignedLivingUnit(
+      "134",
+      1,
+      "RECP",
+      "Nottingham (HMP)"
+    )
+  )
 
   @Test
   fun `gets prisoner image`() {
@@ -94,10 +106,10 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(InmateDetail(expectedBookingId))
+    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
     val result = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).admitOffenderOnNewBooking(prisonNumber, admitOnNewBookingDetail)
-    assertThat(result).isEqualTo(expectedBookingId)
+    assertThat(result.bookingId).isEqualTo(expectedBookingId)
   }
 
   @Test
@@ -125,10 +137,10 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(InmateDetail(expectedBookingId))
+    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(INMATE_DETAIL)
     val result = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
-    assertThat(result).isEqualTo(expectedBookingId)
+    assertThat(result.bookingId).isEqualTo(expectedBookingId)
   }
 
   @Test
@@ -149,8 +161,9 @@ class PrisonServiceTest {
       isCurrentPrisoner = true,
       gender = Gender.MALE
     )
+    val expectedBookingId = 1L
 
-    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(InmateDetail(1L))
+    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(INMATE_DETAIL)
 
     val result = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 
@@ -158,6 +171,6 @@ class PrisonServiceTest {
       arrival.prisonNumber!!,
       CourtTransferIn(confirmCourtReturnRequest.prisonId!!)
     )
-    assertThat(result).isEqualTo(1L)
+    assertThat(result.bookingId).isEqualTo(expectedBookingId)
   }
 }
