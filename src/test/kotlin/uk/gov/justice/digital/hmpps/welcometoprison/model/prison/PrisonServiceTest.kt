@@ -24,7 +24,11 @@ class PrisonServiceTest {
   private val prisonService = PrisonService(prisonApiClient, prisonRegisterClient, locationFormatter)
 
   private val prisonImage = "prisonImage".toByteArray()
-  private val INMATE_DETAIL = InmateDetail(
+  private val inmateDetailNewBooking = InmateDetail(
+    offenderNo = "ABC123A",
+    bookingId = 1L
+  )
+  private val inmateDetail = InmateDetail(
     offenderNo = "ABC123A",
     bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
@@ -106,7 +110,7 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
+    whenever(prisonApiClient.admitOffenderOnNewBooking(any(), any())).thenReturn(inmateDetailNewBooking)
     val result = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).admitOffenderOnNewBooking(prisonNumber, admitOnNewBookingDetail)
     assertThat(result.bookingId).isEqualTo(expectedBookingId)
@@ -137,7 +141,7 @@ class PrisonServiceTest {
     }
     val prisonNumber = "ABC123A"
     val expectedBookingId = 1L
-    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(INMATE_DETAIL)
+    whenever(prisonApiClient.recallOffender(any(), any())).thenReturn(inmateDetail)
     val result = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
     verify(prisonApiClient).recallOffender(prisonNumber, recallBooking)
     assertThat(result.bookingId).isEqualTo(expectedBookingId)
@@ -163,7 +167,7 @@ class PrisonServiceTest {
     )
     val expectedBookingId = 1L
 
-    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(INMATE_DETAIL)
+    whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(inmateDetail)
 
     val result = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
 

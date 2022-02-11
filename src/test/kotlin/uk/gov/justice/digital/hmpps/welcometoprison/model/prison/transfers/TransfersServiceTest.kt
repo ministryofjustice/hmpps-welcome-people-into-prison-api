@@ -31,6 +31,9 @@ class TransfersServiceTest {
       "NMI", 1, "RECP", "Nottingham (HMP)"
     )
   )
+  private val inmateDetailNoLivingUnit = InmateDetail(
+    offenderNo = "G6081VQ", bookingId = 1L
+  )
 
   @Test
   fun `getTransfers - happy path if prisoner has no PNC Number`() {
@@ -151,5 +154,20 @@ class TransfersServiceTest {
     whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
     transfersService.transferInOffender(prisonNumber, transferInDetail)
     verify(prisonApiClient).transferIn(prisonNumber, transferIn)
+  }
+  @Test
+  fun `transfer-in offender throw exception when location is empty`() {
+
+    val transferInDetail = TransferInDetail(
+      cellLocation = "MDI-RECP",
+      commentText = "some transfer notes",
+      receiveTime = LocalDateTime.now()
+    )
+
+    val prisonNumber = "ABC123A"
+    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetailNoLivingUnit)
+    assertThatThrownBy {
+      transfersService.transferInOffender(prisonNumber, transferInDetail)
+    }.hasMessage("Prisoner: 'ABC123A' do not have assigned living unit")
   }
 }

@@ -49,7 +49,7 @@ class TemporaryAbsenceService(
         )
       }
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit.description
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$offenderNo' do not have assigned living unit")
     return with(inmateDetail) {
       ConfirmTemporaryAbsenceResponse(

@@ -87,8 +87,9 @@ data class TemporaryAbsence(
 data class InmateDetail(
   val bookingId: Long,
   val offenderNo: String,
-  val assignedLivingUnit: AssignedLivingUnit
+  val assignedLivingUnit: AssignedLivingUnit? = null
 )
+
 data class AssignedLivingUnit(
   val agencyId: String,
   val locationId: Int?,
