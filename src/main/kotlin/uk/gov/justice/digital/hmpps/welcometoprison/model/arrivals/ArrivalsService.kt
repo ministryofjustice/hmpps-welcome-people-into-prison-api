@@ -119,7 +119,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit.description
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
@@ -138,7 +138,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.RECALL
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit.description
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }
@@ -157,7 +157,7 @@ class ArrivalsService(
       arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
       arrivalType = ArrivalType.NEW_TO_PRISON
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit.description
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
   }

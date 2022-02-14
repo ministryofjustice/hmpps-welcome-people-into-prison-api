@@ -53,7 +53,7 @@ class TransfersService(
         )
       }
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit.description
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return TransferResponse(
       prisonNumber = inmateDetail.offenderNo,

@@ -42,6 +42,15 @@ class ArrivalsServiceConfirmArrivalTest {
   )
 
   @Test
+  fun `Confirm arrival throw exception when location is empty`() {
+    whenever(basmService.getArrival(any())).thenReturn(ARRIVAL_PROTOTYPE.copy(prisonNumber = "ABC123A"))
+    whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
+    assertThatThrownBy {
+      arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+    }.hasMessage("Prisoner: 'ABC123A' do not have assigned living unit")
+  }
+
+  @Test
   fun `Confirm arrival not known to NOMIS`() {
 
     whenever(basmService.getArrival(any())).thenReturn(ARRIVAL_PROTOTYPE.copy())
@@ -307,6 +316,9 @@ class ArrivalsServiceConfirmArrivalTest {
       assignedLivingUnit = AssignedLivingUnit(
         PRISON_ID, LOCATION_ID, LOCATION, "Nottingham (HMP)"
       )
+    )
+    private val INMATE_DETAIL_NO_UNIT = InmateDetail(
+      offenderNo = OFFENDER_NO, bookingId = BOOKING_ID,
     )
     private val CONFIRM_COURT_RETURN_RESPONSE =
       ConfirmCourtReturnResponse(prisonNumber = OFFENDER_NO, location = LOCATION, bookingId = BOOKING_ID)
