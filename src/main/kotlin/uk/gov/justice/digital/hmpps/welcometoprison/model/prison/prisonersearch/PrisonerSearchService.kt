@@ -4,10 +4,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
+import java.time.LocalDate
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
@@ -38,5 +41,22 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   }
 
   private fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> =
-    if (prisonerNumbers.isEmpty()) emptyList() else client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(prisonerNumbers))
+    if (prisonerNumbers.isEmpty()) emptyList() else client.matchPncNumbersByPrisonerNumbers(
+      MatchByPrisonerNumberRequest(
+        prisonerNumbers
+      )
+    )
+
+  fun findPotentialMatch(matchPrisonersRequest: MatchPrisonersRequest): List<PotentialMatch> {
+    var list = mutableListOf<PotentialMatch>()
+    try {
+      var count = matchPrisonersRequest.pncNumber?.toInt() ?: 0
+      repeat(count) {
+        list.add(PotentialMatch(firstName = "FirstName", lastName = "LastName", dateOfBirth = LocalDate.now(), null, null))
+      }
+      return list
+    } catch (ex: NumberFormatException) {
+      return list
+    }
+  }
 }
