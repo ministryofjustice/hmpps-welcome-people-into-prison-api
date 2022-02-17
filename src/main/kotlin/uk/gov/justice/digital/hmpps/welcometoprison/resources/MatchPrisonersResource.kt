@@ -68,8 +68,8 @@ class MatchPrisonersResource(
   )
   @PostMapping(path = [ "/match-prisoners"])
   fun matchPrisoners(
-    @RequestBody  
-    @Valid @NotNull  
+    @RequestBody
+    @Valid @NotNull
     matchPrisonersRequest: MatchPrisonersRequest
   ): List<PotentialMatch> = prisonerSearchService.findPotentialMatch(matchPrisonersRequest)
 }
