@@ -171,15 +171,15 @@ class TemporaryAbsencesResource(
     ]
   )
   @PostMapping(
-    "/{offenderNo}/confirm",
+    "/{prisonNumber}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
   fun temporaryAbsencesArrival(
     @PathVariable
-    offenderNo: String,
+    prisonNumber: String,
 
     @RequestBody
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
-  ): ConfirmTemporaryAbsenceResponse = temporaryAbsenceService.confirmTemporaryAbsencesArrival(offenderNo, confirmTemporaryAbsenceRequest)
+  ): ConfirmTemporaryAbsenceResponse = temporaryAbsenceService.confirmTemporaryAbsencesArrival(prisonNumber, confirmTemporaryAbsenceRequest)
 }

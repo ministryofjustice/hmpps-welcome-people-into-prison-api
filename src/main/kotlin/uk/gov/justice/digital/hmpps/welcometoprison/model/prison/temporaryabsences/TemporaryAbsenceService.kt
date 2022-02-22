@@ -35,11 +35,11 @@ class TemporaryAbsenceService(
   }
 
   fun confirmTemporaryAbsencesArrival(
-    offenderNo: String,
+    prisonNumber: String,
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ): ConfirmTemporaryAbsenceResponse {
     val inmateDetail = prisonApiClient.confirmTemporaryAbsencesArrival(
-      offenderNo,
+      prisonNumber,
       with(confirmTemporaryAbsenceRequest) {
         TemporaryAbsencesArrival(
           agencyId,
@@ -50,10 +50,10 @@ class TemporaryAbsenceService(
       }
     )
     val livingUnitName = inmateDetail.assignedLivingUnit?.description
-      ?: throw IllegalArgumentException("Prisoner: '$offenderNo' do not have assigned living unit")
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return with(inmateDetail) {
       ConfirmTemporaryAbsenceResponse(
-        prisonNumber = offenderNo,
+        prisonNumber = prisonNumber,
         location = locationFormatter.format(livingUnitName)
       )
     }
