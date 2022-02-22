@@ -77,14 +77,14 @@ class ArrivalsResource(
       ),
     ]
   )
-  @GetMapping(path = [ "/prisons/{agencyId}/arrivals"])
+  @GetMapping(path = [ "/prisons/{prisonId}/arrivals"])
   fun getMoves(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable agencyId: String,
+    @PathVariable prisonId: String,
     @Parameter(description = "Arrivals on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam date: LocalDate
-  ): List<Arrival> = arrivalsService.getArrivals(agencyId, date)
+  ): List<Arrival> = arrivalsService.getArrivals(prisonId, date)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(

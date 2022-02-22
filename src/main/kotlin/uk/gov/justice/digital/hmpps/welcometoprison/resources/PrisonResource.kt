@@ -68,7 +68,7 @@ class PrisonResource(
   )
 
   @GetMapping(
-    value = ["/prison/prisoner/{prisonNumber}/image", "/prisoners/{prisonNumber}/image"],
+    value = ["/prisoners/{prisonNumber}/image"],
     produces = ["image/jpeg"]
   )
   fun getPrisonerImage(

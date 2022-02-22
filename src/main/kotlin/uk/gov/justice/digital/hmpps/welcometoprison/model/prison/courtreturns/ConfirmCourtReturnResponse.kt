@@ -12,10 +12,4 @@ data class ConfirmCourtReturnResponse(
   val location: String,
   @Schema(description = "booking Id", example = "472195")
   val bookingId: Long
-) {
-  @Deprecated("Please use prisonNumber instead", replaceWith = ReplaceWith("prisonNumber"))
-  @Schema(description = "prison number", example = "G6081VQ")
-  fun getOffenderNo(): String {
-    return this.prisonNumber
-  }
-}
+)
