@@ -53,11 +53,11 @@ class ArrivalsService(
   ): ConfirmArrivalResponse {
 
     val arrival = getArrival(moveId)
-
+    val prisonNumber = arrival.potentialMatches?.firstOrNull()?.prisonNumber
     return if (!arrival.isCurrentPrisoner)
-      when (arrival.prisonNumber) {
+      when (prisonNumber) {
         null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
-        else -> admitOffender(confirmArrivalDetail, moveId, arrival.prisonNumber)
+        else -> admitOffender(confirmArrivalDetail, moveId, prisonNumber)
       } else
       throw IllegalArgumentException("Confirming arrival of active prisoner: '${arrival.prisonNumber}' is not supported.")
   }

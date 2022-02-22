@@ -23,6 +23,16 @@ data class ConfirmArrivalDetail(
   @field:Pattern(regexp = "^([0-9]{2}|[0-9]{4})/[0-9]+[a-zA-Z]$", message = "PNC is not valid")
   val pncNumber: String? = null,
 
+  @Schema(
+    description = "The offender's Prison number.",
+    example = "A1234AA",
+    pattern = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$",
+    maxLength = 7
+  )
+  @field:Length(max = 7)
+  @field:Pattern(regexp = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$", message = "Prison number is not valid")
+  val prisonNumber: String? = null,
+
   @Schema(required = true, description = "The offender's last name.", example = "Mark", maxLength = 35)
   @field:Length(max = 35)
   @field:NotBlank
