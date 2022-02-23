@@ -25,14 +25,14 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/temporary-absences/MDI")
+      webTestClient.get().uri("/prison/MDI/temporary-absences")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/temporary-absences/MDI")
+      webTestClient.get().uri("/prison/MDI/temporary-absences")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -61,7 +61,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
           )
         )
       )
-      webTestClient.get().uri("/temporary-absences/MDI")
+      webTestClient.get().uri("/prison/MDI/temporary-absences")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -70,7 +70,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls service method with correct args`() {
-      webTestClient.get().uri("/temporary-absences/MDI")
+      webTestClient.get().uri("/prison/MDI/temporary-absences")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -84,14 +84,14 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -110,7 +110,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
           movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
         )
       )
-      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -119,7 +119,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls service method with correct args`() {
-      webTestClient.get().uri("/temporary-absences/MDI/A1234AA")
+      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk

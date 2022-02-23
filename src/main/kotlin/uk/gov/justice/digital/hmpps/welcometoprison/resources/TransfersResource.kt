@@ -73,11 +73,16 @@ class TransfersResource(
       ),
     ]
   )
-  @GetMapping(path = ["/prisons/{agencyId}/transfers/enroute"])
+  @GetMapping(
+    path = [
+      "/prisons/{prisonId}/transfers/enroute",
+      "/prisons/{prisonId}/transfers"
+    ]
+  )
   fun getTransfers(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable agencyId: String,
-  ): List<Transfer> = transfersService.getTransfers(agencyId)
+    @PathVariable prisonId: String,
+  ): List<Transfer> = transfersService.getTransfers(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -122,13 +127,18 @@ class TransfersResource(
       ),
     ]
   )
-  @GetMapping(path = ["/prisons/{agencyId}/transfers/enroute/{prisonNumber}"])
+  @GetMapping(
+    path = [
+      "/prisons/{prisonId}/transfers/enroute/{prisonNumber}",
+      "/prisons/{prisonId}/transfers/{prisonNumber}"
+    ]
+  )
   fun getTransfer(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable agencyId: String,
+    @PathVariable prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable prisonNumber: String
-  ): Transfer = transfersService.getTransfer(agencyId, prisonNumber)
+  ): Transfer = transfersService.getTransfer(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(

@@ -10,10 +10,4 @@ data class ConfirmTemporaryAbsenceResponse(
   val prisonNumber: String,
   @Schema(description = "location", example = "D-3-017")
   val location: String,
-) {
-  @Deprecated("Please use prisonNumber instead", replaceWith = ReplaceWith("prisonNumber"))
-  @Schema(description = "prison number", example = "G6081VQ")
-  fun getOffenderNo(): String {
-    return this.prisonNumber
-  }
-}
+)

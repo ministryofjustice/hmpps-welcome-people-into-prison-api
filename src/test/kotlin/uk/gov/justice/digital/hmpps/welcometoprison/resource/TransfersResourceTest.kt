@@ -27,7 +27,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute")
+      webTestClient.get().uri("/prisons/MDI/transfers")
         .exchange()
         .expectStatus().isUnauthorized
     }
@@ -35,7 +35,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     @Test
     fun `requires correct role`() {
       webTestClient.get()
-        .uri("/prisons/MDI/transfers/enroute")
+        .uri("/prisons/MDI/transfers")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -46,7 +46,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     fun `returns json in expected format`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute")
+      webTestClient.get().uri("/prisons/MDI/transfers")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -59,7 +59,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
       val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
 
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute")
+      webTestClient.get().uri("/prisons/MDI/transfers")
         .withBearerToken(token)
         .exchange()
         .expectStatus().isOk
@@ -84,14 +84,14 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute/G6081VQ")
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute/G6081VQ")
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -102,7 +102,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     fun `returns json in expected format`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
 
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute/G6081VQ")
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
@@ -115,7 +115,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
       val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
 
-      webTestClient.get().uri("/prisons/MDI/transfers/enroute/G6081VQ")
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .withBearerToken(token)
         .exchange()
         .expectStatus().isOk

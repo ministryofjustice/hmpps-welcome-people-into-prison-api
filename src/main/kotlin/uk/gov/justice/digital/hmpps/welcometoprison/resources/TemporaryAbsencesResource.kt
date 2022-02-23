@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsenc
 
 @RestController
 @Validated
-@RequestMapping(name = "Prison", path = ["/temporary-absences"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(name = "Prison", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TemporaryAbsencesResource(
   private val temporaryAbsenceService: TemporaryAbsenceService
 ) {
@@ -70,11 +70,17 @@ class TemporaryAbsencesResource(
       ),
     ]
   )
-  @GetMapping(value = ["/{agencyId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+  @GetMapping(
+    value = [
+      "/temporary-absences/{prisonId}",
+      "/prison/{prisonId}/temporary-absences"
+    ],
+    produces = [MediaType.APPLICATION_JSON_VALUE]
+  )
   fun getTemporaryAbsences(
     @Schema(description = "AgencyId", example = "MDI", required = true)
-    @PathVariable agencyId: String
-  ) = temporaryAbsenceService.getTemporaryAbsences(agencyId)
+    @PathVariable prisonId: String
+  ) = temporaryAbsenceService.getTemporaryAbsences(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -119,13 +125,18 @@ class TemporaryAbsencesResource(
       ),
     ]
   )
-  @GetMapping(path = ["/{agencyId}/{prisonNumber}"])
+  @GetMapping(
+    path = [
+      "/temporary-absences/{prisonId}/{prisonNumber}",
+      "/prison/{prisonId}/temporary-absences/{prisonNumber}"
+    ]
+  )
   fun getTemporaryAbsence(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable agencyId: String,
+    @PathVariable prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable prisonNumber: String
-  ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(agencyId, prisonNumber)
+  ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
@@ -171,7 +182,7 @@ class TemporaryAbsencesResource(
     ]
   )
   @PostMapping(
-    "/{prisonNumber}/confirm",
+    "/temporary-absences/{prisonNumber}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
