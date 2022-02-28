@@ -11,13 +11,13 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
 class PrisonerSearchServiceTest {
   private val client: PrisonerSearchApiClient = mock()
   private val service = PrisonerSearchService(client)
-
   @Test
   fun `getCandidateMatches - happy path`() {
     whenever(client.matchPrisoner(any())).thenReturn(
@@ -63,9 +63,23 @@ class PrisonerSearchServiceTest {
     verifyNoMoreInteractions(client)
   }
 
+  @Test
+  fun getPrisoner() {
+    whenever(client.getPrisoner(any())).thenReturn(
+      listOf(Prisoner(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER)),
+    )
+
+    val prisoner = service.getPrisoner("A1234AA")
+
+    assertThat(prisoner).isEqualTo(
+      Prisoner(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER),
+    )
+  }
+
   companion object {
     private const val PRISON_NUMBER = "A1234AA"
     private const val PNC_NUMBER = "1234/1234589A"
+    private const val CRO_NUMBER = "11/222222"
     private const val FIRST_NAME = "JIM"
     private const val LAST_NAME = "SMITH"
     private val DOB = LocalDate.of(1991, 7, 31)

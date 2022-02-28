@@ -11,11 +11,17 @@ import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestB
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
+import java.time.LocalDate
 
 @Suppress("ClassName")
 class PrisonResourceTest : IntegrationTestBase() {
   @MockBean
   private lateinit var prisonService: PrisonService
+
+  @MockBean
+  private lateinit var prisonerSearchService: PrisonerSearchService
 
   @Nested
   inner class `Get Prisoner image` {
@@ -127,6 +133,63 @@ class PrisonResourceTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("$[0].caseLoadId").isEqualTo("MDI")
         .jsonPath("$[0].description").isEqualTo("Moorland Closed (HMP & YOI)")
+    }
+  }
+
+  @Nested
+  inner class `Get Prisoner` {
+    @Test
+    fun `Requires authentication`() {
+      webTestClient.get().uri("/prisons/A1234BC")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `Requires correct role`() {
+      webTestClient.get().uri("/prisoners/A1234BC")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
+    fun `User has correct role`() {
+      webTestClient.get().uri("/prisoners/A1234BC")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+    }
+
+    @Test
+    fun `Returns prisoner details`() {
+
+      whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
+        Prisoner(
+          firstName = "Jim",
+          lastName = "Smith",
+          dateOfBirth = LocalDate.of(1970, 12, 25),
+          prisonerNumber = "A1234BC",
+          pncNumber = "11/1234",
+          croNumber = "12/4321"
+        )
+      )
+
+      webTestClient.get()
+        .uri("/prisoners/A1234BC")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("firstName").isEqualTo("Jim")
+        .jsonPath("lastName").isEqualTo("Smith")
+        .jsonPath("dateOfBirth").isEqualTo("1970-12-25")
+        .jsonPath("prisonerNumber").isEqualTo("A1234BC")
+        .jsonPath("pncNumber").isEqualTo("11/1234")
+        .jsonPath("croNumber").isEqualTo("12/4321")
+
+      verify(prisonerSearchService).getPrisoner("A1234BC")
     }
   }
 }
