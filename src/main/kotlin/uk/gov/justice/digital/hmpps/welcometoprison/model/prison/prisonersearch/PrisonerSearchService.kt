@@ -3,13 +3,14 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
@@ -32,8 +33,19 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   private fun matchPrisoner(identifier: String): List<MatchPrisonerResponse> =
     client.matchPrisoner(MatchPrisonerRequest(identifier))
 
-  fun getPrisoner(prisonNumber: String): Prisoner =
-    client.getPrisoner(MatchPrisonerRequest(prisonNumber)).component1()
+  fun getPrisoner(prisonNumber: String): PrisonerDetails {
+    val prisonerMatch = client.getPrisoner(prisonNumber)
+      ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
+
+    return PrisonerDetails(
+      firstName = prisonerMatch.firstName,
+      lastName = prisonerMatch.lastName,
+      dateOfBirth = prisonerMatch.dateOfBirth,
+      prisonNumber = prisonNumber,
+      pncNumber = prisonerMatch.pncNumber,
+      croNumber = prisonerMatch.croNumber,
+    )
+  }
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)

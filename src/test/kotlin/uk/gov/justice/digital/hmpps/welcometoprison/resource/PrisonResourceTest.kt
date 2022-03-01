@@ -10,9 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import java.time.LocalDate
 
 @Suppress("ClassName")
@@ -166,11 +166,11 @@ class PrisonResourceTest : IntegrationTestBase() {
     fun `Returns prisoner details`() {
 
       whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        Prisoner(
+        PrisonerDetails(
           firstName = "Jim",
           lastName = "Smith",
           dateOfBirth = LocalDate.of(1970, 12, 25),
-          prisonerNumber = "A1234BC",
+          prisonNumber = "A1234BC",
           pncNumber = "11/1234",
           croNumber = "12/4321"
         )
@@ -185,7 +185,7 @@ class PrisonResourceTest : IntegrationTestBase() {
         .jsonPath("firstName").isEqualTo("Jim")
         .jsonPath("lastName").isEqualTo("Smith")
         .jsonPath("dateOfBirth").isEqualTo("1970-12-25")
-        .jsonPath("prisonerNumber").isEqualTo("A1234BC")
+        .jsonPath("prisonNumber").isEqualTo("A1234BC")
         .jsonPath("pncNumber").isEqualTo("11/1234")
         .jsonPath("croNumber").isEqualTo("12/4321")
 

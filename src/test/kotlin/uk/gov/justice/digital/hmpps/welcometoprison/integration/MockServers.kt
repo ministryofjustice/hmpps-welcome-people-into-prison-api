@@ -37,6 +37,7 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "dateOfBirth": "1991-07-31",
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
+                        "croNumber": "SF80/655108T",
                         "status": "INACTIVE OUT"
                        }]"""
             )
@@ -62,7 +63,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "dateOfBirth": "1991-07-31",
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
-                        "croNumber": "1234/111111"
+                        "croNumber": "SF80/655108T",
+                        "status": "INACTIVE_OUT"
                        }]"""
             )
         )

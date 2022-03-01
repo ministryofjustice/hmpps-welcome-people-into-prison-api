@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 
 @RestController
 @Validated
@@ -183,7 +183,7 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = Prisoner::class)
+            schema = Schema(implementation = PrisonerDetails::class)
           )
         ]
       ),
@@ -217,7 +217,7 @@ class PrisonResource(
   @GetMapping(path = [ "/prisoners/{prisonNumber}"])
   fun getPrisoner(
     @PathVariable prisonNumber: String
-  ): Prisoner = prisonerSearchService.getPrisoner(prisonNumber)
+  ): PrisonerDetails = prisonerSearchService.getPrisoner(prisonNumber)
 }
 
 data class PrisonView(val description: String)

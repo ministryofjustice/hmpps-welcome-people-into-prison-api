@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
@@ -58,6 +57,7 @@ class PrisonerSearchApiClientTest {
           dateOfBirth = LocalDate.of(1991, 7, 31),
           prisonerNumber = "A1278AA",
           pncNumber = "1234/1234589A",
+          croNumber = "SF80/655108T",
           status = INACTIVE_OUT
         )
       )
@@ -111,18 +111,18 @@ class PrisonerSearchApiClientTest {
   @Test
   fun `successfully get prisoner details`() {
     mockServer.stubGetPrisoner(200)
-    val result = client.getPrisoner(MatchPrisonerRequest("identifier"))
+    val result = client.getPrisoner("A1278AA")
 
     assertThat(result).isEqualTo(
-      listOf(
-        Prisoner(
-          firstName = "JIM",
-          lastName = "SMITH",
-          dateOfBirth = LocalDate.of(1991, 7, 31),
-          prisonerNumber = "A1278AA",
-          pncNumber = "1234/1234589A",
-          croNumber = "1234/111111",
-        )
+
+      MatchPrisonerResponse(
+        firstName = "JIM",
+        lastName = "SMITH",
+        dateOfBirth = LocalDate.of(1991, 7, 31),
+        prisonerNumber = "A1278AA",
+        pncNumber = "1234/1234589A",
+        croNumber = "SF80/655108T",
+        status = "INACTIVE_OUT"
       )
     )
 
