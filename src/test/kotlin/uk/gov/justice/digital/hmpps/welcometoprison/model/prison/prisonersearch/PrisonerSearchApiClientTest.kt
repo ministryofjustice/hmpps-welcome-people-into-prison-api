@@ -57,6 +57,7 @@ class PrisonerSearchApiClientTest {
           dateOfBirth = LocalDate.of(1991, 7, 31),
           prisonerNumber = "A1278AA",
           pncNumber = "1234/1234589A",
+          croNumber = "SF80/655108T",
           status = INACTIVE_OUT
         )
       )
@@ -104,6 +105,29 @@ class PrisonerSearchApiClientTest {
 
     mockServer.verify(
       postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
+    )
+  }
+
+  @Test
+  fun `successfully get prisoner details`() {
+    mockServer.stubGetPrisoner(200)
+    val result = client.getPrisoner("A1278AA")
+
+    assertThat(result).isEqualTo(
+
+      MatchPrisonerResponse(
+        firstName = "JIM",
+        lastName = "SMITH",
+        dateOfBirth = LocalDate.of(1991, 7, 31),
+        prisonerNumber = "A1278AA",
+        pncNumber = "1234/1234589A",
+        croNumber = "SF80/655108T",
+        status = "INACTIVE_OUT"
+      )
+    )
+
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/prisoner-search/match-prisoners"))
     )
   }
 }

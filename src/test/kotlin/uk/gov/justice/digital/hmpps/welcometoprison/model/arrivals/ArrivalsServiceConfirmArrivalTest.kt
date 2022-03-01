@@ -53,6 +53,7 @@ class ArrivalsServiceConfirmArrivalTest {
           dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
+          croNumber = "12/4321",
           status = "INACTIVE OUT",
         )
       )
@@ -110,6 +111,7 @@ class ArrivalsServiceConfirmArrivalTest {
           dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
+          croNumber = CRO_NUMBER,
           status = "INACTIVE OUT",
         )
       )
@@ -158,6 +160,7 @@ class ArrivalsServiceConfirmArrivalTest {
           dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = PRISON_NUMBER,
           pncNumber = null,
+          croNumber = CRO_NUMBER,
           status = "ACTIVE IN"
         )
       )
@@ -188,6 +191,7 @@ class ArrivalsServiceConfirmArrivalTest {
           lastName = LAST_NAME,
           dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = PRISON_NUMBER,
+          croNumber = CRO_NUMBER,
           pncNumber = null,
           status = "ACTIVE IN"
         )
@@ -238,6 +242,7 @@ class ArrivalsServiceConfirmArrivalTest {
           dateOfBirth = DATE_OF_BIRTH,
           prisonerNumber = PRISON_NUMBER,
           pncNumber = null,
+          croNumber = CRO_NUMBER,
           status = "ACTIVE IN"
         )
       )
@@ -282,7 +287,8 @@ class ArrivalsServiceConfirmArrivalTest {
       listOf(
         MatchPrisonerResponse(
           firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
-          prisonerNumber = PRISON_NUMBER, pncNumber = null, status = "ACTIVE IN"
+          prisonerNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
+          status = "ACTIVE IN"
         )
       )
     )
@@ -333,7 +339,8 @@ class ArrivalsServiceConfirmArrivalTest {
       listOf(
         MatchPrisonerResponse(
           firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
-          prisonerNumber = PRISON_NUMBER, pncNumber = null, status = INACTIVE_OUT
+          prisonerNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
+          status = INACTIVE_OUT
         )
       )
     )
@@ -365,6 +372,7 @@ class ArrivalsServiceConfirmArrivalTest {
   companion object {
     private const val MOVE_ID = "beae6404-de16-406f-844a-7e043960d9ec"
     private const val PRISON_NUMBER = "A1111AA"
+    private const val CRO_NUMBER = "12/4321"
     private const val PNC_NUMBER = "01/123456"
     private const val BOOKING_ID = 1L
     private const val FIRST_NAME = "Eric"

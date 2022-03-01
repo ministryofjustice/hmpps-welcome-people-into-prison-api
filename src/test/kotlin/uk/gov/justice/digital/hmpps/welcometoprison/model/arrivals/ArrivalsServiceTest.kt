@@ -210,6 +210,7 @@ class ArrivalsServiceTest {
     private const val PRISON_NUMBER = "A1234AA"
     private const val ANOTHER_PRISON_NUMBER = "A1234BB"
     private const val PNC_NUMBER = "99/123456J"
+    private const val CRO_NUMBER = "SF80/655108T"
     private const val ANOTHER_PNC_NUMBER = "11/123456J"
     private val DOB = LocalDate.of(1980, 2, 23)
 
@@ -247,6 +248,7 @@ class ArrivalsServiceTest {
       dateOfBirth = LocalDate.of(1980, 2, 23),
       prisonerNumber = PRISON_NUMBER,
       pncNumber = PNC_NUMBER,
+      croNumber = CRO_NUMBER,
       status = INACTIVE_OUT
     )
   }
