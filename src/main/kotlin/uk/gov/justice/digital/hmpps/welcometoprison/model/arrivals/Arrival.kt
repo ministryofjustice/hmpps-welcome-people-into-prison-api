@@ -18,7 +18,7 @@ data class Arrival(
   val lastName: String,
 
   @Schema(description = "Date of birth", example = "1971-02-01")
-  val dateOfBirth: LocalDate,
+  val dateOfBirth: LocalDate?,
 
   @Schema(description = "Prison number", example = "A1234AA")
   val prisonNumber: String?,

@@ -39,7 +39,7 @@ class BasmApiMockServer : WireMockServer(9004) {
     )
   }
 
-  fun stubGetMovements(status: Int) {
+  fun stubGetMovements(status: Int, hasMissingDob: Boolean = false) {
     stubFor(
       get(
         urlPathMatching("/api/moves\\\\?.*")
@@ -48,7 +48,7 @@ class BasmApiMockServer : WireMockServer(9004) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody("moves".loadJson(this))
+            .withBody(if (!hasMissingDob) "moves".loadJson(this) else "moves-with-missing-dob".loadJson(this))
         )
     )
   }
