@@ -172,7 +172,8 @@ class PrisonResourceTest : IntegrationTestBase() {
           dateOfBirth = LocalDate.of(1970, 12, 25),
           prisonNumber = "A1234BC",
           pncNumber = "11/1234",
-          croNumber = "12/4321"
+          croNumber = "12/4321",
+          isCurrentPrisoner = false
         )
       )
 

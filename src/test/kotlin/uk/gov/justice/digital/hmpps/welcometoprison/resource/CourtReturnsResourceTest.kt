@@ -17,9 +17,7 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
   @MockBean
   private lateinit var arrivalsService: ArrivalsService
 
-  private val confirmCourtReturnRequest = ConfirmCourtReturnRequest(
-    "NMI"
-  )
+  private val confirmCourtReturnRequest = ConfirmCourtReturnRequest("NMI", "A1234AA")
   private val moveId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
   private val url = "/court-returns/$moveId/confirm"
 

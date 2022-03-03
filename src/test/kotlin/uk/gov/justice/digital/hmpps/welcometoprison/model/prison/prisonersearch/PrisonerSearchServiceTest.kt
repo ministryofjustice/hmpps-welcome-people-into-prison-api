@@ -72,7 +72,7 @@ class PrisonerSearchServiceTest {
     val prisoner = service.getPrisoner("A1234AA")
 
     assertThat(prisoner).isEqualTo(
-      PrisonerDetails(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER)
+      PrisonerDetails(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, false)
     )
   }
 

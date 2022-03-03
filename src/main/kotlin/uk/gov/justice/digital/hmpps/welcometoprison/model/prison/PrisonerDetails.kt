@@ -24,5 +24,7 @@ data class PrisonerDetails(
   val pncNumber: String?,
 
   @Schema(description = "CRO number", example = "SF80/655108T")
-  val croNumber: String?
+  val croNumber: String?,
+
+  @Transient val isCurrentPrisoner: Boolean
 )
