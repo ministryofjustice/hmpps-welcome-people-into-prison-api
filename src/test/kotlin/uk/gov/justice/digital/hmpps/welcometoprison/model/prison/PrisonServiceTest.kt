@@ -9,10 +9,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Gender
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -149,32 +145,13 @@ class PrisonServiceTest {
 
   @Test
   fun `transferInFromCourt calls prisonApi correctly and returns the bookingId`() {
-    val confirmCourtReturnRequest = ConfirmCourtReturnRequest(
-      prisonId = "MNI"
-    )
-    val arrival = Arrival(
-      id = "0573de83-8a29-42aa-9ede-1068bc433fc5",
-      firstName = "First",
-      lastName = "last",
-      dateOfBirth = LocalDate.of(1978, 1, 1),
-      prisonNumber = "A1234AA",
-      pncNumber = "01/1234X",
-      date = LocalDate.now(),
-      fromLocation = "Kingston-upon-Hull Crown Court",
-      fromLocationType = LocationType.COURT,
-      isCurrentPrisoner = true,
-      gender = Gender.MALE
-    )
     val expectedBookingId = 1L
 
     whenever(prisonApiClient.courtTransferIn(any(), any())).thenReturn(inmateDetail)
 
-    val result = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
+    val result = prisonService.returnFromCourt("MNI", "A1234AA")
 
-    verify(prisonApiClient).courtTransferIn(
-      arrival.prisonNumber!!,
-      CourtTransferIn(confirmCourtReturnRequest.prisonId!!)
-    )
+    verify(prisonApiClient).courtTransferIn("A1234AA", CourtTransferIn("MNI"))
     assertThat(result.bookingId).isEqualTo(expectedBookingId)
   }
 }

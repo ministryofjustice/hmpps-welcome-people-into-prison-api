@@ -47,53 +47,47 @@ class ArrivalsService(
     )
   }
 
-  fun confirmArrival(
-    moveId: String,
-    confirmArrivalDetail: ConfirmArrivalDetail
-  ): ConfirmArrivalResponse {
+  fun confirmArrival(moveId: String, confirmation: ConfirmArrivalDetail): ConfirmArrivalResponse {
 
-    val arrival = getArrival(moveId)
-    val prisonNumber = arrival.potentialMatches?.firstOrNull()?.prisonNumber
-    return if (!arrival.isCurrentPrisoner)
-      when (prisonNumber) {
-        null -> createAndAdmitOffender(confirmArrivalDetail, moveId)
-        else -> admitOffender(confirmArrivalDetail, moveId, prisonNumber)
-      } else
-      throw IllegalArgumentException("Confirming arrival of active prisoner: '${arrival.prisonNumber}' is not supported.")
+    if (confirmation.isNewToPrison) {
+      return createAndAdmitOffender(confirmation, moveId)
+    }
+
+    val prisoner = prisonerSearchService.getPrisoner(confirmation.prisonNumber!!)
+
+    with(prisoner) {
+      return if (isCurrentPrisoner) throw IllegalArgumentException("Confirming arrival of active prisoner: '$prisonNumber' is not supported.")
+      else admitOffender(confirmation, moveId, prisonNumber)
+    }
   }
 
-  fun confirmReturnFromCourt(
-    moveId: String,
-    confirmCourtReturnRequest: ConfirmCourtReturnRequest
-  ): ConfirmCourtReturnResponse {
+  fun confirmReturnFromCourt(moveId: String, confirmation: ConfirmCourtReturnRequest): ConfirmCourtReturnResponse {
 
-    val arrival = getArrival(moveId)
+    val prisoner = prisonerSearchService.getPrisoner(confirmation.prisonNumber)
 
-    return if (arrival.isCurrentPrisoner)
-      when (arrival.fromLocationType) {
-        LocationType.COURT -> returnFromCourt(moveId, confirmCourtReturnRequest, arrival)
-        else -> throw IllegalArgumentException("The arrival is known to NOMIS, has a current booking but is not from court. This scenario is not supported.")
-      } else
-      throw IllegalArgumentException("Confirming court return of inactive prisoner: '${arrival.prisonNumber}' is not supported.")
+    return if (prisoner.isCurrentPrisoner)
+      returnFromCourt(moveId, prisoner.prisonNumber, confirmation)
+    else
+      throw IllegalArgumentException("Confirming court return of inactive prisoner: '${prisoner.prisonNumber}' is not supported.")
   }
 
   private fun returnFromCourt(
     moveId: String,
-    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
-    arrival: Arrival
+    prisonNumber: String,
+    confirmation: ConfirmCourtReturnRequest,
   ): ConfirmCourtReturnResponse {
 
-    val confirmCourtReturnResponse = prisonService.returnFromCourt(confirmCourtReturnRequest, arrival)
+    val response = prisonService.returnFromCourt(confirmation.prisonId, prisonNumber)
 
     confirmedArrivalService.add(
       moveId,
-      arrival.prisonNumber!!,
-      confirmCourtReturnRequest.prisonId!!,
-      confirmCourtReturnResponse.bookingId,
+      prisonNumber,
+      confirmation.prisonId,
+      response.bookingId,
       LocalDate.now(clock),
       ArrivalType.COURT_TRANSFER
     )
-    return confirmCourtReturnResponse
+    return response
   }
 
   private fun admitOffender(
