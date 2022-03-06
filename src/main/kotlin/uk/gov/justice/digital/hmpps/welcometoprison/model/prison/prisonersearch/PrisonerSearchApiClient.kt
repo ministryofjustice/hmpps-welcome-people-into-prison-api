@@ -31,4 +31,16 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       .block()
       ?: emptyList()
   }
+
+  fun matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth: SearchByNameAndDateOfBirth): List<Prisoner> {
+    val list = webClient.post()
+      .uri("/match-prisoners")
+      .bodyValue(searchByNameAndDateOfBirth)
+      .retrieve()
+      .bodyToMono(Matches::class.java)
+      .block()?.matches
+      ?: emptyList()
+    return list.map { it.prisoner }
+  }
+
 }

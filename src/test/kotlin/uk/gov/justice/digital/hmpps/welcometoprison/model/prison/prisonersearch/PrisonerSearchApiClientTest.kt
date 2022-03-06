@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class PrisonerSearchApiClientTest {
 
@@ -106,4 +107,31 @@ class PrisonerSearchApiClientTest {
       postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
     )
   }
+
+  @Test
+  fun `successful match by name and date of birth`() {
+    mockServer.stubMatchPrisonerByNameAndDateOfBirth(200)
+    val searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(lastName = "Larsen", dateOfBirth = LocalDate.now())
+    val result = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
+
+    assertThat(result).isEqualTo(
+      listOf(
+        Prisoner(
+          prisonerNumber = "A1234AA",
+          pncNumber = "12/394773H",
+          firstName = "Robert",
+          middleNames = "John James",
+          lastName = "Larsen",
+          dateOfBirth = LocalDate.parse(
+            "1975-04-02", DateTimeFormatter.ofPattern("yyyy-MM-dd")
+          )
+        )
+      )
+    )
+
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/match-prisoners"))
+    )
+  }
+
 }

@@ -10,14 +10,17 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
-import java.time.LocalDate
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
 
   fun getCandidateMatches(arrival: Arrival): List<MatchPrisonerResponse> {
-    val matchesByPrisonNumber = findMatches(arrival.prisonNumber, "Prison Number")
-    val matchesByPncNumber = findMatches(arrival.pncNumber, "PNC Number")
+    return getCandidateMatches(arrival.prisonNumber, arrival.pncNumber)
+  }
+
+  fun getCandidateMatches(prisonNumber: String?, pncNumber: String?): List<MatchPrisonerResponse> {
+    val matchesByPrisonNumber = findMatches(prisonNumber, "Prison Number")
+    val matchesByPncNumber = findMatches(pncNumber, "PNC Number")
 
     return matchesByPrisonNumber + matchesByPncNumber
   }
@@ -48,15 +51,12 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     )
 
   fun findPotentialMatch(matchPrisonersRequest: MatchPrisonersRequest): List<PotentialMatch> {
-    var list = mutableListOf<PotentialMatch>()
-    try {
-      var count = matchPrisonersRequest.pncNumber?.toInt() ?: 0
-      repeat(count) {
-        list.add(PotentialMatch(firstName = "FirstName", lastName = "LastName", dateOfBirth = LocalDate.now(), null, null))
-      }
-      return list
-    } catch (ex: NumberFormatException) {
-      return list
-    }
+    var list = mutableListOf<MatchPrisonerResponse>()
+    var listPm = mutableListOf<PotentialMatch>()
+
+    list.addAll(this.getCandidateMatches(matchPrisonersRequest.prisonNumber, matchPrisonersRequest.pncNumber))
+
+
+    return listPm
   }
 }
