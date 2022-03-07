@@ -14,6 +14,9 @@ prison:
 prisoner:
   search.endpoint.url: http://localhost:8093
 
+enabled:
+  prisons: NMI,MDI,PBI
+
 management.endpoint:
   health.cache.time-to-live: 0
   info.cache.time-to-live: 0

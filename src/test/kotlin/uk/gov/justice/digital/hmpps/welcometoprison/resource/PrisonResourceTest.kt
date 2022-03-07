@@ -193,4 +193,38 @@ class PrisonResourceTest : IntegrationTestBase() {
       verify(prisonerSearchService).getPrisoner("A1234BC")
     }
   }
+
+  @Nested
+  inner class `Get enabled prisons` {
+    @Test
+    fun `Requires authentication`() {
+      webTestClient.get().uri("/enabled-prisons")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `Requires correct role`() {
+      webTestClient.get().uri("/enabled-prisons")
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
+    }
+
+    @Test
+    fun `Returns list of enabled prisons`() {
+
+      webTestClient.get()
+        .uri("/enabled-prisons")
+        .headers(setAuthorisation(roles = listOf("ROLE_PRISON"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("$.length()").isEqualTo(3)
+        .jsonPath("$[0]").isEqualTo("NMI")
+        .jsonPath("$[1]").isEqualTo("MDI")
+        .jsonPath("$[2]").isEqualTo("PBI")
+    }
+  }
 }

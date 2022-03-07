@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 class PrisonResource(
   private val prisonService: PrisonService,
   private val prisonerSearchService: PrisonerSearchService,
+  @Value("\${enabled.prisons}") private val enabledPrisons: String
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -174,7 +176,12 @@ class PrisonResource(
   @Operation(
     summary = "Retrieves a subset of a prisoner's details",
     description = "Retrieves a subset of a prisoner's details using the prisonNumber, role required is ROLE_VIEW_ARRIVALS or ROLE_GLOBAL_SEARCH or ROLE_PRISONER_SEARCH",
-    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH", scopes = ["read"])],
+    security = [
+      SecurityRequirement(
+        name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH",
+        scopes = ["read"]
+      )
+    ],
 
     responses = [
       ApiResponse(
@@ -214,10 +221,57 @@ class PrisonResource(
       ),
     ]
   )
-  @GetMapping(path = [ "/prisoners/{prisonNumber}"])
+  @GetMapping(path = ["/prisoners/{prisonNumber}"])
   fun getPrisoner(
     @PathVariable prisonNumber: String
   ): PrisonerDetails = prisonerSearchService.getPrisoner(prisonNumber)
+
+  @PreAuthorize("hasRole('ROLE_PRISON')")
+  @Operation(
+    summary = "Retrieves the enabled prisons",
+    description = "Retrieves enabled prison",
+    security = [SecurityRequirement(name = "ROLE_PRISON", scopes = ["read"])],
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns the enabled prisons",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = Prison::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to retrieve",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "No enabled prisons found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "500",
+        description = "Unexpected error",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
+      ),
+    ]
+  )
+
+  @GetMapping(value = ["/enabled-prisons"], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getEnabledPrison(): List<String> = enabledPrisons.split(",")
 }
 
 data class PrisonView(val description: String)
