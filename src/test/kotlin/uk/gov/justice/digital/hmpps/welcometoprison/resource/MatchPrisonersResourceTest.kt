@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.RepeatedTest
-import org.junit.jupiter.api.RepetitionInfo
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
@@ -11,15 +9,14 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatc
 @Suppress("ClassName")
 class MatchPrisonersResourceTest : IntegrationTestBase() {
 
-  @RepeatedTest(3)
-  fun `search result with n matches`(repetitionInfo: RepetitionInfo) {
+  @Test
+  fun `search result with 1 matches`() {
 
     val validRequest = """
         {
-          "firstName": "Alpha",
-          "lastName": "Omega",
-          "dateOfBirth": "1961-05-29",
-          "pncNumber": """ + (repetitionInfo.currentRepetition - 1) + """
+          "firstName": "Robert",
+          "lastName": "Larsen",
+          "dateOfBirth": "1975-04-02"
         }
       """
 
@@ -35,7 +32,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp.size).isEqualTo(repetitionInfo.currentRepetition - 1)
+    assertThat(resp?.size).isEqualTo(1)
   }
   @Test
   fun `search result with 0 matches`() {

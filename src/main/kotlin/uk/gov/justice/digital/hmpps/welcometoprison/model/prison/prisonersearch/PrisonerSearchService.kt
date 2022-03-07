@@ -51,12 +51,51 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     )
 
   fun findPotentialMatch(matchPrisonersRequest: MatchPrisonersRequest): List<PotentialMatch> {
-    var list = mutableListOf<MatchPrisonerResponse>()
-    var listPm = mutableListOf<PotentialMatch>()
 
-    list.addAll(this.getCandidateMatches(matchPrisonersRequest.prisonNumber, matchPrisonersRequest.pncNumber))
+    var map = hashMapOf<String, PotentialMatch>()
 
+    var listMatchPrisonerResponse =
+      this.getCandidateMatches(matchPrisonersRequest.prisonNumber, matchPrisonersRequest.pncNumber)
+    listMatchPrisonerResponse.forEach {
+      map[it.prisonerNumber ?: "" + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
+        firstName = it.firstName,
+        lastName = it.lastName,
+        dateOfBirth = it.dateOfBirth,
+        pncNumber = it.pncNumber,
+        prisonNumber = it.prisonerNumber
+      )
+    }
+    /*
+     var searchByPncNumber = SearchByNameAndDateOfBirth(
+       pncNumber = matchPrisonersRequest.pncNumber
+     )
+    var listByPncNumber = client.matchPrisonerByNameAndDateOfBirthOrPncNumber(searchByPncNumber)
+     listByPncNumber.forEach {
+       map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
+         firstName = it.firstName,
+         lastName = it.lastName,
+         dateOfBirth = it.dateOfBirth,
+         pncNumber = it.pncNumber,
+         prisonNumber = it.prisonerNumber
+       )
+     }*/
 
-    return listPm
+    var searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(
+      firstName = matchPrisonersRequest.firstName,
+      lastName = matchPrisonersRequest.lastName,
+      dateOfBirth = matchPrisonersRequest.dateOfBirth
+    )
+    var listByNameAndDateOfBirth = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
+
+    listByNameAndDateOfBirth.forEach {
+      map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
+        firstName = it.firstName,
+        lastName = it.lastName,
+        dateOfBirth = it.dateOfBirth,
+        pncNumber = it.pncNumber,
+        prisonNumber = it.prisonerNumber
+      )
+    }
+    return map.values.toList()
   }
 }

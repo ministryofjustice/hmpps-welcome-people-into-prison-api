@@ -45,6 +45,7 @@ abstract class IntegrationTestBase {
       prisonRegisterMockServer.start()
       prisonerSearchMockServer.start()
       prisonerSearchMockServer.stubMatchPrisoners(200)
+      prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirth(200)
     }
 
     @AfterAll

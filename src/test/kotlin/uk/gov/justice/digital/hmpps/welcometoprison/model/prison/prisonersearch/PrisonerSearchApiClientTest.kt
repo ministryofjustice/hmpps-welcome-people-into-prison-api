@@ -111,7 +111,7 @@ class PrisonerSearchApiClientTest {
   @Test
   fun `successful match by name and date of birth`() {
     mockServer.stubMatchPrisonerByNameAndDateOfBirth(200)
-    val searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(lastName = "Larsen", dateOfBirth = LocalDate.now())
+    val searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(lastName = "Larsen", firstName = "Robert" , dateOfBirth = LocalDate.now())
     val result = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
 
     assertThat(result).isEqualTo(
