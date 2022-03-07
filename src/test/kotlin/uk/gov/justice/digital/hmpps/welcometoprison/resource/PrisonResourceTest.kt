@@ -140,7 +140,7 @@ class PrisonResourceTest : IntegrationTestBase() {
   inner class `Get Prisoner` {
     @Test
     fun `Requires authentication`() {
-      webTestClient.get().uri("/prisons/A1234BC")
+      webTestClient.get().uri("/prisoners/A1234BC")
         .exchange()
         .expectStatus().isUnauthorized
     }
