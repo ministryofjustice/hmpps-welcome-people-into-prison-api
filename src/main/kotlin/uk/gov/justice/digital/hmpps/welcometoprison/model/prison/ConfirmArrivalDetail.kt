@@ -154,4 +154,7 @@ data class ConfirmArrivalDetail(
 ) {
   val youthOffender: Boolean
     get() = Age.lessThanTwentyOneYears(dateOfBirth!!, LocalDate.now())
+
+  val isNewToPrison: Boolean
+    get() = prisonNumber == null
 }

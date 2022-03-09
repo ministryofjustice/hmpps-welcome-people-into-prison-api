@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 
 @Service
@@ -83,18 +81,13 @@ class PrisonService(
       )
       .offenderNo
 
-  fun returnFromCourt(
-    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
-    arrival: Arrival
-  ): ConfirmCourtReturnResponse {
+  fun returnFromCourt(prisonId: String, prisonNumber: String): ConfirmCourtReturnResponse {
 
-    var inmateDetail = prisonApiClient.courtTransferIn(
-      arrival.prisonNumber!!,
-      with(confirmCourtReturnRequest) {
-        CourtTransferIn(prisonId!!)
-      }
+    val inmateDetail = prisonApiClient.courtTransferIn(
+      prisonNumber,
+      CourtTransferIn(prisonId)
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit?.description ?: throw IllegalArgumentException("prisoner: '${arrival.prisonNumber}' do not have assigned living unit")
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description ?: throw IllegalArgumentException("prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
       location = locationFormatter.format(livingUnitName),

@@ -37,7 +37,34 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "dateOfBirth": "1991-07-31",
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
+                        "croNumber": "SF80/655108T",
                         "status": "INACTIVE OUT"
+                       }]"""
+            )
+        )
+    )
+  }
+
+  fun stubGetPrisoner(status: Int) {
+    stubFor(
+      WireMock.post(
+        WireMock.urlPathMatching(
+          "/prisoner-search/match-prisoners\\\\?.*"
+        )
+      )
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(status)
+            .withBody(
+              """[{
+                        "firstName": "JIM",
+                        "lastName": "SMITH", 
+                        "dateOfBirth": "1991-07-31",
+                        "prisonerNumber": "A1278AA",
+                        "pncNumber": "1234/1234589A",
+                        "croNumber": "SF80/655108T",
+                        "status": "INACTIVE_OUT"
                        }]"""
             )
         )

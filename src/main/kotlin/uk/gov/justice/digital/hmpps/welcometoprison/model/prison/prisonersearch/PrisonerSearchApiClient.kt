@@ -22,6 +22,11 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       ?: emptyList()
   }
 
+  fun getPrisoner(prisonNumber: String): MatchPrisonerResponse? {
+    return matchPrisoner(MatchPrisonerRequest(prisonNumber))
+      ?.firstOrNull()
+  }
+
   fun matchPncNumbersByPrisonerNumbers(matchByPrisonerNumberRequest: MatchByPrisonerNumberRequest): List<PrisonerAndPncNumber> {
     return webClient.post()
       .uri("/prisoner-search/prisoner-numbers")

@@ -64,6 +64,19 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `handles missing DoB`() {
+      prisonerSearchMockServer.stubMatchPrisoners(200)
+      basmApiMockServer.stubGetPrison(200)
+      basmApiMockServer.stubGetMovements(200, hasMissingDob = true)
+
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("arrivals-with-missing-dob".loadJson(this))
+    }
+
+    @Test
     fun `calls service method with correct args`() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
       basmApiMockServer.stubGetPrison(200)

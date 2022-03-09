@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 
 @RestController
 @Validated
 
 class PrisonResource(
   private val prisonService: PrisonService,
+  private val prisonerSearchService: PrisonerSearchService,
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -165,6 +168,56 @@ class PrisonResource(
 
   @GetMapping(value = ["/prison/users/me/caseLoads"], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getUserCaseLoads(): List<UserCaseLoad> = prisonService.getUserCaseLoads()
+
+  @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS') or hasRole('ROLE_GLOBAL_SEARCH') or hasRole('ROLE_PRISONER_SEARCH')")
+
+  @Operation(
+    summary = "Retrieves a subset of a prisoner's details",
+    description = "Retrieves a subset of a prisoner's details using the prisonNumber, role required is ROLE_VIEW_ARRIVALS or ROLE_GLOBAL_SEARCH or ROLE_PRISONER_SEARCH",
+    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH", scopes = ["read"])],
+
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Prisoner details",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = PrisonerDetails::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to retrieve",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "No prisoner record found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "500",
+        description = "Unexpected error",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
+      ),
+    ]
+  )
+  @GetMapping(path = [ "/prisoners/{prisonNumber}"])
+  fun getPrisoner(
+    @PathVariable prisonNumber: String
+  ): PrisonerDetails = prisonerSearchService.getPrisoner(prisonNumber)
 }
 
 data class PrisonView(val description: String)

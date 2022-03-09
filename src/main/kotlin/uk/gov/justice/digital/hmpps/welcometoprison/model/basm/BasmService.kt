@@ -34,7 +34,7 @@ class BasmService(private val basmClient: BasmClient) {
       id = this.id,
       firstName = properCase(personData.first_names),
       lastName = properCase(personData.last_name),
-      dateOfBirth = personData.date_of_birth!!,
+      dateOfBirth = personData.date_of_birth,
       prisonNumber = personData.prison_number,
       pncNumber = personData.police_national_computer,
       date = this.date,
