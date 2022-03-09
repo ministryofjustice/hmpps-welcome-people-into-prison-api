@@ -41,7 +41,5 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       .block()?.matches
       ?: emptyList()
     return list.map { it.prisoner }
-
   }
-
 }

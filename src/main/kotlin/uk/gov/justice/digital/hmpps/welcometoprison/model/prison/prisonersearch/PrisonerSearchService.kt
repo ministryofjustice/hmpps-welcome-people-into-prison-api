@@ -65,20 +65,23 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
         prisonNumber = it.prisonerNumber
       )
     }
-    /*
-     var searchByPncNumber = SearchByNameAndDateOfBirth(
-       pncNumber = matchPrisonersRequest.pncNumber
-     )
-    var listByPncNumber = client.matchPrisonerByNameAndDateOfBirthOrPncNumber(searchByPncNumber)
-     listByPncNumber.forEach {
-       map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
-         firstName = it.firstName,
-         lastName = it.lastName,
-         dateOfBirth = it.dateOfBirth,
-         pncNumber = it.pncNumber,
-         prisonNumber = it.prisonerNumber
-       )
-     }*/
+
+    var searchByPncNumber = SearchByNameAndDateOfBirth(
+      firstName = matchPrisonersRequest.firstName,
+      lastName = matchPrisonersRequest.lastName,
+      dateOfBirth = matchPrisonersRequest.dateOfBirth,
+      pncNumber = matchPrisonersRequest.pncNumber
+    )
+    var listByPncNumber = client.matchPrisonerByNameAndDateOfBirth(searchByPncNumber)
+    listByPncNumber.forEach {
+      map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
+        firstName = it.firstName,
+        lastName = it.lastName,
+        dateOfBirth = it.dateOfBirth,
+        pncNumber = it.pncNumber,
+        prisonNumber = it.prisonerNumber
+      )
+    }
 
     var searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(
       firstName = matchPrisonersRequest.firstName,
