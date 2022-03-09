@@ -132,7 +132,6 @@ class PrisonerSearchApiClientTest {
     )
   }
 
-
   @Test
   fun `successful match by name and date of birth`() {
     mockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
@@ -163,5 +162,4 @@ class PrisonerSearchApiClientTest {
       postRequestedFor(urlEqualTo("/match-prisoners"))
     )
   }
-
 }
