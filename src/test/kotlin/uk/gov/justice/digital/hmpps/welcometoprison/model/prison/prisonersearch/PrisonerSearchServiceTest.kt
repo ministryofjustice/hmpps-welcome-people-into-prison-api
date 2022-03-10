@@ -10,6 +10,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
@@ -18,6 +19,7 @@ import java.time.LocalDate
 class PrisonerSearchServiceTest {
   private val client: PrisonerSearchApiClient = mock()
   private val service = PrisonerSearchService(client)
+
   @Test
   fun `getCandidateMatches - happy path`() {
     whenever(client.matchPrisoner(any())).thenReturn(
@@ -64,6 +66,110 @@ class PrisonerSearchServiceTest {
   }
 
   @Test
+  fun `findPotentialMatch from one record`() {
+    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+      listOf(
+        Prisoner(
+          prisonerNumber = PRISON_NUMBER,
+          pncNumber = PNC_NUMBER,
+          firstName = FIRST_NAME,
+          middleNames = MIDDLE_NAMES,
+          lastName = LAST_NAME,
+          dateOfBirth = DOB
+        )
+      )
+    )
+    val matchPrisonersRequest = MatchPrisonersRequest(
+      firstName = FIRST_NAME,
+      lastName = LAST_NAME,
+      dateOfBirth = DOB,
+    )
+    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+
+    assertThat(potentialMatchList.size).isEqualTo(1)
+    with(potentialMatchList[0]) {
+      assertThat(firstName).isEqualTo(FIRST_NAME)
+      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
+      assertThat(dateOfBirth).isEqualTo(DOB)
+      assertThat(pncNumber).isEqualTo(PNC_NUMBER)
+    }
+  }
+
+  @Test
+  fun `findPotentialMatch merge two records`() {
+    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+      listOf(
+        Prisoner(
+          prisonerNumber = PRISON_NUMBER,
+          pncNumber = PNC_NUMBER,
+          firstName = FIRST_NAME,
+          middleNames = MIDDLE_NAMES,
+          lastName = LAST_NAME,
+          dateOfBirth = DOB
+        ),
+        Prisoner(
+          prisonerNumber = PRISON_NUMBER,
+          pncNumber = PNC_NUMBER,
+          firstName = FIRST_NAME,
+          middleNames = MIDDLE_NAMES,
+          lastName = LAST_NAME,
+          dateOfBirth = DOB
+        )
+      )
+    )
+    val matchPrisonersRequest = MatchPrisonersRequest(
+      firstName = FIRST_NAME,
+      lastName = LAST_NAME,
+      dateOfBirth = DOB,
+    )
+    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+
+    assertThat(potentialMatchList.size).isEqualTo(1)
+    with(potentialMatchList[0]) {
+      assertThat(firstName).isEqualTo(FIRST_NAME)
+      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
+      assertThat(dateOfBirth).isEqualTo(DOB)
+      assertThat(pncNumber).isEqualTo(PNC_NUMBER)
+    }
+  }
+
+  @Test
+  fun `findPotentialMatch get two records when prison number is different`() {
+    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+      listOf(
+        Prisoner(
+          prisonerNumber = PRISON_NUMBER,
+          pncNumber = PNC_NUMBER,
+          firstName = FIRST_NAME,
+          middleNames = MIDDLE_NAMES,
+          lastName = LAST_NAME,
+          dateOfBirth = DOB
+        ),
+        Prisoner(
+          prisonerNumber = "A1234AB",
+          pncNumber = PNC_NUMBER,
+          firstName = FIRST_NAME,
+          middleNames = MIDDLE_NAMES,
+          lastName = LAST_NAME,
+          dateOfBirth = DOB
+        )
+      )
+    )
+    val matchPrisonersRequest = MatchPrisonersRequest(
+      firstName = FIRST_NAME,
+      lastName = LAST_NAME,
+      dateOfBirth = DOB,
+    )
+    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+
+    assertThat(potentialMatchList.size).isEqualTo(2)
+    assertThat(potentialMatchList[0].prisonNumber).isEqualTo(PRISON_NUMBER)
+    assertThat(potentialMatchList[1].prisonNumber).isEqualTo("A1234AB")
+  }
+
+  @Test
   fun getPrisoner() {
     whenever(client.getPrisoner(any())).thenReturn(
       MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, INACTIVE_OUT)
@@ -81,6 +187,7 @@ class PrisonerSearchServiceTest {
     private const val PNC_NUMBER = "1234/1234589A"
     private const val CRO_NUMBER = "11/222222"
     private const val FIRST_NAME = "JIM"
+    private const val MIDDLE_NAMES = "JOHN"
     private const val LAST_NAME = "SMITH"
     private val DOB = LocalDate.of(1991, 7, 31)
 
