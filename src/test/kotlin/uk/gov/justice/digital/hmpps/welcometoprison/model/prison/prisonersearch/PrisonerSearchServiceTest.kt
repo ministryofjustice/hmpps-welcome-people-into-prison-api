@@ -87,11 +87,13 @@ class PrisonerSearchServiceTest {
     val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
 
     assertThat(potentialMatchList.size).isEqualTo(1)
-    assertThat(potentialMatchList[0].firstName).isEqualTo(FIRST_NAME)
-    assertThat(potentialMatchList[0].lastName).isEqualTo(LAST_NAME)
-    assertThat(potentialMatchList[0].prisonNumber).isEqualTo(PRISON_NUMBER)
-    assertThat(potentialMatchList[0].dateOfBirth).isEqualTo(DOB)
-    assertThat(potentialMatchList[0].pncNumber).isEqualTo(PNC_NUMBER)
+    with(potentialMatchList[0]) {
+      assertThat(firstName).isEqualTo(FIRST_NAME)
+      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
+      assertThat(dateOfBirth).isEqualTo(DOB)
+      assertThat(pncNumber).isEqualTo(PNC_NUMBER)
+    }
   }
 
   @Test
@@ -124,11 +126,13 @@ class PrisonerSearchServiceTest {
     val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
 
     assertThat(potentialMatchList.size).isEqualTo(1)
-    assertThat(potentialMatchList[0].firstName).isEqualTo(FIRST_NAME)
-    assertThat(potentialMatchList[0].lastName).isEqualTo(LAST_NAME)
-    assertThat(potentialMatchList[0].prisonNumber).isEqualTo(PRISON_NUMBER)
-    assertThat(potentialMatchList[0].dateOfBirth).isEqualTo(DOB)
-    assertThat(potentialMatchList[0].pncNumber).isEqualTo(PNC_NUMBER)
+    with(potentialMatchList[0]) {
+      assertThat(firstName).isEqualTo(FIRST_NAME)
+      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
+      assertThat(dateOfBirth).isEqualTo(DOB)
+      assertThat(pncNumber).isEqualTo(PNC_NUMBER)
+    }
   }
 
   @Test
