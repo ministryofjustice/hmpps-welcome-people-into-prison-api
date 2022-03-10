@@ -63,10 +63,12 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
 
     assertThat(resp?.size).isEqualTo(2)
     assertThat(resp?.get(0)?.lastName).isEqualTo("Larsen")
-    assertThat(resp?.get(0)?.firstName).isEqualTo("David")
+    assertThat(resp?.get(0)?.firstName).isEqualTo("Robert")
+    assertThat(resp?.get(0)?.prisonNumber).isEqualTo("A1234AA")
     assertThat(resp?.get(0)?.dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
     assertThat(resp?.get(1)?.lastName).isEqualTo("Larsen")
     assertThat(resp?.get(1)?.firstName).isEqualTo("Robert")
+    assertThat(resp?.get(1)?.prisonNumber).isEqualTo("A1233AA")
     assertThat(resp?.get(1)?.dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
   }
 

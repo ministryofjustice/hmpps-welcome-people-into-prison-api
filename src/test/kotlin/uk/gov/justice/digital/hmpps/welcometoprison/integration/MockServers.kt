@@ -294,14 +294,14 @@ class PrisonerSearchMockServer : MockServer(8093) {
     },
     {
       "prisoner": {
-        "prisonerNumber": "A1234AA",
+        "prisonerNumber": "A1233AA",
         "pncNumber": "12/394773H",
         "pncNumberCanonicalShort": "12/394773H",
         "pncNumberCanonicalLong": "2012/394773H",
         "croNumber": "29906/12J",
         "bookingId": "0001200924",
         "bookNumber": "38412A",
-        "firstName": "David",
+        "firstName": "Robert",
         "middleNames": "John James",
         "lastName": "Larsen",
         "dateOfBirth": "1975-04-02",

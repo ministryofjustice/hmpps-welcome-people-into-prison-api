@@ -69,17 +69,19 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
 
   fun findPotentialMatch(matchPrisonersRequest: MatchPrisonersRequest): List<PotentialMatch> {
 
-    var map = hashMapOf<String, PotentialMatch>()
+    var list = mutableListOf<PotentialMatch>()
 
     var listMatchPrisonerResponse =
       this.getCandidateMatches(matchPrisonersRequest.prisonNumber, matchPrisonersRequest.pncNumber)
     listMatchPrisonerResponse.forEach {
-      map[it.prisonerNumber ?: "" + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
-        firstName = it.firstName,
-        lastName = it.lastName,
-        dateOfBirth = it.dateOfBirth,
-        pncNumber = it.pncNumber,
-        prisonNumber = it.prisonerNumber
+      list.add(
+        PotentialMatch(
+          firstName = it.firstName,
+          lastName = it.lastName,
+          dateOfBirth = it.dateOfBirth,
+          pncNumber = it.pncNumber,
+          prisonNumber = it.prisonerNumber
+        )
       )
     }
 
@@ -91,12 +93,14 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     )
     var listByPncNumber = client.matchPrisonerByNameAndDateOfBirth(searchByPncNumber)
     listByPncNumber.forEach {
-      map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
-        firstName = it.firstName,
-        lastName = it.lastName,
-        dateOfBirth = it.dateOfBirth,
-        pncNumber = it.pncNumber,
-        prisonNumber = it.prisonerNumber
+      list.add(
+        PotentialMatch(
+          firstName = it.firstName,
+          lastName = it.lastName,
+          dateOfBirth = it.dateOfBirth,
+          pncNumber = it.pncNumber,
+          prisonNumber = it.prisonerNumber
+        )
       )
     }
 
@@ -108,14 +112,16 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     var listByNameAndDateOfBirth = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
 
     listByNameAndDateOfBirth.forEach {
-      map[it.prisonerNumber + "_" + it.lastName + "_" + it.firstName] = PotentialMatch(
-        firstName = it.firstName,
-        lastName = it.lastName,
-        dateOfBirth = it.dateOfBirth,
-        pncNumber = it.pncNumber,
-        prisonNumber = it.prisonerNumber
+      list.add(
+        PotentialMatch(
+          firstName = it.firstName,
+          lastName = it.lastName,
+          dateOfBirth = it.dateOfBirth,
+          pncNumber = it.pncNumber,
+          prisonNumber = it.prisonerNumber
+        )
       )
     }
-    return map.values.toList()
+    return list.distinctBy { it.prisonNumber }
   }
 }
