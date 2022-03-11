@@ -14,7 +14,7 @@ data class PrisonerContainer(
 
 data class Prisoner(
   val prisonerNumber: String,
-  val pncNumber: String?,
+  val pncNumber: String? = null,
   val firstName: String,
   val middleNames: String,
   val lastName: String,
