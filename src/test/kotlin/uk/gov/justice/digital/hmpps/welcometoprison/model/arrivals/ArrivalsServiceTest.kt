@@ -30,7 +30,14 @@ class ArrivalsServiceTest {
 
   private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
   private val arrivalsService =
-    ArrivalsService(basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK)
+    ArrivalsService(
+      basmService,
+      prisonService,
+      prisonerSearchService,
+      confirmedArrivalService,
+      locationFormatter,
+      FIXED_CLOCK
+    )
 
   @Test
   fun getArrivals() {
@@ -249,6 +256,7 @@ class ArrivalsServiceTest {
       prisonerNumber = PRISON_NUMBER,
       pncNumber = PNC_NUMBER,
       croNumber = CRO_NUMBER,
+      gender = "Female",
       status = INACTIVE_OUT
     )
   }

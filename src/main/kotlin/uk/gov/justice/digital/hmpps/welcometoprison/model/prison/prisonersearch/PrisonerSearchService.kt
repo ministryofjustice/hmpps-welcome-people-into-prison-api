@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
@@ -41,8 +42,8 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
       ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
 
     return PrisonerDetails(
-      firstName = prisonerMatch.firstName,
-      lastName = prisonerMatch.lastName,
+      firstName = Name.properCase(prisonerMatch.firstName),
+      lastName = Name.properCase(prisonerMatch.lastName),
       dateOfBirth = prisonerMatch.dateOfBirth,
       prisonNumber = prisonNumber,
       pncNumber = prisonerMatch.pncNumber,
@@ -76,11 +77,13 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     listMatchPrisonerResponse.forEach {
       list.add(
         PotentialMatch(
-          firstName = it.firstName,
-          lastName = it.lastName,
+          firstName = Name.properCase(it.firstName),
+          lastName = Name.properCase(it.lastName),
           dateOfBirth = it.dateOfBirth,
           pncNumber = it.pncNumber,
-          prisonNumber = it.prisonerNumber
+          prisonNumber = it.prisonerNumber,
+          croNumber = it.croNumber,
+          sex = it.gender
         )
       )
     }
@@ -95,11 +98,13 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     listByNameAndDateOfBirth.forEach {
       list.add(
         PotentialMatch(
-          firstName = it.firstName,
-          lastName = it.lastName,
+          firstName = Name.properCase(it.firstName),
+          lastName = Name.properCase(it.lastName),
           dateOfBirth = it.dateOfBirth,
           pncNumber = it.pncNumber,
-          prisonNumber = it.prisonerNumber
+          prisonNumber = it.prisonerNumber,
+          croNumber = it.croNumber,
+          sex = it.gender
         )
       )
     }

@@ -21,6 +21,6 @@ class MatchPrisonerResponseTest {
   }
 
   companion object {
-    val reference = MatchPrisonerResponse("JIM", "SMITH", LocalDate.of(1961, 4, 1), "A123AA", "123/456", "SF80/655108T", null,)
+    val reference = MatchPrisonerResponse("JIM", "SMITH", LocalDate.of(1961, 4, 1), "A123AA", "123/456", "SF80/655108T", "Male",null,)
   }
 }
