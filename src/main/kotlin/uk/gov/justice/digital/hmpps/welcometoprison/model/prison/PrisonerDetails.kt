@@ -26,5 +26,8 @@ data class PrisonerDetails(
   @Schema(description = "CRO number", example = "SF80/655108T")
   val croNumber: String?,
 
+  @Schema(description = "Sex", example = "Female")
+  val sex: String?,
+
   @Transient val isCurrentPrisoner: Boolean
 )

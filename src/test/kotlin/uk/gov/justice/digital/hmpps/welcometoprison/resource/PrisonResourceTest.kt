@@ -173,7 +173,8 @@ class PrisonResourceTest : IntegrationTestBase() {
           prisonNumber = "A1234BC",
           pncNumber = "11/1234",
           croNumber = "12/4321",
-          isCurrentPrisoner = false
+          isCurrentPrisoner = false,
+          sex = "Male"
         )
       )
 

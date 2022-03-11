@@ -48,7 +48,8 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
       prisonNumber = prisonNumber,
       pncNumber = prisonerMatch.pncNumber,
       croNumber = prisonerMatch.croNumber,
-      isCurrentPrisoner = prisonerMatch.isCurrentPrisoner
+      isCurrentPrisoner = prisonerMatch.isCurrentPrisoner,
+      sex = prisonerMatch.gender
     )
   }
 
