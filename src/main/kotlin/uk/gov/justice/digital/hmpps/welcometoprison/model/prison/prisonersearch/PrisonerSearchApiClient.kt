@@ -6,6 +6,8 @@ import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Matches
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 
@@ -27,10 +29,10 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       ?.firstOrNull()
   }
 
-  fun matchPncNumbersByPrisonerNumbers(matchByPrisonerNumberRequest: MatchByPrisonerNumberRequest): List<PrisonerAndPncNumber> {
+  fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> {
     return webClient.post()
       .uri("/prisoner-search/prisoner-numbers")
-      .bodyValue(matchByPrisonerNumberRequest)
+      .bodyValue(MatchByPrisonerNumberRequest(prisonerNumbers))
       .retrieve()
       .bodyToMono(typeReference<List<PrisonerAndPncNumber>>())
       .block()

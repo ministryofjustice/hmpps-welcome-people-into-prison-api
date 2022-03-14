@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.media.Schema
@@ -67,8 +68,10 @@ data class PotentialMatch(
   val croNumber: String?,
 
   @Schema(description = "Sex", example = "Female")
-  val sex: String
+  val sex: String,
 
+  @JsonIgnore
+  val isCurrentPrisoner: Boolean
 )
 
 enum class LocationType {

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
+package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDate
@@ -19,6 +19,9 @@ data class Prisoner(
   val lastName: String,
   val dateOfBirth: LocalDate,
   val croNumber: String?,
-  val gender: String
-
-)
+  val gender: String,
+  val status: String?
+) {
+  val isCurrentPrisoner: Boolean
+    get() = status != null && status != INACTIVE_OUT
+}

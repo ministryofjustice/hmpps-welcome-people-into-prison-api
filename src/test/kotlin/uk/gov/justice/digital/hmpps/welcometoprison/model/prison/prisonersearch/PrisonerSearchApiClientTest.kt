@@ -9,10 +9,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonerSearchMockServer
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -76,7 +76,7 @@ class PrisonerSearchApiClientTest {
       200,
       listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
     )
-    val result = client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(listOf("A1278AA")))
+    val result = client.matchPncNumbersByPrisonerNumbers(listOf("A1278AA"))
 
     assertThat(result).isEqualTo(
       listOf(
@@ -95,7 +95,7 @@ class PrisonerSearchApiClientTest {
   @Test
   fun `successful match by prisoner number when no PNC Number available`() {
     mockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA")))
-    val result = client.matchPncNumbersByPrisonerNumbers(MatchByPrisonerNumberRequest(listOf("A1278AA")))
+    val result = client.matchPncNumbersByPrisonerNumbers(listOf("A1278AA"))
 
     assertThat(result).isEqualTo(
       listOf(
@@ -154,9 +154,8 @@ class PrisonerSearchApiClientTest {
           lastName = "LARSEN",
           croNumber = "29906/12J",
           gender = "Male",
-          dateOfBirth = LocalDate.parse(
-            "1975-04-02", DateTimeFormatter.ofPattern("yyyy-MM-dd")
-          )
+          dateOfBirth = LocalDate.of(1975, 4, 2),
+          status = "ACTIVE IN"
         )
       )
     )

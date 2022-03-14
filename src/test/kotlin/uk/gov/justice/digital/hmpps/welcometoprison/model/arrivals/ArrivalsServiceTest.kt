@@ -7,15 +7,11 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.isMatch
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService.Companion.toPotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
@@ -41,37 +37,19 @@ class ArrivalsServiceTest {
 
   @Test
   fun getArrivals() {
-    val noMatch = match.copy(pncNumber = "NA", prisonerNumber = "NA")
-    val match = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = arrival1.prisonNumber)
+    val match = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = arrival1.prisonNumber!!)
 
     whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival1, arrival2))
-    whenever(prisonerSearchService.getCandidateMatches(any()))
-      .thenReturn(listOf(noMatch, match))
+    whenever(prisonerSearchService.findPotentialMatches(any()))
+      .thenReturn(listOf(match))
       .thenReturn(emptyList())
 
     val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
     assertThat(arrivals).isEqualTo(
       listOf(
-        arrival1.copy(potentialMatches = listOf(match.toPotentialMatch())),
+        arrival1.copy(potentialMatches = listOf(match)),
         arrival2.copy(potentialMatches = emptyList())
-      )
-    )
-  }
-
-  @Test
-  fun `getArrivals will remove duplicate search results`() {
-    val match = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = arrival1.prisonNumber)
-
-    whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival1))
-    whenever(prisonerSearchService.getCandidateMatches(any()))
-      .thenReturn(listOf(match, match))
-
-    val arrivals = arrivalsService.getArrivals("MDI", DATE)
-
-    assertThat(arrivals).isEqualTo(
-      listOf(
-        arrival1.copy(potentialMatches = listOf(match.toPotentialMatch()))
       )
     )
   }
@@ -80,12 +58,12 @@ class ArrivalsServiceTest {
   inner class TestIsCurrentPrisoner {
     @Test
     fun `all matches return current prisoner`() {
-      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234AA", status = "ACTIVE OUT")
-      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234BB", status = "ACTIVE OUT")
+      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234AA", isCurrentPrisoner = true)
+      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234BB", isCurrentPrisoner = true)
       val arrival = arrival1.copy(prisonNumber = null)
 
       whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival))
-      whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(listOf(match1, match2))
+      whenever(prisonerSearchService.findPotentialMatches(any())).thenReturn(listOf(match1, match2))
 
       val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
@@ -93,7 +71,7 @@ class ArrivalsServiceTest {
         listOf(
           arrival.copy(
             isCurrentPrisoner = true,
-            potentialMatches = listOf(match1.toPotentialMatch(), match2.toPotentialMatch())
+            potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -101,12 +79,12 @@ class ArrivalsServiceTest {
 
     @Test
     fun `all matches return inactive prisoner`() {
-      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234AA", status = INACTIVE_OUT)
-      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234BB", status = INACTIVE_OUT)
+      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234AA", isCurrentPrisoner = false)
+      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234BB", isCurrentPrisoner = false)
       val arrival = arrival1.copy(prisonNumber = null)
 
       whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival))
-      whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(listOf(match1, match2))
+      whenever(prisonerSearchService.findPotentialMatches(any())).thenReturn(listOf(match1, match2))
 
       val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
@@ -114,7 +92,7 @@ class ArrivalsServiceTest {
         listOf(
           arrival.copy(
             isCurrentPrisoner = false,
-            potentialMatches = listOf(match1.toPotentialMatch(), match2.toPotentialMatch())
+            potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -122,12 +100,12 @@ class ArrivalsServiceTest {
 
     @Test
     fun `some matches return inactive prisoner`() {
-      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234AA", status = "ACTIVE IN")
-      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonerNumber = "A1234BB", status = INACTIVE_OUT)
+      val match1 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234AA", isCurrentPrisoner = true)
+      val match2 = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = "A1234BB", isCurrentPrisoner = false)
       val arrival = arrival1.copy(prisonNumber = null)
 
       whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival))
-      whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(listOf(match1, match2))
+      whenever(prisonerSearchService.findPotentialMatches(any())).thenReturn(listOf(match1, match2))
 
       val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
@@ -135,7 +113,7 @@ class ArrivalsServiceTest {
         listOf(
           arrival.copy(
             isCurrentPrisoner = false,
-            potentialMatches = listOf(match1.toPotentialMatch(), match2.toPotentialMatch())
+            potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -146,7 +124,7 @@ class ArrivalsServiceTest {
       val arrival = arrival1.copy(prisonNumber = null)
 
       whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival))
-      whenever(prisonerSearchService.getCandidateMatches(any())).thenReturn(emptyList())
+      whenever(prisonerSearchService.findPotentialMatches(any())).thenReturn(emptyList())
 
       val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
@@ -158,57 +136,6 @@ class ArrivalsServiceTest {
           ),
         )
       )
-    }
-  }
-
-  @Nested
-  inner class TestMovementMatching {
-    @Test
-    fun `Both fields present from BASM move`() {
-      val move = arrival1.copy(prisonNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER)
-
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(match.copy(prisonerNumber = ANOTHER_PRISON_NUMBER, pncNumber = PNC_NUMBER))).isFalse
-    }
-
-    @Test
-    fun `PNC absent from BASM move`() {
-      val move = arrival1.copy(prisonNumber = PRISON_NUMBER, pncNumber = null)
-
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = ANOTHER_PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(match.copy(prisonerNumber = ANOTHER_PRISON_NUMBER, pncNumber = PNC_NUMBER))).isFalse
-    }
-
-    @Test
-    fun `prison number absent from BASM move`() {
-      val move = arrival1.copy(prisonNumber = null, pncNumber = PNC_NUMBER)
-
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER))).isTrue
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(match.copy(prisonerNumber = ANOTHER_PRISON_NUMBER, pncNumber = PNC_NUMBER))).isTrue
-    }
-
-    @Test
-    fun `prison number and PNC absent from BASM move`() {
-      val move = arrival1.copy(prisonNumber = null, pncNumber = null)
-
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER, pncNumber = ANOTHER_PNC_NUMBER))).isFalse
-      assertThat(move.isMatch(match.copy(prisonerNumber = ANOTHER_PRISON_NUMBER, pncNumber = PNC_NUMBER))).isFalse
-    }
-
-    @Test
-    fun `Case insensitive pnc match`() {
-      val move = arrival1.copy(pncNumber = PNC_NUMBER.lowercase())
-      assertThat(move.isMatch(match.copy(pncNumber = PNC_NUMBER))).isTrue
-    }
-
-    @Test
-    fun `Case insensitive prisonNumber match`() {
-      val move = arrival1.copy(prisonNumber = PRISON_NUMBER.lowercase())
-      assertThat(move.isMatch(match.copy(prisonerNumber = PRISON_NUMBER))).isTrue
     }
   }
 
@@ -249,15 +176,15 @@ class ArrivalsServiceTest {
       isCurrentPrisoner = false
     )
 
-    private val match = MatchPrisonerResponse(
+    private val match = PotentialMatch(
       firstName = "JIM",
       lastName = "SMITH",
       dateOfBirth = LocalDate.of(1980, 2, 23),
-      prisonerNumber = PRISON_NUMBER,
+      prisonNumber = PRISON_NUMBER,
       pncNumber = PNC_NUMBER,
       croNumber = CRO_NUMBER,
-      gender = "Female",
-      status = INACTIVE_OUT
+      sex = "Female",
+      isCurrentPrisoner = false
     )
   }
 }

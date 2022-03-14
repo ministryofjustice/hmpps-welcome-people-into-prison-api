@@ -53,6 +53,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     @Test
     fun `returns json in expected format`() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
+      prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
       basmApiMockServer.stubGetPrison(200)
       basmApiMockServer.stubGetMovements(200)
 
@@ -79,6 +80,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     @Test
     fun `calls service method with correct args`() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
+      prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
+
       basmApiMockServer.stubGetPrison(200)
 
       webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
@@ -135,6 +138,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     @Test
     fun `returns json in expected formats`() {
       basmApiMockServer.stubGetMovement("testId", 200)
+      prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
       webTestClient.get().uri("/arrivals/testId")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
