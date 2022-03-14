@@ -109,6 +109,8 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
         )
       )
     }
-    return list.distinctBy { it.prisonNumber }
+    var result = list.distinctBy { it.prisonNumber }
+    log.info("Number of search results for potential matches: {}", result.size)
+    return result
   }
 }
