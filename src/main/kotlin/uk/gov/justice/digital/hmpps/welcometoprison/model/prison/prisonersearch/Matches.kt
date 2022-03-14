@@ -19,6 +19,6 @@ data class Prisoner(
   val lastName: String,
   val dateOfBirth: LocalDate,
   val croNumber: String?,
-  val gender: String?
+  val gender: String
 
 )
