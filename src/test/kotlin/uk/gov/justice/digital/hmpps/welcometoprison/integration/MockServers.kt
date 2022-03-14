@@ -38,7 +38,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
                         "croNumber": "SF80/655108T",
-                        "status": "INACTIVE OUT"
+                        "status": "INACTIVE OUT",
+                        "gender": "Male"
                        }]"""
             )
         )
@@ -64,7 +65,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
                         "croNumber": "SF80/655108T",
-                        "status": "INACTIVE_OUT"
+                        "status": "INACTIVE_OUT",
+                        "gender": "Male"
                        }]"""
             )
         )
@@ -94,11 +96,11 @@ class PrisonerSearchMockServer : MockServer(8093) {
         "croNumber": "29906/12J",
         "bookingId": "0001200924",
         "bookNumber": "38412A",
-        "firstName": "Robert",
+        "firstName": "ROBERT",
         "middleNames": "John James",
-        "lastName": "Larsen",
+        "lastName": "LARSEN",
         "dateOfBirth": "1975-04-02",
-        "gender": "Female",
+        "gender": "Male",
         "ethnicity": "White: Eng./Welsh/Scot./N.Irish/British",
         "youthOffender": true,
         "maritalStatus": "Widowed",

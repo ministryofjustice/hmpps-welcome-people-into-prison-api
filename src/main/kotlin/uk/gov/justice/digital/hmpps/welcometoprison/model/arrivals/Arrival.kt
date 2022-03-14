@@ -61,7 +61,14 @@ data class PotentialMatch(
   val prisonNumber: String?,
 
   @Schema(description = "PNC number", example = "01/1234X")
-  val pncNumber: String?
+  val pncNumber: String?,
+
+  @Schema(description = "CRO number", example = "29906/12J")
+  val croNumber: String?,
+
+  @Schema(description = "Sex", example = "Female")
+  val sex: String?
+
 )
 
 enum class LocationType {

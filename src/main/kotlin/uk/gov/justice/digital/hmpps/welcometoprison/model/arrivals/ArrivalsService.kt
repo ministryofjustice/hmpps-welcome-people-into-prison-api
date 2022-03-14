@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarri
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
@@ -174,11 +175,13 @@ class ArrivalsService(
     }
 
     fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
-      this.firstName,
-      this.lastName,
+      Name.properCase(this.firstName),
+      Name.properCase(this.lastName),
       this.dateOfBirth,
       this.prisonerNumber,
       this.pncNumber,
+      this.croNumber,
+      this.gender
     )
   }
 }

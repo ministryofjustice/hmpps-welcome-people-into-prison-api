@@ -23,15 +23,37 @@ class PrisonerSearchServiceTest {
   @Test
   fun `getCandidateMatches - happy path`() {
     whenever(client.matchPrisoner(any())).thenReturn(
-      listOf(MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, "ACTIVE IN")),
-      listOf(MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, INACTIVE_OUT))
+      listOf(
+        MatchPrisonerResponse(
+          FIRST_NAME,
+          LAST_NAME,
+          DOB,
+          PRISON_NUMBER,
+          PNC_NUMBER,
+          CRO_NUMBER,
+          GENDER,
+          "ACTIVE IN"
+        )
+      ),
+      listOf(
+        MatchPrisonerResponse(
+          FIRST_NAME,
+          LAST_NAME,
+          DOB,
+          PRISON_NUMBER,
+          PNC_NUMBER,
+          CRO_NUMBER,
+          GENDER,
+          INACTIVE_OUT
+        )
+      )
     )
 
     val moves = service.getCandidateMatches(arrival)
 
     assertThat(moves).containsExactly(
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, "ACTIVE IN"),
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, INACTIVE_OUT)
+      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, "ACTIVE IN"),
+      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, INACTIVE_OUT)
     )
   }
 
@@ -73,9 +95,10 @@ class PrisonerSearchServiceTest {
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
-          middleNames = MIDDLE_NAMES,
           lastName = LAST_NAME,
-          dateOfBirth = DOB
+          dateOfBirth = DOB,
+          croNumber = CRO_NUMBER,
+          gender = GENDER
         )
       )
     )
@@ -88,11 +111,13 @@ class PrisonerSearchServiceTest {
 
     assertThat(potentialMatchList.size).isEqualTo(1)
     with(potentialMatchList[0]) {
-      assertThat(firstName).isEqualTo(FIRST_NAME)
-      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(firstName).isEqualTo(FIRST_NAME_FORMATTED)
+      assertThat(lastName).isEqualTo(LAST_NAME_FORMATTED)
       assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
       assertThat(dateOfBirth).isEqualTo(DOB)
       assertThat(pncNumber).isEqualTo(PNC_NUMBER)
+      assertThat(CRO_NUMBER).isEqualTo(CRO_NUMBER)
+      assertThat(GENDER).isEqualTo(GENDER)
     }
   }
 
@@ -104,17 +129,19 @@ class PrisonerSearchServiceTest {
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
-          middleNames = MIDDLE_NAMES,
           lastName = LAST_NAME,
-          dateOfBirth = DOB
+          dateOfBirth = DOB,
+          gender = GENDER,
+          croNumber = CRO_NUMBER
         ),
         Prisoner(
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
-          middleNames = MIDDLE_NAMES,
           lastName = LAST_NAME,
-          dateOfBirth = DOB
+          dateOfBirth = DOB,
+          gender = GENDER,
+          croNumber = CRO_NUMBER
         )
       )
     )
@@ -127,8 +154,8 @@ class PrisonerSearchServiceTest {
 
     assertThat(potentialMatchList.size).isEqualTo(1)
     with(potentialMatchList[0]) {
-      assertThat(firstName).isEqualTo(FIRST_NAME)
-      assertThat(lastName).isEqualTo(LAST_NAME)
+      assertThat(firstName).isEqualTo(FIRST_NAME_FORMATTED)
+      assertThat(lastName).isEqualTo(LAST_NAME_FORMATTED)
       assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
       assertThat(dateOfBirth).isEqualTo(DOB)
       assertThat(pncNumber).isEqualTo(PNC_NUMBER)
@@ -143,17 +170,19 @@ class PrisonerSearchServiceTest {
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
-          middleNames = MIDDLE_NAMES,
           lastName = LAST_NAME,
-          dateOfBirth = DOB
+          dateOfBirth = DOB,
+          gender = GENDER,
+          croNumber = CRO_NUMBER
         ),
         Prisoner(
           prisonerNumber = "A1234AB",
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
-          middleNames = MIDDLE_NAMES,
           lastName = LAST_NAME,
-          dateOfBirth = DOB
+          dateOfBirth = DOB,
+          gender = GENDER,
+          croNumber = CRO_NUMBER
         )
       )
     )
@@ -172,13 +201,13 @@ class PrisonerSearchServiceTest {
   @Test
   fun getPrisoner() {
     whenever(client.getPrisoner(any())).thenReturn(
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, INACTIVE_OUT)
+      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, INACTIVE_OUT)
     )
 
     val prisoner = service.getPrisoner("A1234AA")
 
     assertThat(prisoner).isEqualTo(
-      PrisonerDetails(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, false)
+      PrisonerDetails(FIRST_NAME_FORMATTED, LAST_NAME_FORMATTED, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, false)
     )
   }
 
@@ -187,8 +216,10 @@ class PrisonerSearchServiceTest {
     private const val PNC_NUMBER = "1234/1234589A"
     private const val CRO_NUMBER = "11/222222"
     private const val FIRST_NAME = "JIM"
-    private const val MIDDLE_NAMES = "JOHN"
+    private const val FIRST_NAME_FORMATTED = "Jim"
+    private const val GENDER = "Male"
     private const val LAST_NAME = "SMITH"
+    private const val LAST_NAME_FORMATTED = "Smith"
     private val DOB = LocalDate.of(1991, 7, 31)
 
     private val arrival = Arrival(

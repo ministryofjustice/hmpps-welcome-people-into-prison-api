@@ -51,6 +51,7 @@ class ArrivalsServiceConfirmArrivalTest {
         pncNumber = PNC_NUMBER,
         croNumber = "12/4321",
         isCurrentPrisoner = false,
+        sex = GENDER
       )
     )
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
@@ -107,7 +108,8 @@ class ArrivalsServiceConfirmArrivalTest {
         prisonNumber = PRISON_NUMBER,
         pncNumber = null,
         croNumber = CRO_NUMBER,
-        isCurrentPrisoner = true
+        isCurrentPrisoner = true,
+        sex = GENDER
       )
     )
 
@@ -137,7 +139,8 @@ class ArrivalsServiceConfirmArrivalTest {
         prisonNumber = PRISON_NUMBER,
         croNumber = CRO_NUMBER,
         pncNumber = null,
-        isCurrentPrisoner = true
+        isCurrentPrisoner = true,
+        sex = GENDER
       )
     )
 
@@ -168,7 +171,8 @@ class ArrivalsServiceConfirmArrivalTest {
         prisonNumber = PRISON_NUMBER,
         pncNumber = null,
         croNumber = CRO_NUMBER,
-        isCurrentPrisoner = true
+        isCurrentPrisoner = true,
+        sex = GENDER
       )
     )
 
@@ -233,7 +237,7 @@ class ArrivalsServiceConfirmArrivalTest {
       PrisonerDetails(
         firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
         prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
-        isCurrentPrisoner = false
+        isCurrentPrisoner = false, sex = GENDER
       )
     )
     stubbing()

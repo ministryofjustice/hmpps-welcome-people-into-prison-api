@@ -17,6 +17,7 @@ data class MatchPrisonerResponse(
   val prisonerNumber: String?,
   val pncNumber: String?,
   val croNumber: String?,
+  val gender: String?,
   val status: String?
 ) {
   val isCurrentPrisoner: Boolean

@@ -59,7 +59,8 @@ class PrisonerSearchApiClientTest {
           prisonerNumber = "A1278AA",
           pncNumber = "1234/1234589A",
           croNumber = "SF80/655108T",
-          status = INACTIVE_OUT
+          status = INACTIVE_OUT,
+          gender = "Male"
         )
       )
     )
@@ -123,7 +124,8 @@ class PrisonerSearchApiClientTest {
         prisonerNumber = "A1278AA",
         pncNumber = "1234/1234589A",
         croNumber = "SF80/655108T",
-        status = "INACTIVE_OUT"
+        status = "INACTIVE_OUT",
+        gender = "Male"
       )
     )
 
@@ -148,9 +150,10 @@ class PrisonerSearchApiClientTest {
         Prisoner(
           prisonerNumber = "A1234AA",
           pncNumber = "12/394773H",
-          firstName = "Robert",
-          middleNames = "John James",
-          lastName = "Larsen",
+          firstName = "ROBERT",
+          lastName = "LARSEN",
+          croNumber = "29906/12J",
+          gender = "Male",
           dateOfBirth = LocalDate.parse(
             "1975-04-02", DateTimeFormatter.ofPattern("yyyy-MM-dd")
           )
