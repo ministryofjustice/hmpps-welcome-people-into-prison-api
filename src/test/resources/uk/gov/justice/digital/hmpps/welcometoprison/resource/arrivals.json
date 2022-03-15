@@ -6,7 +6,18 @@
     "date": "2021-09-29",
     "fromLocation": "Penrith County Court",
     "fromLocationType": "COURT",
-    "isCurrentPrisoner": false,
-    "gender": "MALE"
+    "isCurrentPrisoner": true,
+    "gender": "MALE",
+    "potentialMatches": [
+      {
+        "firstName": "Robert",
+        "lastName": "Larsen",
+        "dateOfBirth": "1975-04-02",
+        "prisonNumber": "A1234AA",
+        "pncNumber": "12/394773H",
+        "croNumber": "29906/12J",
+        "sex": "Male"
+      }
+    ]
   }
 ]

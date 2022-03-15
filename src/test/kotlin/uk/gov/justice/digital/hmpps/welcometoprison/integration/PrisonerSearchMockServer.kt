@@ -1,20 +1,10 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
-
-private const val MAPPINGS_DIRECTORY = "src/testIntegration/resources"
-
-open class MockServer(port: Int) : WireMockServer(
-  WireMockConfiguration.wireMockConfig()
-    .port(port)
-    .usingFilesUnderDirectory(MAPPINGS_DIRECTORY)
-)
 
 class PrisonerSearchMockServer : MockServer(8093) {
   private val mapper = ObjectMapper()

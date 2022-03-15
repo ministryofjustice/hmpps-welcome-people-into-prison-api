@@ -4,113 +4,88 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchByPrisonerNumberRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
 
-  fun getCandidateMatches(arrival: Arrival): List<MatchPrisonerResponse> {
-    return getCandidateMatches(arrival.prisonNumber, arrival.pncNumber)
+  fun getPrisoner(prisonNumber: String): PrisonerDetails = client.getPrisoner(prisonNumber)?.toPrisonerDetails()
+    ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
+
+  fun getPncNumbers(prisonerNumbers: List<String>): Map<String, String?> {
+    return if (prisonerNumbers.isEmpty()) emptyMap()
+    else client.matchPncNumbersByPrisonerNumbers(prisonerNumbers).associate { it.prisonerNumber to it.pncNumber }
   }
 
-  fun getCandidateMatches(prisonNumber: String?, pncNumber: String?): List<MatchPrisonerResponse> {
-    val matchesByPrisonNumber = findMatches(prisonNumber, "Prison Number")
-    val matchesByPncNumber = findMatches(pncNumber, "PNC Number")
+  fun findPotentialMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
+    val results =
+      findMatches(request.prisonNumber, "Prison Number") + //
+        findMatches(request.pncNumber, "PNC Number") + //
+        findNameAndDobMatches(request)
 
-    return matchesByPrisonNumber + matchesByPncNumber
+    val result = results.distinctBy { it.prisonNumber }
+    log.info("Number of search results for potential matches: {}", result.size)
+    return result
   }
 
-  private fun findMatches(identifier: String?, identifierName: String): List<MatchPrisonerResponse> {
-    val matches = identifier?.let { this.matchPrisoner(it) } ?: emptyList()
+  private fun findMatches(identifier: String?, identifierName: String): List<PotentialMatch> {
+    val matches = identifier?.let { client.matchPrisoner(MatchPrisonerRequest(it)) } ?: emptyList()
     if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
-    return matches
+    return matches.map { it.toPotentialMatch() }
   }
 
-  private fun matchPrisoner(identifier: String): List<MatchPrisonerResponse> =
-    client.matchPrisoner(MatchPrisonerRequest(identifier))
-
-  fun getPrisoner(prisonNumber: String): PrisonerDetails {
-    val prisonerMatch = client.getPrisoner(prisonNumber)
-      ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
-
-    return PrisonerDetails(
-      firstName = Name.properCase(prisonerMatch.firstName),
-      lastName = Name.properCase(prisonerMatch.lastName),
-      dateOfBirth = prisonerMatch.dateOfBirth,
-      prisonNumber = prisonNumber,
-      pncNumber = prisonerMatch.pncNumber,
-      croNumber = prisonerMatch.croNumber,
-      isCurrentPrisoner = prisonerMatch.isCurrentPrisoner,
-      sex = prisonerMatch.gender
-    )
+  private fun findNameAndDobMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
+    return if (request.dateOfBirth == null) emptyList()
+    else
+      client.matchPrisonerByNameAndDateOfBirth(
+        SearchByNameAndDateOfBirth(
+          request.firstName, request.lastName, request.dateOfBirth
+        )
+      ).map {
+        it.toPotentialMatch()
+      }
   }
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-  }
 
-  fun getPncNumbers(prisonerNumbers: List<String>): Map<String, String?> {
-    val pncNumbers = matchPncNumbersByPrisonerNumbers(prisonerNumbers)
-    return pncNumbers.associate { it.prisonerNumber to it.pncNumber }
-  }
-
-  private fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> =
-    if (prisonerNumbers.isEmpty()) emptyList() else client.matchPncNumbersByPrisonerNumbers(
-      MatchByPrisonerNumberRequest(
-        prisonerNumbers
-      )
+    private fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
+      firstName = Name.properCase(this.firstName),
+      lastName = Name.properCase(this.lastName),
+      dateOfBirth = this.dateOfBirth,
+      prisonNumber = this.prisonerNumber,
+      pncNumber = this.pncNumber,
+      croNumber = this.croNumber,
+      isCurrentPrisoner = this.isCurrentPrisoner,
+      sex = this.gender,
     )
 
-  fun findPotentialMatch(matchPrisonersRequest: MatchPrisonersRequest): List<PotentialMatch> {
-
-    var list = mutableListOf<PotentialMatch>()
-
-    var listMatchPrisonerResponse =
-      this.getCandidateMatches(matchPrisonersRequest.prisonNumber, matchPrisonersRequest.pncNumber)
-    listMatchPrisonerResponse.forEach {
-      list.add(
-        PotentialMatch(
-          firstName = Name.properCase(it.firstName),
-          lastName = Name.properCase(it.lastName),
-          dateOfBirth = it.dateOfBirth,
-          pncNumber = it.pncNumber,
-          prisonNumber = it.prisonerNumber,
-          croNumber = it.croNumber,
-          sex = it.gender
-        )
-      )
-    }
-
-    var searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(
-      firstName = matchPrisonersRequest.firstName,
-      lastName = matchPrisonersRequest.lastName,
-      dateOfBirth = matchPrisonersRequest.dateOfBirth
+    private fun MatchPrisonerResponse.toPrisonerDetails() = PrisonerDetails(
+      firstName = Name.properCase(this.firstName),
+      lastName = Name.properCase(this.lastName),
+      dateOfBirth = this.dateOfBirth,
+      prisonNumber = this.prisonerNumber,
+      pncNumber = this.pncNumber,
+      croNumber = this.croNumber,
+      isCurrentPrisoner = this.isCurrentPrisoner,
+      sex = this.gender
     )
-    var listByNameAndDateOfBirth = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
 
-    listByNameAndDateOfBirth.forEach {
-      list.add(
-        PotentialMatch(
-          firstName = Name.properCase(it.firstName),
-          lastName = Name.properCase(it.lastName),
-          dateOfBirth = it.dateOfBirth,
-          pncNumber = it.pncNumber,
-          prisonNumber = it.prisonerNumber,
-          croNumber = it.croNumber,
-          sex = it.gender
-        )
-      )
-    }
-    var result = list.distinctBy { it.prisonNumber }
-    log.info("Number of search results for potential matches: {}", result.size)
-    return result
+    private fun Prisoner.toPotentialMatch() = PotentialMatch(
+      firstName = Name.properCase(this.firstName),
+      lastName = Name.properCase(this.lastName),
+      dateOfBirth = this.dateOfBirth,
+      pncNumber = this.pncNumber,
+      prisonNumber = this.prisonerNumber,
+      croNumber = this.croNumber,
+      sex = this.gender,
+      isCurrentPrisoner = this.isCurrentPrisoner,
+    )
   }
 }

@@ -17,9 +17,12 @@ data class MatchPrisonersRequest(
   @field:NotNull
   val lastName: String,
 
-  @Schema(description = "Date of birth", example = "1971-02-01")
+  @Schema(
+    description = "Date of birth (If absent then, will not perform name and date of birth search)",
+    example = "1971-02-01"
+  )
   @field:NotNull
-  val dateOfBirth: LocalDate,
+  val dateOfBirth: LocalDate?,
 
   @Schema(description = "Prison number", example = "A1234AA")
   val prisonNumber: String? = null,

@@ -71,5 +71,5 @@ class MatchPrisonersResource(
     @RequestBody
     @Valid @NotNull
     matchPrisonersRequest: MatchPrisonersRequest
-  ): List<PotentialMatch> = prisonerSearchService.findPotentialMatch(matchPrisonersRequest)
+  ): List<PotentialMatch> = prisonerSearchService.findPotentialMatches(matchPrisonersRequest)
 }

@@ -7,12 +7,11 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarri
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import java.time.Clock
 import java.time.LocalDate
 
@@ -38,13 +37,19 @@ class ArrivalsService(
   }
 
   private fun augmentWithPrisonData(arrival: Arrival): Arrival {
-    val candidates = prisonerSearchService.getCandidateMatches(arrival)
-
-    val matches = candidates.filter { arrival.isMatch(it) }.distinctBy { it.prisonerNumber }
+    val matches = prisonerSearchService.findPotentialMatches(
+      MatchPrisonersRequest(
+        arrival.firstName,
+        arrival.lastName,
+        arrival.dateOfBirth,
+        arrival.prisonNumber,
+        arrival.pncNumber
+      )
+    )
 
     return arrival.copy(
       isCurrentPrisoner = matches.isNotEmpty() && matches.all { it.isCurrentPrisoner },
-      potentialMatches = matches.map { it.toPotentialMatch() }
+      potentialMatches = matches
     )
   }
 
@@ -155,33 +160,5 @@ class ArrivalsService(
     val livingUnitName = inmateDetail.assignedLivingUnit?.description
       ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmArrivalResponse(prisonNumber = prisonNumber, location = locationFormatter.format(livingUnitName))
-  }
-
-  companion object {
-    fun Arrival.isMatch(result: MatchPrisonerResponse) = when {
-      prisonNumber != null && pncNumber != null ->
-        result.prisonerNumber.equals(prisonNumber, ignoreCase = true) && result.pncNumber.equals(
-          pncNumber,
-          ignoreCase = true
-        )
-
-      prisonNumber != null && pncNumber == null ->
-        result.prisonerNumber.equals(prisonNumber, ignoreCase = true)
-
-      prisonNumber == null && pncNumber != null ->
-        result.pncNumber.equals(pncNumber, ignoreCase = true)
-
-      else -> false
-    }
-
-    fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
-      Name.properCase(this.firstName),
-      Name.properCase(this.lastName),
-      this.dateOfBirth,
-      this.prisonerNumber,
-      this.pncNumber,
-      this.croNumber,
-      this.gender
-    )
   }
 }

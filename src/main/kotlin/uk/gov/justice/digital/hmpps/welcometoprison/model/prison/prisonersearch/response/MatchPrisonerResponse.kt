@@ -14,7 +14,7 @@ data class MatchPrisonerResponse(
 
   @JsonFormat(pattern = "yyyy-MM-dd")
   val dateOfBirth: LocalDate,
-  val prisonerNumber: String?,
+  val prisonerNumber: String,
   val pncNumber: String?,
   val croNumber: String?,
   val gender: String,

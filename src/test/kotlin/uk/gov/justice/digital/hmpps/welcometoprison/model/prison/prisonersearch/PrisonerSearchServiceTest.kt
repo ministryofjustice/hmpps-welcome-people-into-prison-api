@@ -7,55 +7,17 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.LocationType.CUSTODY_SUITE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
 class PrisonerSearchServiceTest {
   private val client: PrisonerSearchApiClient = mock()
   private val service = PrisonerSearchService(client)
-
-  @Test
-  fun `getCandidateMatches - happy path`() {
-    whenever(client.matchPrisoner(any())).thenReturn(
-      listOf(
-        MatchPrisonerResponse(
-          FIRST_NAME,
-          LAST_NAME,
-          DOB,
-          PRISON_NUMBER,
-          PNC_NUMBER,
-          CRO_NUMBER,
-          GENDER,
-          "ACTIVE IN"
-        )
-      ),
-      listOf(
-        MatchPrisonerResponse(
-          FIRST_NAME,
-          LAST_NAME,
-          DOB,
-          PRISON_NUMBER,
-          PNC_NUMBER,
-          CRO_NUMBER,
-          GENDER,
-          INACTIVE_OUT
-        )
-      )
-    )
-
-    val moves = service.getCandidateMatches(arrival)
-
-    assertThat(moves).containsExactly(
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, "ACTIVE IN"),
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, INACTIVE_OUT)
-    )
-  }
 
   @Test
   fun `getPncNumbers - happy path when PNC Number available`() {
@@ -98,7 +60,8 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           croNumber = CRO_NUMBER,
-          gender = GENDER
+          gender = GENDER,
+          status = INACTIVE_OUT
         )
       )
     )
@@ -107,7 +70,7 @@ class PrisonerSearchServiceTest {
       lastName = LAST_NAME,
       dateOfBirth = DOB,
     )
-    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
 
     assertThat(potentialMatchList.size).isEqualTo(1)
     with(potentialMatchList[0]) {
@@ -132,7 +95,8 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           gender = GENDER,
-          croNumber = CRO_NUMBER
+          croNumber = CRO_NUMBER,
+          status = INACTIVE_OUT
         ),
         Prisoner(
           prisonerNumber = PRISON_NUMBER,
@@ -141,7 +105,8 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           gender = GENDER,
-          croNumber = CRO_NUMBER
+          croNumber = CRO_NUMBER,
+          status = INACTIVE_OUT
         )
       )
     )
@@ -150,7 +115,7 @@ class PrisonerSearchServiceTest {
       lastName = LAST_NAME,
       dateOfBirth = DOB,
     )
-    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
 
     assertThat(potentialMatchList.size).isEqualTo(1)
     with(potentialMatchList[0]) {
@@ -173,7 +138,8 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           gender = GENDER,
-          croNumber = CRO_NUMBER
+          croNumber = CRO_NUMBER,
+          status = INACTIVE_OUT
         ),
         Prisoner(
           prisonerNumber = "A1234AB",
@@ -182,7 +148,8 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           gender = GENDER,
-          croNumber = CRO_NUMBER
+          croNumber = CRO_NUMBER,
+          status = INACTIVE_OUT
         )
       )
     )
@@ -191,7 +158,7 @@ class PrisonerSearchServiceTest {
       lastName = LAST_NAME,
       dateOfBirth = DOB,
     )
-    val potentialMatchList = service.findPotentialMatch(matchPrisonersRequest)
+    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
 
     assertThat(potentialMatchList.size).isEqualTo(2)
     assertThat(potentialMatchList[0].prisonNumber).isEqualTo(PRISON_NUMBER)
@@ -207,7 +174,16 @@ class PrisonerSearchServiceTest {
     val prisoner = service.getPrisoner("A1234AA")
 
     assertThat(prisoner).isEqualTo(
-      PrisonerDetails(FIRST_NAME_FORMATTED, LAST_NAME_FORMATTED, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, false)
+      PrisonerDetails(
+        FIRST_NAME_FORMATTED,
+        LAST_NAME_FORMATTED,
+        DOB,
+        PRISON_NUMBER,
+        PNC_NUMBER,
+        CRO_NUMBER,
+        GENDER,
+        false
+      )
     )
   }
 
@@ -221,18 +197,5 @@ class PrisonerSearchServiceTest {
     private const val LAST_NAME = "SMITH"
     private const val LAST_NAME_FORMATTED = "Smith"
     private val DOB = LocalDate.of(1991, 7, 31)
-
-    private val arrival = Arrival(
-      id = "1",
-      firstName = FIRST_NAME,
-      lastName = LAST_NAME,
-      dateOfBirth = DOB,
-      prisonNumber = PRISON_NUMBER,
-      pncNumber = PNC_NUMBER,
-      date = LocalDate.of(2021, 1, 21),
-      fromLocation = "MDI",
-      fromLocationType = CUSTODY_SUITE,
-      isCurrentPrisoner = false
-    )
   }
 }

@@ -33,11 +33,15 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp?.size).isEqualTo(1)
-    assertThat(resp?.get(0)?.lastName).isEqualTo("Larsen")
-    assertThat(resp?.get(0)?.firstName).isEqualTo("Robert")
-    assertThat(resp?.get(0)?.dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
+    assertThat(resp!!.size).isEqualTo(1)
+    with(resp[0]) {
+      assertThat(lastName).isEqualTo("Larsen")
+      assertThat(firstName).isEqualTo("Robert")
+      assertThat(prisonNumber).isEqualTo("A1234AA")
+      assertThat(dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
+    }
   }
+
   @Test
   fun `search result with 2 matches`() {
     prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthTwoResult()
@@ -61,15 +65,21 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp?.size).isEqualTo(2)
-    assertThat(resp?.get(0)?.lastName).isEqualTo("Larsen")
-    assertThat(resp?.get(0)?.firstName).isEqualTo("Robert")
-    assertThat(resp?.get(0)?.prisonNumber).isEqualTo("A1234AA")
-    assertThat(resp?.get(0)?.dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
-    assertThat(resp?.get(1)?.lastName).isEqualTo("Larsen")
-    assertThat(resp?.get(1)?.firstName).isEqualTo("Robert")
-    assertThat(resp?.get(1)?.prisonNumber).isEqualTo("A1233AA")
-    assertThat(resp?.get(1)?.dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
+    assertThat(resp!!.size).isEqualTo(2)
+
+    with(resp[0]) {
+      assertThat(lastName).isEqualTo("Larsen")
+      assertThat(firstName).isEqualTo("Robert")
+      assertThat(prisonNumber).isEqualTo("A1234AA")
+      assertThat(dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
+    }
+
+    with(resp[1]) {
+      assertThat(lastName).isEqualTo("Larsen")
+      assertThat(firstName).isEqualTo("Robert")
+      assertThat(prisonNumber).isEqualTo("A1233AA")
+      assertThat(dateOfBirth).isEqualTo(LocalDate.of(1975, 4, 2))
+    }
   }
 
   @Test
@@ -95,6 +105,6 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp.size).isEqualTo(0)
+    assertThat(resp).isEmpty()
   }
 }
