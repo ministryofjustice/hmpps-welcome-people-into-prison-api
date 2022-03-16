@@ -160,7 +160,8 @@ class ArrivalsServiceTest {
       prisonNumber = PRISON_NUMBER,
       pncNumber = PNC_NUMBER,
       date = DATE,
-      fromLocation = "MDI",
+      fromLocation = "Moorland (HMP & YOI)",
+      fromLocationId = "MDI",
       fromLocationType = LocationType.CUSTODY_SUITE,
       isCurrentPrisoner = false
     )

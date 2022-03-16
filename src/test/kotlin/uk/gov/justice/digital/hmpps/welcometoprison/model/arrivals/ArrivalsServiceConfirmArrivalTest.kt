@@ -303,6 +303,7 @@ class ArrivalsServiceConfirmArrivalTest {
       pncNumber = null,
       date = LocalDate.now(FIXED_CLOCK),
       fromLocation = "Kingston-upon-Hull Crown Court",
+      fromLocationId = "HULLCC",
       fromLocationType = LocationType.COURT,
       isCurrentPrisoner = false,
     )
