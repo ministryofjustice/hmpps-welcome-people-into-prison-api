@@ -71,7 +71,8 @@ class ConfirmedArrivalServiceTest {
       prisonNumber = "A1234AA",
       pncNumber = "99/123456J",
       date = DATE,
-      fromLocation = "MDI",
+      fromLocation = "Moorland (HMP & YOI)",
+      fromLocationId = "MDI",
       fromLocationType = LocationType.CUSTODY_SUITE
     )
 
