@@ -70,7 +70,7 @@ class PrisonService(
             middleName2,
             lastName = lastName!!,
             dateOfBirth = dateOfBirth!!,
-            gender = gender!!,
+            gender = sex!!,
             ethnicity,
             croNumber,
             pncNumber,
