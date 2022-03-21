@@ -1,35 +1,23 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 
 @Suppress("ClassName")
 class CourtReturnsResourceTest : IntegrationTestBase() {
 
-  @MockBean
-  private lateinit var arrivalsService: ArrivalsService
-
-  private val confirmCourtReturnRequest = ConfirmCourtReturnRequest("NMI", "A1234AA")
+  private val confirmCourtReturnRequest = ConfirmCourtReturnRequest("NMI", "A1278AA")
   private val moveId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
   private val url = "/court-returns/$moveId/confirm"
 
-  // TODO this test need to be refactor to end to end test please  follow ArrivalResourceTest
   @Test
   fun `confirm court return`() {
-    val prisonNumber = "AA1111A"
+    val prisonNumber = "A1278AA"
+    prisonerSearchMockServer.stubGetActivePrisoner(200)
+    prisonApiMockServer.stubCourtTransferInOffender(prisonNumber)
     val location = "Reception"
-    val bookingId = 1L
-    whenever(
-      arrivalsService.confirmReturnFromCourt(any(), any())
-    ).thenReturn(ConfirmCourtReturnResponse(prisonNumber, location, bookingId))
     webTestClient
       .post()
       .uri(url)
@@ -45,8 +33,6 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
       .jsonPath("location").isEqualTo(location)
-
-    verify(arrivalsService).confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
   }
 
   @Test

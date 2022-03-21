@@ -442,6 +442,48 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+  fun stubGetTemporaryAbsencesWithTwoRecords(agencyId: String) {
+    stubFor(
+      get("/api/movements/agency/$agencyId/temporary-absences")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+                {
+                  "offenderNo": "A1234AA",
+                  "firstName": "Jim",
+                  "lastName": "Smith",
+                  "dateOfBirth": "1991-07-31",
+                  "movementTime": "2022-01-18T08:00:00",
+                  "toCity": "City",
+                  "toAgency": "ABRYMC",
+                  "toAgencyDescription": "Aberystwyth Magistrates Court",
+                  "movementReasonCode": "C6",
+                  "movementReason": "Hospital",
+                  "commentText": "pHnuWeNNnALpHnuWeNNnA"
+                },
+                {
+                  "offenderNo": "A1278AA",
+                  "firstName": "First",
+                  "lastName": "Last",
+                  "dateOfBirth": "1980-02-23",
+                  "movementTime": "2022-01-18T08:00:00",
+                  "toCity": "City",
+                  "toAgency": "ABRYMC",
+                  "toAgencyDescription": "Aberystwyth Magistrates Court",
+                  "movementReasonCode": "C6",
+                  "movementReason": "Dentist",
+                  "commentText": "pHnuWeNNnALpHnuWeNNnA"
+                }
+              ]
+              """.trimIndent()
+            )
+        )
+    )
+  }
 
   fun stubConfirmTemporaryAbsencesSuccess(offenderNo: String) {
     stubFor(

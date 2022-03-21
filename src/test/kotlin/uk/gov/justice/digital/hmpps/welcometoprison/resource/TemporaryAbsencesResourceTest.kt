@@ -2,23 +2,13 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.ConfirmTemporaryAbsenceResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.temporaryabsences.TemporaryAbsenceService
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Suppress("ClassName")
 class TemporaryAbsencesResourceTest : IntegrationTestBase() {
-  @MockBean
-  private lateinit var temporaryAbsenceService: TemporaryAbsenceService
 
   @Nested
   inner class `Get Temporary absences` {
@@ -41,41 +31,12 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
-      whenever(temporaryAbsenceService.getTemporaryAbsences("MDI")).thenReturn(
-        listOf(
-          TemporaryAbsenceResponse(
-            firstName = "Jim",
-            lastName = "Smith",
-            dateOfBirth = LocalDate.of(1991, 7, 31),
-            prisonNumber = "A1234AA",
-            reasonForAbsence = "Hospital",
-            movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
-          ),
-          TemporaryAbsenceResponse(
-            firstName = "First",
-            lastName = "Last",
-            dateOfBirth = LocalDate.of(1980, 2, 23),
-            prisonNumber = "A1278AA",
-            reasonForAbsence = "Dentist",
-            movementDateTime = LocalDateTime.of(2022, 1, 20, 8, 0)
-          )
-        )
-      )
+      prisonApiMockServer.stubGetTemporaryAbsencesWithTwoRecords("MDI")
       webTestClient.get().uri("/prison/MDI/temporary-absences")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("temporaryAbsences".loadJson(this))
-    }
-
-    @Test
-    fun `calls service method with correct args`() {
-      webTestClient.get().uri("/prison/MDI/temporary-absences")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
-        .exchange()
-        .expectStatus().isOk
-
-      verify(temporaryAbsenceService).getTemporaryAbsences("MDI")
     }
   }
 
@@ -100,44 +61,21 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
-      whenever(temporaryAbsenceService.getTemporaryAbsence("MDI", "A1234AA")).thenReturn(
-        TemporaryAbsenceResponse(
-          firstName = "Jim",
-          lastName = "Smith",
-          dateOfBirth = LocalDate.of(1991, 7, 31),
-          prisonNumber = "A1234AA",
-          reasonForAbsence = "Hospital",
-          movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
-        )
-      )
+      prisonApiMockServer.stubGetTemporaryAbsencesWithTwoRecords("MDI")
       webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("temporaryAbsence".loadJson(this))
     }
-
-    @Test
-    fun `calls service method with correct args`() {
-      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
-        .exchange()
-        .expectStatus().isOk
-
-      verify(temporaryAbsenceService).getTemporaryAbsence("MDI", "A1234AA")
-    }
   }
 
   @Nested
   inner class `Confirm arrival from temporary absence` {
 
-    // TODO this test need to be refactor to end to end test please  follow ArrivalResourceTest
-
     @Test
     fun `confirm arrival`() {
-      whenever(
-        temporaryAbsenceService.confirmTemporaryAbsencesArrival(any(), any())
-      ).thenReturn(ConfirmTemporaryAbsenceResponse("G5666UK", "Reception"))
+      prisonApiMockServer.stubConfirmTemporaryAbsencesSuccess("G5666UK")
       val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
@@ -155,7 +93,6 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("prisonNumber").isEqualTo("G5666UK")
         .jsonPath("location").isEqualTo("Reception")
-      verify(temporaryAbsenceService).confirmTemporaryAbsencesArrival("G5666UK", confirmTemporaryAbsenceRequest)
     }
 
     @Test
