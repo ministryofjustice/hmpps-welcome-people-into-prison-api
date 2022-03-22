@@ -155,7 +155,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "firstName": "Alpha",
           "lastName": "Omega",
           "dateOfBirth": "1961-05-29",
-          "gender": "M",
+          "sex": "M",
           "prisonId": "NMI",
           "movementReasonCode": "N",
           "imprisonmentStatus": "SENT03"

@@ -101,7 +101,7 @@ data class ConfirmArrivalDetail(
   )
   @field:Length(max = 12)
   @field:NotBlank
-  val gender: String? = null,
+  val sex: String? = null,
 
   @Schema(
     description = "A code representing the offender's ethnicity (from the ETHNICITY reference domain).",

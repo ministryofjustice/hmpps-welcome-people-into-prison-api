@@ -312,7 +312,7 @@ class ArrivalsServiceConfirmArrivalTest {
       firstName = FIRST_NAME,
       lastName = LAST_NAME,
       dateOfBirth = DATE_OF_BIRTH,
-      gender = GENDER,
+      sex = GENDER,
       prisonId = PRISON_ID,
       prisonNumber = PRISON_NUMBER,
       movementReasonCode = "N",
