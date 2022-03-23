@@ -41,7 +41,8 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   }
 
   private fun findByNameMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
-    return client.matchPrisonerByName(
+    return if (request.lastName == null) emptyList()
+    else client.matchPrisonerByName(
       SearchByLastName(
         firstName = request.firstName,
         lastName = request.lastName,

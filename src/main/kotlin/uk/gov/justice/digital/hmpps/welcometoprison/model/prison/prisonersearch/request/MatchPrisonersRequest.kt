@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
-import javax.validation.constraints.NotNull
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating a search request to find mating prisoners")
@@ -13,8 +12,7 @@ data class MatchPrisonersRequest(
   val firstName: String?,
 
   @Schema(description = "Last name", example = "Smith")
-  @field:NotNull
-  val lastName: String,
+  val lastName: String? = null,
 
   @Schema(
     description = "Date of birth",
