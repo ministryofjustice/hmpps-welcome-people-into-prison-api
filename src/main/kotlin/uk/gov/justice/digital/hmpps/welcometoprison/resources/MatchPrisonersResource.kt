@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.WebDataBinder
+import org.springframework.web.bind.annotation.InitBinder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -14,6 +16,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.validator.MatchPrisonersRequestValidator
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
@@ -22,6 +25,7 @@ import javax.validation.constraints.NotNull
 
 class MatchPrisonersResource(
   private val prisonerSearchService: PrisonerSearchService,
+  private val matchPrisonersRequestValidator: MatchPrisonersRequestValidator
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -66,10 +70,15 @@ class MatchPrisonersResource(
       ),
     ]
   )
-  @PostMapping(path = [ "/match-prisoners"])
+  @PostMapping(path = ["/match-prisoners"])
   fun matchPrisoners(
     @RequestBody
     @Valid @NotNull
     matchPrisonersRequest: MatchPrisonersRequest
   ): List<PotentialMatch> = prisonerSearchService.findPotentialMatches(matchPrisonersRequest)
+
+  @InitBinder
+  fun initBinder(webDataBinder: WebDataBinder) {
+    webDataBinder.addValidators(matchPrisonersRequestValidator)
+  }
 }

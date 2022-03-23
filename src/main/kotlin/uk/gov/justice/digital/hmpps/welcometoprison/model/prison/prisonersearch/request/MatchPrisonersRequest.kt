@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class MatchPrisonersRequest(
 
   @Schema(description = "First name", example = "Sam")
-  val firstName: String?,
+  val firstName: String? = null,
 
   @Schema(description = "Last name", example = "Smith")
   val lastName: String? = null,

@@ -43,6 +43,28 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
   }
 
   @Test
+  fun `bad request when only first name and prison number is provided`() {
+    prisonerSearchMockServer.stubMatchPrisonerByNameOneResult()
+    val validRequest = """
+        {
+          "firstName": "Robert",
+          "prisonNumber": "A1234AA"
+        }
+      """
+
+    val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
+
+    webTestClient
+      .post()
+      .uri("/match-prisoners")
+      .withBearerToken(token)
+      .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+      .bodyValue(validRequest)
+      .exchange()
+      .expectStatus().isBadRequest
+  }
+
+  @Test
   fun `search result with 2 matches`() {
     prisonerSearchMockServer.stubMatchPrisonerByNameTwoResult()
     val validRequest = """
