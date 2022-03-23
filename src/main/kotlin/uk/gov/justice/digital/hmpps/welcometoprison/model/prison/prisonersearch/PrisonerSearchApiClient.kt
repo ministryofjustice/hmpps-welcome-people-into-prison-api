@@ -39,10 +39,10 @@ class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private v
       ?: emptyList()
   }
 
-  fun matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirthOrPncNumber: SearchByNameAndDateOfBirth): List<Prisoner> {
+  fun matchPrisonerByName(searchByLastName: SearchByLastName): List<Prisoner> {
     val list = webClient.post()
       .uri("/match-prisoners")
-      .bodyValue(searchByNameAndDateOfBirthOrPncNumber)
+      .bodyValue(searchByLastName)
       .retrieve()
       .bodyToMono(Matches::class.java)
       .block()?.matches

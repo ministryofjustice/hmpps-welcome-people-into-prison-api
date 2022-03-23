@@ -12,7 +12,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
 
   @Test
   fun `search result with 1 matches`() {
-    prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
+    prisonerSearchMockServer.stubMatchPrisonerByNameOneResult()
     val validRequest = """
         {
           "firstName": "Robert",
@@ -44,7 +44,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
 
   @Test
   fun `search result with 2 matches`() {
-    prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthTwoResult()
+    prisonerSearchMockServer.stubMatchPrisonerByNameTwoResult()
     val validRequest = """
         {
           "firstName": "Robert",
@@ -84,7 +84,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
 
   @Test
   fun `search result with 0 matches`() {
-    prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthZeroResult()
+    prisonerSearchMockServer.stubMatchPrisonerByNameZeroResult()
     val validRequest = """
         {
           "firstName": "Alpha",

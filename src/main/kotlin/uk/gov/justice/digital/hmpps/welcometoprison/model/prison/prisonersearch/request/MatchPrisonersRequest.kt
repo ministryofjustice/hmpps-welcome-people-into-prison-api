@@ -10,19 +10,17 @@ import javax.validation.constraints.NotNull
 data class MatchPrisonersRequest(
 
   @Schema(description = "First name", example = "Sam")
-  @field:NotNull
-  val firstName: String,
+  val firstName: String?,
 
   @Schema(description = "Last name", example = "Smith")
   @field:NotNull
   val lastName: String,
 
   @Schema(
-    description = "Date of birth (If absent then, will not perform name and date of birth search)",
+    description = "Date of birth",
     example = "1971-02-01"
   )
-  @field:NotNull
-  val dateOfBirth: LocalDate?,
+  val dateOfBirth: LocalDate? = null,
 
   @Schema(description = "Prison number", example = "A1234AA")
   val prisonNumber: String? = null,

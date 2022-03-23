@@ -89,7 +89,7 @@ class PrisonerSearchMockServer : MockServer(8093) {
     )
   }
 
-  fun stubMatchPrisonerByNameAndDateOfBirthOneResult() {
+  fun stubMatchPrisonerByNameOneResult() {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
@@ -192,7 +192,7 @@ class PrisonerSearchMockServer : MockServer(8093) {
     )
   }
 
-  fun stubMatchPrisonerByNameAndDateOfBirthZeroResult() {
+  fun stubMatchPrisonerByNameZeroResult() {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
@@ -215,7 +215,7 @@ class PrisonerSearchMockServer : MockServer(8093) {
     )
   }
 
-  fun stubMatchPrisonerByNameAndDateOfBirthTwoResult() {
+  fun stubMatchPrisonerByNameTwoResult() {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(

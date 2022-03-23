@@ -27,7 +27,7 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     val results =
       findMatches(request.prisonNumber, "Prison Number") + //
         findMatches(request.pncNumber, "PNC Number") + //
-        findNameAndDobMatches(request)
+        findByNameMatches(request)
 
     val result = results.distinctBy { it.prisonNumber }
     log.info("Number of search results for potential matches: {}", result.size)
@@ -40,16 +40,16 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     return matches.map { it.toPotentialMatch() }
   }
 
-  private fun findNameAndDobMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
-    return if (request.dateOfBirth == null) emptyList()
-    else
-      client.matchPrisonerByNameAndDateOfBirth(
-        SearchByNameAndDateOfBirth(
-          request.firstName, request.lastName, request.dateOfBirth
-        )
-      ).map {
-        it.toPotentialMatch()
-      }
+  private fun findByNameMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
+    return client.matchPrisonerByName(
+      SearchByLastName(
+        firstName = request.firstName,
+        lastName = request.lastName,
+        dateOfBirth = request.dateOfBirth
+      )
+    ).map {
+      it.toPotentialMatch()
+    }
   }
 
   companion object {

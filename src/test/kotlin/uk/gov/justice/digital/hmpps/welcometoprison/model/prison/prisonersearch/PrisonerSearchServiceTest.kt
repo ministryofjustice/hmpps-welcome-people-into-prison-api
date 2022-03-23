@@ -51,7 +51,7 @@ class PrisonerSearchServiceTest {
 
   @Test
   fun `findPotentialMatch from one record`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+    whenever(client.matchPrisonerByName(any())).thenReturn(
       listOf(
         Prisoner(
           prisonerNumber = PRISON_NUMBER,
@@ -86,7 +86,7 @@ class PrisonerSearchServiceTest {
 
   @Test
   fun `findPotentialMatch merge two records`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+    whenever(client.matchPrisonerByName(any())).thenReturn(
       listOf(
         Prisoner(
           prisonerNumber = PRISON_NUMBER,
@@ -129,7 +129,7 @@ class PrisonerSearchServiceTest {
 
   @Test
   fun `findPotentialMatch get two records when prison number is different`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+    whenever(client.matchPrisonerByName(any())).thenReturn(
       listOf(
         Prisoner(
           prisonerNumber = PRISON_NUMBER,
