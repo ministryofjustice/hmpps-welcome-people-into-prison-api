@@ -6,7 +6,7 @@ import java.time.LocalDate
 import javax.validation.constraints.NotNull
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Schema(description = "Data for creating a search request to find mating prisoners")
+@Schema(description = "Data for creating a search request to find matching prisoners")
 data class MatchPrisonersRequest(
 
   @Schema(description = "First name", example = "Sam")
@@ -18,7 +18,7 @@ data class MatchPrisonersRequest(
   val lastName: String,
 
   @Schema(
-    description = "Date of birth (If absent then, will not perform name and date of birth search)",
+    description = "Date of birth",
     example = "1971-02-01"
   )
   @field:NotNull
