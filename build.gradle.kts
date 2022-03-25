@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.1"
   kotlin("plugin.spring") version "1.6.10"
   kotlin("plugin.jpa") version "1.6.10"
 }
@@ -25,8 +25,8 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
 
   runtimeOnly("com.h2database:h2:2.1.210")
-  runtimeOnly("org.flywaydb:flyway-core:8.4.4")
-  runtimeOnly("org.postgresql:postgresql:42.3.2")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.4")
+  runtimeOnly("org.postgresql:postgresql:42.3.3")
 
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
