@@ -50,11 +50,6 @@ class MatchPrisonersResource(
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
-        responseCode = "404",
-        description = "No front-facing image of the offenders face found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      ),
-      ApiResponse(
         responseCode = "500",
         description = "Unexpected error",
         content = [

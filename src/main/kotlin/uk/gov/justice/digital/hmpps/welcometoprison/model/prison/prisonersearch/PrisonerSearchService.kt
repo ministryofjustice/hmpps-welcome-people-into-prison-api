@@ -41,7 +41,7 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   }
 
   private fun findNameAndDobMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
-    return if (request.dateOfBirth == null) emptyList()
+    return if (request.lastName == null || request.dateOfBirth == null) emptyList()
     else
       client.matchPrisonerByNameAndDateOfBirth(
         SearchByNameAndDateOfBirth(
