@@ -10,6 +10,27 @@ import java.time.LocalDate
 
 @Suppress("ClassName")
 class MatchPrisonersResourceTest : IntegrationTestBase() {
+  @Test
+  fun `Safe to search with nothing`() {
+    val validRequest = """
+        {
+        }
+      """
+
+    val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
+
+    val resp = webTestClient
+      .post()
+      .uri("/match-prisoners")
+      .withBearerToken(token)
+      .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+      .bodyValue(validRequest)
+      .exchange()
+      .expectStatus().isOk
+      .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
+
+    assertThat(resp!!).isEmpty()
+  }
 
   @Test
   fun `Can search with PNC number only`() {
@@ -62,7 +83,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp!!.size).isEqualTo(1)
+    assertThat(resp!!).hasSize(1)
     with(resp[0]) {
       assertThat(lastName).isEqualTo("Smith")
       assertThat(firstName).isEqualTo("Jim")
@@ -94,7 +115,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp!!.size).isEqualTo(1)
+    assertThat(resp!!).hasSize(1)
     with(resp[0]) {
       assertThat(lastName).isEqualTo("Larsen")
       assertThat(firstName).isEqualTo("Robert")
@@ -126,7 +147,7 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
       .expectStatus().isOk
       .expectBodyList(PotentialMatch::class.java).returnResult().responseBody
 
-    assertThat(resp!!.size).isEqualTo(2)
+    assertThat(resp!!).hasSize(2)
 
     with(resp[0]) {
       assertThat(lastName).isEqualTo("Larsen")
