@@ -26,7 +26,15 @@ class MatchPrisonersResource(
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Retrieves list of potential prisoner matches",
-    description = "Retrieves list of potential prisoner matches, role required is ROLE_VIEW_ARRIVALS",
+    description = """Retrieves list of potential prisoner matches, role required is ROLE_VIEW_ARRIVALS
+Will perform up to 3 different types of search:
+
+ * by prison number - if provided
+ * by pnc - if provided
+ * by first name, last name and date of birth - if a minimum of last name and date of birth are provided.
+
+Results will be ordered Prison number matches first, then any PNC matches, then any Name and Date of birth matches.
+""",
     security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
     responses = [
       ApiResponse(
@@ -61,7 +69,7 @@ class MatchPrisonersResource(
       ),
     ]
   )
-  @PostMapping(path = [ "/match-prisoners"])
+  @PostMapping(path = ["/match-prisoners"])
   fun matchPrisoners(
     @RequestBody
     @Valid @NotNull
