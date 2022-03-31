@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -10,6 +11,7 @@ import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
@@ -56,7 +58,7 @@ class ConfirmationServiceTest {
     )
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
     assertThatThrownBy {
-      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+      confirmationService.confirmArrival(Confirmation.Expected(ARRIVAL_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE))
     }.hasMessage("Prisoner: '$PRISON_NUMBER' do not have assigned living unit")
   }
 
@@ -66,7 +68,12 @@ class ConfirmationServiceTest {
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
 
     val response =
-      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null))
+      confirmationService.confirmArrival(
+        Confirmation.Expected(
+          ARRIVAL_ID,
+          CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null)
+        )
+      )
 
     assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
 
@@ -81,26 +88,15 @@ class ConfirmationServiceTest {
     verify(confirmedArrivalRepository).save(
       refEq(
         ConfirmedArrival(
-          movementId = MOVE_ID,
+          movementId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = PRISON_ID,
           bookingId = BOOKING_ID,
-          arrivalDate = BOOKING_IN_TIME.toLocalDate(),
+          arrivalDate = LocalDate.now(FIXED_CLOCK),
           arrivalType = ArrivalType.NEW_TO_PRISON,
           timestamp = LocalDateTime.now(FIXED_CLOCK)
         )
       )
-    )
-  }
-
-  @Test
-  fun `Confirm arrival matched to NOMIS offender who is not in custody - with booking in time`() {
-    doParameterizedConfirmArrivalTest(
-      "",
-      ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
-      BOOKING_IN_TIME,
-      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
-      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmArrivalDetail) }
     )
   }
 
@@ -120,7 +116,7 @@ class ConfirmationServiceTest {
     )
 
     assertThatThrownBy {
-      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+      confirmationService.confirmArrival(Confirmation.Expected(ARRIVAL_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE))
     }.isInstanceOf(IllegalArgumentException::class.java)
 
     verify(prisonerSearchService).getPrisoner(PRISON_NUMBER)
@@ -145,7 +141,7 @@ class ConfirmationServiceTest {
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     confirmationService.confirmReturnFromCourt(
-      MOVE_ID,
+      ARRIVAL_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
@@ -171,7 +167,7 @@ class ConfirmationServiceTest {
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     confirmationService.confirmReturnFromCourt(
-      MOVE_ID,
+      ARRIVAL_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
@@ -180,7 +176,7 @@ class ConfirmationServiceTest {
     ).save(
       refEq(
         ConfirmedArrival(
-          movementId = MOVE_ID,
+          movementId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
           bookingId = BOOKING_ID,
@@ -192,76 +188,130 @@ class ConfirmationServiceTest {
     )
   }
 
-  @ParameterizedTest
-  @MethodSource("recallMovementReasonCodes")
-  fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
-    doParameterizedConfirmArrivalTest(
-      movementReasonCode,
-      ArrivalType.RECALL,
-      null,
-      { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
-      { confirmArrivalDetail -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmArrivalDetail) }
-    )
-  }
-
-  @ParameterizedTest
-  @MethodSource("nonRecallMovementReasonCodes")
-  fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
-    doParameterizedConfirmArrivalTest(
-      movementReasonCode,
-      ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
-      null,
-      { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
-      { confirmArrivalDetail -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmArrivalDetail) }
-    )
-  }
-
-  private fun doParameterizedConfirmArrivalTest(
-    movementReasonCode: String,
-    expectedArrivalType: ArrivalType,
-    bookingInTime: LocalDateTime?,
-    stubbing: () -> Unit,
-    verification: (ConfirmArrivalDetail) -> InmateDetail
-  ) {
-    whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
-        isCurrentPrisoner = false, sex = GENDER
+  @Nested
+  inner class ExpectedArrival {
+    @ParameterizedTest
+    @MethodSource("uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationServiceTest#recallMovementReasonCodes")
+    fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
+      doParameterizedExpectedConfirmationTest(
+        movementReasonCode,
+        ArrivalType.RECALL,
+        { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
+        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
       )
-    )
-    stubbing()
+    }
 
-    val confirmArrivalDetail = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(
-      bookingInTime = bookingInTime,
-      movementReasonCode = movementReasonCode
-    )
+    @ParameterizedTest
+    @MethodSource("uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationServiceTest#nonRecallMovementReasonCodes")
+    fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
+      doParameterizedExpectedConfirmationTest(
+        movementReasonCode,
+        ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
+        { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
+        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
+      )
+    }
 
-    val response = confirmationService.confirmArrival(MOVE_ID, confirmArrivalDetail)
-
-    assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
-
-    verification(confirmArrivalDetail)
-
-    verify(
-      confirmedArrivalRepository
-    ).save(
-      refEq(
-        ConfirmedArrival(
-          movementId = MOVE_ID,
-          prisonNumber = PRISON_NUMBER,
-          prisonId = PRISON_ID,
-          bookingId = BOOKING_ID,
-          arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(FIXED_CLOCK),
-          arrivalType = expectedArrivalType,
-          timestamp = LocalDateTime.now(FIXED_CLOCK)
+    private fun doParameterizedExpectedConfirmationTest(
+      movementReasonCode: String,
+      expectedArrivalType: ArrivalType,
+      stubbing: () -> Unit,
+      verification: (Confirmation) -> InmateDetail
+    ) {
+      whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
+        PrisonerDetails(
+          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
+          prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
+          isCurrentPrisoner = false, sex = GENDER
         )
       )
-    )
+      stubbing()
+
+      val confirmation = Confirmation.Expected(
+        ARRIVAL_ID,
+        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(
+          movementReasonCode = movementReasonCode
+        )
+      )
+
+      val response = confirmationService.confirmArrival(confirmation)
+
+      assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
+
+      verification(confirmation)
+
+      verify(
+        confirmedArrivalRepository
+      ).save(
+        refEq(
+          ConfirmedArrival(
+            movementId = ARRIVAL_ID,
+            prisonNumber = PRISON_NUMBER,
+            prisonId = PRISON_ID,
+            bookingId = BOOKING_ID,
+            arrivalDate = LocalDate.now(FIXED_CLOCK),
+            arrivalType = expectedArrivalType,
+            timestamp = LocalDateTime.now(FIXED_CLOCK)
+          )
+        )
+      )
+    }
+  }
+
+  @Nested
+  inner class UnexpectedArrival {
+    @ParameterizedTest
+    @MethodSource("uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationServiceTest#recallMovementReasonCodes")
+    fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
+      doParameterizedUnexpectedConfirmationTest(
+        movementReasonCode,
+        { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
+        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
+      )
+    }
+
+    @ParameterizedTest
+    @MethodSource("uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationServiceTest#nonRecallMovementReasonCodes")
+    fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
+      doParameterizedUnexpectedConfirmationTest(
+        movementReasonCode,
+        { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
+        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
+      )
+    }
+
+    private fun doParameterizedUnexpectedConfirmationTest(
+      movementReasonCode: String,
+      stubbing: () -> Unit,
+      verification: (Confirmation) -> InmateDetail
+    ) {
+      whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
+        PrisonerDetails(
+          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
+          prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
+          isCurrentPrisoner = false, sex = GENDER
+        )
+      )
+      stubbing()
+
+      val confirmation = Confirmation.Unexpected(
+        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(
+          movementReasonCode = movementReasonCode
+        )
+      )
+
+      val response = confirmationService.confirmArrival(confirmation)
+
+      assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
+
+      verification(confirmation)
+
+      verifyNoInteractions(confirmedArrivalRepository)
+    }
   }
 
   companion object {
-    private const val MOVE_ID = "beae6404-de16-406f-844a-7e043960d9ec"
+    private const val ARRIVAL_ID = "beae6404-de16-406f-844a-7e043960d9ec"
     private const val PRISON_NUMBER = "A1111AA"
     private const val CRO_NUMBER = "12/4321"
     private const val PNC_NUMBER = "01/123456"
@@ -299,13 +349,8 @@ class ConfirmationServiceTest {
       prisonNumber = PRISON_NUMBER,
       movementReasonCode = "N",
       imprisonmentStatus = "SENT03",
-      bookingInTime = BOOKING_IN_TIME,
-      suffix = "",
-      ethnicity = "",
-      croNumber = "",
       fromLocationId = "",
       commentText = "",
-      cellLocation = "",
     )
     val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
       prisonId = PRISON_ID,

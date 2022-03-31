@@ -28,11 +28,9 @@ data class CreateOffenderDetail(
 data class AdmitOnNewBookingDetail(
   // prisonId = agency id, eg "MDI"
   val prisonId: String,
-  val bookingInTime: LocalDateTime? = null,
   val fromLocationId: String? = null,
   val movementReasonCode: String,
   val youthOffender: Boolean = false,
-  val cellLocation: String? = null,
   val imprisonmentStatus: String
 )
 
