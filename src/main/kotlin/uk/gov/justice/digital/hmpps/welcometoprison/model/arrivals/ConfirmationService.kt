@@ -16,6 +16,15 @@ import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+sealed class Confirmation(open val detail: ConfirmArrivalDetail) {
+  val prisonNumber: String? get() = detail.prisonNumber
+  val isNewToPrison: Boolean get() = detail.isNewToPrison
+  val movementReasonCode: String get() = detail.movementReasonCode!!
+
+  data class Expected(val arrivalId: String, override val detail: ConfirmArrivalDetail) : Confirmation(detail)
+  data class Unexpected(override val detail: ConfirmArrivalDetail) : Confirmation(detail)
+}
+
 @Service
 @Transactional
 class ConfirmationService(
@@ -25,17 +34,16 @@ class ConfirmationService(
   private val locationFormatter: LocationFormatter,
   private val clock: Clock
 ) {
-  fun confirmArrival(moveId: String, confirmation: ConfirmArrivalDetail): ConfirmArrivalResponse {
-
+  fun confirmArrival(confirmation: Confirmation): ConfirmArrivalResponse {
     if (confirmation.isNewToPrison) {
-      return createAndAdmitOffender(confirmation, moveId)
+      return createAndAdmitOffender(confirmation)
     }
 
     val prisoner = prisonerSearchService.getPrisoner(confirmation.prisonNumber!!)
 
     with(prisoner) {
       return if (isCurrentPrisoner) throw IllegalArgumentException("Confirming arrival of active prisoner: '$prisonNumber' is not supported.")
-      else admitOffender(confirmation, moveId, prisonNumber)
+      else admitOffender(confirmation, prisonNumber)
     }
   }
 
@@ -52,10 +60,10 @@ class ConfirmationService(
   private fun returnFromCourt(
     moveId: String,
     prisonNumber: String,
-    confirmation: ConfirmCourtReturnRequest,
+    confirmation: ConfirmCourtReturnRequest
   ): ConfirmCourtReturnResponse {
-
     val response = prisonService.returnFromCourt(confirmation.prisonId, prisonNumber)
+
     confirmedArrivalRepository.save(
       ConfirmedArrival(
         movementId = moveId,
@@ -70,85 +78,88 @@ class ConfirmationService(
     return response
   }
 
-  private fun admitOffender(
-    confirmArrivalDetail: ConfirmArrivalDetail,
-    moveId: String,
-    prisonNumber: String
-  ): ConfirmArrivalResponse = when (confirmArrivalDetail.movementReasonCode) {
-    in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmArrivalDetail, moveId, prisonNumber)
-    else -> admitOffenderOnNewBooking(confirmArrivalDetail, moveId, prisonNumber)
-  }
+  private fun admitOffender(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse =
+    when (confirmation.movementReasonCode) {
+      in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmation, prisonNumber)
+      else -> admitOffenderOnNewBooking(confirmation, prisonNumber)
+    }
 
-  private fun admitOffenderOnNewBooking(
-    confirmArrivalDetail: ConfirmArrivalDetail,
-    moveId: String,
-    prisonNumber: String
-  ): ConfirmArrivalResponse {
-    val inmateDetail = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
+  private fun admitOffenderOnNewBooking(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse {
+    val response = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)
 
-    confirmedArrivalRepository.save(
-      ConfirmedArrival(
-        movementId = moveId,
-        prisonNumber = prisonNumber,
-        timestamp = LocalDateTime.now(clock),
-        arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
-        prisonId = confirmArrivalDetail.prisonId!!,
-        bookingId = inmateDetail.bookingId,
-        arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+    whenExpectedArrival(confirmation) { arrivalId, detail ->
+      confirmedArrivalRepository.save(
+        ConfirmedArrival(
+          movementId = arrivalId,
+          prisonNumber = prisonNumber,
+          timestamp = LocalDateTime.now(clock),
+          arrivalType = ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
+          prisonId = detail.prisonId!!,
+          bookingId = response.bookingId,
+          arrivalDate = LocalDate.now(clock),
+        )
       )
-    )
-    return createResponse(prisonNumber, inmateDetail)
+    }
+    return createResponse(prisonNumber, response)
   }
 
   private fun recallOffender(
-    confirmArrivalDetail: ConfirmArrivalDetail,
-    moveId: String,
+    confirmation: Confirmation,
     prisonNumber: String
   ): ConfirmArrivalResponse {
-    val inmateDetail = prisonService.recallOffender(prisonNumber, confirmArrivalDetail)
+    val response = prisonService.recallOffender(prisonNumber, confirmation.detail)
 
-    confirmedArrivalRepository.save(
-      ConfirmedArrival(
-        movementId = moveId,
-        prisonNumber = prisonNumber,
-        timestamp = LocalDateTime.now(clock),
-        arrivalType = ArrivalType.RECALL,
-        prisonId = confirmArrivalDetail.prisonId!!,
-        bookingId = inmateDetail.bookingId,
-        arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+    whenExpectedArrival(confirmation) { arrivalId, detail ->
+      confirmedArrivalRepository.save(
+        ConfirmedArrival(
+          movementId = arrivalId,
+          prisonNumber = prisonNumber,
+          timestamp = LocalDateTime.now(clock),
+          arrivalType = ArrivalType.RECALL,
+          prisonId = detail.prisonId!!,
+          bookingId = response.bookingId,
+          arrivalDate = LocalDate.now(clock),
+        )
       )
-    )
-    return createResponse(prisonNumber, inmateDetail)
+    }
+    return createResponse(prisonNumber, response)
   }
 
-  private fun createAndAdmitOffender(
-    confirmArrivalDetail: ConfirmArrivalDetail,
-    moveId: String
-  ): ConfirmArrivalResponse {
-    val prisonNumber = prisonService.createOffender(confirmArrivalDetail)
-    val inmateDetail = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmArrivalDetail)
-    confirmedArrivalRepository.save(
-      ConfirmedArrival(
-        movementId = moveId,
-        prisonNumber = prisonNumber,
-        timestamp = LocalDateTime.now(clock),
-        arrivalType = ArrivalType.NEW_TO_PRISON,
-        prisonId = confirmArrivalDetail.prisonId!!,
-        bookingId = inmateDetail.bookingId,
-        arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(clock),
+  private fun createAndAdmitOffender(confirmation: Confirmation): ConfirmArrivalResponse {
+    val prisonNumber = prisonService.createOffender(confirmation.detail)
+    val response = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)
+
+    whenExpectedArrival(confirmation) { arrivalId, detail ->
+      confirmedArrivalRepository.save(
+        ConfirmedArrival(
+          movementId = arrivalId,
+          prisonNumber = prisonNumber,
+          timestamp = LocalDateTime.now(clock),
+          arrivalType = ArrivalType.NEW_TO_PRISON,
+          prisonId = detail.prisonId!!,
+          bookingId = response.bookingId,
+          arrivalDate = LocalDate.now(clock),
+        )
       )
-    )
-    return createResponse(prisonNumber, inmateDetail)
+    }
+    return createResponse(prisonNumber, response)
   }
 
-  private fun createResponse(
-    prisonNumber: String,
-    inmateDetail: InmateDetail,
-  ): ConfirmArrivalResponse {
-    val location = inmateDetail.assignedLivingUnit?.description ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
+  private fun createResponse(prisonNumber: String, inmateDetail: InmateDetail): ConfirmArrivalResponse {
+    val location = inmateDetail.assignedLivingUnit?.description
+      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmArrivalResponse(
       prisonNumber = prisonNumber,
       location = locationFormatter.format(location)
     )
+  }
+
+  private fun whenExpectedArrival(
+    confirmation: Confirmation,
+    op: (arrivalId: String, detail: ConfirmArrivalDetail) -> Unit
+  ) {
+    if (confirmation is Confirmation.Expected) {
+      op(confirmation.arrivalId, confirmation.detail)
+    }
   }
 }

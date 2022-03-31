@@ -3,9 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import org.hibernate.validator.constraints.Length
-import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
@@ -51,39 +49,6 @@ data class ConfirmArrivalDetail(
   @field:Pattern(regexp = "^[A-Z|a-z ,.'-]+$", message = "First name is not valid")
   val firstName: String? = null,
 
-  @Schema(description = "The offender's middle name.", example = "Luke", maxLength = 35, pattern = "^[A-Z|a-z ,.'-]+$")
-  @field:Length(max = 35)
-  @field:Pattern(regexp = "^[A-Z|a-z ,.'-]+$", message = "Middle name is not valid")
-  val middleName1: String? = null,
-
-  @Schema(
-    description = "An additional middle name for the offender.",
-    example = "Matthew",
-    maxLength = 35,
-    pattern = "^[A-Z|a-z ,.'-]+$"
-  )
-  @field:Length(max = 35)
-  @field:Pattern(regexp = "^[A-Z|a-z ,.'-]+$", message = "Middle name 2 is not valid")
-  val middleName2: String? = null,
-
-  @Schema(
-    description = "A code representing the offender's title (from TITLE reference domain).",
-    example = "MR",
-    allowableValues = ["BR", "DAME", "DR", "FR", "IMAM", "LADY", "LORD", "MISS", "MR", "MRS", "MS", "RABBI", "REV", "SIR", "SR"],
-    maxLength = 12
-  )
-  @field:Length(max = 12)
-  val title: String? = null,
-
-  @Schema(
-    description = "A code representing a suffix to apply to offender's name (from SUFFIX reference domain).",
-    example = "JR",
-    maxLength = 12,
-    allowableValues = ["I", "II", "III", "IV", "IX", "V", "VI", "VII", "VIII", "JR", "SR"]
-  )
-  @field:Length(max = 12)
-  val suffix: String? = null,
-
   @Schema(
     required = true,
     description = "The offender's date of birth. Must be specified in YYYY-MM-DD format. Range allowed is 16-110 years",
@@ -103,31 +68,10 @@ data class ConfirmArrivalDetail(
   @field:NotBlank
   val sex: String? = null,
 
-  @Schema(
-    description = "A code representing the offender's ethnicity (from the ETHNICITY reference domain).",
-    example = "W1",
-    allowableValues = ["A9", "B1", "B2", "B9", "M1", "M2", "M3", "M9", "NS", "O1", "O2", "O9", "W1", "W2", "W3", "W8", "W9"],
-    maxLength = 12
-  )
-  @field:Length(max = 12)
-  val ethnicity: String? = null,
-
-  @Schema(description = "The offender's CRO (Criminal Records Office) number.", maxLength = 20)
-  @field:Length(max = 20)
-  val croNumber: String? = null,
-
   @Schema(description = "Received Prison ID", example = "MDI", required = true)
   @field:Length(max = 3, message = "Prison ID is 3 character code")
   @field:NotNull
   val prisonId: String? = null,
-
-  @Schema(
-    required = true,
-    description = "The time the booking in occurred, if not supplied it will be the current time",
-    example = "2020-03-24T12:13:40"
-  )
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  val bookingInTime: LocalDateTime? = null,
 
   @Schema(description = "Where the prisoner has moved from (default OUT)", example = "OUT")
   @field:Length(max = 6, message = "From location")
@@ -141,15 +85,9 @@ data class ConfirmArrivalDetail(
   @field:Length(max = 240, message = "comment text size is a maximum of 240 characters")
   val commentText: String? = null,
 
-  @Schema(
-    description = "Cell location where recalled prisoner should be housed, default will be reception",
-    example = "MDI-RECP",
-  )
-  @field:Length(max = 240, message = "Cell Location description cannot be more than 240 characters")
-  val cellLocation: String? = null,
-
   @Schema(description = "Require imprisonment status (e.g Adult Imprisonment Without Option CJA03)", example = "SENT03")
   @field:Length(max = 12, message = "Imprisonment status cannot be more than 12 characters")
+  @field:NotNull
   val imprisonmentStatus: String? = null
 ) {
   val youthOffender: Boolean
