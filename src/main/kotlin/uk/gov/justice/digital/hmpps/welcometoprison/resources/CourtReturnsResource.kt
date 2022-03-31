@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import javax.validation.Valid
@@ -25,14 +25,19 @@ import javax.validation.constraints.NotNull
 @Validated
 @RequestMapping(name = "Court returns", produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourtReturnsResource(
-  private val arrivalsService: ArrivalsService
+  private val confirmationService: ConfirmationService
 ) {
 
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Confirm court return to prison id ",
     description = "Confirm court return for a specific prisoner to prison, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
-    security = [SecurityRequirement(name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER", scopes = ["write"])],
+    security = [
+      SecurityRequirement(
+        name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
+        scopes = ["write"]
+      )
+    ],
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -80,5 +85,5 @@ class CourtReturnsResource(
     @RequestBody
     @Valid @NotNull
     confirmCourtReturnRequest: ConfirmCourtReturnRequest
-  ): ConfirmCourtReturnResponse = arrivalsService.confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
+  ): ConfirmCourtReturnResponse = confirmationService.confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
 }

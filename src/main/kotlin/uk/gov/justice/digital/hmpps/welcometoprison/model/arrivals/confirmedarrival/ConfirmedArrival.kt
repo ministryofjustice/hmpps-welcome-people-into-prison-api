@@ -18,7 +18,7 @@ class ConfirmedArrival(
   @Id
   @Schema(description = "ID", example = "")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Long?,
+  val id: Long? = null,
 
   @Schema(description = "Prison Number", example = "A1234AA")
   val prisonNumber: String,
@@ -41,6 +41,7 @@ class ConfirmedArrival(
 
   @Schema(description = "Arrival Date", example = "2020-12-01")
   val arrivalDate: LocalDate
+
 )
 
 enum class ArrivalType {

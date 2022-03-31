@@ -6,37 +6,23 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import java.time.Clock
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.LocalDateTime
 
 class ArrivalsServiceTest {
-  private val prisonService: PrisonService = mock()
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
-  private val locationFormatter: LocationFormatter = mock()
 
-  private val confirmedArrivalService: ConfirmedArrivalService = ConfirmedArrivalService(confirmedArrivalRepository)
-  private val arrivalsService =
-    ArrivalsService(
-      basmService,
-      prisonService,
-      prisonerSearchService,
-      confirmedArrivalService,
-      locationFormatter,
-      FIXED_CLOCK
-    )
+  private val arrivalsService = ArrivalsService(basmService, prisonerSearchService, confirmedArrivalRepository)
 
   @Test
-  fun getArrivals() {
+  fun `Retrieving arrivals`() {
     val match = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = arrival1.prisonNumber!!)
 
     whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival1, arrival2))
@@ -52,6 +38,20 @@ class ArrivalsServiceTest {
         arrival2.copy(potentialMatches = emptyList())
       )
     )
+  }
+
+  @Test
+  fun `Arrivals are removed when confirmed`() {
+
+    whenever(basmService.getArrivals(any(), any(), any())).thenReturn(listOf(arrival1, arrival2))
+    whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(
+      listOf(arrival1.whenConfirmed())
+    )
+
+    val arrivals = arrivalsService.getArrivals("MDI", DATE)
+
+    assertThat(arrivals).hasSize(1)
+    assertThat(arrivals[0].id).isEqualTo(arrival2.id)
   }
 
   @Nested
@@ -148,10 +148,6 @@ class ArrivalsServiceTest {
     private const val ANOTHER_PNC_NUMBER = "11/123456J"
     private val DOB = LocalDate.of(1980, 2, 23)
 
-    private val FIXED_NOW: Instant = Instant.now()
-    private val ZONE_ID: ZoneId = ZoneId.systemDefault()
-    private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
-
     private val arrival1 = Arrival(
       id = "1",
       firstName = "JIM",
@@ -186,6 +182,17 @@ class ArrivalsServiceTest {
       croNumber = CRO_NUMBER,
       sex = "Female",
       isCurrentPrisoner = false
+    )
+
+    fun Arrival.whenConfirmed() = ConfirmedArrival(
+      id = null,
+      prisonNumber = this.prisonNumber!!,
+      movementId = this.id!!,
+      timestamp = LocalDateTime.now(),
+      arrivalType = ArrivalType.NEW_TO_PRISON,
+      prisonId = "Prison Id",
+      bookingId = 123,
+      arrivalDate = this.date,
     )
   }
 }
