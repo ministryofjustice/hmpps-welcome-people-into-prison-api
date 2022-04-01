@@ -10,7 +10,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class PrisonServiceTest {
 
@@ -91,16 +90,13 @@ class PrisonServiceTest {
       prisonId = "MNI",
       movementReasonCode = "N",
       imprisonmentStatus = "SENT03",
-      bookingInTime = LocalDateTime.now()
     )
     val admitOnNewBookingDetail = with(confirmArrivalDetail) {
       AdmitOnNewBookingDetail(
         prisonId = prisonId!!,
-        bookingInTime,
-        fromLocationId,
+        fromLocationId = fromLocationId,
         movementReasonCode = movementReasonCode!!,
-        youthOffender,
-        cellLocation,
+        youthOffender = youthOffender,
         imprisonmentStatus = imprisonmentStatus!!
       )
     }
@@ -122,16 +118,13 @@ class PrisonServiceTest {
       prisonId = "MNI",
       movementReasonCode = "N",
       imprisonmentStatus = "SENT03",
-      bookingInTime = LocalDateTime.now()
     )
     val recallBooking = with(confirmArrivalDetail) {
       RecallBooking(
         prisonId = prisonId!!,
-        bookingInTime,
-        fromLocationId,
+        fromLocationId = fromLocationId,
         movementReasonCode = movementReasonCode!!,
-        youthOffender,
-        cellLocation,
+        youthOffender = youthOffender,
         imprisonmentStatus = imprisonmentStatus!!
       )
     }

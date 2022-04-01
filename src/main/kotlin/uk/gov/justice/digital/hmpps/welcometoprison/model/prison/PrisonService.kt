@@ -31,11 +31,9 @@ class PrisonService(
       with(confirmArrivalDetail) {
         AdmitOnNewBookingDetail(
           prisonId = prisonId!!,
-          bookingInTime,
-          fromLocationId,
+          fromLocationId = fromLocationId,
           movementReasonCode = movementReasonCode!!,
-          youthOffender,
-          cellLocation,
+          youthOffender = youthOffender,
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
@@ -43,18 +41,16 @@ class PrisonService(
 
   fun recallOffender(
     prisonNumber: String,
-    confirmArrivalDetail: ConfirmArrivalDetail
+    detail: ConfirmArrivalDetail
   ): InmateDetail =
     prisonApiClient.recallOffender(
       prisonNumber,
-      with(confirmArrivalDetail) {
+      with(detail) {
         RecallBooking(
           prisonId = prisonId!!,
-          bookingInTime,
-          fromLocationId,
+          fromLocationId = fromLocationId,
           movementReasonCode = movementReasonCode!!,
-          youthOffender,
-          cellLocation,
+          youthOffender = youthOffender,
           imprisonmentStatus = imprisonmentStatus!!
         )
       }
@@ -66,16 +62,10 @@ class PrisonService(
         with(confirmArrivalDetail) {
           CreateOffenderDetail(
             firstName = firstName!!,
-            middleName1,
-            middleName2,
             lastName = lastName!!,
             dateOfBirth = dateOfBirth!!,
             gender = sex!!,
-            ethnicity,
-            croNumber,
-            pncNumber,
-            suffix,
-            title
+            pncNumber = pncNumber,
           )
         }
       )

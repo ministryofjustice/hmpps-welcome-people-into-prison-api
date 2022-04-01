@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmArrivalResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Confirmation
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import java.time.LocalDate
@@ -141,7 +142,7 @@ class ArrivalsResource(
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Information about the created offender",
+        description = "Information about the confirmed arrival",
         content = [
           Content(
             mediaType = "application/json",
@@ -173,17 +174,17 @@ class ArrivalsResource(
   )
 
   @PostMapping(
-    "/arrivals/{moveId}/confirm",
+    "/arrivals/{arrivalId}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
   fun confirmArrival(
     @PathVariable
     @Valid @NotEmpty
-    moveId: String,
+    arrivalId: String,
 
     @RequestBody
     @Valid @NotNull
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): ConfirmArrivalResponse = confirmationService.confirmArrival(moveId, confirmArrivalDetail)
+  ): ConfirmArrivalResponse = confirmationService.confirmArrival(Confirmation.Expected(arrivalId, confirmArrivalDetail))
 }
