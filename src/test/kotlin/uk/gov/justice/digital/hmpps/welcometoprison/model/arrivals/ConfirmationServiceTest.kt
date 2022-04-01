@@ -8,12 +8,13 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
@@ -29,15 +30,14 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.stream.Stream
 
-class ArrivalsServiceConfirmArrivalTest {
+class ConfirmationServiceTest {
   private val prisonService: PrisonService = mock()
-  private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
-  private val confirmedArrivalService: ConfirmedArrivalService = mock()
+  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
   private val locationFormatter: LocationFormatter = LocationFormatter()
 
-  private val arrivalsService = ArrivalsService(
-    basmService, prisonService, prisonerSearchService, confirmedArrivalService, locationFormatter, FIXED_CLOCK
+  private val confirmationService = ConfirmationService(
+    prisonService, prisonerSearchService, confirmedArrivalRepository, locationFormatter, FIXED_CLOCK
   )
 
   @Test
@@ -56,7 +56,7 @@ class ArrivalsServiceConfirmArrivalTest {
     )
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
     assertThatThrownBy {
-      arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
     }.hasMessage("Prisoner: '$PRISON_NUMBER' do not have assigned living unit")
   }
 
@@ -65,7 +65,8 @@ class ArrivalsServiceConfirmArrivalTest {
     whenever(prisonService.createOffender(any())).thenReturn(PRISON_NUMBER)
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
 
-    val response = arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null))
+    val response =
+      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null))
 
     assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
 
@@ -77,13 +78,18 @@ class ArrivalsServiceConfirmArrivalTest {
       )
     }
 
-    verify(confirmedArrivalService).add(
-      MOVE_ID,
-      PRISON_NUMBER,
-      PRISON_ID,
-      BOOKING_ID,
-      BOOKING_IN_TIME.toLocalDate(),
-      ArrivalType.NEW_TO_PRISON
+    verify(confirmedArrivalRepository).save(
+      refEq(
+        ConfirmedArrival(
+          movementId = MOVE_ID,
+          prisonNumber = PRISON_NUMBER,
+          prisonId = PRISON_ID,
+          bookingId = BOOKING_ID,
+          arrivalDate = BOOKING_IN_TIME.toLocalDate(),
+          arrivalType = ArrivalType.NEW_TO_PRISON,
+          timestamp = LocalDateTime.now(FIXED_CLOCK)
+        )
+      )
     )
   }
 
@@ -113,16 +119,8 @@ class ArrivalsServiceConfirmArrivalTest {
       )
     )
 
-    whenever(basmService.getArrival(any())).thenReturn(
-      ARRIVAL_PROTOTYPE.copy(
-        prisonNumber = PRISON_NUMBER,
-        isCurrentPrisoner = true,
-        fromLocationType = LocationType.PRISON
-      )
-    )
-
     assertThatThrownBy {
-      arrivalsService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
+      confirmationService.confirmArrival(MOVE_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE)
     }.isInstanceOf(IllegalArgumentException::class.java)
 
     verify(prisonerSearchService).getPrisoner(PRISON_NUMBER)
@@ -144,15 +142,9 @@ class ArrivalsServiceConfirmArrivalTest {
       )
     )
 
-    whenever(basmService.getArrival(any())).thenReturn(
-      ARRIVAL_PROTOTYPE.copy(
-        prisonNumber = PRISON_NUMBER,
-        isCurrentPrisoner = true,
-      )
-    )
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
-    arrivalsService.confirmReturnFromCourt(
+    confirmationService.confirmReturnFromCourt(
       MOVE_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
@@ -176,28 +168,27 @@ class ArrivalsServiceConfirmArrivalTest {
       )
     )
 
-    whenever(basmService.getArrival(any())).thenReturn(
-      ARRIVAL_PROTOTYPE.copy(
-        prisonNumber = PRISON_NUMBER,
-        isCurrentPrisoner = true,
-      )
-    )
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
-    arrivalsService.confirmReturnFromCourt(
+    confirmationService.confirmReturnFromCourt(
       MOVE_ID,
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
     verify(
-      confirmedArrivalService
-    ).add(
-      MOVE_ID,
-      PRISON_NUMBER,
-      CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
-      BOOKING_ID,
-      LocalDate.now(FIXED_CLOCK),
-      ArrivalType.COURT_TRANSFER
+      confirmedArrivalRepository
+    ).save(
+      refEq(
+        ConfirmedArrival(
+          movementId = MOVE_ID,
+          prisonNumber = PRISON_NUMBER,
+          prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
+          bookingId = BOOKING_ID,
+          arrivalDate = LocalDate.now(FIXED_CLOCK),
+          arrivalType = ArrivalType.COURT_TRANSFER,
+          timestamp = LocalDateTime.now(FIXED_CLOCK)
+        )
+      )
     )
   }
 
@@ -232,7 +223,6 @@ class ArrivalsServiceConfirmArrivalTest {
     stubbing: () -> Unit,
     verification: (ConfirmArrivalDetail) -> InmateDetail
   ) {
-    whenever(basmService.getArrival(any())).thenReturn(ARRIVAL_PROTOTYPE.copy(prisonNumber = PRISON_NUMBER))
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
       PrisonerDetails(
         firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
@@ -247,21 +237,26 @@ class ArrivalsServiceConfirmArrivalTest {
       movementReasonCode = movementReasonCode
     )
 
-    val response = arrivalsService.confirmArrival(MOVE_ID, confirmArrivalDetail)
+    val response = confirmationService.confirmArrival(MOVE_ID, confirmArrivalDetail)
 
     assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
 
     verification(confirmArrivalDetail)
 
     verify(
-      confirmedArrivalService
-    ).add(
-      MOVE_ID,
-      PRISON_NUMBER,
-      PRISON_ID,
-      BOOKING_ID,
-      bookingInTime?.toLocalDate() ?: LocalDate.now(FIXED_CLOCK),
-      expectedArrivalType
+      confirmedArrivalRepository
+    ).save(
+      refEq(
+        ConfirmedArrival(
+          movementId = MOVE_ID,
+          prisonNumber = PRISON_NUMBER,
+          prisonId = PRISON_ID,
+          bookingId = BOOKING_ID,
+          arrivalDate = confirmArrivalDetail.bookingInTime?.toLocalDate() ?: LocalDate.now(FIXED_CLOCK),
+          arrivalType = expectedArrivalType,
+          timestamp = LocalDateTime.now(FIXED_CLOCK)
+        )
+      )
     )
   }
 
@@ -294,19 +289,6 @@ class ArrivalsServiceConfirmArrivalTest {
     )
     private val CONFIRM_COURT_RETURN_RESPONSE =
       ConfirmCourtReturnResponse(prisonNumber = PRISON_NUMBER, location = LOCATION, bookingId = BOOKING_ID)
-    val ARRIVAL_PROTOTYPE = Arrival(
-      id = MOVE_ID,
-      firstName = FIRST_NAME,
-      lastName = LAST_NAME,
-      dateOfBirth = DATE_OF_BIRTH,
-      prisonNumber = PRISON_NUMBER,
-      pncNumber = null,
-      date = LocalDate.now(FIXED_CLOCK),
-      fromLocation = "Kingston-upon-Hull Crown Court",
-      fromLocationId = "HULLCC",
-      fromLocationType = LocationType.COURT,
-      isCurrentPrisoner = false,
-    )
 
     val CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE = ConfirmArrivalDetail(
       firstName = FIRST_NAME,

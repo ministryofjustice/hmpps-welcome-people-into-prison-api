@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ArrivalsService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmArrivalResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import java.time.LocalDate
 import javax.validation.Valid
@@ -32,7 +33,8 @@ import javax.validation.constraints.NotNull
 @Validated
 @RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArrivalsResource(
-  private val arrivalsService: ArrivalsService
+  private val arrivalsService: ArrivalsService,
+  private val confirmationService: ConfirmationService
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -183,5 +185,5 @@ class ArrivalsResource(
     @RequestBody
     @Valid @NotNull
     confirmArrivalDetail: ConfirmArrivalDetail
-  ): ConfirmArrivalResponse = arrivalsService.confirmArrival(moveId, confirmArrivalDetail)
+  ): ConfirmArrivalResponse = confirmationService.confirmArrival(moveId, confirmArrivalDetail)
 }
