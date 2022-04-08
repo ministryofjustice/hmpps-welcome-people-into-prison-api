@@ -104,7 +104,7 @@ fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = empt
 fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-fun <T> propogateClientError(exception: WebClientResponseException, message: String): Mono<T> =
+fun <T> propagateClientError(exception: WebClientResponseException, message: String): Mono<T> =
   if (exception.statusCode.is4xxClientError) Mono.error(ClientException(exception, message)) else Mono.error(exception)
 
 @Component
@@ -113,9 +113,14 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
     webClient.get()
       .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
       .retrieve()
-      .bodyToMono(ByteArray::class.java).block()
-
-
+      .bodyToMono(ByteArray::class.java)
+      .onErrorResume(WebClientResponseException::class.java) {
+        propagateClientError(
+          it,
+          "Client error when posting to /api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false"
+        )
+      }
+      .block() ?: throw RuntimeException()
 
   fun getAgency(agencyId: String): Prison? =
     webClient.get()
@@ -149,7 +154,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders"
         )
@@ -166,7 +171,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders/$offenderNo/booking"
         )
@@ -183,7 +188,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders/$offenderNo/recall"
         )
@@ -200,7 +205,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders/$offenderNo/transfer-in"
         )
@@ -217,7 +222,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival"
         )
@@ -231,7 +236,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propogateClientError(
+        propagateClientError(
           it,
           "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in"
         )

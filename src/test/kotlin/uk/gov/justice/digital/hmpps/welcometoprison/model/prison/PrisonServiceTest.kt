@@ -8,6 +8,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import java.time.LocalDate
 
@@ -41,6 +42,15 @@ class PrisonServiceTest {
     val result = prisonService.getPrisonerImage("A12345")
 
     assertThat(result).isEqualTo(prisonImage)
+  }
+
+  @Test
+  fun `throw ClientException when prisoner image not exist`() {
+    whenever(prisonApiClient.getPrisonerImage(any())).thenThrow(ClientException::class.java)
+
+    assertThatThrownBy {
+      prisonApiClient.getPrisonerImage("A12345")
+    }.isInstanceOf(ClientException::class.java)
   }
 
   @Test

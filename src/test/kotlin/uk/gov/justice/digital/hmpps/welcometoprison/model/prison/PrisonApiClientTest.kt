@@ -186,6 +186,26 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `getImageWhenImageNotExist`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubGetImage404(offenderNumber)
+
+    assertThatThrownBy {
+      prisonApiClient.getPrisonerImage(offenderNumber)
+    }.isInstanceOf(ClientException::class.java)
+  }
+
+  @Test
+  fun `getPrisonerImage`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubGetImage(offenderNumber)
+    var byteArray = prisonApiClient.getPrisonerImage(offenderNumber)
+    assertThat(byteArray).isNotEmpty()
+  }
+
+  @Test
   fun `Recall offender`() {
     val offenderNumber = "ABC123A"
 
