@@ -471,7 +471,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeader("Content-Type", MediaType.IMAGE_JPEG_VALUE)
             .withStatus(200)
-            .withBodyFile("img/image.jpeg")
+            .withBodyFile("img/image.png")
         )
     )
   }

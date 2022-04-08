@@ -28,7 +28,7 @@ class PrisonImageResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns image in expected format`() {
-      var image = javaClass.getResourceAsStream("/__files/img/image.jpeg").readBytes()
+      var image = javaClass.getResourceAsStream("/__files/img/image.png").readBytes()
       val prisonNumber = "A12345"
 
       prisonApiMockServer.stubGetImage(prisonNumber)
