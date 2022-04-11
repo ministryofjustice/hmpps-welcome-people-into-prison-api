@@ -442,6 +442,40 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
+  fun stubGetImage404(offenderNumber: String) {
+    stubFor(
+      get("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(404)
+            .withBody(
+              """
+              {
+                "status": 404,
+                "userMessage": "Resource with id [$offenderNumber] not found.",
+                "developerMessage": "Resource with id [$offenderNumber] not found."
+              }
+            """
+            )
+
+        )
+    )
+  }
+
+  fun stubGetImage(offenderNumber: String) {
+    stubFor(
+      get("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.IMAGE_JPEG_VALUE)
+            .withStatus(200)
+            .withBodyFile("img/image.png")
+        )
+    )
+  }
+
   fun stubGetTemporaryAbsencesWithTwoRecords(agencyId: String) {
     stubFor(
       get("/api/movements/agency/$agencyId/temporary-absences")
