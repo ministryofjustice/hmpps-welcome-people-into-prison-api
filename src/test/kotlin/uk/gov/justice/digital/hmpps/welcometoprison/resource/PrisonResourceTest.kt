@@ -2,25 +2,10 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.UserCaseLoad
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import java.time.LocalDate
 
 @Suppress("ClassName")
 class PrisonResourceTest : IntegrationTestBase() {
-  @MockBean
-  private lateinit var prisonService: PrisonService
-
-  @MockBean
-  private lateinit var prisonerSearchService: PrisonerSearchService
 
   @Nested
   inner class `Get Prison` {
@@ -42,8 +27,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `Returns prison name as description`() {
-
-      whenever(prisonService.getPrison(any())).thenReturn(Prison(prisonName = "Nottingham (HMP)"))
+      prisonRegisterMockServer.stubGetPrison("NMI")
 
       webTestClient.get()
         .uri("/prison/NMI")
@@ -52,8 +36,6 @@ class PrisonResourceTest : IntegrationTestBase() {
         .expectStatus().isOk
         .expectBody()
         .jsonPath("description").isEqualTo("Nottingham (HMP)")
-
-      verify(prisonService).getPrison("NMI")
     }
   }
 
@@ -68,15 +50,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `Returns case loads for a user`() {
-
-      whenever(prisonService.getUserCaseLoads()).thenReturn(
-        listOf(
-          UserCaseLoad(
-            caseLoadId = "MDI",
-            description = "Moorland Closed (HMP & YOI)"
-          )
-        )
-      )
+      prisonApiMockServer.stubGetUserCaseLoads()
 
       webTestClient.get()
         .uri("/prison/users/me/caseLoads")
@@ -100,6 +74,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `Requires correct role`() {
+      prisonerSearchMockServer.stubGetPrisoner(200)
       webTestClient.get().uri("/prisoners/A1234BC")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
@@ -109,6 +84,7 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `User has correct role`() {
+      prisonerSearchMockServer.stubGetPrisoner(200)
       webTestClient.get().uri("/prisoners/A1234BC")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
@@ -117,34 +93,20 @@ class PrisonResourceTest : IntegrationTestBase() {
 
     @Test
     fun `Returns prisoner details`() {
-
-      whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        PrisonerDetails(
-          firstName = "Jim",
-          lastName = "Smith",
-          dateOfBirth = LocalDate.of(1970, 12, 25),
-          prisonNumber = "A1234BC",
-          pncNumber = "11/1234",
-          croNumber = "12/4321",
-          isCurrentPrisoner = false,
-          sex = "Male"
-        )
-      )
+      prisonerSearchMockServer.stubGetPrisoner(200)
 
       webTestClient.get()
-        .uri("/prisoners/A1234BC")
+        .uri("/prisoners/A1278AA")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
         .expectBody()
         .jsonPath("firstName").isEqualTo("Jim")
         .jsonPath("lastName").isEqualTo("Smith")
-        .jsonPath("dateOfBirth").isEqualTo("1970-12-25")
-        .jsonPath("prisonNumber").isEqualTo("A1234BC")
-        .jsonPath("pncNumber").isEqualTo("11/1234")
-        .jsonPath("croNumber").isEqualTo("12/4321")
-
-      verify(prisonerSearchService).getPrisoner("A1234BC")
+        .jsonPath("dateOfBirth").isEqualTo("1991-07-31")
+        .jsonPath("prisonNumber").isEqualTo("A1278AA")
+        .jsonPath("pncNumber").isEqualTo("1234/1234589A")
+        .jsonPath("croNumber").isEqualTo("SF80/655108T")
     }
   }
 }
