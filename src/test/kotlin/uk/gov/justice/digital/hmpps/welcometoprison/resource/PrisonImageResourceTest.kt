@@ -43,7 +43,7 @@ class PrisonImageResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `return 404 when image not found`() {
+    fun `returns 404 when image not found`() {
       val prisonNumber = "A12345"
 
       prisonApiMockServer.stubGetImage404(prisonNumber)

@@ -186,7 +186,7 @@ class PrisonApiClientTest {
   }
 
   @Test
-  fun `getNullByteArrayWhenWhenImageNotExist`() {
+  fun `getNullByteArrayWhenImageNotExist`() {
     val offenderNumber = "ABC123A"
 
     mockServer.stubGetImage404(offenderNumber)
