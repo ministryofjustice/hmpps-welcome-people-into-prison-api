@@ -8,7 +8,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import java.time.LocalDate
 
@@ -45,12 +44,12 @@ class PrisonServiceTest {
   }
 
   @Test
-  fun `throw ClientException when prisoner image not exist`() {
-    whenever(prisonApiClient.getPrisonerImage(any())).thenThrow(ClientException::class.java)
+  fun `throw NotFoundException when prisoner image not exist`() {
+    whenever(prisonApiClient.getPrisonerImage(any())).thenReturn(null)
 
     assertThatThrownBy {
-      prisonApiClient.getPrisonerImage("A12345")
-    }.isInstanceOf(ClientException::class.java)
+      prisonService.getPrisonerImage("A12345")
+    }.isInstanceOf(NotFoundException::class.java)
   }
 
   @Test

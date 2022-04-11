@@ -43,7 +43,7 @@ class PrisonImageResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `returns 404 when image not found`() {
+    fun `return 404 when image not found`() {
       val prisonNumber = "A12345"
 
       prisonApiMockServer.stubGetImage404(prisonNumber)
@@ -51,7 +51,6 @@ class PrisonImageResourceTest : IntegrationTestBase() {
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isNotFound
-        .expectBody().jsonPath("userMessage").isEqualTo("Exception calling up-stream service from Wpip-Api")
     }
   }
 }
