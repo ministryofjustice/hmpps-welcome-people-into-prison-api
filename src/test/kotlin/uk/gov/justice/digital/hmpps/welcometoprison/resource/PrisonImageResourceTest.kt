@@ -51,7 +51,6 @@ class PrisonImageResourceTest : IntegrationTestBase() {
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isNotFound
-        .expectBody().jsonPath("userMessage").isEqualTo("Exception calling up-stream service from Wpip-Api")
     }
   }
 }

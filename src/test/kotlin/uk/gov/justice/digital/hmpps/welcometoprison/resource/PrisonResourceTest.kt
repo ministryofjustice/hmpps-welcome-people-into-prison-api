@@ -37,6 +37,17 @@ class PrisonResourceTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("description").isEqualTo("Nottingham (HMP)")
     }
+
+    @Test
+    fun `Returns 404 when prison name not exist`() {
+      prisonRegisterMockServer.stubGetPrison("NMI", 404)
+
+      webTestClient.get()
+        .uri("/prison/NMI")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isNotFound
+    }
   }
 
   @Nested

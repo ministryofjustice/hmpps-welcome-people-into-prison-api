@@ -14,7 +14,9 @@ class PrisonService(
 
 ) {
 
-  fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
+  fun getPrisonerImage(prisonNumber: String): ByteArray? =
+    prisonApiClient.getPrisonerImage(prisonNumber)
+      ?: throw NotFoundException("Could not find image for: '$prisonNumber'")
 
   fun getPrison(prisonId: String): Prison =
     prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
@@ -77,7 +79,8 @@ class PrisonService(
       prisonNumber,
       CourtTransferIn(prisonId)
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit?.description ?: throw IllegalArgumentException("prisoner: '$prisonNumber' do not have assigned living unit")
+    val livingUnitName = inmateDetail.assignedLivingUnit?.description
+      ?: throw IllegalArgumentException("prisoner: '$prisonNumber' do not have assigned living unit")
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
       location = locationFormatter.format(livingUnitName),

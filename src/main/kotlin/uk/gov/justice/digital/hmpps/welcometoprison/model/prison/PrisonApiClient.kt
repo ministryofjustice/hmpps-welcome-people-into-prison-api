@@ -114,13 +114,8 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
       .retrieve()
       .bodyToMono(ByteArray::class.java)
-      .onErrorResume(WebClientResponseException::class.java) {
-        propagateClientError(
-          it,
-          "Client error when posting to /api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false"
-        )
-      }
-      .block() ?: throw RuntimeException()
+      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+      .block()
 
   fun getAgency(agencyId: String): Prison? =
     webClient.get()
