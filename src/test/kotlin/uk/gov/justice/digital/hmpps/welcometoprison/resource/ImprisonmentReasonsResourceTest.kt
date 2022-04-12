@@ -75,11 +75,11 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("$[2].description").isEqualTo("Sentenced - fixed length of time")
         .jsonPath("$[2].imprisonmentStatusCode").isEqualTo("RECEP_DET")
-        .jsonPath("$[2].secondLevelTitle").isEqualTo("What is the type of determinate sentence?")
-        .jsonPath("$[2].movementReasons[0].description").isEqualTo("Extended sentence for public protection")
-        .jsonPath("$[2].movementReasons[0].movementReasonCode").isEqualTo("26")
-        .jsonPath("$[2].movementReasons[1].description").isEqualTo("Imprisonment without option of a fine")
-        .jsonPath("$[2].movementReasons[1].movementReasonCode").isEqualTo("I")
+        .jsonPath("$[2].secondLevelTitle").isEqualTo("What is the type of fixed sentence?")
+        .jsonPath("$[2].movementReasons[0].description").isEqualTo("Imprisonment without option of a fine")
+        .jsonPath("$[2].movementReasons[0].movementReasonCode").isEqualTo("I")
+        .jsonPath("$[2].movementReasons[1].description").isEqualTo("Extended sentence for public protection")
+        .jsonPath("$[2].movementReasons[1].movementReasonCode").isEqualTo("26")
         .jsonPath("$[2].movementReasons.length()").isEqualTo(4)
     }
   }

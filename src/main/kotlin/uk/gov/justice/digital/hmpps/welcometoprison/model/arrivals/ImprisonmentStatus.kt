@@ -15,7 +15,7 @@ data class ImprisonmentStatus(
   @Schema(description = "Associated Nomis code", example = "SENT")
   val imprisonmentStatusCode: String,
 
-  @Schema(description = "Title for Movement reasons page, (if required)", example = "What is the type of determinate sentence?")
+  @Schema(description = "Title for Movement reasons page, (if required)", example = "What is the type of fixed sentence?")
   val secondLevelTitle: String? = null,
 
   @Schema(description = "Validation message", example = "Select the type of the determinate sentence")

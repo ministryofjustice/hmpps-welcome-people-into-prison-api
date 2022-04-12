@@ -61,16 +61,16 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     code = "determinate-sentence",
     description = "Sentenced - fixed length of time",
     imprisonmentStatusCode = "RECEP_DET",
-    secondLevelTitle = "What is the type of determinate sentence?",
-    secondLevelValidationMessage = "Select the type of determinate sentence",
+    secondLevelTitle = "What is the type of fixed sentence?",
+    secondLevelValidationMessage = "Select the type of fixed-length sentence",
     movementReasons = listOf(
-      MovementReason(
-        description = "Extended sentence for public protection",
-        movementReasonCode = "26"
-      ),
       MovementReason(
         description = "Imprisonment without option of a fine",
         movementReasonCode = "I"
+      ),
+      MovementReason(
+        description = "Extended sentence for public protection",
+        movementReasonCode = "26"
       ),
       MovementReason(
         description = "Intermittent custodial sentence",
