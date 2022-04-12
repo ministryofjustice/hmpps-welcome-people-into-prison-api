@@ -86,9 +86,13 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     code = "indeterminate-sentence",
     description = "Sentenced for life",
     imprisonmentStatusCode = "RECEP_IND",
-    secondLevelTitle = "What is the type of indeterminate sentence?",
-    secondLevelValidationMessage = "Select the type of indeterminate sentence",
+    secondLevelTitle = "What is the type of life sentence?",
+    secondLevelValidationMessage = "Select the type of life sentence",
     movementReasons = listOf(
+      MovementReason(
+        description = "Imprisonment without option of a fine",
+        movementReasonCode = "I"
+      ),
       MovementReason(
         description = "Custody for life - aged under 18",
         movementReasonCode = "27"
