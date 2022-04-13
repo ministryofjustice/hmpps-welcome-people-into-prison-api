@@ -72,7 +72,6 @@ class TemporaryAbsencesResource(
   )
   @GetMapping(
     value = [
-      "/temporary-absences/{prisonId}",
       "/prison/{prisonId}/temporary-absences"
     ],
     produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -127,7 +126,6 @@ class TemporaryAbsencesResource(
   )
   @GetMapping(
     path = [
-      "/temporary-absences/{prisonId}/{prisonNumber}",
       "/prison/{prisonId}/temporary-absences/{prisonNumber}"
     ]
   )
