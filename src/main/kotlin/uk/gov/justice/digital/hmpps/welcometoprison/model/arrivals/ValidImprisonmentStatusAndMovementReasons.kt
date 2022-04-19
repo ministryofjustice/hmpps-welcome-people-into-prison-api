@@ -37,7 +37,7 @@ val RECALL_MOVEMENT_REASONS = listOf(
 
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
   code = "recall",
-  description = "Recall",
+  description = "Recalled",
   imprisonmentStatusCode = "RECEP_REC",
   secondLevelTitle = "Where is the prisoner being recalled from?",
   secondLevelValidationMessage = "Select where the person is being recalled from",
@@ -53,24 +53,24 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ),
   ImprisonmentStatus(
     code = "convicted-unsentenced",
-    description = "Convicted unsentenced",
+    description = "Convicted - waiting to be sentenced",
     imprisonmentStatusCode = "RECEP_UNS",
     movementReasons = listOf(MovementReason(movementReasonCode = "V"))
   ),
   ImprisonmentStatus(
     code = "determinate-sentence",
-    description = "Determinate sentence",
+    description = "Sentenced - fixed length of time",
     imprisonmentStatusCode = "RECEP_DET",
-    secondLevelTitle = "What is the type of determinate sentence?",
-    secondLevelValidationMessage = "Select the type of determinate sentence",
+    secondLevelTitle = "What is the type of fixed sentence?",
+    secondLevelValidationMessage = "Select the type of fixed-length sentence",
     movementReasons = listOf(
-      MovementReason(
-        description = "Extended sentence for public protection",
-        movementReasonCode = "26"
-      ),
       MovementReason(
         description = "Imprisonment without option of a fine",
         movementReasonCode = "I"
+      ),
+      MovementReason(
+        description = "Extended sentence for public protection",
+        movementReasonCode = "26"
       ),
       MovementReason(
         description = "Intermittent custodial sentence",
@@ -84,11 +84,15 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
   ),
   ImprisonmentStatus(
     code = "indeterminate-sentence",
-    description = "Indeterminate sentence",
+    description = "Sentenced for life",
     imprisonmentStatusCode = "RECEP_IND",
-    secondLevelTitle = "What is the type of indeterminate sentence?",
-    secondLevelValidationMessage = "Select the type of indeterminate sentence",
+    secondLevelTitle = "What is the type of life sentence?",
+    secondLevelValidationMessage = "Select the type of life sentence",
     movementReasons = listOf(
+      MovementReason(
+        description = "Imprisonment without option of a fine",
+        movementReasonCode = "I"
+      ),
       MovementReason(
         description = "Custody for life - aged under 18",
         movementReasonCode = "27"

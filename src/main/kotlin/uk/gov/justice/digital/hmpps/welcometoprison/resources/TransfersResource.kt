@@ -75,7 +75,6 @@ class TransfersResource(
   )
   @GetMapping(
     path = [
-      "/prisons/{prisonId}/transfers/enroute",
       "/prisons/{prisonId}/transfers"
     ]
   )
@@ -129,8 +128,7 @@ class TransfersResource(
   )
   @GetMapping(
     path = [
-      "/prisons/{prisonId}/transfers/enroute/{prisonNumber}",
-      "/prisons/{prisonId}/transfers/{prisonNumber}"
+      "/prisons/{prisonId}/transfers/{prisonNumber}",
     ]
   )
   fun getTransfer(
