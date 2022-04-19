@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientExceptionWithErrorCode
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import javax.validation.ValidationException
 
@@ -114,6 +116,21 @@ class ExceptionHandler {
         )
       )
   }
+  @ExceptionHandler(ClientExceptionWithErrorCode::class)
+  fun handleClientExceptionWithErrorCode(e: ClientExceptionWithErrorCode): ResponseEntity<ErrorResponse> {
+    log.warn("Client exception: {} {}", e.message, e.cause.responseBodyAsString, e)
+    val message = "Exception calling up-stream service from Wpip-Api"
+    return ResponseEntity
+      .status(e.httpStatusCode)
+      .body(
+        ErrorResponse(
+          status = e.httpStatusCode,
+          errorCode = e.errorCode,
+          userMessage = message,
+          developerMessage = message
+        )
+      )
+  }
 
   @ExceptionHandler(java.lang.Exception::class)
   fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {
@@ -135,14 +152,14 @@ class ExceptionHandler {
 
 data class ErrorResponse(
   val status: Int,
-  val errorCode: Int? = null,
+  val errorCode: ErrorCode? = null,
   val userMessage: String? = null,
   val developerMessage: String? = null,
   val moreInfo: String? = null
 ) {
   constructor(
     status: HttpStatus,
-    errorCode: Int? = null,
+    errorCode: ErrorCode? = null,
     userMessage: String? = null,
     developerMessage: String? = null,
     moreInfo: String? = null

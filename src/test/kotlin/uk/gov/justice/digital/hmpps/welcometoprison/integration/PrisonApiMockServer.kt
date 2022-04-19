@@ -85,6 +85,24 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubCreateOffenderFailsPrisonerAlreadyExist() {
+    stubFor(
+      post("/api/offenders")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(400)
+            .withBody(
+              """{
+    "status": 400,
+    "userMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO",
+    "developerMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO"
+}"""
+            )
+        )
+    )
+  }
+
   fun stubAdmitOnNewBooking(offenderNo: String) {
     stubFor(
       post("/api/offenders/$offenderNo/booking")
@@ -161,6 +179,26 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A0001AA",
                 "developerMessage": "No prisoner found for prisoner number A0001AA"
               }
+            """
+            )
+        )
+    )
+  }
+
+  fun stubAdmitOnNewBookingFailsNoCapacity(offenderNo: String) {
+    stubFor(
+      post("/api/offenders/$offenderNo/booking")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(409)
+            .withBody(
+              """
+             {
+    "status": 409,
+    "userMessage": "The cell MDI-RECP does not have any available capacity",
+    "developerMessage": "The cell MDI-RECP does not have any available capacity"
+}
             """
             )
         )
@@ -325,6 +363,25 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A0001AA",
                 "developerMessage": "No prisoner found for prisoner number A0001AA"
               }
+            """
+            )
+        )
+    )
+  }
+  fun stubTransferInOffenderFailsNoCapacity(offenderNo: String) {
+    stubFor(
+      put("/api/offenders/$offenderNo/transfer-in")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(409)
+            .withBody(
+              """
+             {
+    "status": 409,
+    "userMessage": "The cell MDI-RECP does not have any available capacity",
+    "developerMessage": "The cell MDI-RECP does not have any available capacity"
+}
             """
             )
         )

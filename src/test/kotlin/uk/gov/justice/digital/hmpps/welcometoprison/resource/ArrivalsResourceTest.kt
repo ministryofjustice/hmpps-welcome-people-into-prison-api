@@ -295,5 +295,55 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .expectStatus().is5xxServerError
         .expectBody()
     }
+    @Test
+    fun `create and book - prison-api create booking fails because of no capacity`() {
+      val prisonNumber = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBookingFailsNoCapacity(prisonNumber)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is4xxClientError
+        .expectBody().json(
+          """
+        {
+          "status": 409,
+          "errorCode": "NO_CELL_CAPACITY",
+          "moreInfo": null
+        }
+          """.trimIndent()
+        )
+    }
+    @Test
+    fun `create and book - prison-api create booking fails because prisoner already exist`() {
+      val prisonNumber = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffenderFailsPrisonerAlreadyExist()
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is4xxClientError
+        .expectBody().json(
+          """
+        {
+          "status": 400,
+          "errorCode": "PRISONER_ALREADY_EXIST",
+          "moreInfo": null
+        }
+          """.trimIndent()
+        )
+    }
   }
 }

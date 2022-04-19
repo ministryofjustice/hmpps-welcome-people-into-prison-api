@@ -7,6 +7,8 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientExceptionWithErrorCode
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,7 +28,6 @@ data class CreateOffenderDetail(
 )
 
 data class AdmitOnNewBookingDetail(
-  // prisonId = agency id, eg "MDI"
   val prisonId: String,
   val fromLocationId: String? = null,
   val movementReasonCode: String,
@@ -107,6 +108,13 @@ fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus)
 fun <T> propagateClientError(exception: WebClientResponseException, message: String): Mono<T> =
   if (exception.statusCode.is4xxClientError) Mono.error(ClientException(exception, message)) else Mono.error(exception)
 
+fun <T> propagateClientErrorWithErrorCode(
+  exception: WebClientResponseException,
+  message: String,
+  errorCode: ErrorCode
+): Mono<T> =
+  Mono.error(ClientExceptionWithErrorCode(exception, message, errorCode))
+
 @Component
 class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
   fun getPrisonerImage(offenderNumber: String): ByteArray? =
@@ -149,10 +157,20 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propagateClientError(
-          it,
-          "Client error when posting to /api/offenders"
-        )
+        if (it.rawStatusCode == 400 && !it.responseBodyAsString.isNullOrEmpty() &&
+          it.responseBodyAsString!!.contains("already exists")
+        ) {
+          propagateClientErrorWithErrorCode(
+            it,
+            "Client error when posting to /api/offenders",
+            ErrorCode.PRISONER_ALREADY_EXIST
+          )
+        } else {
+          propagateClientError(
+            it,
+            "Client error when posting to /api/offenders"
+          )
+        }
       }
       .block() ?: throw RuntimeException()
 
@@ -166,10 +184,19 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
       .onErrorResume(WebClientResponseException::class.java) {
-        propagateClientError(
-          it,
-          "Client error when posting to /api/offenders/$offenderNo/booking"
-        )
+        if (it.rawStatusCode == 409) {
+          propagateClientErrorWithErrorCode(
+            it,
+            "Client error when posting to /api/offenders/$offenderNo/booking",
+            ErrorCode.NO_CELL_CAPACITY
+
+          )
+        } else {
+          propagateClientError(
+            it,
+            "Client error when posting to /api/offenders/$offenderNo/booking"
+          )
+        }
       }
       .block() ?: throw RuntimeException()
 
