@@ -365,7 +365,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           """
         {
           "status": 400,
-          "errorCode": "PRISONER_ALREADY_EXIST",
           "moreInfo": null
         }
           """.trimIndent()

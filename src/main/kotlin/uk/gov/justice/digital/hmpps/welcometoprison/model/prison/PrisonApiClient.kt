@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -7,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientExceptionWithErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
@@ -96,6 +97,14 @@ data class AssignedLivingUnit(
   val agencyName: String
 )
 
+data class ErrorResponse(
+  val status: Int? = null,
+  val errorCode: Int? = null,
+  val userMessage: String? = null,
+  val developerMessage: String? = null,
+  val moreInfo: String? = null
+)
+
 data class UserCaseLoad(
   val caseLoadId: String,
   val description: String,
@@ -105,22 +114,23 @@ fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = empt
 fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-fun <T> propagateClientError(exception: WebClientResponseException, message: String): Mono<T> =
-  if (exception.statusCode.is4xxClientError) Mono.error(ClientException(exception, message)) else Mono.error(exception)
-
 fun <T> propagateClientError(
-  exception: ErrorResponseHandler,
+  exception: WebClientResponseException,
   message: String
-): Mono<T> =
-  if (exception.statusCode.is4xxClientError)
-  Mono.error(
-    ClientExceptionWithErrorCode(
-      exception,
-      message,
-      ErrorCode.valueOf(exception.getErrorResponse()?.errorCode)
+): Mono<T> = (
+  if (exception.statusCode.is4xxClientError) {
+    val mapper = jacksonObjectMapper()
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+    Mono.error(
+      ClientException(
+        exception,
+        message,
+        ErrorCode.valueOf(mapper.readValue(exception.responseBodyAsString, ErrorResponse::class.java)?.errorCode)
+      )
     )
+  } else Mono.error(exception)
   )
-  else Mono.error(exception)
 
 @Component
 class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
@@ -163,7 +173,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
-      .onErrorResume(ErrorResponseHandler::class.java) {
+      .onErrorResume(WebClientResponseException::class.java) {
         propagateClientError(
           it,
           "Client error when posting to /api/offenders"
@@ -180,11 +190,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
-      .onErrorResume(ErrorResponseHandler::class.java) {
-          propagateClientError(
-            it,
-            "Client error when posting to /api/offenders/$offenderNo/booking"
-          )
+      .onErrorResume(WebClientResponseException::class.java) {
+        propagateClientError(
+          it,
+          "Client error when posting to /api/offenders/$offenderNo/booking"
+        )
       }
       .block() ?: throw RuntimeException()
 

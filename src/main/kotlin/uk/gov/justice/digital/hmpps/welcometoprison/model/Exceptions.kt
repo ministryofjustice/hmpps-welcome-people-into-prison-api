@@ -20,12 +20,7 @@ enum class ErrorCode {
 
 data class NotFoundException(override val message: String) : RuntimeException(message)
 
-data class ClientException(override val cause: WebClientResponseException, override val message: String) :
-  RuntimeException(message, cause) {
-  val httpStatusCode: HttpStatus by cause::statusCode
-}
-
-data class ClientExceptionWithErrorCode(
+data class ClientException(
   override val cause: WebClientResponseException,
   override val message: String,
   val errorCode: ErrorCode?
