@@ -108,12 +108,19 @@ fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus)
 fun <T> propagateClientError(exception: WebClientResponseException, message: String): Mono<T> =
   if (exception.statusCode.is4xxClientError) Mono.error(ClientException(exception, message)) else Mono.error(exception)
 
-fun <T> propagateClientErrorWithErrorCode(
-  exception: WebClientResponseException,
-  message: String,
-  errorCode: ErrorCode
+fun <T> propagateClientError(
+  exception: ErrorResponseHandler,
+  message: String
 ): Mono<T> =
-  Mono.error(ClientExceptionWithErrorCode(exception, message, errorCode))
+  if (exception.statusCode.is4xxClientError)
+  Mono.error(
+    ClientExceptionWithErrorCode(
+      exception,
+      message,
+      ErrorCode.valueOf(exception.getErrorResponse()?.errorCode)
+    )
+  )
+  else Mono.error(exception)
 
 @Component
 class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
@@ -156,21 +163,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
-      .onErrorResume(WebClientResponseException::class.java) {
-        if (it.rawStatusCode == 400 && !it.responseBodyAsString.isNullOrEmpty() &&
-          it.responseBodyAsString!!.contains("already exists")
-        ) {
-          propagateClientErrorWithErrorCode(
-            it,
-            "Client error when posting to /api/offenders",
-            ErrorCode.PRISONER_ALREADY_EXIST
-          )
-        } else {
-          propagateClientError(
-            it,
-            "Client error when posting to /api/offenders"
-          )
-        }
+      .onErrorResume(ErrorResponseHandler::class.java) {
+        propagateClientError(
+          it,
+          "Client error when posting to /api/offenders"
+        )
       }
       .block() ?: throw RuntimeException()
 
@@ -183,20 +180,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .bodyToMono(InmateDetail::class.java)
-      .onErrorResume(WebClientResponseException::class.java) {
-        if (it.rawStatusCode == 409) {
-          propagateClientErrorWithErrorCode(
-            it,
-            "Client error when posting to /api/offenders/$offenderNo/booking",
-            ErrorCode.NO_CELL_CAPACITY
-
-          )
-        } else {
+      .onErrorResume(ErrorResponseHandler::class.java) {
           propagateClientError(
             it,
             "Client error when posting to /api/offenders/$offenderNo/booking"
           )
-        }
       }
       .block() ?: throw RuntimeException()
 

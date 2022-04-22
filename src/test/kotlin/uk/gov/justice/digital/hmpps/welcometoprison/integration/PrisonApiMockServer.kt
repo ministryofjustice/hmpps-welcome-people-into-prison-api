@@ -95,6 +95,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
             .withBody(
               """{
     "status": 400,
+    "errorCode" : 30002,
     "userMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO",
     "developerMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO"
 }"""
@@ -102,6 +103,27 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+  /* This scenario represents situation when Prison Api do not sent errorCode due to old code
+  * We can remove it after  Prison Api Release
+  * */
+  fun stubCreateOffenderFailsPrisonerAlreadyExistWithoutErrorCode() {
+    stubFor(
+      post("/api/offenders")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(400)
+            .withBody(
+              """{
+    "status": 400,
+    "userMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO",
+    "developerMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO"
+}"""
+            )
+        )
+    )
+  }
+
 
   fun stubAdmitOnNewBooking(offenderNo: String) {
     stubFor(
@@ -196,6 +218,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
               """
              {
     "status": 409,
+    "errorCode" : 30001,
     "userMessage": "The cell MDI-RECP does not have any available capacity",
     "developerMessage": "The cell MDI-RECP does not have any available capacity"
 }
@@ -379,6 +402,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
               """
              {
     "status": 409,
+    "errorCode": 30001,
     "userMessage": "The cell MDI-RECP does not have any available capacity",
     "developerMessage": "The cell MDI-RECP does not have any available capacity"
 }
