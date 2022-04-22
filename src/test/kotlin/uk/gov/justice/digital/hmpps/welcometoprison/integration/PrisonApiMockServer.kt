@@ -124,7 +124,6 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-
   fun stubAdmitOnNewBooking(offenderNo: String) {
     stubFor(
       post("/api/offenders/$offenderNo/booking")

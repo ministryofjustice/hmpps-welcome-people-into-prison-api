@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
-
 class ErrorResponseHandlerTest {
 
  /* @Test
