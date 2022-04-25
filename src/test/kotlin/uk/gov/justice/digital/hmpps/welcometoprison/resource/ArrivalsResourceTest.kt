@@ -263,7 +263,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `create and book - prison-api create offender fails on a client error`() {
+    fun `create and book - prison-api create offender fails on a client error without proper error response`() {
 
       prisonApiMockServer.stubCreateOffenderFails(400)
 
@@ -274,7 +274,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
-        .expectStatus().is4xxClientError
+        .expectStatus().is5xxServerError
         .expectBody()
     }
 
