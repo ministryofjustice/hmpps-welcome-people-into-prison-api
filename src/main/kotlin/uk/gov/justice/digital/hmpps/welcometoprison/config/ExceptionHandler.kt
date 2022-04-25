@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.config
 
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import javax.validation.ValidationException
 
@@ -26,7 +26,7 @@ class ExceptionHandler {
       .status(BAD_REQUEST)
       .body(
         ErrorResponse(
-          status = BAD_REQUEST,
+          status = BAD_REQUEST.value(),
           userMessage = "Validation failure: ${e.message}",
           developerMessage = e.message
         )
@@ -40,7 +40,7 @@ class ExceptionHandler {
       .status(BAD_REQUEST)
       .body(
         ErrorResponse(
-          status = BAD_REQUEST,
+          status = BAD_REQUEST.value(),
           userMessage = "Validation failure: ${e.message}",
           developerMessage = e.message
         )
@@ -54,7 +54,7 @@ class ExceptionHandler {
       .status(NOT_FOUND)
       .body(
         ErrorResponse(
-          status = NOT_FOUND,
+          status = NOT_FOUND.value(),
           userMessage = "Resource not found",
           developerMessage = e.message
         )
@@ -68,7 +68,7 @@ class ExceptionHandler {
       .status(FORBIDDEN)
       .body(
         ErrorResponse(
-          status = FORBIDDEN,
+          status = FORBIDDEN.value(),
           userMessage = "Access denied",
         )
       )
@@ -81,7 +81,7 @@ class ExceptionHandler {
       .status(BAD_REQUEST)
       .body(
         ErrorResponse(
-          status = BAD_REQUEST,
+          status = BAD_REQUEST.value(),
           userMessage = "Missing request value",
         )
       )
@@ -94,7 +94,7 @@ class ExceptionHandler {
       .status(BAD_REQUEST)
       .body(
         ErrorResponse(
-          status = BAD_REQUEST,
+          status = BAD_REQUEST.value(),
           userMessage = "Argument type mismatch",
         )
       )
@@ -102,13 +102,23 @@ class ExceptionHandler {
 
   @ExceptionHandler(ClientException::class)
   fun handleClientException(e: ClientException): ResponseEntity<ErrorResponse> {
-    log.warn("Client exception: {} {}", e.message, e.cause.responseBodyAsString, e)
+    log.warn(
+      "Client exception: message {} status {} errorCode {} userMessage {} developerMessage {} moreInfo {}",
+      e.message,
+      e.response.status,
+      e.response.errorCode,
+      e.response.userMessage,
+      e.response.developerMessage,
+      e.response.moreInfo,
+      e
+    )
     val message = "Exception calling up-stream service from Wpip-Api"
     return ResponseEntity
-      .status(e.httpStatusCode)
+      .status(e.response.status ?: INTERNAL_SERVER_ERROR.value())
       .body(
         ErrorResponse(
-          status = e.httpStatusCode,
+          status = e.response.status,
+          errorCode = e.errorCode,
           userMessage = message,
           developerMessage = message
         )
@@ -122,7 +132,7 @@ class ExceptionHandler {
       .status(INTERNAL_SERVER_ERROR)
       .body(
         ErrorResponse(
-          status = INTERNAL_SERVER_ERROR,
+          status = INTERNAL_SERVER_ERROR.value(),
           userMessage = "Unexpected error",
         )
       )
@@ -134,18 +144,9 @@ class ExceptionHandler {
 }
 
 data class ErrorResponse(
-  val status: Int,
-  val errorCode: Int? = null,
+  val status: Int? = null,
+  val errorCode: ErrorCode? = null,
   val userMessage: String? = null,
   val developerMessage: String? = null,
   val moreInfo: String? = null
-) {
-  constructor(
-    status: HttpStatus,
-    errorCode: Int? = null,
-    userMessage: String? = null,
-    developerMessage: String? = null,
-    moreInfo: String? = null
-  ) :
-    this(status.value(), errorCode, userMessage, developerMessage, moreInfo)
-}
+)

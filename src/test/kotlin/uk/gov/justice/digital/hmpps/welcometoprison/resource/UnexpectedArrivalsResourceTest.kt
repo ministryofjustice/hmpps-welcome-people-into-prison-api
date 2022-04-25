@@ -127,7 +127,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `create and book - prison-api create offender fails on a client error`() {
+    fun `create and book - prison-api create offender fails on a client error without proper error response`() {
 
       prisonApiMockServer.stubCreateOffenderFails(400)
 
@@ -138,7 +138,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
-        .expectStatus().is4xxClientError
+        .expectStatus().is5xxServerError
         .expectBody()
     }
 
@@ -158,6 +158,57 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
+    }
+
+    @Test
+    fun `create and book - prison-api create booking fails because of no capacity`() {
+      val prisonNumber = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBookingFailsNoCapacity(prisonNumber)
+
+      webTestClient
+        .post()
+        .uri("/unexpected-arrivals/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is4xxClientError
+        .expectBody().json(
+          """
+        {
+          "status": 409,
+          "errorCode": "NO_CELL_CAPACITY",
+          "moreInfo": null
+        }
+          """.trimIndent()
+        )
+    }
+    @Test
+    fun `create and book - prison-api create booking fails because prisoner already exist`() {
+      val prisonNumber = "AA1111A"
+
+      prisonApiMockServer.stubCreateOffenderFailsPrisonerAlreadyExist()
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
+
+      webTestClient
+        .post()
+        .uri("/unexpected-arrivals/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().is4xxClientError
+        .expectBody().json(
+          """
+        {
+          "status": 400,
+          "errorCode": "PRISONER_ALREADY_EXIST",
+          "moreInfo": null
+        }
+          """.trimIndent()
+        )
     }
   }
 }
