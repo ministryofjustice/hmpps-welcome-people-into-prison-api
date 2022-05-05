@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
@@ -15,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import javax.validation.ValidationException
 
 @RestControllerAdvice
@@ -57,6 +59,20 @@ class ExceptionHandler {
           status = NOT_FOUND.value(),
           userMessage = "Resource not found",
           developerMessage = e.message
+        )
+      )
+  }
+
+  @ExceptionHandler(ConflictException::class)
+  fun handleConflictException(e: Exception): ResponseEntity<ErrorResponse> {
+    log.info("Conflict exception: {}", e.message)
+    return ResponseEntity
+      .status(CONFLICT)
+      .body(
+        ErrorResponse(
+          status = CONFLICT.value(),
+          userMessage = "Resource in illegal state",
+          developerMessage = "Resource in illegal state"
         )
       )
   }

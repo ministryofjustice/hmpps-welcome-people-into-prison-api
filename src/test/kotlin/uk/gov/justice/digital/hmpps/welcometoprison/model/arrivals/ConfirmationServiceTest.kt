@@ -14,6 +14,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
@@ -117,7 +118,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy {
       confirmationService.confirmArrival(Confirmation.Expected(ARRIVAL_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE))
-    }.isInstanceOf(IllegalArgumentException::class.java)
+    }.isInstanceOf(ConflictException::class.java)
 
     verify(prisonerSearchService).getPrisoner(PRISON_NUMBER)
   }
