@@ -65,7 +65,7 @@ class ExceptionHandler {
 
   @ExceptionHandler(ConflictException::class)
   fun handleConflictException(e: Exception): ResponseEntity<ErrorResponse> {
-    log.info("Conflict exception: {}", e.message)
+    log.warn("Conflict exception: {}", e.message)
     return ResponseEntity
       .status(CONFLICT)
       .body(
