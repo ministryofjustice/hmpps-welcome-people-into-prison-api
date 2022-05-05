@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
+import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
@@ -42,7 +43,7 @@ class ConfirmationService(
     val prisoner = prisonerSearchService.getPrisoner(confirmation.prisonNumber!!)
 
     with(prisoner) {
-      return if (isCurrentPrisoner) throw IllegalArgumentException("Confirming arrival of active prisoner: '$prisonNumber' is not supported.")
+      return if (isCurrentPrisoner) throw ConflictException("Confirming arrival of active prisoner: '$prisonNumber' is not supported.")
       else admitOffender(confirmation, prisonNumber)
     }
   }

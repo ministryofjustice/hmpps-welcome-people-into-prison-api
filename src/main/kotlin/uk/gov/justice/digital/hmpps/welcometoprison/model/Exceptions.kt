@@ -25,3 +25,5 @@ data class ClientException(
 ) : RuntimeException(message) {
   val errorCode: ErrorCode? = ErrorCode.valueOf(response.errorCode)
 }
+
+data class ConflictException(override val message: String) : RuntimeException(message)
