@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@3.14.3
+  hmpps: ministryofjustice/hmpps@5
 
 parameters:
   alerts-slack-channel:
@@ -15,7 +15,7 @@ jobs:
   validate:
     executor:
       name: hmpps/java
-      tag: "16.0"
+      tag: "17.0"
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_docker:
+      - hmpps/build_multiplatform_docker:
           name: build_docker
           filters:
             branches:
