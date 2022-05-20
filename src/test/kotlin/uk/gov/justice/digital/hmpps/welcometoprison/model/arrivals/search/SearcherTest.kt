@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher.Result
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher.SearchStrategy
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.CONSTANT
 
 class SearcherTest {
 
@@ -34,7 +35,7 @@ class SearcherTest {
   fun `Returns all results when no search term provided`() {
     val items = listOf(1, 2)
     val results = searcher.searchWithRelevance(null, items)
-    assertThat(results).containsExactly(Result(1, relevance = -1), Result(2, relevance = -1))
+    assertThat(results).containsExactly(Result(1, relevance = CONSTANT), Result(2, relevance = CONSTANT))
   }
 
   @Test
@@ -78,10 +79,10 @@ class SearcherTest {
     val items = listOf(1, 3, 6, 2)
     val results = searcher.searchWithRelevance(null, items)
     assertThat(results).containsExactly(
-      Result(1, relevance = -1),
-      Result(2, relevance = -1),
-      Result(3, relevance = -1),
-      Result(6, relevance = -1),
+      Result(1, relevance = CONSTANT),
+      Result(2, relevance = CONSTANT),
+      Result(3, relevance = CONSTANT),
+      Result(6, relevance = CONSTANT),
     )
   }
 
@@ -90,11 +91,11 @@ class SearcherTest {
     val items = listOf(1, 2, 3, 6, 2)
     val results = searcher.searchWithRelevance(null, items)
     assertThat(results).containsExactly(
-      Result(1, relevance = -1),
-      Result(2, relevance = -1),
-      Result(2, relevance = -1),
-      Result(3, relevance = -1),
-      Result(6, relevance = -1),
+      Result(1, relevance = CONSTANT),
+      Result(2, relevance = CONSTANT),
+      Result(2, relevance = CONSTANT),
+      Result(3, relevance = CONSTANT),
+      Result(6, relevance = CONSTANT),
     )
   }
 
