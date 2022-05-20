@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM openjdk:17-slim AS builder AS builder
+FROM --platform=$BUILDPLATFORM openjdk:17-slim AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
