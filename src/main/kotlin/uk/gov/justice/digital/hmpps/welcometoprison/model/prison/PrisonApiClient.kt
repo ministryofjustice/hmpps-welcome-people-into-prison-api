@@ -93,7 +93,7 @@ data class Movement(
   val toAgencyDescription: String? = null,
   val movementTime: LocalTime,
   val movementDateTime: LocalDateTime,
-  val location: String
+  val location: String? = null
 )
 
 /*
