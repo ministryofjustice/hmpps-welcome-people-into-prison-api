@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @JsonInclude(NON_NULL)
-@Schema(description = "Recent movements")
+@Schema(description = "Recent arrivals")
 data class RecentArrival(
   @Schema(description = "Prison number", example = "G4156GV")
   val prisonNumber: String,
@@ -17,7 +17,7 @@ data class RecentArrival(
   val firstName: String,
   @Schema(description = "Last name", example = "Brown")
   val lastName: String,
-  @Schema(description = "Movement date and time ", example = "2022-01-18T08:00:00")
+  @Schema(description = "Arrival date and time ", example = "2022-01-18T08:00:00")
   val movementDateTime: LocalDateTime,
   @Schema(description = "Location", example = "MDI-1-3-004")
   val location: String

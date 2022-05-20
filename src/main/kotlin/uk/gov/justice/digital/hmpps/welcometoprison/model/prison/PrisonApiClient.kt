@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 data class CreateOffenderDetail(
   val firstName: String,
@@ -258,7 +259,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
 
   fun getMovement(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime): List<Movement> =
     webClient.get()
-      .uri("api/movements/$agencyId/in?fromDateTime=$fromDate&toDateTime=$toDate")
+      .uri(
+        "api/movements/$agencyId/in?fromDateTime=" +
+          "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
+          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+      )
       .header("Page-Limit", "10000")
       .retrieve()
       .bodyToMono(typeReference<List<Movement>>())

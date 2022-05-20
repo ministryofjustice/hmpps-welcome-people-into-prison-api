@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.put
@@ -10,6 +11,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PrisonApiMockServer : WireMockServer(9005) {
 
@@ -666,7 +668,11 @@ class PrisonApiMockServer : WireMockServer(9005) {
 
   fun stubGetMovementSuccess(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime) {
     stubFor(
-      get("/api/movements/$agencyId/in?fromDateTime=$fromDate&toDateTime=$toDate")
+      get(
+        "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+      )
+        .withHeader("Page-Limit", equalTo("10000"))
         .willReturn(
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
