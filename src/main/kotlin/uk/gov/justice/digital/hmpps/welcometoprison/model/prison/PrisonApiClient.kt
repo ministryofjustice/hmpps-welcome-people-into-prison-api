@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 data class CreateOffenderDetail(
   val firstName: String,
@@ -77,6 +79,21 @@ data class TemporaryAbsence(
   val movementReason: String,
   val commentText: String? = null
 
+)
+
+data class Movement(
+  val offenderNo: String,
+  val bookingId: Long,
+  val dateOfBirth: LocalDate,
+  val firstName: String,
+  val lastName: String,
+  val fromAgencyId: String? = null,
+  val fromAgencyDescription: String? = null,
+  val toAgencyId: String? = null,
+  val toAgencyDescription: String? = null,
+  val movementTime: LocalTime,
+  val movementDateTime: LocalDateTime,
+  val location: String
 )
 
 /*
@@ -238,5 +255,17 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/movements/agency/$agencyId/temporary-absences")
       .retrieve()
       .bodyToMono(typeReference<List<TemporaryAbsence>>())
+      .block() ?: emptyList()
+
+  fun getMovement(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime): List<Movement> =
+    webClient.get()
+      .uri(
+        "api/movements/$agencyId/in?fromDateTime=" +
+          "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
+          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+      )
+      .header("Page-Limit", "10000")
+      .retrieve()
+      .bodyToMono(typeReference<List<Movement>>())
       .block() ?: emptyList()
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.put
@@ -9,6 +10,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PrisonApiMockServer : WireMockServer(9005) {
 
@@ -103,6 +106,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
   /* This scenario represents situation when Prison Api do not sent errorCode due to old code
   * We can remove it after  Prison Api Release
   * */
@@ -390,6 +394,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
   fun stubTransferInOffenderFailsNoCapacity(offenderNo: String) {
     stubFor(
       put("/api/offenders/$offenderNo/transfer-in")
@@ -655,6 +660,55 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
+              """.trimIndent()
+            )
+        )
+    )
+  }
+
+  fun stubGetMovementSuccess(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime) {
+    stubFor(
+      get(
+        "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+      )
+        .withHeader("Page-Limit", equalTo("10000"))
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+    {
+        "offenderNo": "G5155VP",
+        "bookingId": 788854,
+        "dateOfBirth": "1966-04-05",
+        "firstName": "Gideon",
+        "lastName": "Herkimer",
+        "fromAgencyId": "OUT",
+        "fromAgencyDescription": "OUTSIDE",
+        "toAgencyId": "MDI",
+        "toAgencyDescription": "Moorland (HMP & YOI)",
+        "movementTime": "07:08:00",
+        "movementDateTime": "2021-07-15T07:08:00",
+        "location": "MDI-1-3-004"
+    },
+    {
+        "offenderNo": "A7925DY",
+        "bookingId": 1201387,
+        "dateOfBirth": "1997-05-06",
+        "firstName": "Prisonerhfirstname",
+        "lastName": "Prisonerhlastname",
+        "fromAgencyId": "OUT",
+        "fromAgencyDescription": "OUTSIDE",
+        "toAgencyId": "MDI",
+        "toAgencyDescription": "Moorland (HMP & YOI)",
+        "movementTime": "14:15:27",
+        "movementDateTime": "2021-08-04T14:15:27",
+        "location": "MDI-RECV"
+    }
+]
               """.trimIndent()
             )
         )
