@@ -341,6 +341,18 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `Get recent movements successful without location`() {
+    val agencyId = "MDI"
+    val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
+    val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
+    mockServer.stubGetMovementSuccessWithNoLocation(agencyId, fromDate, toDate)
+
+    val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
+
+    assertThat(response.size).isEqualTo(2)
+  }
+
+  @Test
   fun `Confirm return from temporary absences successful`() {
     val offenderNumber = "ABC123A"
     mockServer.stubConfirmTemporaryAbsencesSuccess(offenderNumber)

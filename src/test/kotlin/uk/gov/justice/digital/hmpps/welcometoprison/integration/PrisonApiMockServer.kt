@@ -714,4 +714,52 @@ class PrisonApiMockServer : WireMockServer(9005) {
         )
     )
   }
+
+  fun stubGetMovementSuccessWithNoLocation(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime) {
+    stubFor(
+      get(
+        "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+      )
+        .withHeader("Page-Limit", equalTo("10000"))
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+    {
+        "offenderNo": "G5155VP",
+        "bookingId": 788854,
+        "dateOfBirth": "1966-04-05",
+        "firstName": "Gideon",
+        "lastName": "Herkimer",
+        "fromAgencyId": "OUT",
+        "fromAgencyDescription": "OUTSIDE",
+        "toAgencyId": "MDI",
+        "toAgencyDescription": "Moorland (HMP & YOI)",
+        "movementTime": "07:08:00",
+        "movementDateTime": "2021-07-15T07:08:00",
+        "location": "MDI-1-3-004"
+    },
+    {
+        "offenderNo": "A7925DY",
+        "bookingId": 1201387,
+        "dateOfBirth": "1997-05-06",
+        "firstName": "Prisonerhfirstname",
+        "lastName": "Prisonerhlastname",
+        "fromAgencyId": "OUT",
+        "fromAgencyDescription": "OUTSIDE",
+        "toAgencyId": "MDI",
+        "toAgencyDescription": "Moorland (HMP & YOI)",
+        "movementTime": "14:15:27",
+        "movementDateTime": "2021-08-04T14:15:27"
+    }
+]
+              """.trimIndent()
+            )
+        )
+    )
+  }
 }

@@ -20,5 +20,5 @@ data class RecentArrival(
   @Schema(description = "Arrival date and time ", example = "2022-01-18T08:00:00")
   val movementDateTime: LocalDateTime,
   @Schema(description = "Location", example = "MDI-1-3-004")
-  val location: String
+  val location: String?
 )
