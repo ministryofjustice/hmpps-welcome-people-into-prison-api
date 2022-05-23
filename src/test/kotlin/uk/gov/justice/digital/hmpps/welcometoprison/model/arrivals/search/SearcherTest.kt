@@ -3,12 +3,12 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher.Result
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher.Strategy
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher.SearchStrategy
 
 class SearcherTest {
 
   // All numbers <= query are returned, numbers further away from query are more relevant
-  private val lessThanAndEqualStrategy = object : Strategy<Int, Int> {
+  private val lessThanAndEqualStrategy = object : SearchStrategy<Int, Int> {
     override fun evaluate(query: Int, item: Int): Result<Int> {
       return if (item <= query) {
         Result(item, query - item)
@@ -34,7 +34,7 @@ class SearcherTest {
   fun `Returns all results when no search term provided`() {
     val items = listOf(1, 2)
     val results = searcher.searchWithRelevance(null, items)
-    assertThat(results).containsExactly(Result(1, relevance = 1), Result(2, relevance = 1))
+    assertThat(results).containsExactly(Result(1, relevance = -1), Result(2, relevance = -1))
   }
 
   @Test
@@ -78,10 +78,10 @@ class SearcherTest {
     val items = listOf(1, 3, 6, 2)
     val results = searcher.searchWithRelevance(null, items)
     assertThat(results).containsExactly(
-      Result(1, relevance = 1),
-      Result(2, relevance = 1),
-      Result(3, relevance = 1),
-      Result(6, relevance = 1),
+      Result(1, relevance = -1),
+      Result(2, relevance = -1),
+      Result(3, relevance = -1),
+      Result(6, relevance = -1),
     )
   }
 
@@ -90,11 +90,11 @@ class SearcherTest {
     val items = listOf(1, 2, 3, 6, 2)
     val results = searcher.searchWithRelevance(null, items)
     assertThat(results).containsExactly(
-      Result(1, relevance = 1),
-      Result(2, relevance = 1),
-      Result(2, relevance = 1),
-      Result(3, relevance = 1),
-      Result(6, relevance = 1),
+      Result(1, relevance = -1),
+      Result(2, relevance = -1),
+      Result(2, relevance = -1),
+      Result(3, relevance = -1),
+      Result(6, relevance = -1),
     )
   }
 
