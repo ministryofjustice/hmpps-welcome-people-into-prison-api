@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.EXACT_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.FUZZY_CLOSE_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.FUZZY_SLIGHT_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.NO_MATCH
@@ -25,89 +26,89 @@ class FuzzyScorerTest {
 
   @Nested
   inner class `Short Words (1 -2 characters)` {
-    @ParameterizedTest(name = "not eligible for fuzzy scoring: {0}")
+    @ParameterizedTest(name = "exact matches: {0}")
     @ValueSource(strings = ["a", "ab"])
-    fun `not eligible fuzzy matching`(term: String) {
-      assertThat(scorer.score(term, term)).isEqualTo(NO_MATCH)
+    fun `exact matches`(value: String) {
+      assertThat(scorer.score(value, value)).isEqualTo(EXACT_MATCH)
     }
   }
 
   @Nested
   inner class `Medium Length Words (3-5 characters)` {
-    @ParameterizedTest(name = "exact matches are not eligible for fuzzy scoring: {0}")
+    @ParameterizedTest(name = "exact matches: {0}")
     @ValueSource(strings = ["abc", "abcd", "abcde"])
-    fun `exact matches are not eligible for scoring`(term: String) {
-      assertThat(scorer.score(term, term)).isEqualTo(NO_MATCH)
+    fun `exact matches are not eligible for scoring`(value: String) {
+      assertThat(scorer.score(value, value)).isEqualTo(EXACT_MATCH)
     }
 
     @ParameterizedTest(name = "searches on three letter fields can have an extra character but not one less: {0}")
     @ValueSource(strings = ["abc"])
-    fun `searches on three letter fields can have an extra character but not one less`(term: String) {
-      assertThat(scorer.score(term.drop(1), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score(term.dropLast(1), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score("a$term", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score("${term}a", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score(term.replace('b', 'c'), term)).isEqualTo(FUZZY_CLOSE_MATCH)
+    fun `searches on three letter fields can have an extra character but not one less`(value: String) {
+      assertThat(scorer.score(value.drop(1), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score(value.dropLast(1), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score("a$value", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score("${value}a", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score(value.replace('b', 'c'), value)).isEqualTo(FUZZY_CLOSE_MATCH)
     }
 
-    @ParameterizedTest(name = "4-5 letter terms can be one character out: {0}")
+    @ParameterizedTest(name = "4-5 letter values can be one character out: {0}")
     @ValueSource(strings = ["abcd", "abcde"])
-    fun `medium length words can be one character out`(term: String) {
-      assertThat(scorer.score(term.drop(1), term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score(term.dropLast(1), term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score("a$term", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score("${term}a", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score(term.replace('b', 'c'), term)).isEqualTo(FUZZY_CLOSE_MATCH)
+    fun `medium length words can be one character out`(value: String) {
+      assertThat(scorer.score(value.drop(1), value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score(value.dropLast(1), value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score("a$value", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score("${value}a", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score(value.replace('b', 'c'), value)).isEqualTo(FUZZY_CLOSE_MATCH)
     }
 
-    @ParameterizedTest(name = "4-5 letter terms cannot be more than one character out: {0}")
+    @ParameterizedTest(name = "4-5 letter values cannot be more than one character out: {0}")
     @ValueSource(strings = ["abc", "abcd", "abcde"])
-    fun `medium length words cannot be matched if different by distance of 2`(term: String) {
-      assertThat(scorer.score(term.drop(2), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score(term.dropLast(2), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score(term.replace('b', 'c').replace('a', 'b'), term)).isEqualTo(NO_MATCH)
+    fun `medium length words cannot be matched if different by distance of 2`(value: String) {
+      assertThat(scorer.score(value.drop(2), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score(value.dropLast(2), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score(value.replace('b', 'c').replace('a', 'b'), value)).isEqualTo(NO_MATCH)
     }
   }
 
   @Nested
   inner class `Long Words (Greater than 5 characters)` {
-    @ParameterizedTest(name = "exact matches are not eligible for fuzzy scoring: {0}")
+    @ParameterizedTest(name = "exact matches: {0}")
     @ValueSource(strings = ["abcde", "abcdef", "abcdefg"])
-    fun `exact matches are not eligible for scoring`(term: String) {
-      assertThat(scorer.score(term, term)).isEqualTo(NO_MATCH)
+    fun `exact matches`(value: String) {
+      assertThat(scorer.score(value, value)).isEqualTo(EXACT_MATCH)
     }
 
     @ParameterizedTest(name = "one character out: {0}")
     @ValueSource(strings = ["abcdef", "abcdefg", "abcdefgh"])
-    fun `one character out`(term: String) {
-      assertThat(scorer.score(term.drop(1), term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score(term.dropLast(1), term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score("a$term", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score("${term}a", term)).isEqualTo(FUZZY_CLOSE_MATCH)
-      assertThat(scorer.score(term.replace('b', 'c'), term)).isEqualTo(FUZZY_CLOSE_MATCH)
+    fun `one character out`(value: String) {
+      assertThat(scorer.score(value.drop(1), value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score(value.dropLast(1), value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score("a$value", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score("${value}a", value)).isEqualTo(FUZZY_CLOSE_MATCH)
+      assertThat(scorer.score(value.replace('b', 'c'), value)).isEqualTo(FUZZY_CLOSE_MATCH)
     }
 
     @ParameterizedTest(name = "two characters out: {0}")
     @ValueSource(strings = ["abcdefgh", "abcdefghi", "abcdefghij"])
-    fun `two characters out`(term: String) {
-      assertThat(scorer.score(term.drop(2), term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score(term.dropLast(2), term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score("a${term}b", term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score("${term}aa", term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score("bb$term", term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score("bb$term", term)).isEqualTo(FUZZY_SLIGHT_MATCH)
-      assertThat(scorer.score(term.replace('b', 'c').replace('a', 'b'), term)).isEqualTo(FUZZY_SLIGHT_MATCH)
+    fun `two characters out`(value: String) {
+      assertThat(scorer.score(value.drop(2), value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score(value.dropLast(2), value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score("a${value}b", value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score("${value}aa", value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score("bb$value", value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score("bb$value", value)).isEqualTo(FUZZY_SLIGHT_MATCH)
+      assertThat(scorer.score(value.replace('b', 'c').replace('a', 'b'), value)).isEqualTo(FUZZY_SLIGHT_MATCH)
     }
 
     @ParameterizedTest(name = "three characters out: {0}")
     @ValueSource(strings = ["abcdef", "abcdefg", "abcdefgh"])
-    fun `three characters out`(term: String) {
-      assertThat(scorer.score(term.drop(3), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score(term.dropLast(3), term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score("a${term}bb", term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score("${term}aaa", term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score("bbb$term", term)).isEqualTo(NO_MATCH)
-      assertThat(scorer.score(term.replace('c', 'd').replace('b', 'c').replace('e', 'f'), term)).isEqualTo(NO_MATCH)
+    fun `three characters out`(value: String) {
+      assertThat(scorer.score(value.drop(3), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score(value.dropLast(3), value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score("a${value}bb", value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score("${value}aaa", value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score("bbb$value", value)).isEqualTo(NO_MATCH)
+      assertThat(scorer.score(value.replace('c', 'd').replace('b', 'c').replace('e', 'f'), value)).isEqualTo(NO_MATCH)
     }
   }
 }

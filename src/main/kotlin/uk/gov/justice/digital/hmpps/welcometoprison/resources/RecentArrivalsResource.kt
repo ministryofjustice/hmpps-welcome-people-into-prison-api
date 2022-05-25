@@ -2,12 +2,12 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -22,13 +22,12 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.RecentArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.RecentArrivalsService
 import java.time.LocalDate
 
+private interface ArrivalsPage : Page<RecentArrival>
+
 @RestController
 @Validated
 @RequestMapping(name = "Recent Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
-class RecentArrivalsResource(
-  private val recentArrivalsService: RecentArrivalsService,
-
-) {
+class RecentArrivalsResource(private val recentArrivalsService: RecentArrivalsService) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Recent arrivals for a specific prison",
@@ -41,7 +40,7 @@ class RecentArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = RecentArrival::class))
+            schema = Schema(implementation = ArrivalsPage::class)
           )
         ]
       ),
@@ -85,6 +84,14 @@ class RecentArrivalsResource(
     @Parameter(description = "Size of the page", example = "50", required = false)
     @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     @Parameter(description = "Page number to display", example = "0", required = false)
-    @RequestParam(defaultValue = "0", required = false) page: Int
-  ): Page<RecentArrival> = recentArrivalsService.getArrivals(prisonId, fromDate, toDate, pageSize, page)
+    @RequestParam(defaultValue = "0", required = false) page: Int,
+    @Parameter(
+      description = "Query to optionally filter moves, Performs complete/partial and fuzzy matching",
+      example = "John Smith",
+      required = false
+    )
+    @RequestParam(required = false) query: String?
+  ): Page<RecentArrival> = recentArrivalsService.getArrivals(
+    prisonId, fromDate to toDate, PageRequest.of(page, pageSize), query
+  )
 }

@@ -100,6 +100,46 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
         """.trimIndent()
       )
   }
+
+  @Test
+  fun `applies search query correctly`() {
+    prisonApiMockServer.stubGetMovementSuccess(
+      "MDI",
+      LocalDate.of(2019, 1, 2).atStartOfDay(),
+      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX)
+    )
+
+    webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02&query=HeRKImer")
+      .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .json(
+        """
+        {"content":[
+            {"prisonNumber":"G5155VP","dateOfBirth":"1966-04-05","firstName":"Gideon","lastName":"Herkimer","movementDateTime":"2021-07-15T07:08:00","location":"MDI-1-3-004"}],
+         "pageable":{
+            "sort":{"empty":true,"unsorted":true,"sorted":false},
+            "offset":0,
+            "pageNumber":0,
+            "pageSize":50,
+            "paged":true,
+            "unpaged":false
+                    },
+         "totalPages":1,
+         "totalElements":1,
+         "last":true,
+         "size":50,
+         "number":0,
+         "sort":{"empty":true,"unsorted":true,"sorted":false},
+         "numberOfElements": 1,
+         "first":true,
+         "empty":false
+        }
+        """.trimIndent()
+      )
+  }
+
   @Test
   fun `calls service method with correct args response do not have location`() {
     prisonApiMockServer.stubGetMovementSuccessWithNoLocation(

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search
 
 import org.apache.commons.text.similarity.LevenshteinDistance
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.EXACT_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.FUZZY_CLOSE_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.FUZZY_SLIGHT_MATCH
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Weights.Companion.NO_MATCH
@@ -12,7 +13,7 @@ class FuzzyScorer {
     }
     return when (term distanceTo field) {
       -1 -> NO_MATCH
-      0 -> NO_MATCH
+      0 -> EXACT_MATCH
       1 -> FUZZY_CLOSE_MATCH
       else -> FUZZY_SLIGHT_MATCH
     }
