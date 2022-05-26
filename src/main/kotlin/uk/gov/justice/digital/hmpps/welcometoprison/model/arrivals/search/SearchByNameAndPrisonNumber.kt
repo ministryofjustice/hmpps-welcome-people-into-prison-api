@@ -34,7 +34,7 @@ class SearchByNameAndPrisonNumber : SearchStrategy<String, RecentArrival> {
 }
 
 private fun String.splitToTerms() =
-  this.trim().replace("[,.]".toRegex(), "").lowercase().split("\\s+".toRegex()).filter { it.isNotBlank() }
+  this.trim().replace("[,.-]".toRegex(), " ").lowercase().split("\\s+".toRegex()).filter { it.isNotBlank() }
 
 private fun RecentArrival.splitToFields() = listOf(prisonNumber, firstName, lastName).map { it.trim().lowercase() }
 

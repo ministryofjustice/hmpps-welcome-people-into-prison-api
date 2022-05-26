@@ -69,6 +69,24 @@ class SearchByNameAndPrisonNumberTest {
       val results = strategy.evaluate("Jim", item("A1234AA", "Jim", "Jim"))
       assertThat(results).isEqualTo(Result(item("A1234AA", "Jim", "Jim"), EXACT_MATCH * 2))
     }
+
+    @Test
+    fun `hyphenated name`() {
+      val results = strategy.evaluate("Jim-Jams", item("A1234AA", "Smith", "Jim-Jams"))
+      assertThat(results).isEqualTo(Result(item("A1234AA", "Smith", "Jim-Jams"), EXACT_MATCH))
+    }
+
+    @Test
+    fun `match on hyphenated name`() {
+      val results = strategy.evaluate("Jim Jams", item("A1234AA", "Smith", "Jim-Jams"))
+      assertThat(results).isEqualTo(Result(item("A1234AA", "Smith", "Jim-Jams"), EXACT_MATCH))
+    }
+
+    @Test
+    fun `ignore hyphens in term`() {
+      val results = strategy.evaluate("Jim-Jams", item("A1234AA", "Smith", "Jim Jams"))
+      assertThat(results).isEqualTo(Result(item("A1234AA", "Smith", "Jim Jams"), EXACT_MATCH))
+    }
   }
 
   @Nested
