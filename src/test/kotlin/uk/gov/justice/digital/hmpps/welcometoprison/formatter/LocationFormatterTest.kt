@@ -13,6 +13,11 @@ class LocationFormatterTest {
   }
 
   @Test
+  fun `When value contains RECP formatter should return 'Reception'`() {
+    assertThat(locationFormatter.format("NMI-RECP")).isEqualTo("Reception")
+  }
+
+  @Test
   fun `When value is other formatter should return the same value`() {
     val expectedValue = "D-3-017"
     assertThat(locationFormatter.format(expectedValue)).isEqualTo(expectedValue)

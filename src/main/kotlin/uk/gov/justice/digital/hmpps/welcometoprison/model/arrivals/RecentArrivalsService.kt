@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.SearchByNameAndPrisonNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.search.Searcher
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
@@ -13,6 +14,7 @@ import java.time.LocalTime
 @Service
 class RecentArrivalsService(
   private val prisonApiClient: PrisonApiClient,
+  private val locationFormatter: LocationFormatter,
   private val searcher: Searcher<String, RecentArrival> = Searcher(SearchByNameAndPrisonNumber())
 ) {
 
@@ -39,7 +41,7 @@ class RecentArrivalsService(
         it.firstName,
         it.lastName,
         it.movementDateTime,
-        it.location
+        it.location?.let { loc -> locationFormatter.format(loc) }
       )
     }
 
