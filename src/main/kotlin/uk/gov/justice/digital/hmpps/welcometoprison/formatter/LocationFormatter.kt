@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component
 class LocationFormatter {
 
   fun format(value: String): String {
-    return when (value) {
-      "RECP" -> "Reception"
+    return when {
+      value.contains("RECP") -> "Reception"
       else -> value
     }
   }

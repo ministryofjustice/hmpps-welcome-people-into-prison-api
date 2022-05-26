@@ -6,6 +6,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import java.time.LocalDate
@@ -14,7 +15,35 @@ import java.time.LocalTime
 class RecentArrivalsServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
 
-  private val recentArrivalsService = RecentArrivalsService(prisonApiClient)
+  private val recentArrivalsService = RecentArrivalsService(prisonApiClient, LocationFormatter())
+
+  @Test
+  fun `location is formatted when contains RECP`() {
+
+    whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(listOf(testMovement(1, "NMP-RECP")))
+
+    val arrivals = recentArrivalsService.getArrivals(
+      "MDI",
+      LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
+      PageRequest.of(0, 1)
+    )
+
+    assertThat(arrivals.content[0].location).isEqualTo("Reception")
+  }
+
+  @Test
+  fun `location is unaltered when not containing RECP`() {
+
+    whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(listOf(testMovement(1, "Room-1")))
+
+    val arrivals = recentArrivalsService.getArrivals(
+      "MDI",
+      LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
+      PageRequest.of(0, 1)
+    )
+
+    assertThat(arrivals.content[0].location).isEqualTo("Room-1")
+  }
 
   @Test
   fun `recent arrival first page of 200 results`() {
@@ -139,20 +168,25 @@ class RecentArrivalsServiceTest {
   private fun getList(size: Int): List<Movement> {
     val list = ArrayList<Movement>()
     repeat(size) { index ->
-      val number = index.toString().padStart(3, '0')
-      list.add(
-        Movement(
-          offenderNo = "AA00$number",
-          bookingId = index.toLong(),
-          dateOfBirth = LocalDate.ofEpochDay(index.toLong()),
-          firstName = "firstName$number",
-          lastName = "lastName$number",
-          location = "location$number",
-          movementTime = LocalTime.of(12, 0, 0),
-          movementDateTime = LocalDate.ofEpochDay(365 * 10 + index.toLong()).atStartOfDay()
-        )
-      )
+      list.add(testMovement(index))
     }
     return list
+  }
+
+  private fun testMovement(
+    index: Int,
+    location: String = "location-$index"
+  ): Movement {
+    val number = index.toString().padStart(3, '0')
+    return Movement(
+      offenderNo = "AA00$number",
+      bookingId = index.toLong(),
+      dateOfBirth = LocalDate.ofEpochDay(index.toLong()),
+      firstName = "firstName$number",
+      lastName = "lastName$number",
+      location = location,
+      movementTime = LocalTime.of(12, 0, 0),
+      movementDateTime = LocalDate.ofEpochDay(365 * 10 + index.toLong()).atStartOfDay()
+    )
   }
 }
