@@ -18,5 +18,9 @@ data class RecentArrival(
 ) : Comparable<RecentArrival> {
 
   override fun compareTo(other: RecentArrival) =
-    compareBy<RecentArrival> { it.lastName }.thenBy { it.firstName }.thenBy { it.prisonNumber }.compare(this, other)
+    compareByDescending<RecentArrival> { it.movementDateTime }
+      .thenBy { it.lastName }
+      .thenBy { it.firstName }
+      .thenBy { it.prisonNumber }
+      .compare(this, other)
 }
