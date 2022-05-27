@@ -83,14 +83,14 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
             "sort":{"empty":true,"unsorted":true,"sorted":false},
             "offset":0,
             "pageNumber":0,
-            "pageSize":50,
+            "pageSize":${Int.MAX_VALUE},
             "paged":true,
             "unpaged":false
                     },
          "totalPages":1,
          "totalElements":2,
          "last":true,
-         "size":50,
+         "size":${Int.MAX_VALUE},
          "number":0,
          "sort":{"empty":true,"unsorted":true,"sorted":false},
          "numberOfElements":2,
@@ -109,7 +109,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
       LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX)
     )
 
-    webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02&query=HeRKImer")
+    webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02&query=HeRKImer&pageSize=50")
       .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
       .exchange()
       .expectStatus().isOk
@@ -163,14 +163,14 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
             "sort":{"empty":true,"unsorted":true,"sorted":false},
             "offset":0,
             "pageNumber":0,
-            "pageSize":50,
+            "pageSize":${Int.MAX_VALUE},
             "paged":true,
             "unpaged":false
                     },
          "totalPages":1,
          "totalElements":2,
          "last":true,
-         "size":50,
+         "size":${Int.MAX_VALUE},
          "number":0,
          "sort":{"empty":true,"unsorted":true,"sorted":false},
          "numberOfElements":2,
