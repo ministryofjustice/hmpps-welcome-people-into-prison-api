@@ -82,7 +82,7 @@ class RecentArrivalsResource(private val recentArrivalsService: RecentArrivalsSe
       iso = DateTimeFormat.ISO.DATE
     ) @RequestParam toDate: LocalDate,
     @Parameter(description = "Size of the page", example = "50", required = false)
-    @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+    @RequestParam(defaultValue = Int.MAX_VALUE.toString(), required = false) pageSize: Int,
     @Parameter(description = "Page number to display", example = "0", required = false)
     @RequestParam(defaultValue = "0", required = false) page: Int,
     @Parameter(

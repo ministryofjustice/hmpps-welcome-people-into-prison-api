@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class RecentArrivalsServiceTest {
@@ -43,6 +44,34 @@ class RecentArrivalsServiceTest {
     )
 
     assertThat(arrivals.content[0].location).isEqualTo("Room-1")
+  }
+
+  @Test
+  fun `results are sorted`() {
+
+    val dayBeforeYesterday = LocalDateTime.now().minusDays(2)
+    val today = LocalDateTime.now()
+    val yesterday = LocalDateTime.now().minusDays(1)
+    val tomorrow = LocalDateTime.now().plusDays(1)
+
+    whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(
+      listOf(
+        testMovement(0, "RECP") { dayBeforeYesterday },
+        testMovement(1, "RECP") { today },
+        testMovement(2, "RECP") { yesterday },
+        testMovement(3, "RECP") { tomorrow },
+      )
+    )
+
+    val arrivals = recentArrivalsService.getArrivals(
+      "MDI",
+      LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
+      PageRequest.of(0, 50)
+    )
+
+    assertThat(arrivals)
+      .extracting<LocalDateTime> { it.movementDateTime }
+      .containsExactly(tomorrow, today, yesterday, dayBeforeYesterday)
   }
 
   @Test
@@ -175,7 +204,8 @@ class RecentArrivalsServiceTest {
 
   private fun testMovement(
     index: Int,
-    location: String = "location-$index"
+    location: String = "location-$index",
+    now: () -> LocalDateTime = { LocalDate.now().atStartOfDay() }
   ): Movement {
     val number = index.toString().padStart(3, '0')
     return Movement(
@@ -186,7 +216,7 @@ class RecentArrivalsServiceTest {
       lastName = "lastName$number",
       location = location,
       movementTime = LocalTime.of(12, 0, 0),
-      movementDateTime = LocalDate.ofEpochDay(365 * 10 + index.toLong()).atStartOfDay()
+      movementDateTime = now()
     )
   }
 }
