@@ -2,20 +2,8 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 val RECALL_MOVEMENT_REASONS = listOf(
   MovementReason(
-    description = "Detention and Training Order",
-    movementReasonCode = "Y"
-  ),
-  MovementReason(
-    description = "Emergency temporary release",
-    movementReasonCode = "ETRLR"
-  ),
-  MovementReason(
-    description = "Error in emergency temporary release",
-    movementReasonCode = "ETRRIE"
-  ),
-  MovementReason(
-    description = "Foreign national removal scheme",
-    movementReasonCode = "ETB"
+    description = "Licence",
+    movementReasonCode = "L"
   ),
   MovementReason(
     description = "Home Detention Curfew",
@@ -26,12 +14,24 @@ val RECALL_MOVEMENT_REASONS = listOf(
     movementReasonCode = "H"
   ),
   MovementReason(
+    description = "Detention and Training Order",
+    movementReasonCode = "Y"
+  ),
+  MovementReason(
     description = "Intermittent custody",
     movementReasonCode = "24"
   ),
   MovementReason(
-    description = "Licence",
-    movementReasonCode = "L"
+    description = "Foreign national removal scheme",
+    movementReasonCode = "ETB"
+  ),
+  MovementReason(
+    description = "Emergency temporary release",
+    movementReasonCode = "ETRLR"
+  ),
+  MovementReason(
+    description = "Error in emergency temporary release",
+    movementReasonCode = "ETRRIE"
   ),
 )
 
