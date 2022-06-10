@@ -51,6 +51,29 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `tokens are cached`() {
+      prisonerSearchMockServer.stubMatchPrisoners(200)
+      prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
+      basmApiMockServer.stubGetPrison(200)
+      basmApiMockServer.stubGetMovements(200)
+
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+
+      webTestClient.get().uri("/prisons/MDI/arrivals?date=2020-01-02")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+
+      basmApiMockServer.verify(
+        1,
+        postRequestedFor(urlEqualTo("/oauth/token"))
+      )
+    }
+
+    @Test
     fun `returns json in expected format`() {
       prisonerSearchMockServer.stubMatchPrisoners(200)
       prisonerSearchMockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()

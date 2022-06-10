@@ -12,13 +12,13 @@ import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 class BasmApiMockServer : WireMockServer(9004) {
 
-  fun stubGrantToken() {
+  fun stubGrantToken(expires: Int = 10_000) {
     stubFor(
       post(urlEqualTo("/oauth/token"))
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody("""{ "access_token": "ABCDE", "token_type": "bearer" }""")
+            .withBody("""{ "access_token": "ABCDE", "token_type": "bearer", "expires_in": $expires }""")
         )
     )
   }
