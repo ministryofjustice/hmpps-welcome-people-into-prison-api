@@ -193,6 +193,7 @@ class ArrivalsServiceTest {
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = this.date,
+      username = "user_1"
     )
   }
 }

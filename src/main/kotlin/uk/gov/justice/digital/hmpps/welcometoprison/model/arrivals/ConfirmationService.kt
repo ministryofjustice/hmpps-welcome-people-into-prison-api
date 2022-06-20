@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.welcometoprison.config.SecurityUserContext
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
@@ -33,7 +34,8 @@ class ConfirmationService(
   private val prisonerSearchService: PrisonerSearchService,
   private val confirmedArrivalRepository: ConfirmedArrivalRepository,
   private val locationFormatter: LocationFormatter,
-  private val clock: Clock
+  private val clock: Clock,
+  private val securityUserContext: SecurityUserContext
 ) {
   fun confirmArrival(confirmation: Confirmation): ConfirmArrivalResponse {
     if (confirmation.isNewToPrison) {
@@ -74,6 +76,7 @@ class ConfirmationService(
         prisonId = confirmation.prisonId,
         bookingId = response.bookingId,
         arrivalDate = LocalDate.now(clock),
+        username = securityUserContext.principal,
       )
     )
     return response
@@ -88,7 +91,7 @@ class ConfirmationService(
   private fun admitOffenderOnNewBooking(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse {
     val response = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)
 
-    whenExpectedArrival(confirmation) { arrivalId, detail ->
+    whenIsExpectedArrival(confirmation) { arrivalId, detail ->
       confirmedArrivalRepository.save(
         ConfirmedArrival(
           movementId = arrivalId,
@@ -98,6 +101,7 @@ class ConfirmationService(
           prisonId = detail.prisonId!!,
           bookingId = response.bookingId,
           arrivalDate = LocalDate.now(clock),
+          username = securityUserContext.principal,
         )
       )
     }
@@ -110,7 +114,7 @@ class ConfirmationService(
   ): ConfirmArrivalResponse {
     val response = prisonService.recallOffender(prisonNumber, confirmation.detail)
 
-    whenExpectedArrival(confirmation) { arrivalId, detail ->
+    whenIsExpectedArrival(confirmation) { arrivalId, detail ->
       confirmedArrivalRepository.save(
         ConfirmedArrival(
           movementId = arrivalId,
@@ -120,6 +124,7 @@ class ConfirmationService(
           prisonId = detail.prisonId!!,
           bookingId = response.bookingId,
           arrivalDate = LocalDate.now(clock),
+          username = securityUserContext.principal,
         )
       )
     }
@@ -130,7 +135,7 @@ class ConfirmationService(
     val prisonNumber = prisonService.createOffender(confirmation.detail)
     val response = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)
 
-    whenExpectedArrival(confirmation) { arrivalId, detail ->
+    whenIsExpectedArrival(confirmation) { arrivalId, detail ->
       confirmedArrivalRepository.save(
         ConfirmedArrival(
           movementId = arrivalId,
@@ -140,6 +145,7 @@ class ConfirmationService(
           prisonId = detail.prisonId!!,
           bookingId = response.bookingId,
           arrivalDate = LocalDate.now(clock),
+          username = securityUserContext.principal,
         )
       )
     }
@@ -155,7 +161,7 @@ class ConfirmationService(
     )
   }
 
-  private fun whenExpectedArrival(
+  private fun whenIsExpectedArrival(
     confirmation: Confirmation,
     op: (arrivalId: String, detail: ConfirmArrivalDetail) -> Unit
   ) {

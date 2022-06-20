@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -13,6 +14,11 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
 
   @Autowired
   lateinit var repository: ConfirmedArrivalRepository
+
+  @AfterEach
+  fun afterEach() {
+    repository.deleteAll()
+  }
 
   @Test
   fun `can insert confirmed arrival record`() {
@@ -53,6 +59,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = ARRIVAL_DATE,
+      username = "USER-1"
     )
   }
 }

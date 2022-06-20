@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersSpec
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
@@ -21,6 +22,10 @@ abstract class IntegrationTestBase {
   @Suppress("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   lateinit var webTestClient: WebTestClient
+
+  @Suppress("SpringJavaInjectionPointsAutowiringInspection")
+  @Autowired
+  lateinit var confirmedArrivalRepository: ConfirmedArrivalRepository
 
   val objectMapper: ObjectMapper by lazy { ObjectMapper().registerModule(JavaTimeModule()) }
 
@@ -79,6 +84,7 @@ abstract class IntegrationTestBase {
 
   internal fun getAuthorisation(
     roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
-  ) = jwtAuthHelper.getAuthorisation("welcome-into-prison-client", roles, scopes)
+    scopes: List<String> = listOf(),
+    username: String = "welcome-into-prison-client"
+  ) = jwtAuthHelper.getAuthorisation(user = username, roles = roles, scopes = scopes)
 }

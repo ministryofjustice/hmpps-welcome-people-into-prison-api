@@ -4,11 +4,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 @Suppress("ClassName")
@@ -185,6 +188,11 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         }
       """
 
+    @AfterEach
+    fun afterEach() {
+      confirmedArrivalRepository.deleteAll()
+    }
+
     @Test
     fun `create and book happy path`() {
       val prisonNumber = "AA1111A"
@@ -195,7 +203,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -212,7 +225,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubCreateOffender(prisonNumber)
       prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
-      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write"))
+      val token = getAuthorisation(
+        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+        scopes = listOf("read", "write")
+      )
 
       webTestClient
         .post()
@@ -234,6 +250,38 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `create and book records confirmed arrival`() {
+      val prisonNumber = "AA1111A"
+      val username = "USER_1"
+
+      assertThat(confirmedArrivalRepository.count()).isEqualTo(0)
+      prisonApiMockServer.stubCreateOffender(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
+
+      val token = getAuthorisation(
+        username = username,
+        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+        scopes = listOf("read", "write")
+      )
+
+      webTestClient
+        .post()
+        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
+        .withBearerToken(token)
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
+
+      val confirmedArrival = confirmedArrivalRepository.findAll()[0]
+
+      assertThat(confirmedArrival.username).isEqualTo(username)
+      assertThat(confirmedArrival.prisonNumber).isEqualTo(prisonNumber)
+      assertThat(confirmedArrival.arrivalType).isEqualTo(ArrivalType.NEW_TO_PRISON)
+    }
+
+    @Test
     fun `create and book request validation failure`() {
       val prisonNumber = "AA1111A"
 
@@ -243,7 +291,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
           """
@@ -277,7 +330,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -293,7 +351,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -311,13 +374,19 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
     }
+
     @Test
     fun `create and book - prison-api create booking fails because of no capacity`() {
       val prisonNumber = "AA1111A"
@@ -328,7 +397,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -343,6 +417,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           """.trimIndent()
         )
     }
+
     @Test
     fun `create and book - prison-api create booking fails because prisoner already exist`() {
       val prisonNumber = "AA1111A"
@@ -353,7 +428,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
@@ -379,7 +459,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write")
+          )
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
