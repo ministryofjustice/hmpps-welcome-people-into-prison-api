@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -13,6 +14,7 @@ import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.config.SecurityUserContext
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
@@ -38,10 +40,16 @@ class ConfirmationServiceTest {
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
   private val locationFormatter: LocationFormatter = LocationFormatter()
+  private val securityUserContext: SecurityUserContext = mock()
 
   private val confirmationService = ConfirmationService(
-    prisonService, prisonerSearchService, confirmedArrivalRepository, locationFormatter, FIXED_CLOCK
+    prisonService, prisonerSearchService, confirmedArrivalRepository, locationFormatter, FIXED_CLOCK, securityUserContext
   )
+
+  @BeforeEach
+  fun beforeEach() {
+    whenever(securityUserContext.principal).thenReturn("USER_1")
+  }
 
   @Test
   fun `Confirm arrival throw exception when location is empty`() {
@@ -95,7 +103,8 @@ class ConfirmationServiceTest {
           bookingId = BOOKING_ID,
           arrivalDate = LocalDate.now(FIXED_CLOCK),
           arrivalType = ArrivalType.NEW_TO_PRISON,
-          timestamp = LocalDateTime.now(FIXED_CLOCK)
+          timestamp = LocalDateTime.now(FIXED_CLOCK),
+          username = "USER_1"
         )
       )
     )
@@ -183,7 +192,8 @@ class ConfirmationServiceTest {
           bookingId = BOOKING_ID,
           arrivalDate = LocalDate.now(FIXED_CLOCK),
           arrivalType = ArrivalType.COURT_TRANSFER,
-          timestamp = LocalDateTime.now(FIXED_CLOCK)
+          timestamp = LocalDateTime.now(FIXED_CLOCK),
+          username = "USER_1"
         )
       )
     )
@@ -252,7 +262,8 @@ class ConfirmationServiceTest {
             bookingId = BOOKING_ID,
             arrivalDate = LocalDate.now(FIXED_CLOCK),
             arrivalType = expectedArrivalType,
-            timestamp = LocalDateTime.now(FIXED_CLOCK)
+            timestamp = LocalDateTime.now(FIXED_CLOCK),
+            username = "USER_1"
           )
         )
       )
