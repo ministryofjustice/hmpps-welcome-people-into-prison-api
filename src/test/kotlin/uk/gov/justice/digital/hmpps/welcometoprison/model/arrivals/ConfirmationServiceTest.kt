@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -12,14 +11,12 @@ import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.welcometoprison.config.SecurityUserContext
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
@@ -28,28 +25,18 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
-import java.time.Clock
-import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.stream.Stream
 
 class ConfirmationServiceTest {
   private val prisonService: PrisonService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
-  private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
+  private val arrivalListener: ArrivalListener = mock()
   private val locationFormatter: LocationFormatter = LocationFormatter()
-  private val securityUserContext: SecurityUserContext = mock()
 
   private val confirmationService = ConfirmationService(
-    prisonService, prisonerSearchService, confirmedArrivalRepository, locationFormatter, FIXED_CLOCK, securityUserContext
+    prisonService, prisonerSearchService, arrivalListener, locationFormatter
   )
-
-  @BeforeEach
-  fun beforeEach() {
-    whenever(securityUserContext.principal).thenReturn("USER_1")
-  }
 
   @Test
   fun `Confirm arrival throw exception when location is empty`() {
@@ -68,7 +55,7 @@ class ConfirmationServiceTest {
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
     assertThatThrownBy {
       confirmationService.confirmArrival(Confirmation.Expected(ARRIVAL_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE))
-    }.hasMessage("Prisoner: '$PRISON_NUMBER' do not have assigned living unit")
+    }.hasMessage("Prisoner: '$PRISON_NUMBER' does not have assigned living unit")
   }
 
   @Test
@@ -94,17 +81,14 @@ class ConfirmationServiceTest {
       )
     }
 
-    verify(confirmedArrivalRepository).save(
+    verify(arrivalListener).arrived(
       refEq(
-        ConfirmedArrival(
+        ArrivalEvent(
           movementId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = PRISON_ID,
           bookingId = BOOKING_ID,
-          arrivalDate = LocalDate.now(FIXED_CLOCK),
           arrivalType = ArrivalType.NEW_TO_PRISON,
-          timestamp = LocalDateTime.now(FIXED_CLOCK),
-          username = "USER_1"
         )
       )
     )
@@ -181,22 +165,42 @@ class ConfirmationServiceTest {
       CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
     )
 
-    verify(
-      confirmedArrivalRepository
-    ).save(
+    verify(arrivalListener).arrived(
       refEq(
-        ConfirmedArrival(
+        ArrivalEvent(
           movementId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
           bookingId = BOOKING_ID,
-          arrivalDate = LocalDate.now(FIXED_CLOCK),
           arrivalType = ArrivalType.COURT_TRANSFER,
-          timestamp = LocalDateTime.now(FIXED_CLOCK),
-          username = "USER_1"
         )
       )
     )
+  }
+
+  @Test
+  fun `Confirm arrival matched to NOMIS offender who is not in custody and is a non-court transfer, is rejected`() {
+    whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
+      PrisonerDetails(
+        firstName = FIRST_NAME,
+        lastName = LAST_NAME,
+        dateOfBirth = DATE_OF_BIRTH,
+        prisonNumber = PRISON_NUMBER,
+        pncNumber = null,
+        croNumber = CRO_NUMBER,
+        isCurrentPrisoner = false,
+        sex = GENDER
+      )
+    )
+
+    assertThatThrownBy {
+      confirmationService.confirmReturnFromCourt(
+        ARRIVAL_ID,
+        CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
+      )
+    }.isInstanceOf(ConflictException::class.java)
+
+    verify(prisonerSearchService).getPrisoner(PRISON_NUMBER)
   }
 
   @Nested
@@ -251,19 +255,14 @@ class ConfirmationServiceTest {
 
       verification(confirmation)
 
-      verify(
-        confirmedArrivalRepository
-      ).save(
+      verify(arrivalListener).arrived(
         refEq(
-          ConfirmedArrival(
+          ArrivalEvent(
             movementId = ARRIVAL_ID,
             prisonNumber = PRISON_NUMBER,
             prisonId = PRISON_ID,
             bookingId = BOOKING_ID,
-            arrivalDate = LocalDate.now(FIXED_CLOCK),
             arrivalType = expectedArrivalType,
-            timestamp = LocalDateTime.now(FIXED_CLOCK),
-            username = "USER_1"
           )
         )
       )
@@ -277,6 +276,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
       doParameterizedUnexpectedConfirmationTest(
         movementReasonCode,
+        ArrivalType.RECALL,
         { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
       )
@@ -287,6 +287,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
       doParameterizedUnexpectedConfirmationTest(
         movementReasonCode,
+        ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
         { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
       )
@@ -294,6 +295,7 @@ class ConfirmationServiceTest {
 
     private fun doParameterizedUnexpectedConfirmationTest(
       movementReasonCode: String,
+      expectedArrivalType: ArrivalType,
       stubbing: () -> Unit,
       verification: (Confirmation) -> InmateDetail
     ) {
@@ -318,7 +320,17 @@ class ConfirmationServiceTest {
 
       verification(confirmation)
 
-      verifyNoInteractions(confirmedArrivalRepository)
+      verify(arrivalListener).arrived(
+        refEq(
+          ArrivalEvent(
+            movementId = null,
+            prisonNumber = PRISON_NUMBER,
+            prisonId = PRISON_ID,
+            bookingId = BOOKING_ID,
+            arrivalType = expectedArrivalType,
+          )
+        )
+      )
     }
   }
 
@@ -331,14 +343,10 @@ class ConfirmationServiceTest {
     private const val FIRST_NAME = "Eric"
     private const val LAST_NAME = "Bloodaxe"
     private val DATE_OF_BIRTH: LocalDate = LocalDate.of(1961, 4, 1)
-    private val BOOKING_IN_TIME: LocalDateTime = LocalDateTime.of(2021, 10, 30, 13, 30)
     private const val GENDER = "M"
     private const val PRISON_ID = "NMI"
     private const val LOCATION_ID = 1
 
-    private val FIXED_NOW: Instant = Instant.now()
-    private val ZONE_ID: ZoneId = ZoneId.systemDefault()
-    private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
     private val LOCATION = "RECP"
     private val INMATE_DETAIL = InmateDetail(
       offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID,

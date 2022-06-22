@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 
 @Suppress("ClassName")
