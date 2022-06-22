@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,16 +26,13 @@ class ArrivalsServiceTest {
     val match = match.copy(pncNumber = arrival1.pncNumber, prisonNumber = arrival1.prisonNumber!!)
 
     whenever(basmService.getArrivals("MDI", DATE, DATE)).thenReturn(listOf(arrival1, arrival2))
-    whenever(prisonerSearchService.findPotentialMatches(any()))
-      .thenReturn(listOf(match))
-      .thenReturn(emptyList())
+    whenever(prisonerSearchService.findPotentialMatches(any())).thenReturn(listOf(match)).thenReturn(emptyList())
 
     val arrivals = arrivalsService.getArrivals("MDI", DATE)
 
     assertThat(arrivals).isEqualTo(
       listOf(
-        arrival1.copy(potentialMatches = listOf(match)),
-        arrival2.copy(potentialMatches = emptyList())
+        arrival1.copy(potentialMatches = listOf(match)), arrival2.copy(potentialMatches = emptyList())
       )
     )
   }
@@ -70,8 +67,7 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = true,
-            potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = true, potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -91,8 +87,7 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false,
-            potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = false, potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -112,8 +107,7 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false,
-            potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = false, potentialMatches = listOf(match1, match2)
           ),
         )
       )
@@ -131,8 +125,7 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false,
-            potentialMatches = listOf()
+            isCurrentPrisoner = false, potentialMatches = listOf()
           ),
         )
       )

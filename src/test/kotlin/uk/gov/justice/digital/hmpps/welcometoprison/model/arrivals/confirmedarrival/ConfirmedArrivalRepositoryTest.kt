@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.transaction.TestTransaction
 import uk.gov.justice.digital.hmpps.welcometoprison.model.RepositoryTest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 

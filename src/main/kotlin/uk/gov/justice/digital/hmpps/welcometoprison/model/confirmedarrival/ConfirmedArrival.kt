@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -19,7 +19,7 @@ class ConfirmedArrival(
 
   val prisonNumber: String,
 
-  val movementId: String,
+  val movementId: String?,
 
   val timestamp: LocalDateTime,
 

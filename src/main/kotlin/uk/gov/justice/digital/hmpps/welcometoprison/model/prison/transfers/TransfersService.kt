@@ -43,7 +43,7 @@ class TransfersService(
     transferInDetail: TransferInDetail
   ): TransferResponse {
 
-    var inmateDetail = prisonApiClient.transferIn(
+    val inmateDetail = prisonApiClient.transferIn(
       prisonNumber,
       with(transferInDetail) {
         TransferIn(
