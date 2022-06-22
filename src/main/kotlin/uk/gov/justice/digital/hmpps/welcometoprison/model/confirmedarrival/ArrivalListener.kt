@@ -21,7 +21,7 @@ class ArrivalListener(
 }
 
 data class ArrivalEvent(
-  val movementId: String?,
+  val movementId: String? = null,
   val prisonId: String,
   val prisonNumber: String,
   val bookingId: Long,

@@ -9,15 +9,28 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TemporaryAbsenceServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
-  private val locationFormatter: LocationFormatter = mock()
-  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter)
+  private val locationFormatter = LocationFormatter()
+  private val arrivalListener: ArrivalListener = mock()
+  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter, arrivalListener)
+  private val inmateDetail = InmateDetail(
+    offenderNo = "G6081VQ", bookingId = 1L, agencyId = "NMI",
+    assignedLivingUnit = AssignedLivingUnit(
+      "NMI", 1, "RECP", "Nottingham (HMP)"
+    )
+  )
 
   @Test
   fun getTemporaryAbsences() {
@@ -66,6 +79,37 @@ class TemporaryAbsenceServiceTest {
     assertThatThrownBy {
       temporaryAbsenceService.getTemporaryAbsence("MDI", "G6081VQ")
     }.isEqualTo(NotFoundException("Could not find temporary absence with prisonNumber: 'G6081VQ'"))
+  }
+
+  @Test
+  fun `confirm temporary absence`() {
+    whenever(prisonApiClient.confirmTemporaryAbsencesArrival(any(), any())).thenReturn(inmateDetail)
+
+    val request = ConfirmTemporaryAbsenceRequest(agencyId = "MDI", movementReasonCode = "C")
+    assertThat(
+      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
+    ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
+
+    verify(prisonApiClient).confirmTemporaryAbsencesArrival("A1234AA", TemporaryAbsencesArrival("MDI", "C"))
+  }
+
+  @Test
+  fun `confirm temporary absence recorded as arrival event`() {
+    whenever(prisonApiClient.confirmTemporaryAbsencesArrival(any(), any())).thenReturn(inmateDetail)
+
+    val request = ConfirmTemporaryAbsenceRequest(agencyId = "MDI", movementReasonCode = "C")
+    assertThat(
+      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
+    ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
+
+    verify(arrivalListener).arrived(
+      ArrivalEvent(
+        prisonId = inmateDetail.agencyId,
+        prisonNumber = inmateDetail.offenderNo,
+        arrivalType = ArrivalType.TEMPORARY_ABSENCE,
+        bookingId = inmateDetail.bookingId
+      )
+    )
   }
 
   companion object {

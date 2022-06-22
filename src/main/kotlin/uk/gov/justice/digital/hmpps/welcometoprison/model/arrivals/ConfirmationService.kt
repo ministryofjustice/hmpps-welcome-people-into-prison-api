@@ -107,19 +107,15 @@ class ConfirmationService(
     return result.toResponse()
   }
 
-  fun Confirmation.toEvent(inmateDetail: InmateDetail, type: ArrivalType) = ArrivalEvent(
+  private fun Confirmation.toEvent(inmateDetail: InmateDetail, type: ArrivalType) = ArrivalEvent(
     movementId = if (this is Confirmation.Expected) this.arrivalId else null,
-    prisonId = this.detail.prisonId!!,
+    prisonId = inmateDetail.agencyId,
     prisonNumber = inmateDetail.offenderNo,
     bookingId = inmateDetail.bookingId,
     arrivalType = type,
   )
 
-  private fun InmateDetail.toResponse(): ConfirmArrivalResponse {
-    val location = this.assignedLivingUnit?.description
-      ?: throw IllegalArgumentException("Prisoner: '${this.offenderNo}' does not have assigned living unit")
-    return ConfirmArrivalResponse(
-      prisonNumber = this.offenderNo, location = locationFormatter.format(location)
-    )
-  }
+  private fun InmateDetail.toResponse() = ConfirmArrivalResponse(
+    prisonNumber = this.offenderNo, location = locationFormatter.extract(this)
+  )
 }

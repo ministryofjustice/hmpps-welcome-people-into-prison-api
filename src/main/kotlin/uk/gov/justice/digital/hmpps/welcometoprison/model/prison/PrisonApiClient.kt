@@ -101,6 +101,7 @@ data class Movement(
  */
 data class InmateDetail(
   val bookingId: Long,
+  val agencyId: String,
   val offenderNo: String,
   val assignedLivingUnit: AssignedLivingUnit? = null
 )

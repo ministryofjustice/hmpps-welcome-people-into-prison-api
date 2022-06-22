@@ -9,6 +9,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType.TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.OffenderMovement
@@ -23,16 +26,16 @@ class TransfersServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val locationFormatter: LocationFormatter = LocationFormatter()
-  private val transfersService = TransfersService(prisonApiClient, prisonerSearchService, locationFormatter)
+  private val arrivalListener: ArrivalListener = mock()
+
+  private val transfersService =
+    TransfersService(prisonApiClient, prisonerSearchService, locationFormatter, arrivalListener)
 
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L,
+    offenderNo = "G6081VQ", bookingId = 1L, agencyId = "NMI",
     assignedLivingUnit = AssignedLivingUnit(
       "NMI", 1, "RECP", "Nottingham (HMP)"
     )
-  )
-  private val inmateDetailNoLivingUnit = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L
   )
 
   @Test
@@ -111,8 +114,61 @@ class TransfersServiceTest {
     }.isEqualTo(NotFoundException("Could not find transfer with prisonNumber: 'A1234AA'"))
   }
 
-  companion object {
+  @Test
+  fun `transfer-in offender`() {
 
+    val transferInDetail = TransferInDetail(
+      cellLocation = "MDI-RECP",
+      commentText = "some transfer notes",
+      receiveTime = LocalDateTime.now()
+    )
+
+    val transferIn = with(transferInDetail) { TransferIn(cellLocation, commentText, receiveTime) }
+
+    val prisonNumber = "ABC123A"
+    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
+    transfersService.transferInOffender(prisonNumber, transferInDetail)
+    verify(prisonApiClient).transferIn(prisonNumber, transferIn)
+  }
+
+  @Test
+  fun `transfer-in is recorded as an event`() {
+
+    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
+
+    transfersService.transferInOffender(
+      "ABC123A",
+      TransferInDetail("MDI-RECP", "some transfer notes", LocalDateTime.now())
+    )
+
+    verify(arrivalListener).arrived(
+      ArrivalEvent(
+        prisonId = inmateDetail.agencyId,
+        prisonNumber = inmateDetail.offenderNo,
+        arrivalType = TRANSFER,
+        bookingId = inmateDetail.bookingId
+      )
+    )
+  }
+
+  @Test
+  fun `transfer-in offender throw exception when location is empty`() {
+
+    val inmate = inmateDetail.copy(assignedLivingUnit = null, offenderNo = "G6081VQ")
+
+    val transferInDetail = TransferInDetail(
+      cellLocation = "MDI-RECP",
+      commentText = "some transfer notes",
+      receiveTime = LocalDateTime.now()
+    )
+
+    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmate)
+    assertThatThrownBy {
+      transfersService.transferInOffender("G6081VQ", transferInDetail)
+    }.hasMessage("Prisoner: 'G6081VQ' does not have assigned living unit")
+  }
+
+  companion object {
     private val arrivalKnownToNomis = OffenderMovement(
       offenderNo = "G6081VQ",
       bookingId = 472195,
@@ -131,43 +187,5 @@ class TransfersServiceTest {
       movementTime = LocalTime.of(12, 0, 0),
       movementDate = LocalDate.of(2011, 9, 8)
     )
-  }
-
-  @Test
-  fun `transfer-in offender`() {
-
-    val transferInDetail = TransferInDetail(
-      cellLocation = "MDI-RECP",
-      commentText = "some transfer notes",
-      receiveTime = LocalDateTime.now()
-    )
-
-    val transferIn = with(transferInDetail) {
-      TransferIn(
-        cellLocation,
-        commentText,
-        receiveTime
-      )
-    }
-
-    val prisonNumber = "ABC123A"
-    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
-    transfersService.transferInOffender(prisonNumber, transferInDetail)
-    verify(prisonApiClient).transferIn(prisonNumber, transferIn)
-  }
-  @Test
-  fun `transfer-in offender throw exception when location is empty`() {
-
-    val transferInDetail = TransferInDetail(
-      cellLocation = "MDI-RECP",
-      commentText = "some transfer notes",
-      receiveTime = LocalDateTime.now()
-    )
-
-    val prisonNumber = "ABC123A"
-    whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetailNoLivingUnit)
-    assertThatThrownBy {
-      transfersService.transferInOffender(prisonNumber, transferInDetail)
-    }.hasMessage("Prisoner: 'ABC123A' do not have assigned living unit")
   }
 }
