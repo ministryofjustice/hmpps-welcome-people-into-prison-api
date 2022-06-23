@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
 
+import com.microsoft.applicationinsights.TelemetryClient
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.refEq
@@ -23,11 +24,13 @@ class ArrivalListenerTest {
   private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
   private val securityUserContext: SecurityUserContext = mock()
+  private val telemetryClient: TelemetryClient = mock()
 
-  private val arrivalListener = ArrivalListener(confirmedArrivalRepository, securityUserContext, FIXED_CLOCK)
+  private val arrivalListener =
+    ArrivalListener(confirmedArrivalRepository, telemetryClient, securityUserContext, FIXED_CLOCK)
 
   @Test
-  fun arrived() {
+  fun `arrived events are persisted in the DB`() {
 
     whenever(securityUserContext.principal).thenReturn("USER-1")
 
@@ -50,6 +53,32 @@ class ArrivalListenerTest {
           timestamp = LocalDateTime.now(FIXED_CLOCK)
         )
       )
+    )
+  }
+
+  @Test
+  fun `arrived events are recorded in App insights`() {
+
+    whenever(securityUserContext.principal).thenReturn("USER-1")
+
+    arrivalListener.arrived(
+      ArrivalEvent(
+        movementId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
+      )
+    )
+
+    verify(telemetryClient).trackEvent(
+      "Arrival",
+      mapOf(
+        "movementId" to "1",
+        "prisonId" to "MDI",
+        "prisonNumber" to "A1234AA",
+        "bookingId" to "123",
+        "arrivalType" to "RECALL",
+        "username" to "USER-1",
+        "timestamp" to LocalDateTime.now(FIXED_CLOCK).toString()
+      ),
+      null
     )
   }
 }
