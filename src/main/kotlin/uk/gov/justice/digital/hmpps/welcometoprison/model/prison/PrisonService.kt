@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
@@ -8,10 +7,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 
 @Service
 class PrisonService(
-  @Autowired private val prisonApiClient: PrisonApiClient,
-  @Autowired private val prisonRegisterClient: PrisonRegisterClient,
-  @Autowired private val locationFormatter: LocationFormatter
-
+  private val prisonApiClient: PrisonApiClient,
+  private val prisonRegisterClient: PrisonRegisterClient,
+  private val locationFormatter: LocationFormatter
 ) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? =
@@ -41,10 +39,7 @@ class PrisonService(
       }
     )
 
-  fun recallOffender(
-    prisonNumber: String,
-    detail: ConfirmArrivalDetail
-  ): InmateDetail =
+  fun recallOffender(prisonNumber: String, detail: ConfirmArrivalDetail): InmateDetail =
     prisonApiClient.recallOffender(
       prisonNumber,
       with(detail) {
@@ -74,16 +69,10 @@ class PrisonService(
       .offenderNo
 
   fun returnFromCourt(prisonId: String, prisonNumber: String): ConfirmCourtReturnResponse {
-
-    val inmateDetail = prisonApiClient.courtTransferIn(
-      prisonNumber,
-      CourtTransferIn(prisonId)
-    )
-    val livingUnitName = inmateDetail.assignedLivingUnit?.description
-      ?: throw IllegalArgumentException("prisoner: '$prisonNumber' do not have assigned living unit")
+    val inmateDetail = prisonApiClient.courtTransferIn(prisonNumber, CourtTransferIn(prisonId))
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
-      location = locationFormatter.format(livingUnitName),
+      location = locationFormatter.extract(inmateDetail),
       bookingId = inmateDetail.bookingId
     )
   }

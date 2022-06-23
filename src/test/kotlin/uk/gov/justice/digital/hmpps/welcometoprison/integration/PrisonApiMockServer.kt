@@ -56,6 +56,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "lastName": "RAP",
                   "dateOfBirth": "1961-01-04",
                   "age": 60,
+                 "agencyId": "NMI",
                   "activeFlag": false,
                   "assignedLivingUnit": {
                     "agencyId": "NMI",

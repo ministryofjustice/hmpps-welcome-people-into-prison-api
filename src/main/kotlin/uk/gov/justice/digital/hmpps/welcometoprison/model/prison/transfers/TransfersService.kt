@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType.TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
@@ -15,6 +18,7 @@ class TransfersService(
   private val prisonApiClient: PrisonApiClient,
   private val prisonerSearchService: PrisonerSearchService,
   private val locationFormatter: LocationFormatter,
+  private val arrivalListener: ArrivalListener,
 ) {
 
   fun getTransfer(agencyId: String, prisonNumber: String): Transfer =
@@ -42,22 +46,17 @@ class TransfersService(
     prisonNumber: String,
     transferInDetail: TransferInDetail
   ): TransferResponse {
-
-    val inmateDetail = prisonApiClient.transferIn(
-      prisonNumber,
-      with(transferInDetail) {
-        TransferIn(
-          cellLocation,
-          commentText,
-          receiveTime
-        )
-      }
+    val inmateDetail = prisonApiClient.transferIn(prisonNumber, transferInDetail.toArrival())
+    arrivalListener.arrived(
+      ArrivalEvent(
+        prisonId = inmateDetail.agencyId,
+        prisonNumber = inmateDetail.offenderNo,
+        bookingId = inmateDetail.bookingId,
+        arrivalType = TRANSFER,
+      )
     )
-    val livingUnitName = inmateDetail.assignedLivingUnit?.description
-      ?: throw IllegalArgumentException("Prisoner: '$prisonNumber' do not have assigned living unit")
-    return TransferResponse(
-      prisonNumber = inmateDetail.offenderNo,
-      location = locationFormatter.format(livingUnitName)
-    )
+    return TransferResponse(prisonNumber = inmateDetail.offenderNo, location = locationFormatter.extract(inmateDetail))
   }
+
+  private fun TransferInDetail.toArrival() = TransferIn(cellLocation, commentText, receiveTime)
 }
