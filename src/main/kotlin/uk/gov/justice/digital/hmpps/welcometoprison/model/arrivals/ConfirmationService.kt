@@ -109,7 +109,8 @@ class ConfirmationService(
 
   private fun Confirmation.toEvent(inmateDetail: InmateDetail, type: ArrivalType) = ArrivalEvent(
     movementId = if (this is Confirmation.Expected) this.arrivalId else null,
-    prisonId = inmateDetail.agencyId,
+    // This doesn't appear to be returned from NOMIS for new bookings so reading from data from frontend
+    prisonId = detail.prisonId!!,
     prisonNumber = inmateDetail.offenderNo,
     bookingId = inmateDetail.bookingId,
     arrivalType = type,
