@@ -11,12 +11,12 @@ import javax.validation.constraints.NotNull
 @Schema(description = "Data for confirming offender return from temporary absence to the prison roll")
 data class ConfirmTemporaryAbsenceRequest(
   @Schema(
-    description = "Agency Id where offender return",
+    description = "Prison Id where offender return",
     example = "MDI",
   )
-  @field:Length(max = 20, min = 2, message = "Agency identifier cannot be less then 2 and more than 20 characters")
+  @field:Length(max = 20, min = 2, message = "Prison identifier cannot be less then 2 and more than 20 characters")
   @field:NotNull
-  val agencyId: String,
+  val prisonId: String,
 
   @Schema(
     description = "Movement Reason Code",

@@ -26,7 +26,7 @@ class TemporaryAbsenceServiceTest {
   private val arrivalListener: ArrivalListener = mock()
   private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter, arrivalListener)
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L, agencyId = "NMI",
+    offenderNo = "G6081VQ", bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
       "NMI", 1, "RECP", "Nottingham (HMP)"
     )
@@ -85,7 +85,7 @@ class TemporaryAbsenceServiceTest {
   fun `confirm temporary absence`() {
     whenever(prisonApiClient.confirmTemporaryAbsencesArrival(any(), any())).thenReturn(inmateDetail)
 
-    val request = ConfirmTemporaryAbsenceRequest(agencyId = "MDI", movementReasonCode = "C")
+    val request = ConfirmTemporaryAbsenceRequest(prisonId = "MDI", movementReasonCode = "C")
     assertThat(
       temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
     ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
@@ -97,14 +97,14 @@ class TemporaryAbsenceServiceTest {
   fun `confirm temporary absence recorded as arrival event`() {
     whenever(prisonApiClient.confirmTemporaryAbsencesArrival(any(), any())).thenReturn(inmateDetail)
 
-    val request = ConfirmTemporaryAbsenceRequest(agencyId = "MDI", movementReasonCode = "C")
+    val request = ConfirmTemporaryAbsenceRequest(prisonId = "MDI", movementReasonCode = "C")
     assertThat(
       temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
     ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
 
     verify(arrivalListener).arrived(
       ArrivalEvent(
-        prisonId = inmateDetail.agencyId,
+        prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = ArrivalType.TEMPORARY_ABSENCE,
         bookingId = inmateDetail.bookingId

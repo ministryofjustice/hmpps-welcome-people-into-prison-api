@@ -32,7 +32,7 @@ class TransfersServiceTest {
     TransfersService(prisonApiClient, prisonerSearchService, locationFormatter, arrivalListener)
 
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L, agencyId = "NMI",
+    offenderNo = "G6081VQ", bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
       "NMI", 1, "RECP", "Nottingham (HMP)"
     )
@@ -118,6 +118,7 @@ class TransfersServiceTest {
   fun `transfer-in offender`() {
 
     val transferInDetail = TransferInDetail(
+      prisonId = "MDI",
       cellLocation = "MDI-RECP",
       commentText = "some transfer notes",
       receiveTime = LocalDateTime.now()
@@ -138,12 +139,12 @@ class TransfersServiceTest {
 
     transfersService.transferInOffender(
       "ABC123A",
-      TransferInDetail("MDI-RECP", "some transfer notes", LocalDateTime.now())
+      TransferInDetail("MDI", "MDI-RECP", "some transfer notes", LocalDateTime.now())
     )
 
     verify(arrivalListener).arrived(
       ArrivalEvent(
-        prisonId = inmateDetail.agencyId,
+        prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = TRANSFER,
         bookingId = inmateDetail.bookingId
@@ -157,6 +158,7 @@ class TransfersServiceTest {
     val inmate = inmateDetail.copy(assignedLivingUnit = null, offenderNo = "G6081VQ")
 
     val transferInDetail = TransferInDetail(
+      prisonId = "MDI",
       cellLocation = "MDI-RECP",
       commentText = "some transfer notes",
       receiveTime = LocalDateTime.now()
