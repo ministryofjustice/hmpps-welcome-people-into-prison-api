@@ -22,7 +22,6 @@ class PrisonServiceTest {
   private val inmateDetailNewBooking = InmateDetail(
     offenderNo = "ABC123A",
     bookingId = 1L,
-    agencyId = "NMI"
   )
   private val inmateDetail = InmateDetail(
     offenderNo = "ABC123A",
@@ -32,8 +31,7 @@ class PrisonServiceTest {
       1,
       "RECP",
       "Nottingham (HMP)"
-    ),
-    agencyId = "NMI"
+    )
   )
 
   @Test

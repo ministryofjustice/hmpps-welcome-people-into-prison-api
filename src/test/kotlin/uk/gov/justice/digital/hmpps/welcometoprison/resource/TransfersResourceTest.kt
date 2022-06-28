@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
@@ -22,7 +23,10 @@ class TransfersResourceTest : IntegrationTestBase() {
     @BeforeEach
     fun beforeEach() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
-      prisonerSearchMockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")))
+      prisonerSearchMockServer.stubMatchByPrisonerNumbers(
+        200,
+        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
+      )
     }
 
     @Test
@@ -79,7 +83,10 @@ class TransfersResourceTest : IntegrationTestBase() {
     @BeforeEach
     fun beforeEach() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
-      prisonerSearchMockServer.stubMatchByPrisonerNumbers(200, listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")))
+      prisonerSearchMockServer.stubMatchByPrisonerNumbers(
+        200,
+        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
+      )
     }
 
     @Test
@@ -132,6 +139,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
   companion object {
     val transferInDetail = TransferInDetail(
+      "MDI",
       "MDI-RECP",
       "some comment",
       LocalDateTime.of(2021, 11, 15, 1, 0, 0)
@@ -166,7 +174,7 @@ class TransfersResourceTest : IntegrationTestBase() {
     fun `Should call prison service with correct args`() {
       prisonApiMockServer.stubTransferInOffender("A1234BC")
 
-      val transferInDetails = TransferInDetail(
+      val transferIn = TransferIn(
         "MDI-RECP",
         "some comment",
         LocalDateTime.of(2021, 11, 15, 1, 0, 0)
@@ -191,7 +199,7 @@ class TransfersResourceTest : IntegrationTestBase() {
             "/api/offenders/A1234BC/transfer-in"
           )
         ).withHeader("Authorization", equalTo(token))
-          .withRequestBody(equalToJson(objectMapper.writeValueAsString(transferInDetails)))
+          .withRequestBody(equalToJson(objectMapper.writeValueAsString(transferIn)))
       )
     }
   }

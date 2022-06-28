@@ -5,10 +5,19 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.hibernate.validator.constraints.Length
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
+import javax.validation.constraints.NotNull
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating transferring in an offender and adding to the prison roll")
 data class TransferInDetail(
+  @Schema(
+    description = "Prison Id where offender return",
+    example = "MDI",
+  )
+  @field:Length(max = 20, min = 2, message = "Prison identifier cannot be less then 2 and more than 20 characters")
+  @field:NotNull
+  val prisonId: String,
+
   @Schema(
     description = "Cell location where transferred prisoner should be housed, default will be reception",
     example = "MDI-RECP",

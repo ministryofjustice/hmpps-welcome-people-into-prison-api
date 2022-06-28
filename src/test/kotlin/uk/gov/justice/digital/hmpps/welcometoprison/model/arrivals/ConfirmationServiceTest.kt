@@ -349,13 +349,13 @@ class ConfirmationServiceTest {
 
     private val LOCATION = "RECP"
     private val INMATE_DETAIL = InmateDetail(
-      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID, agencyId = PRISON_ID,
+      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID,
       assignedLivingUnit = AssignedLivingUnit(
         PRISON_ID, LOCATION_ID, LOCATION, "Nottingham (HMP)"
       )
     )
     private val INMATE_DETAIL_NO_UNIT = InmateDetail(
-      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID, agencyId = PRISON_ID
+      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID
     )
     private val CONFIRM_COURT_RETURN_RESPONSE =
       ConfirmCourtReturnResponse(prisonNumber = PRISON_NUMBER, location = LOCATION, bookingId = BOOKING_ID)
