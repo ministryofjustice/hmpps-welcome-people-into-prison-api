@@ -40,7 +40,7 @@ class TransfersServiceTest {
 
   @Test
   fun `getTransfers - happy path if prisoner has no PNC Number`() {
-    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
     whenever(prisonerSearchService.getPncNumbers(any())).thenReturn(mapOf("G6081VQ" to null))
 
     val transfers = transfersService.getTransfers("NMI")
@@ -57,13 +57,13 @@ class TransfersServiceTest {
       )
     )
 
-    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
     verify(prisonerSearchService).getPncNumbers(listOf("G6081VQ"))
   }
 
   @Test
   fun `getTransfers - happy path if prisoner has PNC Number`() {
-    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
     whenever(prisonerSearchService.getPncNumbers(any())).thenReturn(mapOf("G6081VQ" to "12/394773H"))
 
     val transfers = transfersService.getTransfers("NMI")
@@ -80,13 +80,13 @@ class TransfersServiceTest {
       )
     )
 
-    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
     verify(prisonerSearchService).getPncNumbers(listOf("G6081VQ"))
   }
 
   @Test
   fun getTransfer() {
-    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
 
     val transfers = transfersService.getTransfer("NMI", "G6081VQ")
 
@@ -102,12 +102,12 @@ class TransfersServiceTest {
       )
     )
 
-    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI")
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
   }
 
   @Test
   fun `getTransfer fail to be found`() {
-    whenever(prisonApiClient.getPrisonTransfersEnRoute(any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
 
     assertThatThrownBy {
       transfersService.getTransfer("NMI", "A1234AA")

@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
+import java.time.LocalDate
 
 @Service
 @Transactional
@@ -26,7 +27,7 @@ class TransfersService(
       ?: throw NotFoundException("Could not find transfer with prisonNumber: '$prisonNumber'")
 
   fun getTransfers(agencyId: String): List<Transfer> {
-    val transfers = prisonApiClient.getPrisonTransfersEnRoute(agencyId)
+    val transfers = prisonApiClient.getPrisonTransfersEnRoute(agencyId, LocalDate.now())
     val pncNumbers = prisonerSearchService.getPncNumbers(transfers.map { it.offenderNo })
 
     return transfers.map {

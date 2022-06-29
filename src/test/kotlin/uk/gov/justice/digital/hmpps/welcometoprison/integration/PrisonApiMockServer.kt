@@ -29,7 +29,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
 
   fun stubGetPrisonTransfersEnRoute(prisonId: String) {
     stubFor(
-      get("/api/movements/$prisonId/enroute")
+      get("/api/movements/$prisonId/enroute?movementDate=2022-06-29")
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
