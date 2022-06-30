@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class PrisonApiClientTest {
   private lateinit var prisonApiClient: PrisonApiClient
@@ -65,9 +66,9 @@ class PrisonApiClientTest {
 
   @Test
   fun `get prison transfers en-route happy path`() {
-    mockServer.stubGetPrisonTransfersEnRoute("NMI", LocalDate.of(2022, 6, 29))
+    mockServer.stubGetPrisonTransfersEnRoute("NMI", LocalDate.now())
 
-    val offenderMovements = prisonApiClient.getPrisonTransfersEnRoute("NMI", LocalDate.of(2022, 6, 29))
+    val offenderMovements = prisonApiClient.getPrisonTransfersEnRoute("NMI", LocalDate.now())
 
     assertThat(offenderMovements).containsExactly(
       OffenderMovement(
@@ -127,7 +128,13 @@ class PrisonApiClientTest {
     )
 
     mockServer.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/movements/NMI/enroute?movementDate=2022-06-29"))
+      WireMock.getRequestedFor(
+        WireMock.urlEqualTo(
+          "/api/movements/NMI/enroute?movementDate=" + LocalDate.now().format(
+            DateTimeFormatter.ISO_LOCAL_DATE
+          )
+        )
+      )
     )
   }
 
