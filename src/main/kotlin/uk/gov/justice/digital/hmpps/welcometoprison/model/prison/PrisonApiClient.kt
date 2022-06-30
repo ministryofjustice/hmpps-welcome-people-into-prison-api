@@ -159,9 +159,12 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyToMono(typeReference<List<UserCaseLoad>>())
       .block() ?: emptyList()
 
-  fun getPrisonTransfersEnRoute(agencyId: String): List<OffenderMovement> =
+  fun getPrisonTransfersEnRoute(agencyId: String, movementDate: LocalDate): List<OffenderMovement> =
     webClient.get()
-      .uri("/api/movements/$agencyId/enroute")
+      .uri(
+        "/api/movements/$agencyId/enroute?movementDate=" +
+          movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+      )
       .retrieve()
       .bodyToMono(typeReference<List<OffenderMovement>>())
       .block() ?: emptyList()

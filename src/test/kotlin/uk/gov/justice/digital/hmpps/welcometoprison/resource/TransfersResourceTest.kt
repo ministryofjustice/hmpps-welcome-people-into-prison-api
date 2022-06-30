@@ -71,7 +71,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute"
+            "/api/movements/MDI/enroute?movementDate=2022-06-29"
           )
         ).withHeader("Authorization", equalTo(token))
       )
@@ -130,7 +130,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute"
+            "/api/movements/MDI/enroute?movementDate=2022-06-29"
           )
         ).withHeader("Authorization", equalTo(token))
       )

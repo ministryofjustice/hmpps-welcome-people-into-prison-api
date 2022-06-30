@@ -67,7 +67,7 @@ class PrisonApiClientTest {
   fun `get prison transfers en-route happy path`() {
     mockServer.stubGetPrisonTransfersEnRoute("NMI")
 
-    val offenderMovements = prisonApiClient.getPrisonTransfersEnRoute("NMI")
+    val offenderMovements = prisonApiClient.getPrisonTransfersEnRoute("NMI", LocalDate.of(2022, 6, 29))
 
     assertThat(offenderMovements).containsExactly(
       OffenderMovement(
@@ -127,7 +127,7 @@ class PrisonApiClientTest {
     )
 
     mockServer.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/movements/NMI/enroute"))
+      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/movements/NMI/enroute?movementDate=2022-06-29"))
     )
   }
 
