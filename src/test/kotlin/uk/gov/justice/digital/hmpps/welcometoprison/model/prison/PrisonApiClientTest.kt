@@ -65,7 +65,7 @@ class PrisonApiClientTest {
 
   @Test
   fun `get prison transfers en-route happy path`() {
-    mockServer.stubGetPrisonTransfersEnRoute("NMI")
+    mockServer.stubGetPrisonTransfersEnRoute("NMI", LocalDate.of(2022, 6, 29))
 
     val offenderMovements = prisonApiClient.getPrisonTransfersEnRoute("NMI", LocalDate.of(2022, 6, 29))
 
