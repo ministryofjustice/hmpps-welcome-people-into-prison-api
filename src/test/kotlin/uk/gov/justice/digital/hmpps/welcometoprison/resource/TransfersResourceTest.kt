@@ -13,7 +13,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Suppress("ClassName")
 class TransfersResourceTest : IntegrationTestBase() {
@@ -22,7 +24,7 @@ class TransfersResourceTest : IntegrationTestBase() {
   inner class `Find transfers on day` {
     @BeforeEach
     fun beforeEach() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.of(2022, 6, 29))
       prisonerSearchMockServer.stubMatchByPrisonerNumbers(
         200,
         listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
@@ -48,7 +50,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
       webTestClient.get().uri("/prisons/MDI/transfers")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
@@ -59,7 +61,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls prison API with passed through token`() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
       val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
 
@@ -71,7 +73,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute?movementDate=2022-06-29"
+            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
           )
         ).withHeader("Authorization", equalTo(token))
       )
@@ -82,7 +84,7 @@ class TransfersResourceTest : IntegrationTestBase() {
   inner class `Find transfer on day` {
     @BeforeEach
     fun beforeEach() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.of(2022, 6, 29))
       prisonerSearchMockServer.stubMatchByPrisonerNumbers(
         200,
         listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
@@ -107,7 +109,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `returns json in expected format`() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
       webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
@@ -118,7 +120,7 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `calls prison API with passed through token`() {
-      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI")
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
       val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
 
@@ -130,7 +132,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute?movementDate=2022-06-29"
+            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
           )
         ).withHeader("Authorization", equalTo(token))
       )

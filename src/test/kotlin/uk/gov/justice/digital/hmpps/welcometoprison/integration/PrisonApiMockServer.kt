@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -27,9 +28,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-  fun stubGetPrisonTransfersEnRoute(prisonId: String) {
+  fun stubGetPrisonTransfersEnRoute(prisonId: String, movementDate: LocalDate) {
     stubFor(
-      get("/api/movements/$prisonId/enroute?movementDate=2022-06-29")
+      get("/api/movements/$prisonId/enroute?movementDate=" + movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
