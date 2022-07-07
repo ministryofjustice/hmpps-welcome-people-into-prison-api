@@ -7,10 +7,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.PotentialMatchRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
@@ -24,32 +23,10 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   }
 
   fun findPotentialMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
-    val results =
-      findMatches(request.prisonNumber, "Prison Number") + //
-        findMatches(request.pncNumber, "PNC Number") + //
-        findNameAndDobMatches(request)
-
-    val result = results.distinctBy { it.prisonNumber }
-    log.info("Number of search results for potential matches: {}", result.size)
-    return result
-  }
-
-  private fun findMatches(identifier: String?, identifierName: String): List<PotentialMatch> {
-    val matches = identifier?.let { client.matchPrisoner(MatchPrisonerRequest(it)) } ?: emptyList()
-    if (matches.size > 1) log.warn("Multiple matched Prison records for a Movement by $identifierName. There are ${matches.size} matched Prison records for $identifier")
-    return matches.map { it.toPotentialMatch() }
-  }
-
-  private fun findNameAndDobMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
-    return if (request.lastName == null || request.dateOfBirth == null) emptyList()
-    else
-      client.matchPrisonerByNameAndDateOfBirth(
-        SearchByNameAndDateOfBirth(
-          request.firstName, request.lastName, request.dateOfBirth
-        )
-      ).map {
-        it.toPotentialMatch()
-      }
+    if (!request.isValid()) return emptyList()
+    val results = client.matchPrisoner(request.toPotentialMatchRequest())
+    log.info("Number of search results for potential matches: {}", results.size)
+    return results.map { it.toPotentialMatch() }
   }
 
   companion object {
@@ -77,15 +54,12 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
       sex = this.gender
     )
 
-    private fun Prisoner.toPotentialMatch() = PotentialMatch(
-      firstName = Name.properCase(this.firstName),
-      lastName = Name.properCase(this.lastName),
+    private fun MatchPrisonersRequest.toPotentialMatchRequest() = PotentialMatchRequest(
+      firstName = this.firstName,
+      lastName = this.lastName,
       dateOfBirth = this.dateOfBirth,
       pncNumber = this.pncNumber,
-      prisonNumber = this.prisonerNumber,
-      croNumber = this.croNumber,
-      sex = this.gender,
-      isCurrentPrisoner = this.isCurrentPrisoner,
+      nomsNumber = this.prisonNumber
     )
   }
 }

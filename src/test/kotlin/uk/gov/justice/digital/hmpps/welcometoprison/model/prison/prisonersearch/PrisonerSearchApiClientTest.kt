@@ -9,13 +9,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonerSearchMockServer
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonerRequest
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.PotentialMatchRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class PrisonerSearchApiClientTest {
 
@@ -48,7 +46,7 @@ class PrisonerSearchApiClientTest {
   @Test
   fun `successful match prisoner`() {
     mockServer.stubMatchPrisoners(200)
-    val result = client.matchPrisoner(MatchPrisonerRequest("identifier"))
+    val result = client.matchPrisoner(PotentialMatchRequest(nomsNumber = "identifier"))
 
     assertThat(result).isEqualTo(
       listOf(
@@ -66,7 +64,7 @@ class PrisonerSearchApiClientTest {
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/match-prisoners"))
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
     )
   }
 
@@ -130,38 +128,7 @@ class PrisonerSearchApiClientTest {
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/match-prisoners"))
-    )
-  }
-
-  @Test
-  fun `successful match by name and date of birth`() {
-    mockServer.stubMatchPrisonerByNameAndDateOfBirthOneResult()
-    val searchByNameAndDateOfBirth = SearchByNameAndDateOfBirth(
-      lastName = "Larsen", firstName = "Robert",
-      dateOfBirth = LocalDate.parse(
-        "1975-04-02", DateTimeFormatter.ofPattern("yyyy-MM-dd")
-      )
-    )
-    val result = client.matchPrisonerByNameAndDateOfBirth(searchByNameAndDateOfBirth)
-
-    assertThat(result).isEqualTo(
-      listOf(
-        Prisoner(
-          prisonerNumber = "A1234AA",
-          pncNumber = "12/394773H",
-          firstName = "ROBERT",
-          lastName = "LARSEN",
-          croNumber = "29906/12J",
-          gender = "Male",
-          dateOfBirth = LocalDate.of(1975, 4, 2),
-          status = "ACTIVE IN"
-        )
-      )
-    )
-
-    mockServer.verify(
-      postRequestedFor(urlEqualTo("/match-prisoners"))
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
     )
   }
 }
