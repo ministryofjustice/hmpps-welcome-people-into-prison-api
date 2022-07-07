@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
-import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
-import javax.validation.constraints.Past
 
 @JsonInclude(NON_NULL)
 data class PotentialMatchRequest(
