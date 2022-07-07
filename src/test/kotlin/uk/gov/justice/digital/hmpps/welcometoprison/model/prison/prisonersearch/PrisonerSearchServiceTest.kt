@@ -7,11 +7,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.Prisoner
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.PrisonerAndPncNumber
 import java.time.LocalDate
 
@@ -50,10 +50,10 @@ class PrisonerSearchServiceTest {
   }
 
   @Test
-  fun `findPotentialMatch from one record`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
+  fun `findPotentialMatch from record`() {
+    whenever(client.matchPrisoner(any())).thenReturn(
       listOf(
-        Prisoner(
+        MatchPrisonerResponse(
           prisonerNumber = PRISON_NUMBER,
           pncNumber = PNC_NUMBER,
           firstName = FIRST_NAME,
@@ -66,14 +66,16 @@ class PrisonerSearchServiceTest {
       )
     )
     val matchPrisonersRequest = MatchPrisonersRequest(
+      prisonNumber = PRISON_NUMBER,
+      pncNumber = PNC_NUMBER,
       firstName = FIRST_NAME,
       lastName = LAST_NAME,
       dateOfBirth = DOB,
     )
-    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
+    val result = service.findPotentialMatches(matchPrisonersRequest)
 
-    assertThat(potentialMatchList.size).isEqualTo(1)
-    with(potentialMatchList[0]) {
+    assertThat(result.size).isEqualTo(1)
+    with(result[0]) {
       assertThat(firstName).isEqualTo(FIRST_NAME_FORMATTED)
       assertThat(lastName).isEqualTo(LAST_NAME_FORMATTED)
       assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
@@ -82,87 +84,6 @@ class PrisonerSearchServiceTest {
       assertThat(CRO_NUMBER).isEqualTo(CRO_NUMBER)
       assertThat(GENDER).isEqualTo(GENDER)
     }
-  }
-
-  @Test
-  fun `findPotentialMatch merge two records`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
-      listOf(
-        Prisoner(
-          prisonerNumber = PRISON_NUMBER,
-          pncNumber = PNC_NUMBER,
-          firstName = FIRST_NAME,
-          lastName = LAST_NAME,
-          dateOfBirth = DOB,
-          gender = GENDER,
-          croNumber = CRO_NUMBER,
-          status = INACTIVE_OUT
-        ),
-        Prisoner(
-          prisonerNumber = PRISON_NUMBER,
-          pncNumber = PNC_NUMBER,
-          firstName = FIRST_NAME,
-          lastName = LAST_NAME,
-          dateOfBirth = DOB,
-          gender = GENDER,
-          croNumber = CRO_NUMBER,
-          status = INACTIVE_OUT
-        )
-      )
-    )
-    val matchPrisonersRequest = MatchPrisonersRequest(
-      firstName = FIRST_NAME,
-      lastName = LAST_NAME,
-      dateOfBirth = DOB,
-    )
-    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
-
-    assertThat(potentialMatchList.size).isEqualTo(1)
-    with(potentialMatchList[0]) {
-      assertThat(firstName).isEqualTo(FIRST_NAME_FORMATTED)
-      assertThat(lastName).isEqualTo(LAST_NAME_FORMATTED)
-      assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
-      assertThat(dateOfBirth).isEqualTo(DOB)
-      assertThat(pncNumber).isEqualTo(PNC_NUMBER)
-    }
-  }
-
-  @Test
-  fun `findPotentialMatch get two records when prison number is different`() {
-    whenever(client.matchPrisonerByNameAndDateOfBirth(any())).thenReturn(
-      listOf(
-        Prisoner(
-          prisonerNumber = PRISON_NUMBER,
-          pncNumber = PNC_NUMBER,
-          firstName = FIRST_NAME,
-          lastName = LAST_NAME,
-          dateOfBirth = DOB,
-          gender = GENDER,
-          croNumber = CRO_NUMBER,
-          status = INACTIVE_OUT
-        ),
-        Prisoner(
-          prisonerNumber = "A1234AB",
-          pncNumber = PNC_NUMBER,
-          firstName = FIRST_NAME,
-          lastName = LAST_NAME,
-          dateOfBirth = DOB,
-          gender = GENDER,
-          croNumber = CRO_NUMBER,
-          status = INACTIVE_OUT
-        )
-      )
-    )
-    val matchPrisonersRequest = MatchPrisonersRequest(
-      firstName = FIRST_NAME,
-      lastName = LAST_NAME,
-      dateOfBirth = DOB,
-    )
-    val potentialMatchList = service.findPotentialMatches(matchPrisonersRequest)
-
-    assertThat(potentialMatchList.size).isEqualTo(2)
-    assertThat(potentialMatchList[0].prisonNumber).isEqualTo(PRISON_NUMBER)
-    assertThat(potentialMatchList[1].prisonNumber).isEqualTo("A1234AB")
   }
 
   @Test
