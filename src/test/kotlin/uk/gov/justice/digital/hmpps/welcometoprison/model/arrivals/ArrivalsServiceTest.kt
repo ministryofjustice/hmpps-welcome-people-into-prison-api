@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import org.springframework.boot.context.properties.bind.Bindable.listOf
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
@@ -13,13 +14,32 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.Confi
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.stream.Stream
 
 class ArrivalsServiceTest {
   private val basmService: BasmService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
+  private val confirmedArrivalsCsvConverter: ConfirmedArrivalsCsvConverter = ConfirmedArrivalsCsvConverter()
 
-  private val arrivalsService = ArrivalsService(basmService, prisonerSearchService, confirmedArrivalRepository)
+  private val arrivalsService =
+    ArrivalsService(basmService, prisonerSearchService, confirmedArrivalRepository, confirmedArrivalsCsvConverter)
+
+  @Test
+  fun `Retrieving csv arrivals`() {
+
+    whenever(confirmedArrivalRepository.findAllByArrivalDateIsBetween(any(), any())).thenReturn(
+      Stream.of(
+        confirmedArrival
+      )
+    )
+
+    val arrivals = arrivalsService.getArrivalsAsCsv(DATE, 7)
+    assertThat(arrivals).isEqualTo(
+      "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
+        "1,2021-02-23T01:00:00,2021-02-01,MDI,NEW_TO_PRISON,UserT\n"
+    )
+  }
 
   @Test
   fun `Retrieving arrivals`() {
@@ -140,6 +160,18 @@ class ArrivalsServiceTest {
     private const val CRO_NUMBER = "SF80/655108T"
     private const val ANOTHER_PNC_NUMBER = "11/123456J"
     private val DOB = LocalDate.of(1980, 2, 23)
+
+    private val confirmedArrival = ConfirmedArrival(
+      id = 1,
+      prisonNumber = "ADF123",
+      movementId = "qweqewqwe123-123123wqw-12312312",
+      timestamp = LocalDateTime.of(2021, 2, 23, 1, 0, 0),
+      arrivalType = ArrivalType.NEW_TO_PRISON,
+      prisonId = "MDI",
+      bookingId = 1232,
+      arrivalDate = LocalDate.of(2021, 2, 1),
+      username = "UserT"
+    )
 
     private val arrival1 = Arrival(
       id = "1",
