@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.context.properties.bind.Bindable.listOf
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
 
 @Suppress("ClassName")
@@ -49,10 +50,11 @@ class EventsCsvResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    @Sql("classpath:repository/confirmed-arrival.sql")
+    @Sql(scripts = ["classpath:repository/confirmed-arrival-res.sql"], executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = ["classpath:repository/reset.sql"], executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     fun `calls service method with correct args`() {
 
-      webTestClient.get().uri("/events?start-date=2020-01-06")
+      webTestClient.get().uri("/events?start-date=2020-01-10")
         .accept(MediaType.parseMediaType("text/csv"))
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
@@ -62,8 +64,8 @@ class EventsCsvResourceTest : IntegrationTestBase() {
           val csv = String(it.responseBody)
           assertThat(csv).isEqualTo(
             "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
-              "7,2020-01-06T01:01:01,2020-01-06,MIK,NEW_TO_PRISON,\"User U\"\n" +
-              "8,2020-01-07T01:01:01,2020-01-07,MIK,\"NEW_BOOKING_EXISTING_OFFENDER\",\"Mr X\"\n"
+              "9,2020-01-10T01:01:01,2020-01-10,MIK,NEW_TO_PRISON,\"User U\"\n" +
+              "10,2020-01-10T01:01:01,2020-01-10,MIK,\"NEW_BOOKING_EXISTING_OFFENDER\",\"Mr X\"\n"
           )
         }
     }
