@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
+import com.microsoft.applicationinsights.web.dependencies.apachecommons.codec.digest.DigestUtils
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
 import java.io.StringWriter
@@ -17,7 +18,8 @@ class ConfirmedArrivalsCsvConverter {
     val stringWriter = StringWriter()
     val sequenceWriter = csvWriter.writeValues(stringWriter)
     events.forEach { e ->
-      sequenceWriter.write(e)
+      val a = e.copy(username = DigestUtils.md5Hex(e.username))
+      sequenceWriter.write(a)
     }
     sequenceWriter.close()
     return stringWriter.toString()

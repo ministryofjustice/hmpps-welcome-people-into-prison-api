@@ -37,7 +37,7 @@ class ArrivalsServiceTest {
     val arrivals = arrivalsService.getArrivalsAsCsv(DATE, 7)
     assertThat(arrivals).isEqualTo(
       "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
-        "1,2021-02-23T01:00:00,2021-02-01,MDI,NEW_TO_PRISON,UserT\n"
+        "1,2021-02-23T01:00:00,2021-02-01,MDI,NEW_TO_PRISON,\"9fa70e9f0d541dab23d0ca65edb1a261\"\n"
     )
   }
 
