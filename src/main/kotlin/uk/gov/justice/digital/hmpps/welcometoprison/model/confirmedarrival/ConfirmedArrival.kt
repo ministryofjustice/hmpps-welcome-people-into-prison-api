@@ -12,7 +12,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "confirmed_arrival")
-class ConfirmedArrival(
+data class ConfirmedArrival(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
