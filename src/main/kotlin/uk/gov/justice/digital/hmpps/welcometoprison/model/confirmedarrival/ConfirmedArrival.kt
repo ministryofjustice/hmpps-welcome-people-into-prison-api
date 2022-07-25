@@ -32,7 +32,7 @@ data class ConfirmedArrival(
 
   val arrivalDate: LocalDate,
 
-  val username: String
+  val username: String?
 )
 
 enum class ArrivalType {
