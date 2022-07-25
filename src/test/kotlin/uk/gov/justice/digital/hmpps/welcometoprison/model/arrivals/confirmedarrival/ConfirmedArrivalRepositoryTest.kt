@@ -48,6 +48,14 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     val arrivals = repository.findAllByArrivalDateAndPrisonId(date, prisonId)
     assertThat(arrivals).hasSize(1)
   }
+  @Test
+  @Sql("classpath:repository/confirmed-arrival.sql")
+  fun `find all between dates date and prison id`() {
+    val fromDate = LocalDate.of(2020, 1, 2)
+    val toDate = LocalDate.of(2020, 1, 4)
+    val arrivals = repository.findAllByArrivalDateIsBetween(fromDate, toDate)
+    assertThat(arrivals).hasSize(4)
+  }
 
   companion object {
     private val TIMESTAMP_NOW: LocalDateTime = LocalDateTime.now()
