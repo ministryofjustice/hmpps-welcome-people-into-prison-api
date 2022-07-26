@@ -65,7 +65,7 @@ class EventsCsvResourceTest : IntegrationTestBase() {
             "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
               "9,2020-01-10T01:01:01,2020-01-10,MIK,NEW_TO_PRISON,\"84e9f8806945dc6750f0414901cb36dc\"\n" +
               "10,2020-01-10T01:01:01,2020-01-10,MIK,\"NEW_BOOKING_EXISTING_OFFENDER\",\"c3f7510d7f48f77be5f508c80e2679ca\"\n" +
-              "11,2020-01-10T01:01:01,2020-01-10,MIK,\"NEW_BOOKING_EXISTING_OFFENDER\",\"d41d8cd98f00b204e9800998ecf8427e\"\n"
+              "11,2020-01-10T01:01:01,2020-01-10,MIK,\"NEW_BOOKING_EXISTING_OFFENDER\",\n"
           )
         }
     }
