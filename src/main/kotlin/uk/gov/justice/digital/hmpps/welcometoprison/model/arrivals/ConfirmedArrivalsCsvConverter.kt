@@ -18,7 +18,7 @@ class ConfirmedArrivalsCsvConverter {
     val stringWriter = StringWriter()
     val sequenceWriter = csvWriter.writeValues(stringWriter)
     events.forEach { e ->
-      val a = e.copy(username = DigestUtils.md5Hex((e.username.orEmpty())))
+      val a = e.copy(username = DigestUtils.md5Hex(e.username.orEmpty()))
       sequenceWriter.write(a)
     }
     sequenceWriter.close()
