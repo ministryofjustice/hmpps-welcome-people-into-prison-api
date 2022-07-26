@@ -32,6 +32,9 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("org.springframework.security:spring-security-test")
+  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.0-rc1")
+  testImplementation("com.tngtech.archunit:archunit-junit5:1.0.0-rc1")
+
 }
 
 allOpen {
