@@ -8,14 +8,17 @@ import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersSpec
+import uk.gov.justice.digital.hmpps.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@Import(JwtAuthHelper::class)
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
 

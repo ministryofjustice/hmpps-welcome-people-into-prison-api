@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.config
+package uk.gov.justice.digital.hmpps.config
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact

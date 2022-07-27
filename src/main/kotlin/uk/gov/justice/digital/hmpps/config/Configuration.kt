@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.config
+package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

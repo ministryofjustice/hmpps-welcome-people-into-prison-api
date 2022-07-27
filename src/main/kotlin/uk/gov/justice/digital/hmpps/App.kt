@@ -1,11 +1,11 @@
-package uk.gov.justice.digital.hmpps.welcometoprison
+package uk.gov.justice.digital.hmpps
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication()
-class WelcomePeopleToPrisonApi
+class App
 
 fun main(args: Array<String>) {
-  runApplication<WelcomePeopleToPrisonApi>(*args)
+  runApplication<App>(*args)
 }

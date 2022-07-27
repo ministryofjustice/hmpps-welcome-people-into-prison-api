@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.health
+package uk.gov.justice.digital.hmpps.config.health
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.actuate.health.Health

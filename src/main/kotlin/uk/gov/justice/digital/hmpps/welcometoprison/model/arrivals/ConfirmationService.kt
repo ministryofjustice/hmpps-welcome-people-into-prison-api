@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.config.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType

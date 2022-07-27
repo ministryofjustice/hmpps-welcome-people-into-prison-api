@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.RecentArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.RecentArrivalsService
 import java.time.LocalDate

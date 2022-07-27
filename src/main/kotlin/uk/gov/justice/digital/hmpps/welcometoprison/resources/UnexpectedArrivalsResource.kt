@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmArrivalResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Confirmation
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationService
@@ -31,7 +31,12 @@ class UnexpectedArrivalsResource(
   @Operation(
     summary = "Confirms the unexpected arrival",
     description = "Confirms the unexpected arrival, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
-    security = [SecurityRequirement(name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER", scopes = ["write"])],
+    security = [
+      SecurityRequirement(
+        name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
+        scopes = ["write"]
+      )
+    ],
     responses = [
       ApiResponse(
         responseCode = "200",

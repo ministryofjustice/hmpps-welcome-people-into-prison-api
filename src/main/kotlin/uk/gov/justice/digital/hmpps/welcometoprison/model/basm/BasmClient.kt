@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
+import uk.gov.justice.digital.hmpps.config.typeReference
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.Order.asc
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`query of`
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.deserializer.JsonApiResponse
-import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
 
