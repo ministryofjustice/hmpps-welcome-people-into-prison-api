@@ -34,7 +34,6 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.0-rc1")
   testImplementation("com.tngtech.archunit:archunit-junit5:1.0.0-rc1")
-
 }
 
 allOpen {
