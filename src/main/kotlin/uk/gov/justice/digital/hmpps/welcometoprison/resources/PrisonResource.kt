@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Prison
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
@@ -174,7 +174,12 @@ class PrisonResource(
   @Operation(
     summary = "Retrieves a subset of a prisoner's details",
     description = "Retrieves a subset of a prisoner's details using the prisonNumber, role required is ROLE_VIEW_ARRIVALS or ROLE_GLOBAL_SEARCH or ROLE_PRISONER_SEARCH",
-    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH", scopes = ["read"])],
+    security = [
+      SecurityRequirement(
+        name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH",
+        scopes = ["read"]
+      )
+    ],
 
     responses = [
       ApiResponse(
@@ -214,7 +219,7 @@ class PrisonResource(
       ),
     ]
   )
-  @GetMapping(path = [ "/prisoners/{prisonNumber}"])
+  @GetMapping(path = ["/prisoners/{prisonNumber}"])
   fun getPrisoner(
     @PathVariable prisonNumber: String
   ): PrisonerDetails = prisonerSearchService.getPrisoner(prisonNumber)

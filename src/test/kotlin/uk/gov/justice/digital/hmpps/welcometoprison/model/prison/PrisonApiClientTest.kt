@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.config.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

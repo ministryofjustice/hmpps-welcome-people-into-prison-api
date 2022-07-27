@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.config
+package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component

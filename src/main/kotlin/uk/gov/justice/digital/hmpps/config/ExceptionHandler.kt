@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.config
+package uk.gov.justice.digital.hmpps.config
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.BAD_REQUEST
@@ -13,10 +13,6 @@ import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ConflictException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ErrorCode
-import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import javax.validation.ValidationException
 
 @RestControllerAdvice

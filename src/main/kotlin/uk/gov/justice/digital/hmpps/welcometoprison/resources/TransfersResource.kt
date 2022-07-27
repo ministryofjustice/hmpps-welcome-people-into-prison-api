@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.welcometoprison.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Transfer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse

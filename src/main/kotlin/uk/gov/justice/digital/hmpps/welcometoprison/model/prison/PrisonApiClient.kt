@@ -7,8 +7,9 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.hmpps.welcometoprison.model.ClientException
-import uk.gov.justice.digital.hmpps.welcometoprison.model.typeReference
+import uk.gov.justice.digital.hmpps.config.ClientErrorResponse
+import uk.gov.justice.digital.hmpps.config.ClientException
+import uk.gov.justice.digital.hmpps.config.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -112,14 +113,6 @@ data class AssignedLivingUnit(
   val agencyName: String
 )
 
-data class ErrorResponse(
-  val status: Int? = null,
-  val errorCode: Int? = null,
-  val userMessage: String? = null,
-  val developerMessage: String? = null,
-  val moreInfo: String? = null
-)
-
 data class UserCaseLoad(
   val caseLoadId: String,
   val description: String,
@@ -130,7 +123,7 @@ fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus)
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
 fun propagateClientError(response: ClientResponse, message: String) =
-  response.bodyToMono(ErrorResponse::class.java).map {
+  response.bodyToMono(ClientErrorResponse::class.java).map {
     ClientException(it, message)
   }
 

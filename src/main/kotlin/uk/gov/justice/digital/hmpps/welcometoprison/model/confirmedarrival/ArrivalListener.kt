@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.welcometoprison.config.SecurityUserContext
+import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime

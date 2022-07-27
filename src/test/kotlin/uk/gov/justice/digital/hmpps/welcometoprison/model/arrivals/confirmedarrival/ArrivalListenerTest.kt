@@ -6,7 +6,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.welcometoprison.config.SecurityUserContext
+import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType.RECALL

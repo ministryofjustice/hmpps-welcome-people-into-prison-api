@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
 
 @Service

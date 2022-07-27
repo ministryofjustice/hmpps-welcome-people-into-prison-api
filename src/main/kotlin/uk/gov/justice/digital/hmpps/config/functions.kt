@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model
+package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.core.ParameterizedTypeReference
 
