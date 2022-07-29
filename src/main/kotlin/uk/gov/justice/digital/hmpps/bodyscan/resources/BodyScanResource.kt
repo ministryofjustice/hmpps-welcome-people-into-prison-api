@@ -64,7 +64,7 @@ class BodyScanResource(
       ),
     ]
   )
-  @PostMapping(path = ["/prisoner/{bookingId}/body-scan"])
+  @PostMapping(path = ["/body-scan/prisoner/{prisonNumber}"])
   @ResponseStatus(HttpStatus.NO_CONTENT)
   fun addBodyScan(
     @Schema(description = "Booking Id", example = "1234", required = true)

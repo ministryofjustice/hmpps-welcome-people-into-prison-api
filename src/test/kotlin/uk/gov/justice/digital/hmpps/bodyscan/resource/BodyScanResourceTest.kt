@@ -22,14 +22,14 @@ class BodyScanResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/prisoner/1234/body-scan")
+      webTestClient.get().uri("/body-scan/prisoner/1234")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.post().uri("/prisoner/1234/body-scan")
+      webTestClient.post().uri("/body-scan/prisoner/1234")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
@@ -44,7 +44,7 @@ class BodyScanResourceTest : IntegrationTestBase() {
 
       webTestClient
         .post()
-        .uri("/prisoner/$bookingId/body-scan")
+        .uri("/body-scan/prisoner/$bookingId")
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
@@ -64,7 +64,7 @@ class BodyScanResourceTest : IntegrationTestBase() {
       val bookingId = 1234L
       webTestClient
         .post()
-        .uri("/prisoner/$bookingId/body-scan")
+        .uri("/body-scan/prisoner/$bookingId")
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
