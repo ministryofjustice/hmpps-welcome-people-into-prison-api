@@ -1,23 +1,33 @@
 package uk.gov.justice.digital.hmpps.bodyscan.apiclient
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
 import uk.gov.justice.digital.hmpps.config.typeReference
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.PotentialMatchRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-class BodyScanApiClient (@Qualifier("prisonerSearchApiWebClient") private val webClient: WebClient) {
+@Component
+class BodyScanApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
 
-  fun getBulk(potentialMatchRequest: PotentialMatchRequest): List<MatchPrisonerResponse> {
+  fun getPersonalCareNeedsForPrisonNumbers(
+    type: String,
+    fromStartDate: LocalDate,
+    toStartDate: LocalDate,
+    prisonNumbers: List<String>
+  ): List<PersonalCareCounter> {
     return webClient.post()
-      .uri("/prisoner-search/possible-matches")
-      .bodyValue(potentialMatchRequest)
+      .uri(
+        "/api/bookings/offenderNo/personal-care-needs/count?type=" +
+          "$type" +
+          "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
+          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+      )
+      .bodyValue(prisonNumbers)
       .retrieve()
-      .bodyToMono(typeReference<List<MatchPrisonerResponse>>())
+      .bodyToMono(typeReference<List<PersonalCareCounter>>())
       .block()
       ?: emptyList()
   }
-
-
-
 }
