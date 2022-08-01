@@ -45,8 +45,6 @@ class LimitStatusResourceTest : IntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectBody()
-      .consumeWith(System.out::println)
-
-      //.json("")
+      .json("""{"prisonNumber":"G8874VT","numberOfBodyScans":24,"bodyScanStatus":"OK_TO_SCAN"}""")
   }
 }
