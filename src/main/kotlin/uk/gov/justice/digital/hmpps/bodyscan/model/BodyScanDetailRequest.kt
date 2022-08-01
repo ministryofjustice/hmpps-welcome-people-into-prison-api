@@ -5,7 +5,7 @@ import java.time.LocalDate
 import javax.validation.constraints.NotNull
 
 @Schema(description = "A request to create a new body scan")
-class BodyScanDetail {
+class BodyScanDetailRequest {
 
   @Schema(
     required = true,
