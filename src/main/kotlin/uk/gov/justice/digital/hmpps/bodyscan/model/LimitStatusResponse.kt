@@ -21,7 +21,7 @@ data class LimitStatusResponse(
   fun getBodyScanStatus(): BodyScanStatus {
     return when {
       100 > numberOfBodyScans -> BodyScanStatus.OK_TO_SCAN
-      120 < numberOfBodyScans && numberOfBodyScans > 99 -> BodyScanStatus.CLOSE_TO_LIMIT
+      115 < numberOfBodyScans && numberOfBodyScans > 99 -> BodyScanStatus.CLOSE_TO_LIMIT
       else -> BodyScanStatus.DO_NOT_SCAN
     }
   }

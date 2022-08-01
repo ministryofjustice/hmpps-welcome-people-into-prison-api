@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Component
-class BodyScanApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
+class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
 
   fun getPersonalCareNeedsForPrisonNumbers(
     type: String,

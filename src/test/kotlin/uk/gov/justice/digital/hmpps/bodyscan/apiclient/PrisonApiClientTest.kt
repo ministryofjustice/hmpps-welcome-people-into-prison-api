@@ -14,7 +14,7 @@ import java.time.LocalDate
 
 class PrisonApiClientTest {
 
-  private lateinit var bodyScanApiClient: BodyScanApiClient
+  private lateinit var bodyScanPrisonApiClient: BodyScanPrisonApiClient
 
   companion object {
     @JvmField
@@ -37,7 +37,7 @@ class PrisonApiClientTest {
   fun resetStubs() {
     mockServer.resetAll()
     val webClient = WebClient.create("http://localhost:${mockServer.port()}")
-    bodyScanApiClient = BodyScanApiClient(webClient)
+    bodyScanPrisonApiClient = BodyScanPrisonApiClient(webClient)
   }
 
   @Test
@@ -47,7 +47,7 @@ class PrisonApiClientTest {
     val toStartDate = LocalDate.of(2022, 12, 31)
     val prisonNumbers = listOf("G8266VG", "G8874VT")
     mockServer.stubGetPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate)
-    val result = bodyScanApiClient.getPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate, prisonNumbers)
+    val result = bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate, prisonNumbers)
 
     assertThat(result).containsExactly(
       PersonalCareCounter("G8266VG", 1),

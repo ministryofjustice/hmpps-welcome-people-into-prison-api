@@ -6,29 +6,32 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanApiClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse
 import java.time.LocalDate
 import java.time.Year
 
 class LimitStatusServiceTest {
-  private val prisonApiClient: BodyScanApiClient = mock()
-  private val limitStatusService = LimitStatusService(prisonApiClient)
+  private val bodyScanPrisonApiClient: BodyScanPrisonApiClient = mock()
+  private val limitStatusService = LimitStatusService(bodyScanPrisonApiClient)
 
   @Test
   fun `get limit status for year and prison numbers`() {
-    val prisonNumbers = listOf("G8266VG", "G8874VT", "G8874VZ")
+    val prisonNumbers = listOf("G8266VA", "G8874VB", "G8874VC", "G8874VD", "G8874VE")
     val year = Year.of(2022)
-    whenever(prisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
+    whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
       listOf(
-        PersonalCareCounter("G8266VG", 1),
-        PersonalCareCounter("G8874VT", 120),
-        PersonalCareCounter("G8874VZ", 160)
+        PersonalCareCounter("G8266VA", 99),
+        PersonalCareCounter("G8874VB", 100),
+        PersonalCareCounter("G8874VC", 115),
+        PersonalCareCounter("G8874VD", 116),
+        PersonalCareCounter("G8874VE", 117)
+
       )
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
-    verify(prisonApiClient).getPersonalCareNeedsForPrisonNumbers(
+    verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
       "BSCAN",
       LocalDate.of(2022, 1, 1),
       LocalDate.of(2022, 12, 31),
@@ -36,19 +39,24 @@ class LimitStatusServiceTest {
     )
 
     Assertions.assertThat(
-      result.stream().filter { it.prisonNumber == ("G8266VG") }.findFirst().get().getBodyScanStatus().equals(
-        LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-      )
+      result.stream().filter { it.prisonNumber == ("G8266VA") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
     )
     Assertions.assertThat(
-      result.stream().filter { it.prisonNumber == ("G8874VT") }.findFirst().get().getBodyScanStatus().equals(
-        LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
-      )
+      result.stream().filter { it.prisonNumber == ("G8874VB") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
     )
     Assertions.assertThat(
-      result.stream().filter { it.prisonNumber == ("G8874VZ") }.findFirst().get().getBodyScanStatus().equals(
-        LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
-      )
+      result.stream().filter { it.prisonNumber == ("G8874VC") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
+    )
+    Assertions.assertThat(
+      result.stream().filter { it.prisonNumber == ("G8874VD") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
+    )
+    Assertions.assertThat(
+      result.stream().filter { it.prisonNumber == ("G8874VE") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
     )
   }
 
@@ -56,11 +64,11 @@ class LimitStatusServiceTest {
   fun `get limit status for year and prison numbers where no data in Nomis`() {
     val prisonNumbers = listOf("G8266VG", "G8874VT")
     val year = Year.of(2022)
-    whenever(prisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
+    whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
       listOf()
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
-    verify(prisonApiClient).getPersonalCareNeedsForPrisonNumbers(
+    verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
       "BSCAN",
       LocalDate.of(2022, 1, 1),
       LocalDate.of(2022, 12, 31),
@@ -68,14 +76,12 @@ class LimitStatusServiceTest {
     )
 
     Assertions.assertThat(
-      result.stream().filter { it.prisonNumber == ("G8266VG") }.findFirst().get().getBodyScanStatus().equals(
-        LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-      )
+      result.stream().filter { it.prisonNumber == ("G8266VG") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
     )
     Assertions.assertThat(
-      result.stream().filter { it.prisonNumber == ("G8874VT") }.findFirst().get().getBodyScanStatus().equals(
-        LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-      )
+      result.stream().filter { it.prisonNumber == ("G8874VT") }.findFirst().get()
+        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
     )
   }
 }
