@@ -20,8 +20,8 @@ data class LimitStatusResponse(
   @JsonProperty("bodyScanStatus")
   fun getBodyScanStatus(): BodyScanStatus {
     return when {
-      100 > numberOfBodyScans -> BodyScanStatus.OK_TO_SCAN
-      115 < numberOfBodyScans && numberOfBodyScans > 99 -> BodyScanStatus.CLOSE_TO_LIMIT
+      numberOfBodyScans < 100 -> BodyScanStatus.OK_TO_SCAN
+      numberOfBodyScans < 116 -> BodyScanStatus.CLOSE_TO_LIMIT
       else -> BodyScanStatus.DO_NOT_SCAN
     }
   }

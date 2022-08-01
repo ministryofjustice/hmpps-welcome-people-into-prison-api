@@ -22,11 +22,11 @@ class LimitStatusServiceTest {
     val year = Year.of(2022)
     whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
       listOf(
-        PersonalCareCounter("G8266VA", 99),
-        PersonalCareCounter("G8874VB", 100),
-        PersonalCareCounter("G8874VC", 115),
-        PersonalCareCounter("G8874VD", 116),
-        PersonalCareCounter("G8874VE", 117)
+        PersonalCareCounter("G8266VA", 99), //OK_TO_SCAN
+        PersonalCareCounter("G8874VB", 100), //CLOSE_TO_LIMIT
+        PersonalCareCounter("G8874VC", 115), //CLOSE_TO_LIMIT
+        PersonalCareCounter("G8874VD", 116), //DO_NOT_SCAN
+        PersonalCareCounter("G8874VE", 117)  //DO_NOT_SCAN
 
       )
     )
@@ -40,24 +40,24 @@ class LimitStatusServiceTest {
 
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8266VA") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.OK_TO_SCAN)
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8874VB") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT)
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8874VC") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT)
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8874VD") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN)
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8874VE") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN)
   }
 
   @Test
@@ -77,11 +77,11 @@ class LimitStatusServiceTest {
 
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8266VG") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.OK_TO_SCAN)
     Assertions.assertThat(
       result.stream().filter { it.prisonNumber == ("G8874VT") }.findFirst().get()
-        .getBodyScanStatus() == LimitStatusResponse.BodyScanStatus.OK_TO_SCAN
-    )
+        .getBodyScanStatus()
+    ).isEqualTo(LimitStatusResponse.BodyScanStatus.OK_TO_SCAN)
   }
 }
