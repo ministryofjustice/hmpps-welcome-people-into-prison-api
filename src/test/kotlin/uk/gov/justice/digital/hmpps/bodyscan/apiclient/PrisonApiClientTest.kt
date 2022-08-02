@@ -46,13 +46,12 @@ class PrisonApiClientTest {
     val fromStartDate = LocalDate.of(2022, 1, 1)
     val toStartDate = LocalDate.of(2022, 12, 31)
     val prisonNumbers = listOf("G8266VG", "G8874VT")
-    mockServer.stubGetPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate)
+    mockServer.stubGetPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate, prisonNumbers)
     val result = bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(type, fromStartDate, toStartDate, prisonNumbers)
 
     assertThat(result).containsExactly(
       PersonalCareCounter("G8266VG", 1),
       PersonalCareCounter("G8874VT", 24)
-
     )
     mockServer.verify(
       postRequestedFor(urlEqualTo("/api/bookings/offenderNo/personal-care-needs/count?type=BSCAN&fromStartDate=2022-01-01&toStartDate=2022-12-31"))
