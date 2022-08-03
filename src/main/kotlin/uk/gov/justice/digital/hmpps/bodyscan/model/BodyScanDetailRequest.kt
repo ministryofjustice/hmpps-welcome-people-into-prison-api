@@ -24,7 +24,7 @@ class BodyScanDetailRequest {
   val result: BodyScanResult? = null
 
   @Schema(description = "Reason for the scan")
-  enum class BodyScanReason { INTELLIGENCE, REASONABLE_DOUBT }
+  enum class BodyScanReason { INTELLIGENCE, REASONABLE_SUSPICION }
 
   @Schema(description = "Result of a scan")
   enum class BodyScanResult { POSITIVE, NEGATIVE }
