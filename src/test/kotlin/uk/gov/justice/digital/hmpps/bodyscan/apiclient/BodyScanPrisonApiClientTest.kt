@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
-import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.SentenceDetails
 import uk.gov.justice.digital.hmpps.bodyscan.integration.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanReason
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanResult
@@ -73,39 +73,37 @@ class BodyScanPrisonApiClientTest {
   }
 
   @Test
-  fun `successful get sentence details`() {
+  fun `successful get offender details`() {
     val prisonNumber = "A5202DY"
-    mockServer.stubGetSentenceDetails(prisonNumber, 200)
-    val result = bodyScanPrisonApiClient.getSentenceDetails(prisonNumber)
+    mockServer.stubGetOffenderDetails(prisonNumber, 200)
+    val result = bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
 
     assertThat(result).usingRecursiveComparison().isEqualTo(
-      SentenceDetails(
+      OffenderDetails(
         bookingId = 1202691,
         offenderNo = prisonNumber,
         firstName = "GEOFF",
         lastName = "BROWN",
-        agencyLocationId = "LII",
-        mostRecentActiveBooking = true,
-        dateOfBirth = LocalDate.of(1992, 3, 12),
-        agencyLocationDesc = "LINCOLN (HMP)",
-        internalLocationDesc = "RECP"
+        agencyId = "LII",
+        activeFlag = true,
+        dateOfBirth = LocalDate.of(1992, 3, 12)
       )
     )
 
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber/sentences"))
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
     )
   }
 
   @Test
-  fun `throw exception when sentence details not found`() {
+  fun `throw exception when offender details not found`() {
     val prisonNumber = "A5202DY"
-    mockServer.stubGetSentenceDetails(prisonNumber, 404)
+    mockServer.stubGetOffenderDetails(prisonNumber, 404)
     assertThatExceptionOfType(NotFoundException::class.java).isThrownBy {
-      bodyScanPrisonApiClient.getSentenceDetails(prisonNumber)
+      bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
     }
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber/sentences"))
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
     )
   }
 

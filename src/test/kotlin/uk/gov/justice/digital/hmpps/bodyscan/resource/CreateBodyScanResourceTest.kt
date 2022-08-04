@@ -42,7 +42,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
     @Test
     fun `happy path`() {
       val prisonNumber = "A1278AA"
-      prisonApiMockServer.stubGetSentenceDetails(prisonNumber, 200)
+      prisonApiMockServer.stubGetOffenderDetails(prisonNumber, 200)
       prisonApiMockServer.stubAddPersonalCareNeeds(1202691, LocalDate.of(2022, 1, 1))
       webTestClient
         .post()
@@ -61,7 +61,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
     @Test
     fun `add body scan when prisoner not exist`() {
       val prisonNumber = "A1278AA"
-      prisonApiMockServer.stubGetSentenceDetails(prisonNumber, 404)
+      prisonApiMockServer.stubGetOffenderDetails(prisonNumber, 404)
       prisonApiMockServer.stubAddPersonalCareNeeds(1202691, LocalDate.of(2022, 1, 1))
       webTestClient
         .post()

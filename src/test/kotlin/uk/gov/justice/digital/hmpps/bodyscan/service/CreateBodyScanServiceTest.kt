@@ -7,8 +7,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
-import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.SentenceDetails
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanReason
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanResult
@@ -22,18 +22,16 @@ class CreateBodyScanServiceTest {
   @Test
   fun `add body scan`() {
     whenever(
-      bodyScanPrisonApiClient.getSentenceDetails(any())
+      bodyScanPrisonApiClient.getOffenderDetails(any())
     ).thenReturn(
-      SentenceDetails(
+      OffenderDetails(
         bookingId = 123L,
         offenderNo = "ADA",
         firstName = "Adam",
         lastName = "Brown",
-        agencyLocationId = "LII",
-        mostRecentActiveBooking = true,
-        dateOfBirth = LocalDate.of(1977, 1, 1),
-        agencyLocationDesc = null,
-        internalLocationDesc = null
+        agencyId = "LII",
+        activeFlag = true,
+        dateOfBirth = LocalDate.of(1977, 1, 1)
       )
     )
 
@@ -58,7 +56,7 @@ class CreateBodyScanServiceTest {
   @Test
   fun `add body scan when sentence details not found`() {
     whenever(
-      bodyScanPrisonApiClient.getSentenceDetails(any())
+      bodyScanPrisonApiClient.getOffenderDetails(any())
     ).thenThrow(ClientException::class.java)
 
     Assertions.assertThatExceptionOfType(ClientException::class.java).isThrownBy {

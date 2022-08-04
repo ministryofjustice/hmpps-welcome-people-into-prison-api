@@ -62,27 +62,88 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-  fun stubGetSentenceDetails(prisonNumber: String, statusCode: Int) {
+  fun stubGetOffenderDetails(prisonNumber: String, statusCode: Int) {
     stubFor(
-      get("/api/offenders/$prisonNumber/sentences")
+      get("/api/offenders/$prisonNumber")
         .willReturn(
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .withStatus(statusCode)
             .withBody(
               """{
-    "bookingId": 1202691,
     "offenderNo": "$prisonNumber",
+    "bookingId": 1202691,
+    "bookingNo": "39728A",
+    "offenderId": 2581930,
+    "rootOffenderId": 2581930,
     "firstName": "GEOFF",
     "lastName": "BROWN",
-    "agencyLocationId": "LII",
-    "mostRecentActiveBooking": true,
+    "dateOfBirth": "1992-03-12",
+    "age": 30,
+    "activeFlag": true,
+    "agencyId": "LII",
+    "assignedLivingUnitId": 4007,
+    "alertsCodes": [],
+    "activeAlertCount": 0,
+    "inactiveAlertCount": 0,
+    "alerts": [],
+    "assignedLivingUnit": {
+        "agencyId": "LII",
+        "locationId": 4007,
+        "description": "RECP",
+        "agencyName": "Lincoln (HMP)"
+    },
+    "physicalAttributes": {
+        "sexCode": "M",
+        "gender": "Male",
+        "raceCode": "W1",
+        "ethnicity": "White: Eng./Welsh/Scot./N.Irish/British"
+    },
+    "physicalCharacteristics": [],
+    "profileInformation": [
+        {
+            "type": "YOUTH",
+            "question": "Youth Offender?",
+            "resultValue": "No"
+        }
+    ],
+    "physicalMarks": [],
+    "inOutStatus": "IN",
+    "identifiers": [
+        {
+            "type": "PNC",
+            "value": "2003/0011991D",
+            "offenderNo": "A5202DY",
+            "issuedDate": "2020-08-18",
+            "caseloadType": "INST"
+        }
+    ],
+    "personalCareNeeds": [],
     "sentenceDetail": {
         "bookingId": 1202691
     },
-    "dateOfBirth": "1992-03-12",
-    "agencyLocationDesc": "LINCOLN (HMP)",
-    "internalLocationDesc": "RECP"
+    "offenceHistory": [],
+    "sentenceTerms": [],
+    "aliases": [],
+    "status": "ACTIVE IN",
+    "statusReason": "ADM-N",
+    "lastMovementTypeCode": "ADM",
+    "lastMovementReasonCode": "N",
+    "legalStatus": "REMAND",
+    "recall": false,
+    "imprisonmentStatus": "RECEP_REM",
+    "imprisonmentStatusDescription": "On remand (reception)",
+    "privilegeSummary": {
+        "bookingId": 1202691,
+        "iepLevel": "Entry",
+        "iepDate": "2022-08-02",
+        "iepTime": "2022-08-02T10:07:42",
+        "daysSinceReview": 2,
+        "iepDetails": []
+    },
+    "receptionDate": "2022-08-02",
+    "locationDescription": "Lincoln (HMP)",
+    "latestLocationId": "LII"
 }"""
             )
         )

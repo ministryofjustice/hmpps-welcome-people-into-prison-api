@@ -11,7 +11,7 @@ class CreateBodyScanService(
 ) {
 
   fun addBodyScan(prisonNumber: String, details: BodyScanDetailRequest) {
-    val sentenceDetails = bodyScanPrisonApiClient.getSentenceDetails(prisonNumber)
+    val sentenceDetails = bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
     bodyScanPrisonApiClient.addPersonalCareNeeds(
       sentenceDetails.bookingId,
       PersonalCareNeeds(
