@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.bodyscan.integration
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
+import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import org.springframework.http.MediaType
 import java.time.LocalDate
