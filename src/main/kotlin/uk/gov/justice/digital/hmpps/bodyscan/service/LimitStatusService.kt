@@ -16,6 +16,7 @@ class LimitStatusService(
   }
 
   fun getLimitStatusForYearAndPrisonNumbers(year: Year, prisonNumbers: List<String>): List<LimitStatusResponse> {
+    if (prisonNumbers.isEmpty()) return listOf()
     val startDate: LocalDate = LocalDate.ofYearDay(year.value, 1)
     val endDate: LocalDate = startDate.with(TemporalAdjusters.lastDayOfYear())
     val apiMap = prisonApiClient.getPersonalCareNeedsForPrisonNumbers(TYPE, startDate, endDate, prisonNumbers)
