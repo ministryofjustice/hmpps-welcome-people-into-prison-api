@@ -30,6 +30,30 @@ class PrisonApiMockServer : WireMockServer(9005) {
     {
         "offenderNo": "G8874VT",
         "size": 24
+    },
+    {
+        "offenderNo": "G8874VU",
+        "size": 0
+    },
+        {
+        "offenderNo": "G8874VV",
+        "size": 99
+    },
+    {
+        "offenderNo": "G8874VW",
+        "size": 100
+    },
+        {
+        "offenderNo": "G8874VX",
+        "size": 115
+    },
+    {
+        "offenderNo": "G8874VY",
+        "size": 116
+    },
+    {
+        "offenderNo": "G8874VZ",
+        "size": 117
     }
 ]"""
             )
