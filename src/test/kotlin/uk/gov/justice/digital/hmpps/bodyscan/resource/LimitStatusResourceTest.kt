@@ -54,7 +54,7 @@ class LimitStatusResourceTest : IntegrationTestBase() {
 
   @Nested
   inner class `Get multiple results` {
-    val prisonNumbers = listOf("G8266VG", "G8874VT")
+    val prisonNumbers = listOf("G8874VU", "G8874VV", "G8874VW", "G8874VX", "G8874VY", "G8874VZ")
 
     @Test
     fun `requires authentication`() {
@@ -96,8 +96,12 @@ class LimitStatusResourceTest : IntegrationTestBase() {
         .json(
           """
           [
-            {"prisonNumber":"G8266VG","numberOfBodyScans":1,"bodyScanStatus":"OK_TO_SCAN"},
-            {"prisonNumber":"G8874VT","numberOfBodyScans":24,"bodyScanStatus":"OK_TO_SCAN"}
+            {"prisonNumber":"G8874VU","numberOfBodyScans":0,"bodyScanStatus":"OK_TO_SCAN", "numberOfBodyScansRemaining": 116},
+            {"prisonNumber":"G8874VV","numberOfBodyScans":99,"bodyScanStatus":"OK_TO_SCAN", "numberOfBodyScansRemaining": 17},
+            {"prisonNumber":"G8874VW","numberOfBodyScans":100,"bodyScanStatus":"CLOSE_TO_LIMIT", "numberOfBodyScansRemaining": 16},
+            {"prisonNumber":"G8874VX","numberOfBodyScans":115,"bodyScanStatus":"CLOSE_TO_LIMIT", "numberOfBodyScansRemaining": 1},
+            {"prisonNumber":"G8874VY","numberOfBodyScans":116,"bodyScanStatus":"DO_NOT_SCAN", "numberOfBodyScansRemaining": 0},
+            {"prisonNumber":"G8874VZ","numberOfBodyScans":117,"bodyScanStatus":"DO_NOT_SCAN", "numberOfBodyScansRemaining": 0}
           ]"""
         )
     }
