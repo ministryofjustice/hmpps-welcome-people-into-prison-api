@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 
+private const val MAX_NUMBER_OF_BODY_SCANS_PER_YEAR = 116
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Information how many body scans was done for person")
 data class LimitStatusResponse(
@@ -21,8 +23,12 @@ data class LimitStatusResponse(
   fun getBodyScanStatus(): BodyScanStatus {
     return when {
       numberOfBodyScans < 100 -> BodyScanStatus.OK_TO_SCAN
-      numberOfBodyScans < 116 -> BodyScanStatus.CLOSE_TO_LIMIT
+      numberOfBodyScans < MAX_NUMBER_OF_BODY_SCANS_PER_YEAR -> BodyScanStatus.CLOSE_TO_LIMIT
       else -> BodyScanStatus.DO_NOT_SCAN
     }
   }
+
+  @Schema(description = "Number of scans remaining this year", example = "123")
+  @JsonProperty("numberOfBodyScansRemaining")
+  fun getNumberOfBodyScansRemaining() = (MAX_NUMBER_OF_BODY_SCANS_PER_YEAR - numberOfBodyScans).coerceAtLeast(0)
 }
