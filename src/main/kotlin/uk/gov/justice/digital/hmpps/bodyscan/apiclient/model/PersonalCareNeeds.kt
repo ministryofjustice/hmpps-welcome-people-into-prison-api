@@ -31,7 +31,5 @@ data class PersonalCareNeeds(
   fun getEndDate() = date
 
   @JsonProperty("commentText")
-  fun getCommentText() = "${bodyScanReason.toString().lowercase().replaceFirstChar { it.uppercase() }}" +
-    "-" +
-    "${bodyScanResult.toString().lowercase().replaceFirstChar { it.uppercase() }}"
+  fun getCommentText() = ("$bodyScanReason-$bodyScanResult").lowercase().replaceFirstChar { it.uppercase() }
 }
