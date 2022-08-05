@@ -16,7 +16,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
     val VALID_REQUEST = """
         {
           "date": "2022-01-01",
-          "reason": "INTELLIGENCE",
+          "reason": "REASONABLE_SUSPICION",
           "result": "POSITIVE"
         }
       """

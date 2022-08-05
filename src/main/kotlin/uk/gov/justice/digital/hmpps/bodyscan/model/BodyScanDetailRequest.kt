@@ -23,8 +23,12 @@ data class BodyScanDetailRequest(
   @field:NotNull
   val result: BodyScanResult? = null,
 
-)
+  )
+
 @Schema(description = "Reason for the scan")
-enum class BodyScanReason { INTELLIGENCE, REASONABLE_SUSPICION }
+enum class BodyScanReason(var desc: String) {
+  INTELLIGENCE("intelligence"), REASONABLE_SUSPICION("reasonable suspicion");
+}
+
 @Schema(description = "Result of a scan")
 enum class BodyScanResult { POSITIVE, NEGATIVE }

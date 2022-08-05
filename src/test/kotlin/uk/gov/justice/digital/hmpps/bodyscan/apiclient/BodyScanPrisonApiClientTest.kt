@@ -110,7 +110,7 @@ class BodyScanPrisonApiClientTest {
   @Test
   fun `successful add personal care needs`() {
     val bookingId = 123098L
-    val bodyScanReason = BodyScanReason.INTELLIGENCE
+    val bodyScanReason = BodyScanReason.REASONABLE_SUSPICION
     val bodyScanResult = BodyScanResult.POSITIVE
     val date = LocalDate.of(2022, 12, 31)
 

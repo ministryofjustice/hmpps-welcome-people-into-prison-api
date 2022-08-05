@@ -163,7 +163,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         {
           "problemCode": "BSC6.0",
           "problemStatus": "ON",
-          "commentText": "Intelligence - positive",
+          "commentText": "Reasonable suspicion - positive",
           "startDate": "${date.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
           "endDate": "${date.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
         }
