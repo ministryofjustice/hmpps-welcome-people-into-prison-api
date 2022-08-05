@@ -23,7 +23,7 @@ data class BodyScanDetailRequest(
   @field:NotNull
   val result: BodyScanResult? = null,
 
-  )
+)
 
 @Schema(description = "Reason for the scan")
 enum class BodyScanReason(var desc: String) {
