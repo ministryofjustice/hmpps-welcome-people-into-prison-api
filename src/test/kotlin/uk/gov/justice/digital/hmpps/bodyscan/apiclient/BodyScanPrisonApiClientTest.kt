@@ -1,18 +1,25 @@
 package uk.gov.justice.digital.hmpps.bodyscan.apiclient
 
+import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
 import uk.gov.justice.digital.hmpps.bodyscan.integration.PrisonApiMockServer
+import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanReason
+import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanResult
+import uk.gov.justice.digital.hmpps.config.NotFoundException
 import java.time.LocalDate
 
-class PrisonApiClientTest {
+class BodyScanPrisonApiClientTest {
 
   private lateinit var bodyScanPrisonApiClient: BodyScanPrisonApiClient
 
@@ -62,6 +69,55 @@ class PrisonApiClientTest {
     )
     mockServer.verify(
       postRequestedFor(urlEqualTo("/api/bookings/offenderNo/personal-care-needs/count?type=BSCAN&fromStartDate=2022-01-01&toStartDate=2022-12-31"))
+    )
+  }
+
+  @Test
+  fun `successful get offender details`() {
+    val prisonNumber = "A5202DY"
+    mockServer.stubGetOffenderDetails(prisonNumber, 200)
+    val result = bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
+
+    assertThat(result).usingRecursiveComparison().isEqualTo(
+      OffenderDetails(
+        bookingId = 1202691,
+        offenderNo = prisonNumber,
+        firstName = "GEOFF",
+        lastName = "BROWN",
+        agencyId = "LII",
+        activeFlag = true,
+        dateOfBirth = LocalDate.of(1992, 3, 12)
+      )
+    )
+
+    mockServer.verify(
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
+    )
+  }
+
+  @Test
+  fun `throw exception when offender details not found`() {
+    val prisonNumber = "A5202DY"
+    mockServer.stubGetOffenderDetails(prisonNumber, 404)
+    assertThatExceptionOfType(NotFoundException::class.java).isThrownBy {
+      bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
+    }
+    mockServer.verify(
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
+    )
+  }
+
+  @Test
+  fun `successful add personal care needs`() {
+    val bookingId = 123098L
+    val bodyScanReason = BodyScanReason.REASONABLE_SUSPICION
+    val bodyScanResult = BodyScanResult.POSITIVE
+    val date = LocalDate.of(2022, 12, 31)
+
+    mockServer.stubAddPersonalCareNeeds(bookingId, date)
+    bodyScanPrisonApiClient.addPersonalCareNeeds(bookingId, PersonalCareNeeds(date, bodyScanReason, bodyScanResult))
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/api/bookings/$bookingId/personal-care-needs"))
     )
   }
 }

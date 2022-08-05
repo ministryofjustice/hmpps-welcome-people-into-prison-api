@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.bodyscan.integration.IntegrationTestBase
+import java.time.LocalDate
 
 @Suppress("ClassName")
 class CreateBodyScanResourceTest : IntegrationTestBase() {
@@ -14,22 +15,22 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
   inner class AddBodyScanTests {
     val VALID_REQUEST = """
         {
-          "date": "1961-05-29",
-          "reason": "INTELLIGENCE",
+          "date": "2022-01-01",
+          "reason": "REASONABLE_SUSPICION",
           "result": "POSITIVE"
         }
       """
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/body-scans/prisoners/1234")
+      webTestClient.get().uri("/body-scans/prisoners/A1278AA")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.post().uri("/body-scans/prisoners/1234")
+      webTestClient.post().uri("/body-scans/prisoners/A1278AA")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
@@ -40,11 +41,12 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
 
     @Test
     fun `happy path`() {
-      val bookingId = 1234L
-
+      val prisonNumber = "A1278AA"
+      prisonApiMockServer.stubGetOffenderDetails(prisonNumber, 200)
+      prisonApiMockServer.stubAddPersonalCareNeeds(1202691, LocalDate.of(2022, 1, 1))
       webTestClient
         .post()
-        .uri("/body-scans/prisoners/$bookingId")
+        .uri("/body-scans/prisoners/$prisonNumber")
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
@@ -55,16 +57,33 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
         .bodyValue(VALID_REQUEST)
         .exchange()
         .expectStatus().isNoContent
-
-      // TODO verify call
+    }
+    @Test
+    fun `add body scan when prisoner not exist`() {
+      val prisonNumber = "A1278AA"
+      prisonApiMockServer.stubGetOffenderDetails(prisonNumber, 404)
+      prisonApiMockServer.stubAddPersonalCareNeeds(1202691, LocalDate.of(2022, 1, 1))
+      webTestClient
+        .post()
+        .uri("/body-scans/prisoners/$prisonNumber")
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
+            scopes = listOf("read", "write")
+          )
+        )
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .bodyValue(VALID_REQUEST)
+        .exchange()
+        .expectStatus().isNotFound
     }
 
     @Test
     fun `add body scan validation failure`() {
-      val bookingId = 1234L
+      val prisonNumber = "A1278AA"
       webTestClient
         .post()
-        .uri("/body-scans/prisoners/$bookingId")
+        .uri("/body-scans/prisoners/$prisonNumber")
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),

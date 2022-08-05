@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.bodyscan.apiclient
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
+import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.config.typeReference
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,4 +34,21 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
       .block()
       ?: emptyList()
   }
+
+  fun getOffenderDetails(prisonNumber: String): OffenderDetails =
+    webClient.get().uri("/api/offenders/$prisonNumber")
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) { response ->
+        throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
+      }
+      .bodyToMono(OffenderDetails::class.java)
+      .block()
+
+  fun addPersonalCareNeeds(bookingId: Long, personalCareNeeds: PersonalCareNeeds) =
+    webClient.post()
+      .uri("/api/bookings/$bookingId/personal-care-needs")
+      .bodyValue(personalCareNeeds)
+      .retrieve()
+      .toBodilessEntity()
+      .block()
 }
