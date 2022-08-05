@@ -72,4 +72,21 @@ class LimitStatusServiceTest {
     assertThat(result.getStatusFor("G8266VG")).isEqualTo(OK_TO_SCAN)
     assertThat(result.getStatusFor("G8874VT")).isEqualTo(OK_TO_SCAN)
   }
+
+  @Test
+  fun `get limit status for year and prison numbers when null prison number passed through`() {
+    val prisonNumbers = listOf("G8266VG", null, "G8874VT")
+    val year = Year.of(2022)
+    whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
+      listOf()
+    )
+    val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
+    verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
+      "BSCAN", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31), listOf("G8266VG", "G8874VT")
+    )
+
+    assertThat(result).hasSize(2)
+    assertThat(result.getStatusFor("G8266VG")).isEqualTo(OK_TO_SCAN)
+    assertThat(result.getStatusFor("G8874VT")).isEqualTo(OK_TO_SCAN)
+  }
 }

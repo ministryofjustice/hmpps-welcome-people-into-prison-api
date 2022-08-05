@@ -15,7 +15,8 @@ class LimitStatusService(
     const val TYPE = "BSCAN"
   }
 
-  fun getLimitStatusForYearAndPrisonNumbers(year: Year, prisonNumbers: List<String>): List<LimitStatusResponse> {
+  fun getLimitStatusForYearAndPrisonNumbers(year: Year, rawPrisonNumbers: List<String?>): List<LimitStatusResponse> {
+    val prisonNumbers = rawPrisonNumbers.filterNotNull()
     if (prisonNumbers.isEmpty()) return listOf()
     val startDate: LocalDate = LocalDate.ofYearDay(year.value, 1)
     val endDate: LocalDate = startDate.with(TemporalAdjusters.lastDayOfYear())
