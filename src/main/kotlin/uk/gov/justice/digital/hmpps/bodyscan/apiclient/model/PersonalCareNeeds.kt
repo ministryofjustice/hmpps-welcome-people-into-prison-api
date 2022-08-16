@@ -33,3 +33,12 @@ data class PersonalCareNeeds(
   @JsonProperty("commentText")
   fun getCommentText() = ("${bodyScanReason.desc} - $bodyScanResult").lowercase().replaceFirstChar { it.uppercase() }
 }
+
+fun PersonalCareNeeds.toEventProperties(bookingId: Long, username: String) = mapOf(
+  "bookingId" to bookingId.toString(),
+  "date" to date.toString(),
+  "bodyScanReason" to bodyScanReason.toString(),
+  "bodyScanResult" to bodyScanResult.toString(),
+  "username" to username
+
+)
