@@ -27,6 +27,7 @@ class CreateBodyScanServiceTest {
 
   @Test
   fun `add body scan`() {
+    val prisonNumber = "ADA"
     val bookingId = 123L
     val personalCareNeeds = PersonalCareNeeds(
       LocalDate.of(2022, 1, 1),
@@ -41,7 +42,7 @@ class CreateBodyScanServiceTest {
     ).thenReturn(
       OffenderDetails(
         bookingId = bookingId,
-        offenderNo = "ADA",
+        offenderNo = prisonNumber,
         firstName = "Adam",
         lastName = "Brown",
         agencyId = "LII",
@@ -51,7 +52,7 @@ class CreateBodyScanServiceTest {
     )
 
     createBodyScanService.addBodyScan(
-      "ADA",
+      prisonNumber,
       BodyScanDetailRequest(
         date = LocalDate.of(2022, 1, 1),
         reason = BodyScanReason.INTELLIGENCE,
@@ -63,7 +64,7 @@ class CreateBodyScanServiceTest {
       bookingId,
       personalCareNeeds
     )
-    verify(telemetryClient).trackEvent("BodyScan", personalCareNeeds.toEventProperties(bookingId, "anonymous"), null)
+    verify(telemetryClient).trackEvent("BodyScan", personalCareNeeds.toEventProperties(prisonNumber, "anonymous"), null)
   }
 
   @Test

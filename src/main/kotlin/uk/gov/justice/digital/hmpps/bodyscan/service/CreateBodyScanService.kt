@@ -26,6 +26,6 @@ class CreateBodyScanService(
       sentenceDetails.bookingId,
       personalCareNeeds
     )
-    telemetryClient.trackEvent("BodyScan", personalCareNeeds.toEventProperties(sentenceDetails.bookingId, securityUserContext.principal), null)
+    telemetryClient.trackEvent("BodyScan", personalCareNeeds.toEventProperties(prisonNumber, securityUserContext.principal), null)
   }
 }

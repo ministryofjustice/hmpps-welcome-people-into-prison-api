@@ -34,8 +34,8 @@ data class PersonalCareNeeds(
   fun getCommentText() = ("${bodyScanReason.desc} - $bodyScanResult").lowercase().replaceFirstChar { it.uppercase() }
 }
 
-fun PersonalCareNeeds.toEventProperties(bookingId: Long, username: String) = mapOf(
-  "bookingId" to bookingId.toString(),
+fun PersonalCareNeeds.toEventProperties(prisonNumber: String, username: String) = mapOf(
+  "prisonNumber" to prisonNumber,
   "date" to date.toString(),
   "bodyScanReason" to bodyScanReason.toString(),
   "bodyScanResult" to bodyScanResult.toString(),
