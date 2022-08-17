@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.bodyscan.service
 
+import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -9,24 +10,39 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
+import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.toEventProperties
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanReason
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanResult
 import uk.gov.justice.digital.hmpps.config.ClientException
+import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 import java.time.LocalDate
 
 class CreateBodyScanServiceTest {
   private val bodyScanPrisonApiClient: BodyScanPrisonApiClient = mock()
-  private val createBodyScanService = CreateBodyScanService(bodyScanPrisonApiClient)
+  private val telemetryClient: TelemetryClient = mock()
+  private val securityUserContext: SecurityUserContext = mock()
+  private val createBodyScanService =
+    CreateBodyScanService(bodyScanPrisonApiClient, telemetryClient, securityUserContext)
 
   @Test
   fun `add body scan`() {
+    val prisonNumber = "ADA"
+    val bookingId = 123L
+    val personalCareNeeds = PersonalCareNeeds(
+      LocalDate.of(2022, 1, 1),
+      BodyScanReason.INTELLIGENCE,
+      BodyScanResult.NEGATIVE
+    )
+
+    whenever(securityUserContext.principal).thenReturn("anonymous")
+
     whenever(
       bodyScanPrisonApiClient.getOffenderDetails(any())
     ).thenReturn(
       OffenderDetails(
-        bookingId = 123L,
-        offenderNo = "ADA",
+        bookingId = bookingId,
+        offenderNo = prisonNumber,
         firstName = "Adam",
         lastName = "Brown",
         agencyId = "LII",
@@ -36,7 +52,7 @@ class CreateBodyScanServiceTest {
     )
 
     createBodyScanService.addBodyScan(
-      "ADA",
+      prisonNumber,
       BodyScanDetailRequest(
         date = LocalDate.of(2022, 1, 1),
         reason = BodyScanReason.INTELLIGENCE,
@@ -45,14 +61,12 @@ class CreateBodyScanServiceTest {
     )
 
     verify(bodyScanPrisonApiClient).addPersonalCareNeeds(
-      123L,
-      PersonalCareNeeds(
-        LocalDate.of(2022, 1, 1),
-        BodyScanReason.INTELLIGENCE,
-        BodyScanResult.NEGATIVE
-      )
+      bookingId,
+      personalCareNeeds
     )
+    verify(telemetryClient).trackEvent("BodyScan", personalCareNeeds.toEventProperties(prisonNumber, "anonymous"), null)
   }
+
   @Test
   fun `add body scan when sentence details not found`() {
     whenever(
