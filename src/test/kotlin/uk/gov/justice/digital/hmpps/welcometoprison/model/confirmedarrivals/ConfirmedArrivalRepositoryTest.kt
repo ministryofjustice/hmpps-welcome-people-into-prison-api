@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.transaction.TestTransaction
 import uk.gov.justice.digital.hmpps.welcometoprison.model.RepositoryTest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -48,6 +45,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     val arrivals = repository.findAllByArrivalDateAndPrisonId(date, prisonId)
     assertThat(arrivals).hasSize(1)
   }
+
   @Test
   @Sql("classpath:repository/confirmed-arrival.sql")
   fun `find all between dates date and prison id`() {

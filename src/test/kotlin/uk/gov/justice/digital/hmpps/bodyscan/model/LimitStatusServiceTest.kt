@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.bodyscan.service
+package uk.gov.justice.digital.hmpps.bodyscan.model
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -9,7 +9,6 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareCounter
-import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse.BodyScanStatus.CLOSE_TO_LIMIT
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse.BodyScanStatus.DO_NOT_SCAN
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse.BodyScanStatus.OK_TO_SCAN

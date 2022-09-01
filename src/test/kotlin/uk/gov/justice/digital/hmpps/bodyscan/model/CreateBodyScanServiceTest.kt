@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.bodyscan.service
+package uk.gov.justice.digital.hmpps.bodyscan.model
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions
@@ -11,9 +11,6 @@ import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.toEventProperties
-import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
-import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanReason
-import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanResult
 import uk.gov.justice.digital.hmpps.config.ClientException
 import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 import java.time.LocalDate

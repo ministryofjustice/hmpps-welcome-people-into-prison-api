@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
