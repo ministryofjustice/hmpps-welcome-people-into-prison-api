@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse
-import uk.gov.justice.digital.hmpps.bodyscan.service.LimitStatusService
+import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusService
 import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import java.time.Year
 import javax.validation.Valid

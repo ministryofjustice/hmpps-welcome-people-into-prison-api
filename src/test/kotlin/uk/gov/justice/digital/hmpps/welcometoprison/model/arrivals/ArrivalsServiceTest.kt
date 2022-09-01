@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import org.springframework.boot.context.properties.bind.Bindable.listOf
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalRepository
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
-import uk.gov.justice.digital.hmpps.bodyscan.service.CreateBodyScanService
+import uk.gov.justice.digital.hmpps.bodyscan.model.CreateBodyScanService
 import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import javax.validation.Valid
 import javax.validation.constraints.NotNull

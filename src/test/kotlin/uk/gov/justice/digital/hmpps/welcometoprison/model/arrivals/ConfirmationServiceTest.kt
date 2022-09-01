@@ -14,9 +14,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.config.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail

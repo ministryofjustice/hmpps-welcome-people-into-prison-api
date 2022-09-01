@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.codec.digest.DigestUtils
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrival
 import java.io.StringWriter
 import java.util.stream.Stream
 

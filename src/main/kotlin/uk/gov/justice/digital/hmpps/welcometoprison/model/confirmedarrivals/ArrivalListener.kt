@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Service

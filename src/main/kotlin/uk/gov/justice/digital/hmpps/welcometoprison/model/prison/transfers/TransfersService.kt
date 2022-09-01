@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType.TRANSFER
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn

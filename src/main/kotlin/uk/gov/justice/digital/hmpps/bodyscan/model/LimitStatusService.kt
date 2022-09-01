@@ -1,8 +1,7 @@
-package uk.gov.justice.digital.hmpps.bodyscan.service
+package uk.gov.justice.digital.hmpps.bodyscan.model
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
-import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse
 import java.time.LocalDate
 import java.time.Year
 import java.time.temporal.TemporalAdjusters

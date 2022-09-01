@@ -1,11 +1,10 @@
-package uk.gov.justice.digital.hmpps.bodyscan.service
+package uk.gov.justice.digital.hmpps.bodyscan.model
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.BodyScanPrisonApiClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.PersonalCareNeeds
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.toEventProperties
-import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
 import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 
 @Service

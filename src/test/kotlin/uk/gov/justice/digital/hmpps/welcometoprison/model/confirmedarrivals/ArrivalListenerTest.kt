@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.confirmedarrival
+package uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.junit.jupiter.api.Test
@@ -7,11 +7,7 @@ import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.config.SecurityUserContext
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalEvent
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ArrivalType.RECALL
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrival
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrival.ConfirmedArrivalRepository
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.RECALL
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
