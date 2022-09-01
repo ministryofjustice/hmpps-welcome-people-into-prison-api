@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
@@ -106,7 +106,7 @@ class TemporaryAbsenceServiceTest {
       ArrivalEvent(
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
-        arrivalType = ArrivalType.TEMPORARY_ABSENCE,
+        arrivalType = ConfirmedArrivalType.TEMPORARY_ABSENCE,
         bookingId = inmateDetail.bookingId
       )
     )

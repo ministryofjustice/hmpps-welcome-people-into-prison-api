@@ -58,7 +58,9 @@ class PrisonerSearchApiClientTest {
           pncNumber = "1234/1234589A",
           croNumber = "SF80/655108T",
           status = INACTIVE_OUT,
-          gender = "Male"
+          gender = "Male",
+          prisonId = "MDI",
+          lastMovementTypeCode = "REL"
         )
       )
     )
@@ -123,7 +125,9 @@ class PrisonerSearchApiClientTest {
         pncNumber = "1234/1234589A",
         croNumber = "SF80/655108T",
         status = "INACTIVE_OUT",
-        gender = "Male"
+        gender = "Male",
+        prisonId = "MDI",
+        lastMovementTypeCode = "REL"
       )
     )
 

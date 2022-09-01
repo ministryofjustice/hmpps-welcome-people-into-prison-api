@@ -7,7 +7,7 @@ import org.mockito.kotlin.refEq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.config.SecurityUserContext
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.RECALL
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.RECALL
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate

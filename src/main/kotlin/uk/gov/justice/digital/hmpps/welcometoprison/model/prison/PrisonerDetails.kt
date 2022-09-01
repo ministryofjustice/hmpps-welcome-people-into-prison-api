@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.ArrivalType
 import java.time.LocalDate
 
 @JsonInclude(NON_NULL)
@@ -28,6 +29,12 @@ data class PrisonerDetails(
 
   @Schema(description = "Sex", example = "Female")
   val sex: String,
+
+  @Schema(description = "Description of arrival type", example = "ACTIVE IN-ADM-MDI")
+  val arrivalTypeDescription: String,
+
+  @Schema(description = "Type of arrival", example = "TRANSFER")
+  val arrivalType: ArrivalType,
 
   @Transient val isCurrentPrisoner: Boolean
 )

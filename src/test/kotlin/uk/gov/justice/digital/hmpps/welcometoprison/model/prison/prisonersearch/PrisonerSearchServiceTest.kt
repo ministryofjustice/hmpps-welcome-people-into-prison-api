@@ -8,6 +8,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.ArrivalType.NEW_BOOKING
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.INACTIVE_OUT
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
@@ -59,8 +60,10 @@ class PrisonerSearchServiceTest {
           lastName = LAST_NAME,
           dateOfBirth = DOB,
           croNumber = CRO_NUMBER,
-          gender = GENDER,
-          status = INACTIVE_OUT
+          gender = SEX,
+          status = INACTIVE_OUT,
+          prisonId = PRISON_ID,
+          lastMovementTypeCode = LAST_MOVEMENT_TYPE_CODE
         )
       )
     )
@@ -80,15 +83,28 @@ class PrisonerSearchServiceTest {
       assertThat(prisonNumber).isEqualTo(PRISON_NUMBER)
       assertThat(dateOfBirth).isEqualTo(DOB)
       assertThat(pncNumber).isEqualTo(PNC_NUMBER)
-      assertThat(CRO_NUMBER).isEqualTo(CRO_NUMBER)
-      assertThat(GENDER).isEqualTo(GENDER)
+      assertThat(croNumber).isEqualTo(CRO_NUMBER)
+      assertThat(sex).isEqualTo(SEX)
+      assertThat(arrivalType).isEqualTo(NEW_BOOKING)
+      assertThat(arrivalTypeDescription).isEqualTo("INACTIVE OUT-REL-MDI")
     }
   }
 
   @Test
   fun getPrisoner() {
     whenever(client.getPrisoner(any())).thenReturn(
-      MatchPrisonerResponse(FIRST_NAME, LAST_NAME, DOB, PRISON_NUMBER, PNC_NUMBER, CRO_NUMBER, GENDER, INACTIVE_OUT)
+      MatchPrisonerResponse(
+        FIRST_NAME,
+        LAST_NAME,
+        DOB,
+        PRISON_NUMBER,
+        PNC_NUMBER,
+        CRO_NUMBER,
+        SEX,
+        INACTIVE_OUT,
+        LAST_MOVEMENT_TYPE_CODE,
+        PRISON_ID
+      )
     )
 
     val prisoner = service.getPrisoner("A1234AA")
@@ -101,7 +117,9 @@ class PrisonerSearchServiceTest {
         PRISON_NUMBER,
         PNC_NUMBER,
         CRO_NUMBER,
-        GENDER,
+        SEX,
+        "INACTIVE OUT-REL-MDI",
+        NEW_BOOKING,
         false
       )
     )
@@ -113,9 +131,11 @@ class PrisonerSearchServiceTest {
     private const val CRO_NUMBER = "11/222222"
     private const val FIRST_NAME = "JIM"
     private const val FIRST_NAME_FORMATTED = "Jim"
-    private const val GENDER = "Male"
+    private const val SEX = "Male"
     private const val LAST_NAME = "SMITH"
     private const val LAST_NAME_FORMATTED = "Smith"
+    private const val PRISON_ID = "MDI"
+    private const val LAST_MOVEMENT_TYPE_CODE = "REL"
     private val DOB = LocalDate.of(1991, 7, 31)
   }
 }
