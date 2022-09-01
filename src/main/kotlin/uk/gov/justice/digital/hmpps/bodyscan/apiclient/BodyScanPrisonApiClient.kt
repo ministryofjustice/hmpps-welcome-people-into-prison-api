@@ -24,7 +24,7 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
     return webClient.post()
       .uri(
         "/api/bookings/offenderNo/personal-care-needs/count?type=" +
-          "$type" +
+          type +
           "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
           "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
       )
@@ -38,11 +38,11 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
   fun getOffenderDetails(prisonNumber: String): OffenderDetails =
     webClient.get().uri("/api/offenders/$prisonNumber")
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus(HttpStatus::is4xxClientError) { _ ->
         throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
       }
       .bodyToMono(OffenderDetails::class.java)
-      .block()
+      .block()!!
 
   fun addPersonalCareNeeds(bookingId: Long, personalCareNeeds: PersonalCareNeeds) =
     webClient.post()

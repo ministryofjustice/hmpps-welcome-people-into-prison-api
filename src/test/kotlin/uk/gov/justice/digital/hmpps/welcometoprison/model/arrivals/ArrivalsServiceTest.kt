@@ -7,9 +7,10 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.BasmService
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrival
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalRepository
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.ArrivalType.NEW_BOOKING
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -165,7 +166,7 @@ class ArrivalsServiceTest {
       prisonNumber = "ADF123",
       movementId = "qweqewqwe123-123123wqw-12312312",
       timestamp = LocalDateTime.of(2021, 2, 23, 1, 0, 0),
-      arrivalType = ArrivalType.NEW_TO_PRISON,
+      arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "MDI",
       bookingId = 1232,
       arrivalDate = LocalDate.of(2021, 2, 1),
@@ -205,7 +206,9 @@ class ArrivalsServiceTest {
       pncNumber = PNC_NUMBER,
       croNumber = CRO_NUMBER,
       sex = "Female",
-      isCurrentPrisoner = false
+      isCurrentPrisoner = false,
+      arrivalType = NEW_BOOKING,
+      arrivalTypeDescription = "",
     )
 
     fun Arrival.whenConfirmed() = ConfirmedArrival(
@@ -213,7 +216,7 @@ class ArrivalsServiceTest {
       prisonNumber = this.prisonNumber!!,
       movementId = this.id!!,
       timestamp = LocalDateTime.now(),
-      arrivalType = ArrivalType.NEW_TO_PRISON,
+      arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = this.date,

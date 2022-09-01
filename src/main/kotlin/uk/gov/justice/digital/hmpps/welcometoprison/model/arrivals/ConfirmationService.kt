@@ -6,11 +6,11 @@ import uk.gov.justice.digital.hmpps.config.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.COURT_TRANSFER
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.NEW_BOOKING_EXISTING_OFFENDER
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.NEW_TO_PRISON
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.RECALL
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.COURT_TRANSFER
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.NEW_BOOKING_EXISTING_OFFENDER
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.NEW_TO_PRISON
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.RECALL
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
@@ -107,7 +107,7 @@ class ConfirmationService(
     return result.toResponse()
   }
 
-  private fun Confirmation.toEvent(inmateDetail: InmateDetail, type: ArrivalType) = ArrivalEvent(
+  private fun Confirmation.toEvent(inmateDetail: InmateDetail, type: ConfirmedArrivalType) = ArrivalEvent(
     movementId = if (this is Confirmation.Expected) this.arrivalId else null,
     // This doesn't appear to be returned from NOMIS for new bookings so reading from data from frontend
     prisonId = detail.prisonId!!,

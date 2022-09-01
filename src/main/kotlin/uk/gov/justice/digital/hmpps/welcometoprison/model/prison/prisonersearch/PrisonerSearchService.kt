@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.PotentialMatchRequest
-import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 
 @Service
 class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClient) {
@@ -31,28 +29,6 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-
-    private fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
-      firstName = Name.properCase(this.firstName),
-      lastName = Name.properCase(this.lastName),
-      dateOfBirth = this.dateOfBirth,
-      prisonNumber = this.prisonerNumber,
-      pncNumber = this.pncNumber,
-      croNumber = this.croNumber,
-      isCurrentPrisoner = this.isCurrentPrisoner,
-      sex = this.gender,
-    )
-
-    private fun MatchPrisonerResponse.toPrisonerDetails() = PrisonerDetails(
-      firstName = Name.properCase(this.firstName),
-      lastName = Name.properCase(this.lastName),
-      dateOfBirth = this.dateOfBirth,
-      prisonNumber = this.prisonerNumber,
-      pncNumber = this.pncNumber,
-      croNumber = this.croNumber,
-      isCurrentPrisoner = this.isCurrentPrisoner,
-      sex = this.gender
-    )
 
     private fun MatchPrisonersRequest.toPotentialMatchRequest() = PotentialMatchRequest(
       firstName = this.firstName,

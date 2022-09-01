@@ -24,7 +24,7 @@ data class ConfirmedArrival(
   val timestamp: LocalDateTime,
 
   @Enumerated(EnumType.STRING)
-  val arrivalType: ArrivalType,
+  val arrivalType: ConfirmedArrivalType,
 
   val prisonId: String,
 
@@ -35,7 +35,7 @@ data class ConfirmedArrival(
   val username: String?
 )
 
-enum class ArrivalType {
+enum class ConfirmedArrivalType {
   NEW_TO_PRISON,
   NEW_BOOKING_EXISTING_OFFENDER,
   RECALL,

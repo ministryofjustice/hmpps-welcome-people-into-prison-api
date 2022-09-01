@@ -28,7 +28,7 @@ data class ArrivalEvent(
   val prisonId: String,
   val prisonNumber: String,
   val bookingId: Long,
-  val arrivalType: ArrivalType,
+  val arrivalType: ConfirmedArrivalType,
 ) {
   fun toConfirmedArrival(username: String, clock: Clock) = ConfirmedArrival(
     movementId = movementId,

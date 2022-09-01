@@ -30,7 +30,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "pncNumber": "1234/1234589A",
                         "croNumber": "SF80/655108T",
                         "status": "INACTIVE OUT",
-                        "gender": "Male"
+                        "gender": "Male",
+                        "prisonId": "MDI",
+                        "lastMovementTypeCode": "REL"
                        }]"""
             )
         )
@@ -57,7 +59,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "pncNumber": "1234/1234589A",
                         "croNumber": "SF80/655108T",
                         "status": "INACTIVE_OUT",
-                        "gender": "Male"
+                        "gender": "Male",
+                        "prisonId": "MDI",
+                        "lastMovementTypeCode": "REL"
                        }]"""
             )
         )
@@ -82,8 +86,10 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "prisonerNumber": "A1278AA",
                         "pncNumber": "1234/1234589A",
                         "croNumber": "SF80/655108T",
-                        "status": "ACTIVE",
-                        "gender": "Male"
+                        "status": "ACTIVE IN",
+                        "gender": "Male",
+                        "prisonId": "MDI",
+                        "lastMovementTypeCode": "ADM"
                        }]"""
             )
         )

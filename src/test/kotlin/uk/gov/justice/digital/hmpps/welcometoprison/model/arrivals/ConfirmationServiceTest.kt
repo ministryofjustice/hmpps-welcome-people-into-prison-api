@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.config.ConflictException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.AssignedLivingUnit
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonerDetails
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnRequest
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.ConfirmCourtReturnResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.ArrivalType
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import java.time.LocalDate
 import java.util.stream.Stream
@@ -40,18 +41,7 @@ class ConfirmationServiceTest {
 
   @Test
   fun `Confirm arrival throw exception when location is empty`() {
-    whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME,
-        lastName = LAST_NAME,
-        dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER,
-        pncNumber = PNC_NUMBER,
-        croNumber = "12/4321",
-        isCurrentPrisoner = false,
-        sex = GENDER
-      )
-    )
+    whenever(prisonerSearchService.getPrisoner(any())).thenReturn(PRISONER_DETAILS_PROTOTYPE)
     whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL_NO_UNIT)
     assertThatThrownBy {
       confirmationService.confirmArrival(Confirmation.Expected(ARRIVAL_ID, CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE))
@@ -88,7 +78,7 @@ class ConfirmationServiceTest {
           prisonNumber = PRISON_NUMBER,
           prisonId = PRISON_ID,
           bookingId = BOOKING_ID,
-          arrivalType = ArrivalType.NEW_TO_PRISON,
+          arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
         )
       )
     )
@@ -97,16 +87,7 @@ class ConfirmationServiceTest {
   @Test
   fun `Confirm arrival matched to NOMIS offender who is in custody and is a non-court transfer, is rejected`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME,
-        lastName = LAST_NAME,
-        dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER,
-        pncNumber = null,
-        croNumber = CRO_NUMBER,
-        isCurrentPrisoner = true,
-        sex = GENDER
-      )
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
     )
 
     assertThatThrownBy {
@@ -120,16 +101,7 @@ class ConfirmationServiceTest {
   fun `Confirm arrival of court transfer for prisoner who is already in custody, calls prison service with correct args`() {
 
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME,
-        lastName = LAST_NAME,
-        dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER,
-        croNumber = CRO_NUMBER,
-        pncNumber = null,
-        isCurrentPrisoner = true,
-        sex = GENDER
-      )
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
     )
 
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
@@ -146,16 +118,7 @@ class ConfirmationServiceTest {
   fun `Confirm arrival of court transfer for prisoner who is already in custody, records the arrival as an event`() {
 
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME,
-        lastName = LAST_NAME,
-        dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER,
-        pncNumber = null,
-        croNumber = CRO_NUMBER,
-        isCurrentPrisoner = true,
-        sex = GENDER
-      )
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
     )
 
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
@@ -172,7 +135,7 @@ class ConfirmationServiceTest {
           prisonNumber = PRISON_NUMBER,
           prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
           bookingId = BOOKING_ID,
-          arrivalType = ArrivalType.COURT_TRANSFER,
+          arrivalType = ConfirmedArrivalType.COURT_TRANSFER,
         )
       )
     )
@@ -181,16 +144,7 @@ class ConfirmationServiceTest {
   @Test
   fun `Confirm arrival matched to NOMIS offender who is not in custody and is a non-court transfer, is rejected`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PrisonerDetails(
-        firstName = FIRST_NAME,
-        lastName = LAST_NAME,
-        dateOfBirth = DATE_OF_BIRTH,
-        prisonNumber = PRISON_NUMBER,
-        pncNumber = null,
-        croNumber = CRO_NUMBER,
-        isCurrentPrisoner = false,
-        sex = GENDER
-      )
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
     )
 
     assertThatThrownBy {
@@ -210,7 +164,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
       doParameterizedExpectedConfirmationTest(
         movementReasonCode,
-        ArrivalType.RECALL,
+        ConfirmedArrivalType.RECALL,
         { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
       )
@@ -221,7 +175,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
       doParameterizedExpectedConfirmationTest(
         movementReasonCode,
-        ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
+        ConfirmedArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
         { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
       )
@@ -229,16 +183,12 @@ class ConfirmationServiceTest {
 
     private fun doParameterizedExpectedConfirmationTest(
       movementReasonCode: String,
-      expectedArrivalType: ArrivalType,
+      expectedArrivalType: ConfirmedArrivalType,
       stubbing: () -> Unit,
       verification: (Confirmation) -> InmateDetail
     ) {
       whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        PrisonerDetails(
-          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
-          prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
-          isCurrentPrisoner = false, sex = GENDER
-        )
+        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
       )
       stubbing()
 
@@ -276,7 +226,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be recalled when specified by movementReasonCode`(movementReasonCode: String) {
       doParameterizedUnexpectedConfirmationTest(
         movementReasonCode,
-        ArrivalType.RECALL,
+        ConfirmedArrivalType.RECALL,
         { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
       )
@@ -287,7 +237,7 @@ class ConfirmationServiceTest {
     fun `Person having a Prison Number should be admitted on a new booking when not recalled`(movementReasonCode: String) {
       doParameterizedUnexpectedConfirmationTest(
         movementReasonCode,
-        ArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
+        ConfirmedArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
         { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
         { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
       )
@@ -295,16 +245,12 @@ class ConfirmationServiceTest {
 
     private fun doParameterizedUnexpectedConfirmationTest(
       movementReasonCode: String,
-      expectedArrivalType: ArrivalType,
+      expectedArrivalType: ConfirmedArrivalType,
       stubbing: () -> Unit,
       verification: (Confirmation) -> InmateDetail
     ) {
       whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        PrisonerDetails(
-          firstName = FIRST_NAME, lastName = LAST_NAME, dateOfBirth = DATE_OF_BIRTH,
-          prisonNumber = PRISON_NUMBER, pncNumber = null, croNumber = CRO_NUMBER,
-          isCurrentPrisoner = false, sex = GENDER
-        )
+        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
       )
       stubbing()
 
@@ -343,7 +289,7 @@ class ConfirmationServiceTest {
     private const val FIRST_NAME = "Eric"
     private const val LAST_NAME = "Bloodaxe"
     private val DATE_OF_BIRTH: LocalDate = LocalDate.of(1961, 4, 1)
-    private const val GENDER = "M"
+    private const val SEX = "M"
     private const val PRISON_ID = "NMI"
     private const val LOCATION_ID = 1
 
@@ -364,7 +310,7 @@ class ConfirmationServiceTest {
       firstName = FIRST_NAME,
       lastName = LAST_NAME,
       dateOfBirth = DATE_OF_BIRTH,
-      sex = GENDER,
+      sex = SEX,
       prisonId = PRISON_ID,
       prisonNumber = PRISON_NUMBER,
       movementReasonCode = "N",
@@ -372,9 +318,23 @@ class ConfirmationServiceTest {
       fromLocationId = "",
       commentText = "",
     )
+
     val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
       prisonId = PRISON_ID,
       prisonNumber = PRISON_NUMBER
+    )
+
+    val PRISONER_DETAILS_PROTOTYPE = PrisonerDetails(
+      firstName = FIRST_NAME,
+      lastName = LAST_NAME,
+      dateOfBirth = DATE_OF_BIRTH,
+      prisonNumber = PRISON_NUMBER,
+      pncNumber = PNC_NUMBER,
+      croNumber = CRO_NUMBER,
+      isCurrentPrisoner = false,
+      sex = SEX,
+      arrivalType = ArrivalType.NEW_BOOKING,
+      arrivalTypeDescription = "",
     )
 
     @JvmStatic

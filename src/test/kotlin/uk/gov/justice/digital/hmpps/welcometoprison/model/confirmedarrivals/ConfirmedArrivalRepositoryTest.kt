@@ -64,7 +64,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
       prisonNumber = "Prison Number",
       movementId = "Movement Id",
       timestamp = TIMESTAMP_NOW,
-      arrivalType = ArrivalType.NEW_TO_PRISON,
+      arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = ARRIVAL_DATE,

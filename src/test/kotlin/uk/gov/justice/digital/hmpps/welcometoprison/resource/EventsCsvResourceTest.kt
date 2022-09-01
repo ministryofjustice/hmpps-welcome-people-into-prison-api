@@ -60,7 +60,7 @@ class EventsCsvResourceTest : IntegrationTestBase() {
         .expectStatus().isOk
         .expectHeader().valueMatches("Content-Type", "text/csv;charset=UTF-8")
         .expectBody().consumeWith {
-          val csv = String(it.responseBody)
+          val csv = String(it.responseBody!!)
           assertThat(csv).isEqualTo(
             "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
               "9,2020-01-10T01:01:01,2020-01-10,MIK,NEW_TO_PRISON,\"84e9f8806945dc6750f0414901cb36dc\"\n" +

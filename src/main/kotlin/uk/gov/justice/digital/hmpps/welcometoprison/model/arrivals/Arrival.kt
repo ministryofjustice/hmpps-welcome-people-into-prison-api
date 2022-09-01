@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.ArrivalType
 import java.time.LocalDate
 
 @JsonInclude(NON_NULL)
@@ -74,7 +75,13 @@ data class PotentialMatch(
   val sex: String,
 
   @JsonIgnore
-  val isCurrentPrisoner: Boolean
+  val isCurrentPrisoner: Boolean,
+
+  @Schema(description = "Description of arrival type", example = "ACTIVE IN-ADM-MDI")
+  val arrivalTypeDescription: String,
+
+  @Schema(description = "Type of arrival", example = "TRANSFER")
+  val arrivalType: ArrivalType,
 )
 
 enum class LocationType {

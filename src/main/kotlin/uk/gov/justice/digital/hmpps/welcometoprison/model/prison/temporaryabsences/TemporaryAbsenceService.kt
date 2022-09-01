@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.formatter.LocationFormatter
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalEvent
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
-import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalType.TEMPORARY_ABSENCE
+import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.TEMPORARY_ABSENCE
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival

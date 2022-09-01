@@ -6,11 +6,6 @@ import java.time.LocalDate
 
 class MatchPrisonerResponseTest {
   @Test
-  fun `given null status then prisoner is not current`() {
-    assertThat(reference.isCurrentPrisoner).isFalse
-  }
-
-  @Test
   fun `given INACTIVE OUT status then prisoner is not current`() {
     assertThat(reference.copy(status = "INACTIVE OUT").isCurrentPrisoner).isFalse
   }
@@ -22,6 +17,6 @@ class MatchPrisonerResponseTest {
 
   companion object {
     val reference =
-      MatchPrisonerResponse("JIM", "SMITH", LocalDate.of(1961, 4, 1), "A123AA", "123/456", "SF80/655108T", "Male", null)
+      MatchPrisonerResponse("JIM", "SMITH", LocalDate.of(1961, 4, 1), "A123AA", "123/456", "SF80/655108T", "Male", "ACTIVE IN", lastMovementTypeCode = "ADM", prisonId = "MDI")
   }
 }
