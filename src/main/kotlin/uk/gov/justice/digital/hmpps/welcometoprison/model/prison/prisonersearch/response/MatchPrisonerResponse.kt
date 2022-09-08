@@ -18,7 +18,8 @@ data class MatchPrisonerResponse(
   val pncNumber: String?,
   val croNumber: String?,
   val gender: String,
-  val status: String,
+  // Status can be null when a prison record has no associated bookings
+  val status: String?,
   val lastMovementTypeCode: String,
   val prisonId: String,
 ) {
