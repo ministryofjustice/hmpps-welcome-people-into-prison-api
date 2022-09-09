@@ -51,6 +51,7 @@ fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
 private fun MatchPrisonerResponse.buildArrivalDescription() = "$status-$lastMovementTypeCode-$prisonId"
 
 fun MatchPrisonerResponse.calculateArrivalType() = when (status) {
+  null -> NEW_BOOKING
   "INACTIVE TRN" -> TRANSFER
   "INACTIVE OUT" -> NEW_BOOKING
   "ACTIVE IN" -> CURRENTLY_IN

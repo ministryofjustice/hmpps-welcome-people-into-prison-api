@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 class PrisonerDetailsConverterTest {
 
-  fun whenever(status: String, moveType: String = "") = MatchPrisonerResponse(
+  fun whenever(status: String?, moveType: String = "") = MatchPrisonerResponse(
     firstName = "FIRST_NAME",
     lastName = "LAST_NAME",
     dateOfBirth = LocalDate.of(2000, 1, 1),
@@ -65,6 +65,11 @@ class PrisonerDetailsConverterTest {
     @Test
     fun `from court`() {
       whenever(status = "ACTIVE OUT", moveType = "CRT") `then arrival type is` FROM_COURT
+    }
+
+    @Test
+    fun `record with no status`() {
+      whenever(status = null) `then arrival type is` NEW_BOOKING
     }
   }
 
