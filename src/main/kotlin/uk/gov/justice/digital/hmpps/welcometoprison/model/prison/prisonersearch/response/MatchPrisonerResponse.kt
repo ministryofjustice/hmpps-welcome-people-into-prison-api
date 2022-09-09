@@ -20,8 +20,8 @@ data class MatchPrisonerResponse(
   val gender: String,
   // Status can be null when a prison record has no associated bookings
   val status: String?,
-  val lastMovementTypeCode: String,
-  val prisonId: String,
+  val lastMovementTypeCode: String?,
+  val prisonId: String?,
 ) {
   val isCurrentPrisoner: Boolean
     get() = status != null && status != INACTIVE_OUT
