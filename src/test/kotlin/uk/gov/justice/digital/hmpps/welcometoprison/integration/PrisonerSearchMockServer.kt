@@ -67,6 +67,33 @@ class PrisonerSearchMockServer : MockServer(8093) {
         )
     )
   }
+
+  fun stubGetPrisonerWithNoBooking(status: Int) {
+    stubFor(
+      WireMock.post(
+        WireMock.urlPathMatching(
+          "/prisoner-search/possible-matches\\\\?.*"
+        )
+      )
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(status)
+            .withBody(
+              """[{
+                  "prisonerNumber": "A9205DY",
+                  "firstName": "EDUARDO",
+                  "lastName": "STARK",
+                  "dateOfBirth": "1994-01-01",
+                  "gender": "Male",
+                  "youthOffender": false,
+                  "restrictedPatient": false
+                }]"""
+            )
+        )
+    )
+  }
+
   fun stubGetActivePrisoner(status: Int) {
     stubFor(
       WireMock.post(

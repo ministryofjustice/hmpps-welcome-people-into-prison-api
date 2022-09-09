@@ -135,4 +135,30 @@ class PrisonerSearchApiClientTest {
       postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
     )
   }
+
+  @Test
+  fun `successfully get prisoner details when no booking has been created`() {
+    mockServer.stubGetPrisonerWithNoBooking(200)
+    val result = client.getPrisoner("A1278AA")
+
+    assertThat(result).isEqualTo(
+
+      MatchPrisonerResponse(
+        firstName = "EDUARDO",
+        lastName = "STARK",
+        dateOfBirth = LocalDate.of(1994, 1, 1),
+        prisonerNumber = "A9205DY",
+        pncNumber = null,
+        croNumber = null,
+        gender = "Male",
+        status = null,
+        lastMovementTypeCode = null,
+        prisonId = null
+      )
+    )
+
+    mockServer.verify(
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
+    )
+  }
 }
