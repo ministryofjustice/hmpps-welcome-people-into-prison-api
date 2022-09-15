@@ -7,9 +7,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import javax.validation.Valid
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -25,6 +22,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Trans
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
+import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
