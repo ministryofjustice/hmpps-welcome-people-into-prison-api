@@ -80,8 +80,7 @@ class TemporaryAbsencesResource(
   )
   fun getTemporaryAbsences(
     @Schema(description = "AgencyId", example = "MDI", required = true)
-    @PathVariable
-    prisonId: String
+    @PathVariable prisonId: String
   ) = temporaryAbsenceService.getTemporaryAbsences(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -134,11 +133,9 @@ class TemporaryAbsencesResource(
   )
   fun getTemporaryAbsence(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable
-    prisonId: String,
+    @PathVariable prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
-    @PathVariable
-    prisonNumber: String
+    @PathVariable prisonNumber: String
   ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")

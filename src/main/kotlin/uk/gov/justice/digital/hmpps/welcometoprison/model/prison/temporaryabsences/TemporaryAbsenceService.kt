@@ -53,9 +53,6 @@ class TemporaryAbsenceService(
   }
 
   private fun ConfirmTemporaryAbsenceRequest.toArrival() = TemporaryAbsencesArrival(
-    prisonId,
-    movementReasonCode,
-    commentText,
-    receiveTime
+    prisonId, movementReasonCode, commentText, receiveTime
   )
 }

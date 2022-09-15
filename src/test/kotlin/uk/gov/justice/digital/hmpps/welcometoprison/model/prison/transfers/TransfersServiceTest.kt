@@ -32,13 +32,9 @@ class TransfersServiceTest {
     TransfersService(prisonApiClient, prisonerSearchService, locationFormatter, arrivalListener)
 
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ",
-    bookingId = 1L,
+    offenderNo = "G6081VQ", bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
-      "NMI",
-      1,
-      "RECP",
-      "Nottingham (HMP)"
+      "NMI", 1, "RECP", "Nottingham (HMP)"
     )
   )
 

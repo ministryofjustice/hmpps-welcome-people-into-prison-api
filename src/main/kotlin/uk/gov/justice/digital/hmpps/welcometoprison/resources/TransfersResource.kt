@@ -82,8 +82,7 @@ class TransfersResource(
   )
   fun getTransfers(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable
-    prisonId: String,
+    @PathVariable prisonId: String,
   ): List<Transfer> = transfersService.getTransfers(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -136,11 +135,9 @@ class TransfersResource(
   )
   fun getTransfer(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable
-    prisonId: String,
+    @PathVariable prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
-    @PathVariable
-    prisonNumber: String
+    @PathVariable prisonNumber: String
   ): Transfer = transfersService.getTransfer(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
