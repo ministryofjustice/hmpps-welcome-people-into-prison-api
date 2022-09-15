@@ -36,11 +36,13 @@ class TemporaryAbsenceService(
 
   fun confirmTemporaryAbsencesArrival(
     prisonNumber: String,
-    request: ConfirmTemporaryAbsenceRequest
+    request: ConfirmTemporaryAbsenceRequest,
+    movementId: String? = null
   ): ConfirmTemporaryAbsenceResponse {
     val inmateDetail = prisonApiClient.confirmTemporaryAbsencesArrival(prisonNumber, request.toArrival())
     arrivalListener.arrived(
       ArrivalEvent(
+        movementId = movementId,
         prisonId = request.prisonId,
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,
@@ -51,6 +53,9 @@ class TemporaryAbsenceService(
   }
 
   private fun ConfirmTemporaryAbsenceRequest.toArrival() = TemporaryAbsencesArrival(
-    prisonId, movementReasonCode, commentText, receiveTime
+    prisonId,
+    movementReasonCode,
+    commentText,
+    receiveTime
   )
 }

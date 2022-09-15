@@ -45,11 +45,13 @@ class TransfersService(
 
   fun transferInOffender(
     prisonNumber: String,
-    transferInDetail: TransferInDetail
+    transferInDetail: TransferInDetail,
+    movementId: String? = null
   ): TransferResponse {
     val inmateDetail = prisonApiClient.transferIn(prisonNumber, transferInDetail.toArrival())
     arrivalListener.arrived(
       ArrivalEvent(
+        movementId = movementId,
         prisonId = transferInDetail.prisonId,
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,

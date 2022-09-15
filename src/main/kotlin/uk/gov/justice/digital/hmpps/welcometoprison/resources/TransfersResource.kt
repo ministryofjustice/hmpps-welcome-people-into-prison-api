@@ -1,11 +1,15 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resources
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -14,15 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Transfer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
-import javax.validation.Valid
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
@@ -80,7 +82,8 @@ class TransfersResource(
   )
   fun getTransfers(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
+    @PathVariable
+    prisonId: String,
   ): List<Transfer> = transfersService.getTransfers(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -133,9 +136,11 @@ class TransfersResource(
   )
   fun getTransfer(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
+    @PathVariable
+    prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
-    @PathVariable prisonNumber: String
+    @PathVariable
+    prisonNumber: String
   ): Transfer = transfersService.getTransfer(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
@@ -192,8 +197,13 @@ class TransfersResource(
     @Valid @NotEmpty
     prisonNumber: String,
 
+    @Parameter(description = "The movement ID for the persons transfer", required = false)
+    @RequestParam(required = false)
+    movementId: String?,
+
     @RequestBody
-    @Valid @NotNull
+    @Valid
+    @NotNull
     transferInDetail: TransferInDetail
-  ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail)
+  ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail, movementId)
 }
