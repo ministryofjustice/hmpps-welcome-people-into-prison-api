@@ -99,11 +99,12 @@ class TemporaryAbsenceServiceTest {
 
     val request = ConfirmTemporaryAbsenceRequest(prisonId = "MDI", movementReasonCode = "C")
     assertThat(
-      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
+      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request, "abc-123")
     ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
 
     verify(arrivalListener).arrived(
       ArrivalEvent(
+        movementId = "abc-123",
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = ConfirmedArrivalType.TEMPORARY_ABSENCE,

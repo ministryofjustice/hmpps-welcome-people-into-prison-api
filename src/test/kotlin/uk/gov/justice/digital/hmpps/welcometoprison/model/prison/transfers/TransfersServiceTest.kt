@@ -116,7 +116,6 @@ class TransfersServiceTest {
 
   @Test
   fun `transfer-in offender`() {
-
     val transferInDetail = TransferInDetail(
       prisonId = "MDI",
       cellLocation = "MDI-RECP",
@@ -134,16 +133,17 @@ class TransfersServiceTest {
 
   @Test
   fun `transfer-in is recorded as an event`() {
-
     whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmateDetail)
 
     transfersService.transferInOffender(
       "ABC123A",
-      TransferInDetail("MDI", "MDI-RECP", "some transfer notes", LocalDateTime.now())
+      TransferInDetail("MDI", "MDI-RECP", "some transfer notes", LocalDateTime.now()),
+      "abc-123"
     )
 
     verify(arrivalListener).arrived(
       ArrivalEvent(
+        movementId = "abc-123",
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = TRANSFER,
@@ -154,7 +154,6 @@ class TransfersServiceTest {
 
   @Test
   fun `transfer-in offender throw exception when location is empty`() {
-
     val inmate = inmateDetail.copy(assignedLivingUnit = null, offenderNo = "G6081VQ")
 
     val transferInDetail = TransferInDetail(
