@@ -64,7 +64,7 @@ class ArrivalListenerTest {
     verify(telemetryClient).trackEvent(
       "Arrival",
       mapOf(
-        "movementId" to "1",
+        "arrivalId" to "1",
         "prisonId" to "MDI",
         "prisonNumber" to "A1234AA",
         "bookingId" to "123",

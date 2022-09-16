@@ -43,7 +43,7 @@ data class ArrivalEvent(
 }
 
 fun ConfirmedArrival.toEventProperties() = mapOf(
-  "movementId" to arrivalId,
+  "arrivalId" to arrivalId,
   "prisonNumber" to prisonNumber,
   "timestamp" to timestamp.toString(),
   "arrivalType" to arrivalType.name,
