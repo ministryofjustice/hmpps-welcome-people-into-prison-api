@@ -48,17 +48,17 @@ class ConfirmationService(
     }
   }
 
-  fun confirmReturnFromCourt(moveId: String, confirmation: ConfirmCourtReturnRequest): ConfirmCourtReturnResponse {
+  fun confirmReturnFromCourt(arrivalId: String, confirmation: ConfirmCourtReturnRequest): ConfirmCourtReturnResponse {
     val prisoner = prisonerSearchService.getPrisoner(confirmation.prisonNumber)
 
     return when {
-      prisoner.isCurrentPrisoner -> returnFromCourt(moveId, prisoner.prisonNumber, confirmation)
+      prisoner.isCurrentPrisoner -> returnFromCourt(arrivalId, prisoner.prisonNumber, confirmation)
       else -> throw ConflictException("Confirming court return of inactive prisoner: '${prisoner.prisonNumber}' is not supported.")
     }
   }
 
   private fun returnFromCourt(
-    moveId: String,
+    arrivalId: String,
     prisonNumber: String,
     confirmation: ConfirmCourtReturnRequest
   ): ConfirmCourtReturnResponse {
@@ -66,7 +66,7 @@ class ConfirmationService(
 
     arrivalListener.arrived(
       ArrivalEvent(
-        arrivalId = moveId,
+        arrivalId = arrivalId,
         prisonNumber = prisonNumber,
         arrivalType = COURT_TRANSFER,
         prisonId = confirmation.prisonId,

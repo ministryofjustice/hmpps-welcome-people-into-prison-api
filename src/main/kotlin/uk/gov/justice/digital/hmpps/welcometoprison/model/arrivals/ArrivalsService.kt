@@ -17,7 +17,7 @@ class ArrivalsService(
   private val confirmedArrivalRepository: ConfirmedArrivalRepository,
   private val arrivalsCsvConverter: ConfirmedArrivalsCsvConverter
 ) {
-  fun getArrival(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
+  fun getArrival(arrivalId: String): Arrival = augmentWithPrisonData(basmService.getArrival(arrivalId))
 
   fun getArrivals(agencyId: String, date: LocalDate): List<Arrival> = basmService
     .getArrivals(agencyId, date, date)

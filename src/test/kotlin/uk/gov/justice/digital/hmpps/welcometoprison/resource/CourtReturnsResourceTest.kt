@@ -9,8 +9,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 class CourtReturnsResourceTest : IntegrationTestBase() {
 
   private val confirmCourtReturnRequest = ConfirmCourtReturnRequest("NMI", "A1278AA")
-  private val moveId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
-  private val url = "/court-returns/$moveId/confirm"
+  private val arrivalId = "06274b73-6aa9-490e-ab0e-2a25b3638068"
+  private val url = "/court-returns/$arrivalId/confirm"
 
   @Test
   fun `confirm court return`() {
