@@ -51,7 +51,7 @@ class TransfersService(
     val inmateDetail = prisonApiClient.transferIn(prisonNumber, transferInDetail.toArrival())
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = movementId,
+        arrivalId = movementId,
         prisonId = transferInDetail.prisonId,
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,

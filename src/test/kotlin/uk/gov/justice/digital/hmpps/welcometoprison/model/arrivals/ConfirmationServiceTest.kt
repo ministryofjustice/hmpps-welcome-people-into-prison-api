@@ -74,7 +74,7 @@ class ConfirmationServiceTest {
     verify(arrivalListener).arrived(
       refEq(
         ArrivalEvent(
-          movementId = ARRIVAL_ID,
+          arrivalId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = PRISON_ID,
           bookingId = BOOKING_ID,
@@ -99,7 +99,6 @@ class ConfirmationServiceTest {
 
   @Test
   fun `Confirm arrival of court transfer for prisoner who is already in custody, calls prison service with correct args`() {
-
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
       PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
     )
@@ -116,7 +115,6 @@ class ConfirmationServiceTest {
 
   @Test
   fun `Confirm arrival of court transfer for prisoner who is already in custody, records the arrival as an event`() {
-
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
       PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
     )
@@ -131,7 +129,7 @@ class ConfirmationServiceTest {
     verify(arrivalListener).arrived(
       refEq(
         ArrivalEvent(
-          movementId = ARRIVAL_ID,
+          arrivalId = ARRIVAL_ID,
           prisonNumber = PRISON_NUMBER,
           prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
           bookingId = BOOKING_ID,
@@ -208,7 +206,7 @@ class ConfirmationServiceTest {
       verify(arrivalListener).arrived(
         refEq(
           ArrivalEvent(
-            movementId = ARRIVAL_ID,
+            arrivalId = ARRIVAL_ID,
             prisonNumber = PRISON_NUMBER,
             prisonId = PRISON_ID,
             bookingId = BOOKING_ID,
@@ -269,7 +267,7 @@ class ConfirmationServiceTest {
       verify(arrivalListener).arrived(
         refEq(
           ArrivalEvent(
-            movementId = null,
+            arrivalId = null,
             prisonNumber = PRISON_NUMBER,
             prisonId = PRISON_ID,
             bookingId = BOOKING_ID,

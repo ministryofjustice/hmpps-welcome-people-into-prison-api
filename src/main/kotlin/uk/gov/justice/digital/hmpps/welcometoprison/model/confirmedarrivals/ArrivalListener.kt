@@ -24,14 +24,14 @@ class ArrivalListener(
 }
 
 data class ArrivalEvent(
-  val movementId: String? = null,
+  val arrivalId: String? = null,
   val prisonId: String,
   val prisonNumber: String,
   val bookingId: Long,
   val arrivalType: ConfirmedArrivalType,
 ) {
   fun toConfirmedArrival(username: String, clock: Clock) = ConfirmedArrival(
-    arrivalId = movementId,
+    arrivalId = arrivalId,
     prisonNumber = prisonNumber,
     timestamp = LocalDateTime.now(clock),
     arrivalType = arrivalType,

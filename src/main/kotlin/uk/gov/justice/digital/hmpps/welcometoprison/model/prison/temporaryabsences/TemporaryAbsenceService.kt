@@ -42,7 +42,7 @@ class TemporaryAbsenceService(
     val inmateDetail = prisonApiClient.confirmTemporaryAbsencesArrival(prisonNumber, request.toArrival())
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = arrivalId,
+        arrivalId = arrivalId,
         prisonId = request.prisonId,
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,

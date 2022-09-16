@@ -31,7 +31,7 @@ class ArrivalListenerTest {
 
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
+        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
       )
     )
 
@@ -57,7 +57,7 @@ class ArrivalListenerTest {
 
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
+        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
       )
     )
 
