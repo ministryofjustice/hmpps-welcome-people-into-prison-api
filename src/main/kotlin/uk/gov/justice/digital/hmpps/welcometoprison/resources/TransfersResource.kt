@@ -194,13 +194,13 @@ class TransfersResource(
     @Valid @NotEmpty
     prisonNumber: String,
 
-    @Parameter(description = "The movement ID for the persons transfer", required = false)
+    @Parameter(description = "The movementId from BASM", required = false)
     @RequestParam(required = false)
-    movementId: String?,
+    arrivalId: String?,
 
     @RequestBody
     @Valid
     @NotNull
     transferInDetail: TransferInDetail
-  ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail, movementId)
+  ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail, arrivalId)
 }

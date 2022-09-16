@@ -190,12 +190,12 @@ class TemporaryAbsencesResource(
     @PathVariable
     prisonNumber: String,
 
-    @Parameter(description = "The movement ID for the persons transfer", required = false)
+    @Parameter(description = "The movementId from BASM", required = false)
     @RequestParam(required = false)
-    movementId: String?,
+    arrivalId: String?,
 
     @RequestBody
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest
   ): ConfirmTemporaryAbsenceResponse =
-    temporaryAbsenceService.confirmTemporaryAbsencesArrival(prisonNumber, confirmTemporaryAbsenceRequest, movementId)
+    temporaryAbsenceService.confirmTemporaryAbsencesArrival(prisonNumber, confirmTemporaryAbsenceRequest, arrivalId)
 }
