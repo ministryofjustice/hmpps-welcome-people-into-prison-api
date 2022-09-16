@@ -19,7 +19,7 @@ data class ConfirmedArrival(
 
   val prisonNumber: String,
 
-  val movementId: String?,
+  val arrivalId: String?,
 
   val timestamp: LocalDateTime,
 

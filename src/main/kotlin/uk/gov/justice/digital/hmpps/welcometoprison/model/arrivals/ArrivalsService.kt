@@ -29,7 +29,7 @@ class ArrivalsService(
     return { confirmedArrivals.contains(it) }
   }
 
-  private fun List<ConfirmedArrival>.contains(arrival: Arrival) = this.stream().anyMatch { arrival.id == it.movementId }
+  private fun List<ConfirmedArrival>.contains(arrival: Arrival) = this.stream().anyMatch { arrival.id == it.arrivalId }
 
   private fun augmentWithPrisonData(arrival: Arrival): Arrival {
     val matches = prisonerSearchService.findPotentialMatches(
@@ -49,7 +49,6 @@ class ArrivalsService(
   }
 
   fun getArrivalsAsCsv(startDate: LocalDate, numberOfDays: Long): String {
-
     return arrivalsCsvConverter.toCsv(
       confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays))
     )

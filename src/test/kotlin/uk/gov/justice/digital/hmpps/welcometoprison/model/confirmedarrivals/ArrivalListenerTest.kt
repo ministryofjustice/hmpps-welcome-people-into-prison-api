@@ -27,7 +27,6 @@ class ArrivalListenerTest {
 
   @Test
   fun `arrived events are persisted in the DB`() {
-
     whenever(securityUserContext.principal).thenReturn("USER-1")
 
     arrivalListener.arrived(
@@ -39,7 +38,7 @@ class ArrivalListenerTest {
     verify(confirmedArrivalRepository).save(
       refEq(
         ConfirmedArrival(
-          movementId = "1",
+          arrivalId = "1",
           prisonId = "MDI",
           prisonNumber = "A1234AA",
           bookingId = 123,
@@ -54,7 +53,6 @@ class ArrivalListenerTest {
 
   @Test
   fun `arrived events are recorded in App insights`() {
-
     whenever(securityUserContext.principal).thenReturn("USER-1")
 
     arrivalListener.arrived(
