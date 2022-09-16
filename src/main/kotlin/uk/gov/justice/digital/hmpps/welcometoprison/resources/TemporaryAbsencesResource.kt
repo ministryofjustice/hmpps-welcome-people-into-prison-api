@@ -190,7 +190,7 @@ class TemporaryAbsencesResource(
     @PathVariable
     prisonNumber: String,
 
-    @Parameter(description = "The movementId from BASM", required = false)
+    @Parameter(description = "The Id of the arrival", required = false)
     @RequestParam(required = false)
     arrivalId: String?,
 
