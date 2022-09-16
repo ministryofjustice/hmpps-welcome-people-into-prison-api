@@ -62,7 +62,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     fun confirmedArrival() = ConfirmedArrival(
       id = null,
       prisonNumber = "Prison Number",
-      arrivalId = "Movement Id",
+      arrivalId = "Arrival Id",
       timestamp = TIMESTAMP_NOW,
       arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "Prison Id",
