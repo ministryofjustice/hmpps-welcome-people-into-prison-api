@@ -27,7 +27,6 @@ class ArrivalsServiceTest {
 
   @Test
   fun `Retrieving csv arrivals`() {
-
     whenever(confirmedArrivalRepository.findAllByArrivalDateIsBetween(any(), any())).thenReturn(
       Stream.of(
         confirmedArrival
@@ -59,7 +58,6 @@ class ArrivalsServiceTest {
 
   @Test
   fun `Arrivals are removed when confirmed`() {
-
     whenever(basmService.getArrivals(any(), any(), any())).thenReturn(listOf(arrival1, arrival2))
     whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(
       listOf(arrival1.whenConfirmed())
@@ -164,7 +162,7 @@ class ArrivalsServiceTest {
     private val confirmedArrival = ConfirmedArrival(
       id = 1,
       prisonNumber = "ADF123",
-      movementId = "qweqewqwe123-123123wqw-12312312",
+      arrivalId = "qweqewqwe123-123123wqw-12312312",
       timestamp = LocalDateTime.of(2021, 2, 23, 1, 0, 0),
       arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "MDI",
@@ -214,7 +212,7 @@ class ArrivalsServiceTest {
     fun Arrival.whenConfirmed() = ConfirmedArrival(
       id = null,
       prisonNumber = this.prisonNumber!!,
-      movementId = this.id!!,
+      arrivalId = this.id!!,
       timestamp = LocalDateTime.now(),
       arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "Prison Id",

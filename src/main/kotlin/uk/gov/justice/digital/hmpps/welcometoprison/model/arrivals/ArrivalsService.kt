@@ -17,7 +17,7 @@ class ArrivalsService(
   private val confirmedArrivalRepository: ConfirmedArrivalRepository,
   private val arrivalsCsvConverter: ConfirmedArrivalsCsvConverter
 ) {
-  fun getArrival(moveId: String): Arrival = augmentWithPrisonData(basmService.getArrival(moveId))
+  fun getArrival(arrivalId: String): Arrival = augmentWithPrisonData(basmService.getArrival(arrivalId))
 
   fun getArrivals(agencyId: String, date: LocalDate): List<Arrival> = basmService
     .getArrivals(agencyId, date, date)
@@ -29,7 +29,7 @@ class ArrivalsService(
     return { confirmedArrivals.contains(it) }
   }
 
-  private fun List<ConfirmedArrival>.contains(arrival: Arrival) = this.stream().anyMatch { arrival.id == it.movementId }
+  private fun List<ConfirmedArrival>.contains(arrival: Arrival) = this.stream().anyMatch { arrival.id == it.arrivalId }
 
   private fun augmentWithPrisonData(arrival: Arrival): Arrival {
     val matches = prisonerSearchService.findPotentialMatches(
@@ -49,7 +49,6 @@ class ArrivalsService(
   }
 
   fun getArrivalsAsCsv(startDate: LocalDate, numberOfDays: Long): String {
-
     return arrivalsCsvConverter.toCsv(
       confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays))
     )

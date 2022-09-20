@@ -1,4 +1,4 @@
-INSERT INTO confirmed_arrival (id, prison_number, movement_id, timestamp, prison_id, booking_id, arrival_date, arrival_type, username) VALUES
+INSERT INTO confirmed_arrival (id, prison_number, arrival_id, timestamp, prison_id, booking_id, arrival_date, arrival_type, username) VALUES
 (1,'A7812DY', '69c3b633-75c3-4e86-80bf-44daa6e6b8f3', to_timestamp('2020-01-01 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'MDI', 123, '2020-01-01', 'NEW_TO_PRISON','xyz'),
 (2,'A7813DY', '69c3b633-75c3-4e86-80bf-44daa6e6b8f3',to_timestamp('2020-01-02 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'MDI', 123, '2020-01-02','NEW_TO_PRISON','zzzz'),
 (3,'A7814DY', '69c3b633-75c3-4e86-80bf-44daa6e6b8f3',to_timestamp('2020-01-03 01:01:01', 'YYYY-MM-DD HH:MI:SS'), 'MDA', 123, '2020-01-03', 'NEW_TO_PRISON','Mr X'),

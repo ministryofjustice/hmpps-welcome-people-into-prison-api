@@ -73,17 +73,17 @@ class CourtReturnsResource(
   )
 
   @PostMapping(
-    "/court-returns/{moveId}/confirm",
+    "/court-returns/{arrivalId}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE]
   )
   fun confirmArrivalFromCourt(
     @PathVariable
     @Valid @NotEmpty
-    moveId: String,
+    arrivalId: String,
 
     @RequestBody
     @Valid @NotNull
     confirmCourtReturnRequest: ConfirmCourtReturnRequest
-  ): ConfirmCourtReturnResponse = confirmationService.confirmReturnFromCourt(moveId, confirmCourtReturnRequest)
+  ): ConfirmCourtReturnResponse = confirmationService.confirmReturnFromCourt(arrivalId, confirmCourtReturnRequest)
 }

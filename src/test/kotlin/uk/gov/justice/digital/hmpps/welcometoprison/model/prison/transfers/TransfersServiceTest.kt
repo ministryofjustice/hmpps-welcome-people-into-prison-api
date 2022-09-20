@@ -143,7 +143,7 @@ class TransfersServiceTest {
 
     verify(arrivalListener).arrived(
       ArrivalEvent(
-        movementId = "abc-123",
+        arrivalId = "abc-123",
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = TRANSFER,

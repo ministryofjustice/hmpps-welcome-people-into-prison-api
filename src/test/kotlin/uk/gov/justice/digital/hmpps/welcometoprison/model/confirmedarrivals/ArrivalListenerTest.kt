@@ -27,19 +27,18 @@ class ArrivalListenerTest {
 
   @Test
   fun `arrived events are persisted in the DB`() {
-
     whenever(securityUserContext.principal).thenReturn("USER-1")
 
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
+        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
       )
     )
 
     verify(confirmedArrivalRepository).save(
       refEq(
         ConfirmedArrival(
-          movementId = "1",
+          arrivalId = "1",
           prisonId = "MDI",
           prisonNumber = "A1234AA",
           bookingId = 123,
@@ -54,19 +53,18 @@ class ArrivalListenerTest {
 
   @Test
   fun `arrived events are recorded in App insights`() {
-
     whenever(securityUserContext.principal).thenReturn("USER-1")
 
     arrivalListener.arrived(
       ArrivalEvent(
-        movementId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
+        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
       )
     )
 
     verify(telemetryClient).trackEvent(
       "Arrival",
       mapOf(
-        "movementId" to "1",
+        "arrivalId" to "1",
         "prisonId" to "MDI",
         "prisonNumber" to "A1234AA",
         "bookingId" to "123",

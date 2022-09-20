@@ -80,7 +80,7 @@ class ArrivalsResource(
       ),
     ]
   )
-  @GetMapping(path = [ "/prisons/{prisonId}/arrivals"])
+  @GetMapping(path = ["/prisons/{prisonId}/arrivals"])
   fun getMoves(
     @Schema(description = "Prison ID", example = "MDI", required = true)
     @PathVariable prisonId: String,
@@ -128,17 +128,22 @@ class ArrivalsResource(
     ]
   )
 
-  @GetMapping(path = ["/arrivals/{moveId}"])
+  @GetMapping(path = ["/arrivals/{arrivalId}"])
   fun getMove(
     @Schema(description = "ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
-    @PathVariable moveId: String,
-  ): Arrival = arrivalsService.getArrival(moveId)
+    @PathVariable arrivalId: String,
+  ): Arrival = arrivalsService.getArrival(arrivalId)
 
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Confirms the arrival for a specific ID",
     description = "Confirms the arrival for a specific ID, role required is ROLE_BOOKING_CREATE and ROLE_TRANSFER_PRISONER, requires token associated with a username, scope = write",
-    security = [SecurityRequirement(name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER", scopes = ["write"])],
+    security = [
+      SecurityRequirement(
+        name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
+        scopes = ["write"]
+      )
+    ],
     responses = [
       ApiResponse(
         responseCode = "200",

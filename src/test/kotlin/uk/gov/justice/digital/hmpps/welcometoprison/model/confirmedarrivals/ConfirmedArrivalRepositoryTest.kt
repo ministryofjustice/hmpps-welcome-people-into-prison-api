@@ -30,7 +30,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
 
     assertThat(persistedArrival.id).isNotNull
     assertThat(persistedArrival.prisonNumber).isEqualTo(confirmedArrival.prisonNumber)
-    assertThat(persistedArrival.movementId).isEqualTo(confirmedArrival.movementId)
+    assertThat(persistedArrival.arrivalId).isEqualTo(confirmedArrival.arrivalId)
     assertThat(persistedArrival.timestamp).isEqualTo(confirmedArrival.timestamp)
     assertThat(persistedArrival.prisonId).isEqualTo(confirmedArrival.prisonId)
     assertThat(persistedArrival.bookingId).isEqualTo(confirmedArrival.bookingId)
@@ -62,7 +62,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
     fun confirmedArrival() = ConfirmedArrival(
       id = null,
       prisonNumber = "Prison Number",
-      movementId = "Movement Id",
+      arrivalId = "Arrival Id",
       timestamp = TIMESTAMP_NOW,
       arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
       prisonId = "Prison Id",
