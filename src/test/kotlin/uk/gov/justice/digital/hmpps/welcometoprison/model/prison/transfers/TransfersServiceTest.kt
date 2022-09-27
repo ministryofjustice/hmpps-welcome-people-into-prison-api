@@ -137,8 +137,7 @@ class TransfersServiceTest {
 
     transfersService.transferInOffender(
       "ABC123A",
-      TransferInDetail("MDI", "MDI-RECP", "some transfer notes", LocalDateTime.now()),
-      "abc-123"
+      TransferInDetail("MDI", "MDI-RECP", "some transfer notes", LocalDateTime.now(), "abc-123"),
     )
 
     verify(arrivalListener).arrived(

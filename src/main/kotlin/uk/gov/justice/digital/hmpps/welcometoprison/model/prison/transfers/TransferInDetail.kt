@@ -36,5 +36,8 @@ data class TransferInDetail(
     example = "2020-03-24T12:13:40"
   )
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  val receiveTime: LocalDateTime? = null
+  val receiveTime: LocalDateTime? = null,
+
+  @Schema(description = "The Id of the arrival", example = "123e4567-e89b-12d3-a456-426614174000")
+  val arrivalId: String? = null,
 )

@@ -22,7 +22,11 @@ data class ConfirmTemporaryAbsenceRequest(
     description = "Movement Reason Code",
     example = "CA",
   )
-  @field:Length(max = 20, min = 1, message = "Movement reason code cannot be less then 2 and more than 20 characters, if not supplied it will use the previous movement reason")
+  @field:Length(
+    max = 20,
+    min = 1,
+    message = "Movement reason code cannot be less then 2 and more than 20 characters, if not supplied it will use the previous movement reason"
+  )
   val movementReasonCode: String? = null,
 
   @Schema(
@@ -37,5 +41,8 @@ data class ConfirmTemporaryAbsenceRequest(
     example = "2020-03-24T12:13:40"
   )
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  val receiveTime: LocalDateTime? = null
+  val receiveTime: LocalDateTime? = null,
+
+  @Schema(description = "The Id of the arrival", example = "123e4567-e89b-12d3-a456-426614174000")
+  val arrivalId: String? = null,
 )
