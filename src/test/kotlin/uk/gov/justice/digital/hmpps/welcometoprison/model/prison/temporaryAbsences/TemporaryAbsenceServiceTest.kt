@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.InmateDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchApiClient
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.response.MatchPrisonerResponse
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -24,7 +26,8 @@ class TemporaryAbsenceServiceTest {
   private val prisonApiClient: PrisonApiClient = mock()
   private val locationFormatter = LocationFormatter()
   private val arrivalListener: ArrivalListener = mock()
-  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter, arrivalListener)
+  private val prisonerSearchApiClient: PrisonerSearchApiClient = mock()
+  private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter, arrivalListener, prisonerSearchApiClient)
   private val inmateDetail = InmateDetail(
     offenderNo = "G6081VQ", bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
@@ -54,9 +57,23 @@ class TemporaryAbsenceServiceTest {
 
   @Test
   fun getTemporaryAbsence() {
+    whenever(prisonerSearchApiClient.getPrisoner(any())).thenReturn(
+      MatchPrisonerResponse(
+        firstName = "Jim",
+        lastName = "Smith",
+        dateOfBirth = LocalDate.of(1991, 7, 31),
+        prisonerNumber = "A1234AA",
+        pncNumber = null,
+        croNumber = null,
+        status = null,
+        lastMovementTypeCode = null,
+        gender = "Male",
+        prisonId = "MDI"
+      )
+    )
     whenever(prisonApiClient.getTemporaryAbsences(any())).thenReturn(listOf(arrivalKnownToNomis))
 
-    val temporaryAbsence = temporaryAbsenceService.getTemporaryAbsence("MDI", "A1234AA")
+    val temporaryAbsence = temporaryAbsenceService.getTemporaryAbsence("A1234AA")
 
     assertThat(temporaryAbsence).isEqualTo(
       TemporaryAbsenceResponse(
@@ -73,11 +90,34 @@ class TemporaryAbsenceServiceTest {
   }
 
   @Test
+  fun `getTemporaryAbsence fail to be found on prisoner search client api`() {
+    whenever(prisonerSearchApiClient.getPrisoner(any())).thenReturn(null)
+
+    assertThatThrownBy {
+      temporaryAbsenceService.getTemporaryAbsence("G6081VQ")
+    }.isEqualTo(NotFoundException("Could not find prisoner with prisonNumber: 'G6081VQ'"))
+  }
+
+  @Test
   fun `getTemporaryAbsence fail to be found`() {
+    whenever(prisonerSearchApiClient.getPrisoner(any())).thenReturn(
+      MatchPrisonerResponse(
+        firstName = "Jim",
+        lastName = "Smith",
+        dateOfBirth = LocalDate.of(1991, 7, 31),
+        prisonerNumber = "A1234AA",
+        pncNumber = null,
+        croNumber = null,
+        status = null,
+        lastMovementTypeCode = null,
+        gender = "Male",
+        prisonId = "MDI"
+      )
+    )
     whenever(prisonApiClient.getTemporaryAbsences(any())).thenReturn(listOf(arrivalKnownToNomis))
 
     assertThatThrownBy {
-      temporaryAbsenceService.getTemporaryAbsence("MDI", "G6081VQ")
+      temporaryAbsenceService.getTemporaryAbsence("G6081VQ")
     }.isEqualTo(NotFoundException("Could not find temporary absence with prisonNumber: 'G6081VQ'"))
   }
 

@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.Conf
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TemporaryAbsencesArrival
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchApiClient
 
 @Service
 @Transactional
@@ -17,13 +18,17 @@ class TemporaryAbsenceService(
   private val prisonApiClient: PrisonApiClient,
   private val locationFormatter: LocationFormatter,
   private val arrivalListener: ArrivalListener,
+  private val prisonerSearchApiClient: PrisonerSearchApiClient
 ) {
 
-  fun getTemporaryAbsence(agencyId: String, prisonNumber: String): TemporaryAbsenceResponse =
-    getTemporaryAbsences(agencyId).find { it.prisonNumber == prisonNumber }
+  fun getTemporaryAbsence(prisonNumber: String): TemporaryAbsenceResponse {
+    val prisoner = prisonerSearchApiClient.getPrisoner(prisonNumber)
+      ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
+    return getTemporaryAbsences(prisoner.prisonId!!).find { it.prisonNumber == prisonNumber }
       ?: throw NotFoundException("Could not find temporary absence with prisonNumber: '$prisonNumber'")
+  }
 
-  fun getTemporaryAbsences(agencyId: String) = prisonApiClient.getTemporaryAbsences(agencyId).map {
+  fun getTemporaryAbsences(prisonId: String) = prisonApiClient.getTemporaryAbsences(prisonId).map {
     TemporaryAbsenceResponse(
       firstName = Name.properCase(it.firstName),
       lastName = Name.properCase(it.lastName),
