@@ -131,7 +131,7 @@ class TemporaryAbsencesResource(
   )
   fun getTemporaryAbsence(
     @Schema(description = "Prison ID", example = "MDI", required = false)
-    @PathVariable prisonId: String,
+    @PathVariable prisonId: String?,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable prisonNumber: String
   ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(prisonNumber)

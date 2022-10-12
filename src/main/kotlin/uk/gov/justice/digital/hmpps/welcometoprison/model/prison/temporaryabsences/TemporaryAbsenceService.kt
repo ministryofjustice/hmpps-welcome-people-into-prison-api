@@ -28,7 +28,7 @@ class TemporaryAbsenceService(
       ?: throw NotFoundException("Could not find temporary absence with prisonNumber: '$prisonNumber'")
   }
 
-  fun getTemporaryAbsences(agencyId: String) = prisonApiClient.getTemporaryAbsences(agencyId).map {
+  fun getTemporaryAbsences(prisonId: String) = prisonApiClient.getTemporaryAbsences(prisonId).map {
     TemporaryAbsenceResponse(
       firstName = Name.properCase(it.firstName),
       lastName = Name.properCase(it.lastName),
