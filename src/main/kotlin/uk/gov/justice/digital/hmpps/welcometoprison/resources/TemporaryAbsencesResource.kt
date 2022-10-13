@@ -126,12 +126,10 @@ class TemporaryAbsencesResource(
   )
   @GetMapping(
     path = [
-      "/prison/{prisonId}/temporary-absences/{prisonNumber}", "/temporary-absences/{prisonNumber}"
+      "/temporary-absences/{prisonNumber}"
     ]
   )
   fun getTemporaryAbsence(
-    @Schema(description = "Prison ID", example = "MDI", required = false)
-    @PathVariable prisonId: String?,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable prisonNumber: String
   ): TemporaryAbsenceResponse = temporaryAbsenceService.getTemporaryAbsence(prisonNumber)

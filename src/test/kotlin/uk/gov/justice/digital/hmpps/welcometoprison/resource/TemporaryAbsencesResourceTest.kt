@@ -45,14 +45,14 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires authentication`() {
-      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
+      webTestClient.get().uri("/temporary-absences/A1234AA")
         .exchange()
         .expectStatus().isUnauthorized
     }
 
     @Test
     fun `requires correct role`() {
-      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
+      webTestClient.get().uri("/temporary-absences/A1234AA")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .exchange()
         .expectStatus().isForbidden
@@ -60,19 +60,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    @Deprecated("endpoint to be removed following update in frontend")
     fun `returns json in expected format`() {
-      prisonerSearchMockServer.stubGetPrisoner(200)
-      prisonApiMockServer.stubGetTemporaryAbsencesWithTwoRecords("MDI")
-      webTestClient.get().uri("/prison/MDI/temporary-absences/A1234AA")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody().json("temporaryAbsence".loadJson(this))
-    }
-
-    @Test
-    fun `when calling endpoint without prisonId returns json in expected format`() {
       prisonerSearchMockServer.stubGetPrisoner(200)
       prisonApiMockServer.stubGetTemporaryAbsencesWithTwoRecords("MDI")
       webTestClient.get().uri("/temporary-absences/A1234AA")
