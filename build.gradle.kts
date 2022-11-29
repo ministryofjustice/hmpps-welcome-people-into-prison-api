@@ -21,19 +21,19 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.10.0")
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.11")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.11")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.0")
+  runtimeOnly("org.postgresql:postgresql:42.5.1")
 
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.0")
-  testImplementation("com.tngtech.archunit:archunit-junit5:1.0.0")
+  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.1")
+  testImplementation("com.tngtech.archunit:archunit-junit5:1.0.1")
 }
 
 allOpen {
