@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config
 
+import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
@@ -13,7 +14,7 @@ import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import javax.validation.ValidationException
+
 
 @RestControllerAdvice
 class ExceptionHandler {
