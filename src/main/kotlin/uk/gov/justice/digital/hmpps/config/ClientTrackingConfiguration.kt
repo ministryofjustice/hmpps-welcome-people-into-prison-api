@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.config
 import com.microsoft.applicationinsights.web.internal.ThreadContext
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
@@ -13,8 +15,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.ParseException
 import java.util.Optional
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('\${applicationinsights.connection.string:}')")
@@ -32,7 +32,7 @@ class ClientTrackingInterceptor : HandlerInterceptor {
     if (StringUtils.startsWithIgnoreCase(token, bearer)) {
       try {
         val jwtBody = getClaimsFromJWT(token)
-        val properties = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
+        val properties = ThreadContext.getRequestTelemetryContext.httpRequestTelemetry.properties
         val user = Optional.ofNullable(jwtBody.getClaim("user_name"))
         user.map { it.toString() }.ifPresent { properties["username"] = it }
         properties["clientId"] = jwtBody.getClaim("client_id").toString()

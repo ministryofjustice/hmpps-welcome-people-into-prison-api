@@ -17,8 +17,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmArriva
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Confirmation
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.ConfirmationService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalDetail
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
 
 @RestController
 @Validated

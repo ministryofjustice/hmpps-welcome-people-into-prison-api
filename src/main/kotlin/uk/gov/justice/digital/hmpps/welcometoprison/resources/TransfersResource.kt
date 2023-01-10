@@ -20,9 +20,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Trans
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
-import javax.validation.Valid
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
 
 @RestController
 @Validated

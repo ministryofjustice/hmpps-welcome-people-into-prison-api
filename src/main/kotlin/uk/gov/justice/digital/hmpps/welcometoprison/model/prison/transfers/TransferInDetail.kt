@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.hibernate.validator.constraints.Length
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
-import javax.validation.constraints.NotNull
+import jakarta.validation.constraints.NotNull
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating transferring in an offender and adding to the prison roll")

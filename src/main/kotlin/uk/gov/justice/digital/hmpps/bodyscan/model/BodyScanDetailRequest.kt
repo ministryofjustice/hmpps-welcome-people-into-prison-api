@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.bodyscan.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
-import javax.validation.constraints.NotNull
 
 @Schema(description = "A request to create a new body scan")
 data class BodyScanDetailRequest(

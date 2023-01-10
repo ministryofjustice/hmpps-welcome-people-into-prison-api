@@ -19,8 +19,8 @@ import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusResponse
 import uk.gov.justice.digital.hmpps.bodyscan.model.LimitStatusService
 import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import java.time.Year
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
 
 @RestController
 @Validated

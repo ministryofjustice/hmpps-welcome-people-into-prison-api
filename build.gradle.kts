@@ -24,6 +24,9 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.13")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
+  implementation("com.microsoft.azure:applicationinsights-web:3.4.7")
+  implementation("commons-codec:commons-codec:1.15")
+
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
@@ -38,9 +41,9 @@ dependencies {
 
 allOpen {
   annotations(
-    "javax.persistence.Entity",
-    "javax.persistence.MappedSuperclass",
-    "javax.persistence.Embeddable"
+    "jakarta.persistence.Entity",
+    "jakarta.persistence.MappedSuperclass",
+    "jakarta.persistence.Embeddable"
   )
 }
 

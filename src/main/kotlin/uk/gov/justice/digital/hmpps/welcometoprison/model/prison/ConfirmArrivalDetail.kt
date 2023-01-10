@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import org.hibernate.validator.constraints.Length
 import java.time.LocalDate
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating an offender record, an associated booking and then adding that offender to a prison's roll")

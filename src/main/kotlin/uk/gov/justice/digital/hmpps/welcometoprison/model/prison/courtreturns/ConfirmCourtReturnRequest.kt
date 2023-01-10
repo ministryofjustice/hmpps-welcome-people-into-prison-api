@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import org.hibernate.validator.constraints.Length
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating an offender record, an associated booking and then adding that offender to a prison's roll")
