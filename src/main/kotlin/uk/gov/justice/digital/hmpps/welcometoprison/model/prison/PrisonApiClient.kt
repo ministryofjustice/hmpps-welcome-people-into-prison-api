@@ -170,7 +170,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(response, "Client error when posting to /api/offenders")
       }
       .bodyToMono(InmateDetail::class.java)
@@ -184,7 +184,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders/$offenderNo/booking")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/booking")
       }
       .bodyToMono(InmateDetail::class.java)
@@ -198,7 +198,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders/$offenderNo/recall")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/recall")
       }
       .bodyToMono(InmateDetail::class.java)
@@ -212,7 +212,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders/$offenderNo/transfer-in")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/transfer-in")
       }
       .bodyToMono(InmateDetail::class.java)
@@ -226,7 +226,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
           "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival"
@@ -240,7 +240,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri("/api/offenders/$prisonNumber/court-transfer-in")
       .bodyValue(detail)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { response ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(response, "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in")
       }
       .bodyToMono(InmateDetail::class.java)

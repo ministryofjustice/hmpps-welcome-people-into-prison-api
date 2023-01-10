@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.bodyscan.apiclient
 
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.bodyscan.apiclient.model.OffenderDetails
@@ -38,7 +37,7 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
   fun getOffenderDetails(prisonNumber: String): OffenderDetails =
     webClient.get().uri("/api/offenders/$prisonNumber")
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { _ ->
+      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) {
         throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
       }
       .bodyToMono(OffenderDetails::class.java)
