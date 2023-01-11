@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.ParseException
-import java.util.Optional
+import java.util.*
 
 @Configuration
 @ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('\${applicationinsights.connection.string:}')")
@@ -32,7 +32,7 @@ class ClientTrackingInterceptor : HandlerInterceptor {
     if (StringUtils.startsWithIgnoreCase(token, bearer)) {
       try {
         val jwtBody = getClaimsFromJWT(token)
-        val properties = ThreadContext.getRequestTelemetryContext.httpRequestTelemetry.properties
+        val properties = ThreadContext.getRequestTelemetryContext()!!.httpRequestTelemetry.properties
         val user = Optional.ofNullable(jwtBody.getClaim("user_name"))
         user.map { it.toString() }.ifPresent { properties["username"] = it }
         properties["clientId"] = jwtBody.getClaim("client_id").toString()
