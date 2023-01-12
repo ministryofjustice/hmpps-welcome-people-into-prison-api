@@ -21,7 +21,7 @@ spring:
           lob:
             non_contextual_creation: true
     show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
     hibernate:
       ddl-auto: none
