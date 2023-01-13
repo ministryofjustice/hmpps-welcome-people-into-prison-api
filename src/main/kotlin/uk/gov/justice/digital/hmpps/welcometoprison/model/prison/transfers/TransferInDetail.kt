@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.Length
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
-import javax.validation.constraints.NotNull
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Data for creating transferring in an offender and adding to the prison roll")

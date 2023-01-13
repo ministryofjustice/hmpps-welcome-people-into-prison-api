@@ -1,12 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.0.0-beta-4"
   kotlin("plugin.spring") version "1.8.0"
   kotlin("plugin.jpa") version "1.8.0"
 }
 
 configurations {
+  all {
+    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+  }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
@@ -21,27 +24,21 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.10.0")
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.13")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+  implementation("commons-codec:commons-codec:1.15")
 
-  runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.1")
+  testRuntimeOnly("com.h2database:h2:2.1.214")
 
-  testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
+
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.1")
   testImplementation("com.tngtech.archunit:archunit-junit5:1.0.1")
-}
-
-allOpen {
-  annotations(
-    "javax.persistence.Entity",
-    "javax.persistence.MappedSuperclass",
-    "javax.persistence.Embeddable"
-  )
+  testImplementation("io.jsonwebtoken:jjwt-api:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
 }
 
 /**

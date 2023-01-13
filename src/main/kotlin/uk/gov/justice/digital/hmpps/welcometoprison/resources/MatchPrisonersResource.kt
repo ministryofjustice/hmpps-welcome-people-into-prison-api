@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,8 +16,6 @@ import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.PotentialMatch
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.request.MatchPrisonersRequest
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
 
 @RestController
 @Validated

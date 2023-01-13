@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.bodyscan.model.BodyScanDetailRequest
 import uk.gov.justice.digital.hmpps.bodyscan.model.CreateBodyScanService
 import uk.gov.justice.digital.hmpps.config.ErrorResponse
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
 
 @RestController
 @Validated
