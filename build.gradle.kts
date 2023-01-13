@@ -32,7 +32,6 @@ dependencies {
   testRuntimeOnly("com.h2database:h2:2.1.214")
 
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.1")
