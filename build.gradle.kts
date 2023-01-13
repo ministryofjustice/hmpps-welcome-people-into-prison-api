@@ -24,32 +24,23 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.10.0")
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.14")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.14")
   implementation("com.microsoft.azure:applicationinsights-web:3.4.7")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
   implementation("commons-codec:commons-codec:1.15")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.1")
   testRuntimeOnly("com.h2database:h2:2.1.214")
 
-  testImplementation("io.jsonwebtoken:jjwt-api:0.11.5")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
-  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.0.1")
   testImplementation("com.tngtech.archunit:archunit-junit5:1.0.1")
-}
-
-allOpen {
-  annotations(
-    "jakarta.persistence.Entity",
-    "jakarta.persistence.MappedSuperclass",
-    "jakarta.persistence.Embeddable"
-  )
+  testImplementation("io.jsonwebtoken:jjwt-api:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
 }
 
 /**
