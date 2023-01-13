@@ -24,7 +24,6 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.10.0")
-  implementation("com.microsoft.azure:applicationinsights-web:3.4.7")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
   implementation("commons-codec:commons-codec:1.15")
 
