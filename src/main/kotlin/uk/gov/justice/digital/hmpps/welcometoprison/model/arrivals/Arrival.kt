@@ -63,7 +63,7 @@ data class PotentialMatch(
   val dateOfBirth: LocalDate,
 
   @Schema(description = "Prison number", example = "A1234AA")
-  val prisonNumber: String?,
+  val prisonNumber: String,
 
   @Schema(description = "PNC number", example = "01/1234X")
   val pncNumber: String?,
