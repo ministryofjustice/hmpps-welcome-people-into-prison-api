@@ -99,8 +99,7 @@ class ConfirmationService(
   }
 
   private fun createAndAdmitOffender(confirmation: Confirmation): ConfirmArrivalResponse {
-    val prisonNumber = prisonService.createOffender(confirmation.detail)
-    val result = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)
+    val result = prisonService.createOffender(confirmation.detail)
 
     arrivalListener.arrived(confirmation.toEvent(result, NEW_TO_PRISON))
 

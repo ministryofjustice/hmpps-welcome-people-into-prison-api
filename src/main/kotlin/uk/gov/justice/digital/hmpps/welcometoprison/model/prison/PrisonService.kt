@@ -53,7 +53,7 @@ class PrisonService(
       }
     )
 
-  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): String =
+  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): InmateDetail =
     prisonApiClient
       .createOffender(
         with(confirmArrivalDetail) {
@@ -63,10 +63,16 @@ class PrisonService(
             dateOfBirth = dateOfBirth!!,
             gender = sex!!,
             pncNumber = pncNumber,
+            booking = AdmitOnNewBookingDetail(
+              prisonId = prisonId!!,
+              fromLocationId = fromLocationId,
+              movementReasonCode = movementReasonCode!!,
+              youthOffender = youthOffender,
+              imprisonmentStatus = imprisonmentStatus!!
+            )
           )
         }
       )
-      .offenderNo
 
   fun returnFromCourt(prisonId: String, prisonNumber: String): ConfirmCourtReturnResponse {
     val inmateDetail = prisonApiClient.courtTransferIn(prisonNumber, CourtTransferIn(prisonId))

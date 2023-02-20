@@ -50,8 +50,7 @@ class ConfirmationServiceTest {
 
   @Test
   fun `Confirm arrival not known to NOMIS`() {
-    whenever(prisonService.createOffender(any())).thenReturn(PRISON_NUMBER)
-    whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL)
+    whenever(prisonService.createOffender(any())).thenReturn(INMATE_DETAIL)
 
     val response =
       confirmationService.confirmArrival(
@@ -65,10 +64,6 @@ class ConfirmationServiceTest {
 
     inOrder(prisonService) {
       verify(prisonService).createOffender(CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null))
-      verify(prisonService).admitOffenderOnNewBooking(
-        PRISON_NUMBER,
-        CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null)
-      )
     }
 
     verify(arrivalListener).arrived(
