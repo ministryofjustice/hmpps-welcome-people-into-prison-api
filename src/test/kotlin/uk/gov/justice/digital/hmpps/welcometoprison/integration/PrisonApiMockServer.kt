@@ -212,9 +212,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-  fun stubAdmitOnNewBookingFailsNoCapacity(offenderNo: String) {
+  fun stubAdmitOnNewBookingFailsNoCapacity() {
     stubFor(
-      post("/api/offenders/$offenderNo/booking")
+      post("/api/offenders")
         .willReturn(
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)

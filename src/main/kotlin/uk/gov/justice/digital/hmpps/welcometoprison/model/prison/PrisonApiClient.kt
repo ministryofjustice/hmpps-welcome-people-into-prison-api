@@ -26,7 +26,8 @@ data class CreateOffenderDetail(
   val croNumber: String? = null,
   val pncNumber: String? = null,
   val suffix: String? = null,
-  val title: String? = null
+  val title: String? = null,
+  val booking: AdmitOnNewBookingDetail? = null
 )
 
 data class AdmitOnNewBookingDetail(

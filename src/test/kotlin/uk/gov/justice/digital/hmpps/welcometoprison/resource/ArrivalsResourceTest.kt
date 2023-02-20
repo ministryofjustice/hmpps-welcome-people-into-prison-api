@@ -173,7 +173,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Confirm arrivals tests")
   inner class ConfirmArrivalTests {
-    val VALID_REQUEST = """
+    val validRequest = { prisonNumber: String? ->
+      """
         {
           "firstName": "Alpha",
           "lastName": "Omega",
@@ -184,6 +185,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "imprisonmentStatus": "SENT03"
         }
       """
+    }
 
     @AfterEach
     fun afterEach() {
@@ -195,7 +197,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       val prisonNumber = "AA1111A"
       val location = "Reception"
       prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -207,7 +208,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -220,7 +221,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       val prisonNumber = "AA1111A"
 
       prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       val token = getAuthorisation(
         roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
@@ -232,7 +232,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
         .withBearerToken(token)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().isOk
         .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
@@ -253,7 +253,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
       assertThat(confirmedArrivalRepository.count()).isEqualTo(0)
       prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       val token = getAuthorisation(
         username = username,
@@ -266,7 +265,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
         .withBearerToken(token)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().isOk
         .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
@@ -283,7 +282,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       val prisonNumber = "AA1111A"
 
       prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -334,7 +332,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -355,30 +353,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
-        .exchange()
-        .expectStatus().is5xxServerError
-        .expectBody()
-    }
-
-    @Test
-    fun `create and book - prison-api create booking fails`() {
-      val prisonNumber = "AA1111A"
-
-      prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBookingFails(prisonNumber, 500)
-
-      webTestClient
-        .post()
-        .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .headers(
-          setAuthorisation(
-            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
-        )
-        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -388,8 +363,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
     fun `create and book - prison-api create booking fails because of no capacity`() {
       val prisonNumber = "AA1111A"
 
-      prisonApiMockServer.stubCreateOffender(prisonNumber)
-      prisonApiMockServer.stubAdmitOnNewBookingFailsNoCapacity(prisonNumber)
+      prisonApiMockServer.stubAdmitOnNewBookingFailsNoCapacity()
 
       webTestClient
         .post()
@@ -401,7 +375,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(prisonNumber))
         .exchange()
         .expectStatus().is4xxClientError
         .expectBody().json(
@@ -417,10 +391,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book - prison-api create booking fails because prisoner already exist`() {
-      val prisonNumber = "AA1111A"
-
       prisonApiMockServer.stubCreateOffenderFailsPrisonerAlreadyExist()
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -432,7 +403,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().is4xxClientError
         .expectBody().json(
@@ -448,10 +419,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book - prison-api create booking fails because prisoner already exist - no ErrorCode due to old PrisonApi`() {
-      val prisonNumber = "AA1111A"
-
       prisonApiMockServer.stubCreateOffenderFailsPrisonerAlreadyExistWithoutErrorCode()
-      prisonApiMockServer.stubAdmitOnNewBooking(prisonNumber)
 
       webTestClient
         .post()
@@ -463,7 +431,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           )
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest(null))
         .exchange()
         .expectStatus().is4xxClientError
         .expectBody().json(
