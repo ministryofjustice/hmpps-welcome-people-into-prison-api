@@ -39,7 +39,7 @@ class ConfirmedArrivalsCsvConverter {
           .addColumn("prisonId", CsvSchema.ColumnType.NUMBER)
           .addColumn("arrivalType")
           .addColumn("username")
-          .build()
+          .build(),
       ).with(JsonGenerator.Feature.IGNORE_UNKNOWN)
   }
 }

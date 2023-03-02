@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 
 @RestController
 @Validated
-
 class PrisonResource(
   private val prisonService: PrisonService,
   private val prisonerSearchService: PrisonerSearchService,
@@ -38,24 +37,24 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "images/jpeg",
-            array = ArraySchema(schema = Schema(implementation = Byte::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = Byte::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "No front-facing image of the offenders face found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -63,20 +62,20 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @GetMapping(
     value = ["/prisoners/{prisonNumber}/image"],
-    produces = ["image/jpeg"]
+    produces = ["image/jpeg"],
   )
   fun getPrisonerImage(
     @Schema(description = "Prison Number", example = "A12345", required = true)
-    @PathVariable prisonNumber: String
+    @PathVariable
+    prisonNumber: String,
   ) = prisonService.getPrisonerImage(prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -91,24 +90,24 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = Prison::class)
-          )
-        ]
+            schema = Schema(implementation = Prison::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "No prison with prison ID found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -116,17 +115,17 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @GetMapping(value = ["/prison/{prisonId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getPrison(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String
+    @PathVariable
+    prisonId: String,
   ): PrisonView = PrisonView(prisonService.getPrison(prisonId).prisonName)
 
   @Operation(
@@ -139,19 +138,19 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = UserCaseLoad::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = UserCaseLoad::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "No caseloads found for user",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -159,26 +158,24 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @GetMapping(value = ["/prison/users/me/caseLoads"], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getUserCaseLoads(): List<UserCaseLoad> = prisonService.getUserCaseLoads()
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS') or hasRole('ROLE_GLOBAL_SEARCH') or hasRole('ROLE_PRISONER_SEARCH')")
-
   @Operation(
     summary = "Retrieves a subset of a prisoner's details",
     description = "Retrieves a subset of a prisoner's details using the prisonNumber, role required is ROLE_VIEW_ARRIVALS or ROLE_GLOBAL_SEARCH or ROLE_PRISONER_SEARCH",
     security = [
       SecurityRequirement(
         name = "ROLE_VIEW_ARRIVALS,ROLE_GLOBAL_SEARCH,ROLE_PRISONER_SEARCH",
-        scopes = ["read"]
-      )
+        scopes = ["read"],
+      ),
     ],
 
     responses = [
@@ -188,24 +185,24 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = PrisonerDetails::class)
-          )
-        ]
+            schema = Schema(implementation = PrisonerDetails::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "No prisoner record found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -213,15 +210,15 @@ class PrisonResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(path = ["/prisoners/{prisonNumber}"])
   fun getPrisoner(
-    @PathVariable prisonNumber: String
+    @PathVariable prisonNumber: String,
   ): PrisonerDetails = prisonerSearchService.getPrisoner(prisonNumber)
 }
 

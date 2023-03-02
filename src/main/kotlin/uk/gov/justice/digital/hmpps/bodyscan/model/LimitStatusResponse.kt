@@ -12,7 +12,7 @@ data class LimitStatusResponse(
   @Schema(description = "prison number", example = "G6081VQ")
   val prisonNumber: String,
   @Schema(description = "number of scans", example = "1")
-  val numberOfBodyScans: Int
+  val numberOfBodyScans: Int,
 ) {
   enum class BodyScanStatus {
     DO_NOT_SCAN, CLOSE_TO_LIMIT, OK_TO_SCAN

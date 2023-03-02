@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 @Validated
 @RequestMapping(name = "Court returns", produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourtReturnsResource(
-  private val confirmationService: ConfirmationService
+  private val confirmationService: ConfirmationService,
 ) {
 
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
@@ -35,8 +35,8 @@ class CourtReturnsResource(
     security = [
       SecurityRequirement(
         name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
-        scopes = ["write"]
-      )
+        scopes = ["write"],
+      ),
     ],
     responses = [
       ApiResponse(
@@ -45,19 +45,19 @@ class CourtReturnsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ConfirmCourtReturnResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ConfirmCourtReturnResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -65,25 +65,26 @@ class CourtReturnsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @PostMapping(
     "/court-returns/{arrivalId}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+    produces = [MediaType.APPLICATION_JSON_VALUE],
   )
   fun confirmArrivalFromCourt(
     @PathVariable
-    @Valid @NotEmpty
+    @Valid
+    @NotEmpty
     arrivalId: String,
 
     @RequestBody
-    @Valid @NotNull
-    confirmCourtReturnRequest: ConfirmCourtReturnRequest
+    @Valid
+    @NotNull
+    confirmCourtReturnRequest: ConfirmCourtReturnRequest,
   ): ConfirmCourtReturnResponse = confirmationService.confirmReturnFromCourt(arrivalId, confirmCourtReturnRequest)
 }

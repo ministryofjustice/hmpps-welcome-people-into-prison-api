@@ -29,13 +29,13 @@ class CreateBodyScanServiceTest {
     val personalCareNeeds = PersonalCareNeeds(
       LocalDate.of(2022, 1, 1),
       BodyScanReason.INTELLIGENCE,
-      BodyScanResult.NEGATIVE
+      BodyScanResult.NEGATIVE,
     )
 
     whenever(securityUserContext.principal).thenReturn("anonymous")
 
     whenever(
-      bodyScanPrisonApiClient.getOffenderDetails(any())
+      bodyScanPrisonApiClient.getOffenderDetails(any()),
     ).thenReturn(
       OffenderDetails(
         bookingId = bookingId,
@@ -44,8 +44,8 @@ class CreateBodyScanServiceTest {
         lastName = "Brown",
         agencyId = "LII",
         activeFlag = true,
-        dateOfBirth = LocalDate.of(1977, 1, 1)
-      )
+        dateOfBirth = LocalDate.of(1977, 1, 1),
+      ),
     )
 
     createBodyScanService.addBodyScan(
@@ -53,13 +53,13 @@ class CreateBodyScanServiceTest {
       BodyScanDetailRequest(
         date = LocalDate.of(2022, 1, 1),
         reason = BodyScanReason.INTELLIGENCE,
-        result = BodyScanResult.NEGATIVE
-      )
+        result = BodyScanResult.NEGATIVE,
+      ),
     )
 
     verify(bodyScanPrisonApiClient).addPersonalCareNeeds(
       bookingId,
-      personalCareNeeds
+      personalCareNeeds,
     )
     verify(telemetryClient).trackEvent("BodyScan", personalCareNeeds.toEventProperties(prisonNumber, "anonymous"), null)
   }
@@ -67,7 +67,7 @@ class CreateBodyScanServiceTest {
   @Test
   fun `add body scan when sentence details not found`() {
     whenever(
-      bodyScanPrisonApiClient.getOffenderDetails(any())
+      bodyScanPrisonApiClient.getOffenderDetails(any()),
     ).thenThrow(ClientException::class.java)
 
     Assertions.assertThatExceptionOfType(ClientException::class.java).isThrownBy {
@@ -76,8 +76,8 @@ class CreateBodyScanServiceTest {
         BodyScanDetailRequest(
           date = LocalDate.of(2022, 1, 1),
           reason = BodyScanReason.INTELLIGENCE,
-          result = BodyScanResult.NEGATIVE
-        )
+          result = BodyScanResult.NEGATIVE,
+        ),
       )
     }
   }

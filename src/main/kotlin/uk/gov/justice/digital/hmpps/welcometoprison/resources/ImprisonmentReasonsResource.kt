@@ -34,19 +34,19 @@ class ImprisonmentReasonsResource {
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = Arrival::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = Arrival::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -54,11 +54,11 @@ class ImprisonmentReasonsResource {
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(path = ["/imprisonment-statuses"], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getStatuses(): List<ImprisonmentStatus> = IMPRISONMENT_STATUSES_WITH_REASONS

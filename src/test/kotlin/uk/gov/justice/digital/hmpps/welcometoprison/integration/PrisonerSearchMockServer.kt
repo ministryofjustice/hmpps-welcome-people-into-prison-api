@@ -14,8 +14,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
-          "/prisoner-search/possible-matches\\\\?.*"
-        )
+          "/prisoner-search/possible-matches\\\\?.*",
+        ),
       )
         .willReturn(
           WireMock.aResponse()
@@ -33,9 +33,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "gender": "Male",
                         "prisonId": "MDI",
                         "lastMovementTypeCode": "REL"
-                       }]"""
-            )
-        )
+                       }]""",
+            ),
+        ),
     )
   }
 
@@ -43,8 +43,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
-          "/prisoner-search/possible-matches\\\\?.*"
-        )
+          "/prisoner-search/possible-matches\\\\?.*",
+        ),
       )
         .willReturn(
           WireMock.aResponse()
@@ -62,9 +62,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "gender": "Male",
                         "prisonId": "MDI",
                         "lastMovementTypeCode": "REL"
-                       }]"""
-            )
-        )
+                       }]""",
+            ),
+        ),
     )
   }
 
@@ -72,8 +72,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
-          "/prisoner-search/possible-matches\\\\?.*"
-        )
+          "/prisoner-search/possible-matches\\\\?.*",
+        ),
       )
         .willReturn(
           WireMock.aResponse()
@@ -88,9 +88,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                   "gender": "Male",
                   "youthOffender": false,
                   "restrictedPatient": false
-                }]"""
-            )
-        )
+                }]""",
+            ),
+        ),
     )
   }
 
@@ -98,8 +98,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
-          "/prisoner-search/possible-matches\\\\?.*"
-        )
+          "/prisoner-search/possible-matches\\\\?.*",
+        ),
       )
         .willReturn(
           WireMock.aResponse()
@@ -117,9 +117,9 @@ class PrisonerSearchMockServer : MockServer(8093) {
                         "gender": "Male",
                         "prisonId": "MDI",
                         "lastMovementTypeCode": "ADM"
-                       }]"""
-            )
-        )
+                       }]""",
+            ),
+        ),
     )
   }
 
@@ -127,8 +127,8 @@ class PrisonerSearchMockServer : MockServer(8093) {
     stubFor(
       WireMock.post(
         WireMock.urlPathMatching(
-          "/prisoner-search/prisoner-numbers"
-        )
+          "/prisoner-search/prisoner-numbers",
+        ),
       )
         .willReturn(
           WireMock.aResponse()
@@ -136,10 +136,10 @@ class PrisonerSearchMockServer : MockServer(8093) {
             .withStatus(status)
             .withBody(
               mapper.writeValueAsString(
-                prisonerAndPncNumbers
-              )
-            )
-        )
+                prisonerAndPncNumbers,
+              ),
+            ),
+        ),
     )
   }
 }

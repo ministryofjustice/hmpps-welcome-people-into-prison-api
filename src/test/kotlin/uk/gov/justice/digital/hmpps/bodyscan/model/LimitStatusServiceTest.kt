@@ -29,12 +29,15 @@ class LimitStatusServiceTest {
         PersonalCareCounter("G8874VB", 100), // CLOSE_TO_LIMIT
         PersonalCareCounter("G8874VC", 115), // CLOSE_TO_LIMIT
         PersonalCareCounter("G8874VD", 116), // DO_NOT_SCAN
-        PersonalCareCounter("G8874VE", 117) // DO_NOT_SCAN
-      )
+        PersonalCareCounter("G8874VE", 117), // DO_NOT_SCAN
+      ),
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
     verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
-      "BSCAN", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31), prisonNumbers
+      "BSCAN",
+      LocalDate.of(2022, 1, 1),
+      LocalDate.of(2022, 12, 31),
+      prisonNumbers,
     )
 
     assertThat(result.getStatusFor("G8266VA")).isEqualTo(OK_TO_SCAN)
@@ -61,11 +64,14 @@ class LimitStatusServiceTest {
     val prisonNumbers = listOf("G8266VG", "G8874VT")
     val year = Year.of(2022)
     whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
-      listOf()
+      listOf(),
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
     verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
-      "BSCAN", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31), prisonNumbers
+      "BSCAN",
+      LocalDate.of(2022, 1, 1),
+      LocalDate.of(2022, 12, 31),
+      prisonNumbers,
     )
 
     assertThat(result.getStatusFor("G8266VG")).isEqualTo(OK_TO_SCAN)
@@ -77,11 +83,14 @@ class LimitStatusServiceTest {
     val prisonNumbers = listOf("G8266VG", null, "G8874VT")
     val year = Year.of(2022)
     whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
-      listOf()
+      listOf(),
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
     verify(bodyScanPrisonApiClient).getPersonalCareNeedsForPrisonNumbers(
-      "BSCAN", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31), listOf("G8266VG", "G8874VT")
+      "BSCAN",
+      LocalDate.of(2022, 1, 1),
+      LocalDate.of(2022, 12, 31),
+      listOf("G8266VG", "G8874VT"),
     )
 
     assertThat(result).hasSize(2)

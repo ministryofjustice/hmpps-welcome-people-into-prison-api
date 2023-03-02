@@ -41,7 +41,7 @@ class BasmService(private val basmClient: BasmClient) {
       fromLocation = this.from_location.title,
       fromLocationId = this.from_location.nomis_agency_id,
       fromLocationType = this.move_type.toLocationType(),
-      gender = this.profile.person.gender?.let { Gender.valueOf(it.name) }
+      gender = this.profile.person.gender?.let { Gender.valueOf(it.name) },
     )
   }
 

@@ -18,8 +18,8 @@ class BasmApiMockServer : WireMockServer(9004) {
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody("""{ "access_token": "ABCDE", "token_type": "bearer", "expires_in": $expires }""")
-        )
+            .withBody("""{ "access_token": "ABCDE", "token_type": "bearer", "expires_in": $expires }"""),
+        ),
     )
   }
 
@@ -27,43 +27,43 @@ class BasmApiMockServer : WireMockServer(9004) {
     stubFor(
       get(
         urlPathMatching(
-          "/api/reference/locations\\\\?.*"
-        )
+          "/api/reference/locations\\\\?.*",
+        ),
       )
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody("prison".loadJson(this))
-        )
+            .withBody("prison".loadJson(this)),
+        ),
     )
   }
 
   fun stubGetMovements(status: Int, hasMissingDob: Boolean = false) {
     stubFor(
       get(
-        urlPathMatching("/api/moves\\\\?.*")
+        urlPathMatching("/api/moves\\\\?.*"),
       )
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody(if (!hasMissingDob) "moves".loadJson(this) else "moves-with-missing-dob".loadJson(this))
-        )
+            .withBody(if (!hasMissingDob) "moves".loadJson(this) else "moves-with-missing-dob".loadJson(this)),
+        ),
     )
   }
 
   fun stubGetMovement(id: String, status: Int, body: String? = "move".loadJson(this)) {
     stubFor(
       get(
-        urlPathMatching("/api/moves/$id")
+        urlPathMatching("/api/moves/$id"),
       )
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(status)
-            .withBody(body)
-        )
+            .withBody(body),
+        ),
     )
   }
 }

@@ -27,7 +27,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.of(2022, 6, 29))
       prisonerSearchMockServer.stubMatchByPrisonerNumbers(
         200,
-        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
+        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")),
       )
     }
 
@@ -73,9 +73,9 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-          )
-        ).withHeader("Authorization", equalTo(token))
+            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+          ),
+        ).withHeader("Authorization", equalTo(token)),
       )
     }
   }
@@ -87,7 +87,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.of(2022, 6, 29))
       prisonerSearchMockServer.stubMatchByPrisonerNumbers(
         200,
-        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
+        listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")),
       )
     }
 
@@ -132,9 +132,9 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-          )
-        ).withHeader("Authorization", equalTo(token))
+            "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+          ),
+        ).withHeader("Authorization", equalTo(token)),
       )
     }
   }
@@ -144,7 +144,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       "MDI",
       "MDI-RECP",
       "some comment",
-      LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+      LocalDateTime.of(2021, 11, 15, 1, 0, 0),
     )
   }
 
@@ -161,7 +161,6 @@ class TransfersResourceTest : IntegrationTestBase() {
 
     @Test
     fun `Requires correct role`() {
-
       webTestClient
         .post()
         .uri("/transfers/A1234BC/confirm")
@@ -179,7 +178,7 @@ class TransfersResourceTest : IntegrationTestBase() {
       val transferIn = TransferIn(
         "MDI-RECP",
         "some comment",
-        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0),
       )
 
       val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
@@ -198,10 +197,10 @@ class TransfersResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         putRequestedFor(
           urlEqualTo(
-            "/api/offenders/A1234BC/transfer-in"
-          )
+            "/api/offenders/A1234BC/transfer-in",
+          ),
         ).withHeader("Authorization", equalTo(token))
-          .withRequestBody(equalToJson(objectMapper.writeValueAsString(transferIn)))
+          .withRequestBody(equalToJson(objectMapper.writeValueAsString(transferIn))),
       )
     }
   }

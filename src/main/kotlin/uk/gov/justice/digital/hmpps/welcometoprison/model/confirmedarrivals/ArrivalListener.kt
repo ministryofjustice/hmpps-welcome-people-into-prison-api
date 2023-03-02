@@ -14,7 +14,7 @@ class ArrivalListener(
   private val confirmedArrivalRepository: ConfirmedArrivalRepository,
   private val telemetryClient: TelemetryClient,
   private val securityUserContext: SecurityUserContext,
-  private val clock: Clock
+  private val clock: Clock,
 ) {
   fun arrived(event: ArrivalEvent) {
     val confirmedArrival = event.toConfirmedArrival(securityUserContext.principal, clock)

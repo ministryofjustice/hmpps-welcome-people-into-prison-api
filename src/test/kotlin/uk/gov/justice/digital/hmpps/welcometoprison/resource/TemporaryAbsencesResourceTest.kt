@@ -82,7 +82,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         "NMI",
         "ET",
         "Comment",
-        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0),
       )
       webTestClient
         .post()
@@ -102,7 +102,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         "NMI",
         "ET",
         "Comment",
-        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0),
       )
 
       webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
@@ -118,7 +118,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         "NMI",
         "ET",
         "Comment",
-        LocalDateTime.of(2021, 11, 15, 1, 0, 0)
+        LocalDateTime.of(2021, 11, 15, 1, 0, 0),
       )
 
       webTestClient.post().uri("/temporary-absences/G5666UK/confirm")

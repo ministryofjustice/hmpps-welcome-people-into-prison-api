@@ -33,7 +33,7 @@ data class TransferInDetail(
 
   @Schema(
     description = "The time the booking in occurred, if not supplied it will be the current time",
-    example = "2020-03-24T12:13:40"
+    example = "2020-03-24T12:13:40",
   )
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   val receiveTime: LocalDateTime? = null,

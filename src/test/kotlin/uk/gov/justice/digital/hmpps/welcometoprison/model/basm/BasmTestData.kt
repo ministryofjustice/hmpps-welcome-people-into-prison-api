@@ -18,7 +18,7 @@ class BasmTestData {
       "a2bc2abf-75fe-4b7f-bf5a-a755bc290757",
       "prison",
       "NOTTINGHAM (HMP)",
-      "NMI"
+      "NMI",
     )
 
     val MOVEMENTS = listOf(
@@ -39,13 +39,13 @@ class BasmTestData {
           id = "6c1047cf-c8e8-4034-9899-d05ac1b07038",
           title = "Penrith County Court",
           location_type = "court",
-          nomis_agency_id = "PENRCT"
+          nomis_agency_id = "PENRCT",
         ),
         to_location = Location(
           id = "a2bc2abf-75fe-4b7f-bf5a-a755bc290757",
           title = "NOTTINGHAM (HMP)",
           location_type = "prison",
-          nomis_agency_id = "NMI"
+          nomis_agency_id = "NMI",
         ),
         profile = Profile(
           id = "45a2b4a8-38ec-46f4-b882-148a21ebbe6e",
@@ -57,9 +57,9 @@ class BasmTestData {
             prison_number = null,
             criminal_records_office = null,
             police_national_computer = null,
-            gender = Gender.MALE
-          )
-        )
+            gender = Gender.MALE,
+          ),
+        ),
       ),
       Movement(
         id = "0cb56df1-f421-44a9-9f4d-0b4b5661b29f",
@@ -78,13 +78,13 @@ class BasmTestData {
           id = "dc76e71d-413b-48c8-b1cf-85c702c5f465",
           title = "BELMARSH (HMP)",
           location_type = "prison",
-          nomis_agency_id = "BAI"
+          nomis_agency_id = "BAI",
         ),
         to_location = Location(
           id = "efee92c0-d804-4287-8c84-07f98b7dada1",
           title = "WANDSWORTH (HMP)",
           location_type = "prison",
-          nomis_agency_id = "WWI"
+          nomis_agency_id = "WWI",
         ),
         profile = Profile(
           id = "0bb12c9e-69b3-4215-b171-05f0ac9eaaba",
@@ -96,9 +96,9 @@ class BasmTestData {
             prison_number = "A1234AA",
             criminal_records_office = "123456/96M",
             police_national_computer = "99/123456J",
-            gender = null
-          )
-        )
+            gender = null,
+          ),
+        ),
       ),
     )
 
@@ -119,13 +119,13 @@ class BasmTestData {
         id = "fecfd195-21af-4cbc-8ad9-3f8d0345d478",
         title = "Moorland (HMP & YOI)",
         location_type = "prison",
-        nomis_agency_id = "MDI"
+        nomis_agency_id = "MDI",
       ),
       to_location = Location(
         id = "2bffa952-398d-4593-b895-8b9f8492cd7a",
         title = "Barnstaple Magistrates Court",
         location_type = "court",
-        nomis_agency_id = "BNSTMC"
+        nomis_agency_id = "BNSTMC",
       ),
       profile = Profile(
         id = "8e4ff6e6-0d4f-49e2-aff6-f3022501be31",
@@ -137,9 +137,9 @@ class BasmTestData {
           prison_number = null,
           criminal_records_office = null,
           police_national_computer = null,
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
   }
 }

@@ -68,7 +68,7 @@ class ConfirmedArrivalRepositoryTest : RepositoryTest() {
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = ARRIVAL_DATE,
-      username = "USER-1"
+      username = "USER-1",
     )
   }
 }

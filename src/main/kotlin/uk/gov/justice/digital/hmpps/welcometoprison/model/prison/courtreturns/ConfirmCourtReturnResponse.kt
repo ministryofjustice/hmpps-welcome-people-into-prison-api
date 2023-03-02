@@ -11,5 +11,5 @@ data class ConfirmCourtReturnResponse(
   @Schema(description = "location", example = "D-3-017")
   val location: String,
   @Schema(description = "booking Id", example = "472195")
-  val bookingId: Long
+  val bookingId: Long,
 )

@@ -25,7 +25,7 @@ class PrisonerDetailsConverterTest {
     gender = "SEX",
     status = status,
     prisonId = "MDI",
-    lastMovementTypeCode = moveType
+    lastMovementTypeCode = moveType,
   )
 
   @Nested

@@ -26,8 +26,8 @@ class ExceptionHandler {
         ErrorResponse(
           status = BAD_REQUEST.value(),
           userMessage = "Validation failure: ${e.message}",
-          developerMessage = e.message
-        )
+          developerMessage = e.message,
+        ),
       )
   }
 
@@ -40,8 +40,8 @@ class ExceptionHandler {
         ErrorResponse(
           status = BAD_REQUEST.value(),
           userMessage = "Validation failure: ${e.message}",
-          developerMessage = e.message
-        )
+          developerMessage = e.message,
+        ),
       )
   }
 
@@ -54,8 +54,8 @@ class ExceptionHandler {
         ErrorResponse(
           status = NOT_FOUND.value(),
           userMessage = "Resource not found",
-          developerMessage = e.message
-        )
+          developerMessage = e.message,
+        ),
       )
   }
 
@@ -68,8 +68,8 @@ class ExceptionHandler {
         ErrorResponse(
           status = CONFLICT.value(),
           userMessage = "Resource in illegal state",
-          developerMessage = "Resource in illegal state"
-        )
+          developerMessage = "Resource in illegal state",
+        ),
       )
   }
 
@@ -82,7 +82,7 @@ class ExceptionHandler {
         ErrorResponse(
           status = FORBIDDEN.value(),
           userMessage = "Access denied",
-        )
+        ),
       )
   }
 
@@ -95,7 +95,7 @@ class ExceptionHandler {
         ErrorResponse(
           status = BAD_REQUEST.value(),
           userMessage = "Missing request value",
-        )
+        ),
       )
   }
 
@@ -108,7 +108,7 @@ class ExceptionHandler {
         ErrorResponse(
           status = BAD_REQUEST.value(),
           userMessage = "Argument type mismatch",
-        )
+        ),
       )
   }
 
@@ -122,7 +122,7 @@ class ExceptionHandler {
       e.response.userMessage,
       e.response.developerMessage,
       e.response.moreInfo,
-      e
+      e,
     )
     val message = "Exception calling up-stream service from Wpip-Api"
     return ResponseEntity
@@ -132,8 +132,8 @@ class ExceptionHandler {
           status = e.response.status,
           errorCode = e.errorCode,
           userMessage = message,
-          developerMessage = message
-        )
+          developerMessage = message,
+        ),
       )
   }
 
@@ -146,7 +146,7 @@ class ExceptionHandler {
         ErrorResponse(
           status = INTERNAL_SERVER_ERROR.value(),
           userMessage = "Unexpected error",
-        )
+        ),
       )
   }
 
@@ -160,5 +160,5 @@ data class ErrorResponse(
   val errorCode: ErrorCode? = null,
   val userMessage: String? = null,
   val developerMessage: String? = null,
-  val moreInfo: String? = null
+  val moreInfo: String? = null,
 )

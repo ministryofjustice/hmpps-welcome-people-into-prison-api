@@ -32,10 +32,14 @@ class TransfersServiceTest {
     TransfersService(prisonApiClient, prisonerSearchService, locationFormatter, arrivalListener)
 
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L,
+    offenderNo = "G6081VQ",
+    bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
-      "NMI", 1, "RECP", "Nottingham (HMP)"
-    )
+      "NMI",
+      1,
+      "RECP",
+      "Nottingham (HMP)",
+    ),
   )
 
   @Test
@@ -54,7 +58,7 @@ class TransfersServiceTest {
         fromLocation = "Doncaster (HMP)",
         date = LocalDate.of(2011, 9, 8),
         pncNumber = null,
-      )
+      ),
     )
 
     verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
@@ -77,7 +81,7 @@ class TransfersServiceTest {
         fromLocation = "Doncaster (HMP)",
         date = LocalDate.of(2011, 9, 8),
         pncNumber = "12/394773H",
-      )
+      ),
     )
 
     verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
@@ -99,7 +103,7 @@ class TransfersServiceTest {
         fromLocation = "Doncaster (HMP)",
         date = LocalDate.of(2011, 9, 8),
         pncNumber = null,
-      )
+      ),
     )
 
     verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
@@ -120,7 +124,7 @@ class TransfersServiceTest {
       prisonId = "MDI",
       cellLocation = "MDI-RECP",
       commentText = "some transfer notes",
-      receiveTime = LocalDateTime.now()
+      receiveTime = LocalDateTime.now(),
     )
 
     val transferIn = with(transferInDetail) { TransferIn(cellLocation, commentText, receiveTime) }
@@ -146,8 +150,8 @@ class TransfersServiceTest {
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = TRANSFER,
-        bookingId = inmateDetail.bookingId
-      )
+        bookingId = inmateDetail.bookingId,
+      ),
     )
   }
 
@@ -159,7 +163,7 @@ class TransfersServiceTest {
       prisonId = "MDI",
       cellLocation = "MDI-RECP",
       commentText = "some transfer notes",
-      receiveTime = LocalDateTime.now()
+      receiveTime = LocalDateTime.now(),
     )
 
     whenever(prisonApiClient.transferIn(any(), any())).thenReturn(inmate)
@@ -185,7 +189,7 @@ class TransfersServiceTest {
       movementReasonDescription = "Normal Transfer",
       directionCode = "OUT",
       movementTime = LocalTime.of(12, 0, 0),
-      movementDate = LocalDate.of(2011, 9, 8)
+      movementDate = LocalDate.of(2011, 9, 8),
     )
   }
 }

@@ -20,12 +20,12 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         Server().url("https://welcome-api-preprod.prison.service.justice.gov.uk/").description("PreProd"),
         Server().url("https://welcome-api-dev.prison.service.justice.gov.uk/").description("Development"),
         Server().url("http://localhost:8080").description("Local"),
-      )
+      ),
     )
     .info(
       Info().title("Welcome to prison API")
         .version(version)
         .description("Providing information about people entering prison")
-        .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk"))
+        .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
     )
 }

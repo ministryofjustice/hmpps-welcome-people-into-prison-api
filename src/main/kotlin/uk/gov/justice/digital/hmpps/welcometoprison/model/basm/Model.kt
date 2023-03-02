@@ -13,7 +13,7 @@ class Model {
     val id: String,
     val location_type: String,
     val title: String,
-    val nomis_agency_id: String?
+    val nomis_agency_id: String?,
   )
 
   data class Movement(
@@ -49,7 +49,7 @@ class Model {
     val prison_number: String?,
     val criminal_records_office: String?,
     val police_national_computer: String?,
-    val gender: Gender?
+    val gender: Gender?,
   )
 
   enum class Gender {

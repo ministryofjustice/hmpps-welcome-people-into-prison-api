@@ -36,7 +36,10 @@ class ConfirmationServiceTest {
   private val locationFormatter: LocationFormatter = LocationFormatter()
 
   private val confirmationService = ConfirmationService(
-    prisonService, prisonerSearchService, arrivalListener, locationFormatter
+    prisonService,
+    prisonerSearchService,
+    arrivalListener,
+    locationFormatter,
   )
 
   @Test
@@ -56,8 +59,8 @@ class ConfirmationServiceTest {
       confirmationService.confirmArrival(
         Confirmation.Expected(
           ARRIVAL_ID,
-          CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null)
-        )
+          CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(prisonNumber = null),
+        ),
       )
 
     assertThat(response.prisonNumber).isEqualTo(PRISON_NUMBER)
@@ -74,15 +77,15 @@ class ConfirmationServiceTest {
           prisonId = PRISON_ID,
           bookingId = BOOKING_ID,
           arrivalType = ConfirmedArrivalType.NEW_TO_PRISON,
-        )
-      )
+        ),
+      ),
     )
   }
 
   @Test
   fun `Confirm arrival matched to NOMIS offender who is in custody and is a non-court transfer, is rejected`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true),
     )
 
     assertThatThrownBy {
@@ -95,14 +98,14 @@ class ConfirmationServiceTest {
   @Test
   fun `Confirm arrival of court transfer for prisoner who is already in custody, calls prison service with correct args`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true),
     )
 
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     confirmationService.confirmReturnFromCourt(
       ARRIVAL_ID,
-      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE,
     )
 
     verify(prisonService).returnFromCourt(PRISON_ID, PRISON_NUMBER)
@@ -111,14 +114,14 @@ class ConfirmationServiceTest {
   @Test
   fun `Confirm arrival of court transfer for prisoner who is already in custody, records the arrival as an event`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true)
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = true),
     )
 
     whenever(prisonService.returnFromCourt(any(), any())).thenReturn(CONFIRM_COURT_RETURN_RESPONSE)
 
     confirmationService.confirmReturnFromCourt(
       ARRIVAL_ID,
-      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
+      CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE,
     )
 
     verify(arrivalListener).arrived(
@@ -129,21 +132,21 @@ class ConfirmationServiceTest {
           prisonId = CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.prisonId!!,
           bookingId = BOOKING_ID,
           arrivalType = ConfirmedArrivalType.COURT_TRANSFER,
-        )
-      )
+        ),
+      ),
     )
   }
 
   @Test
   fun `Confirm arrival matched to NOMIS offender who is not in custody and is a non-court transfer, is rejected`() {
     whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
+      PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false),
     )
 
     assertThatThrownBy {
       confirmationService.confirmReturnFromCourt(
         ARRIVAL_ID,
-        CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE
+        CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE,
       )
     }.isInstanceOf(ConflictException::class.java)
 
@@ -159,7 +162,7 @@ class ConfirmationServiceTest {
         movementReasonCode,
         ConfirmedArrivalType.RECALL,
         { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
-        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
+        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) },
       )
     }
 
@@ -170,7 +173,7 @@ class ConfirmationServiceTest {
         movementReasonCode,
         ConfirmedArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
         { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
-        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
+        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) },
       )
     }
 
@@ -178,18 +181,18 @@ class ConfirmationServiceTest {
       movementReasonCode: String,
       expectedArrivalType: ConfirmedArrivalType,
       stubbing: () -> Unit,
-      verification: (Confirmation) -> InmateDetail
+      verification: (Confirmation) -> InmateDetail,
     ) {
       whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
+        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false),
       )
       stubbing()
 
       val confirmation = Confirmation.Expected(
         ARRIVAL_ID,
         CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(
-          movementReasonCode = movementReasonCode
-        )
+          movementReasonCode = movementReasonCode,
+        ),
       )
 
       val response = confirmationService.confirmArrival(confirmation)
@@ -206,8 +209,8 @@ class ConfirmationServiceTest {
             prisonId = PRISON_ID,
             bookingId = BOOKING_ID,
             arrivalType = expectedArrivalType,
-          )
-        )
+          ),
+        ),
       )
     }
   }
@@ -221,7 +224,7 @@ class ConfirmationServiceTest {
         movementReasonCode,
         ConfirmedArrivalType.RECALL,
         { whenever(prisonService.recallOffender(any(), any())).thenReturn(INMATE_DETAIL) },
-        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) }
+        { confirmation -> verify(prisonService).recallOffender(PRISON_NUMBER, confirmation.detail) },
       )
     }
 
@@ -232,7 +235,7 @@ class ConfirmationServiceTest {
         movementReasonCode,
         ConfirmedArrivalType.NEW_BOOKING_EXISTING_OFFENDER,
         { whenever(prisonService.admitOffenderOnNewBooking(any(), any())).thenReturn(INMATE_DETAIL) },
-        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) }
+        { confirmation -> verify(prisonService).admitOffenderOnNewBooking(PRISON_NUMBER, confirmation.detail) },
       )
     }
 
@@ -240,17 +243,17 @@ class ConfirmationServiceTest {
       movementReasonCode: String,
       expectedArrivalType: ConfirmedArrivalType,
       stubbing: () -> Unit,
-      verification: (Confirmation) -> InmateDetail
+      verification: (Confirmation) -> InmateDetail,
     ) {
       whenever(prisonerSearchService.getPrisoner(any())).thenReturn(
-        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false)
+        PRISONER_DETAILS_PROTOTYPE.copy(isCurrentPrisoner = false),
       )
       stubbing()
 
       val confirmation = Confirmation.Unexpected(
         CONFIRMED_ARRIVAL_DETAIL_PROTOTYPE.copy(
-          movementReasonCode = movementReasonCode
-        )
+          movementReasonCode = movementReasonCode,
+        ),
       )
 
       val response = confirmationService.confirmArrival(confirmation)
@@ -267,8 +270,8 @@ class ConfirmationServiceTest {
             prisonId = PRISON_ID,
             bookingId = BOOKING_ID,
             arrivalType = expectedArrivalType,
-          )
-        )
+          ),
+        ),
       )
     }
   }
@@ -288,13 +291,18 @@ class ConfirmationServiceTest {
 
     private val LOCATION = "RECP"
     private val INMATE_DETAIL = InmateDetail(
-      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID,
+      offenderNo = PRISON_NUMBER,
+      bookingId = BOOKING_ID,
       assignedLivingUnit = AssignedLivingUnit(
-        PRISON_ID, LOCATION_ID, LOCATION, "Nottingham (HMP)"
-      )
+        PRISON_ID,
+        LOCATION_ID,
+        LOCATION,
+        "Nottingham (HMP)",
+      ),
     )
     private val INMATE_DETAIL_NO_UNIT = InmateDetail(
-      offenderNo = PRISON_NUMBER, bookingId = BOOKING_ID
+      offenderNo = PRISON_NUMBER,
+      bookingId = BOOKING_ID,
     )
     private val CONFIRM_COURT_RETURN_RESPONSE =
       ConfirmCourtReturnResponse(prisonNumber = PRISON_NUMBER, location = LOCATION, bookingId = BOOKING_ID)
@@ -314,7 +322,7 @@ class ConfirmationServiceTest {
 
     val CONFIRMED_COURT_RETURN_REQUEST_PROTOTYPE = ConfirmCourtReturnRequest(
       prisonId = PRISON_ID,
-      prisonNumber = PRISON_NUMBER
+      prisonNumber = PRISON_NUMBER,
     )
 
     val PRISONER_DETAILS_PROTOTYPE = PrisonerDetails(

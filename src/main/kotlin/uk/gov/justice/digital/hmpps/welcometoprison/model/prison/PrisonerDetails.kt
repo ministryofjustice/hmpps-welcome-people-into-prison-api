@@ -36,5 +36,5 @@ data class PrisonerDetails(
   @Schema(description = "Type of arrival", example = "TRANSFER")
   val arrivalType: ArrivalType,
 
-  @Transient val isCurrentPrisoner: Boolean
+  @Transient val isCurrentPrisoner: Boolean,
 )

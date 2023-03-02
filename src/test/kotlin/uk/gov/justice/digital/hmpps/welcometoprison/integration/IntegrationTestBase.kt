@@ -82,12 +82,12 @@ abstract class IntegrationTestBase {
 
   internal fun setAuthorisation(
     roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
+    scopes: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation("welcome-into-prison-client", roles, scopes)
 
   internal fun getAuthorisation(
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-    username: String = "welcome-into-prison-client"
+    username: String = "welcome-into-prison-client",
   ) = jwtAuthHelper.getAuthorisation(user = username, roles = roles, scopes = scopes)
 }

@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 
 @RestController
 @Validated
-
 class MatchPrisonersResource(
   private val prisonerSearchService: PrisonerSearchService,
 ) {
@@ -43,19 +42,19 @@ Results will be ordered Prison number matches first, then any PNC matches, then 
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = PotentialMatch::class)
-          )
-        ]
+            schema = Schema(implementation = PotentialMatch::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -63,16 +62,17 @@ Results will be ordered Prison number matches first, then any PNC matches, then 
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @PostMapping(path = ["/match-prisoners"])
   fun matchPrisoners(
     @RequestBody
-    @Valid @NotNull
-    matchPrisonersRequest: MatchPrisonersRequest
+    @Valid
+    @NotNull
+    matchPrisonersRequest: MatchPrisonersRequest,
   ): List<PotentialMatch> = prisonerSearchService.findPotentialMatches(matchPrisonersRequest)
 }

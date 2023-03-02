@@ -15,16 +15,15 @@ import java.time.LocalTime
 class RecentArrivalsService(
   private val prisonApiClient: PrisonApiClient,
   private val locationFormatter: LocationFormatter,
-  private val searcher: Searcher<String, RecentArrival> = Searcher(SearchByNameAndPrisonNumber())
+  private val searcher: Searcher<String, RecentArrival> = Searcher(SearchByNameAndPrisonNumber()),
 ) {
 
   fun getArrivals(
     prisonId: String,
     dateRange: Pair<LocalDate, LocalDate>,
     page: PageRequest,
-    query: String? = null
+    query: String? = null,
   ): Page<RecentArrival> {
-
     val (fromDate, toDate) = dateRange
     val movements = prisonApiClient.getMovement(prisonId, fromDate.atStartOfDay(), toDate.atTime(LocalTime.MAX))
     val start = page.pageSize * page.pageNumber
@@ -41,7 +40,7 @@ class RecentArrivalsService(
         it.firstName,
         it.lastName,
         it.movementDateTime,
-        it.location?.let { loc -> locationFormatter.format(loc) }
+        it.location?.let { loc -> locationFormatter.format(loc) },
       )
     }
 

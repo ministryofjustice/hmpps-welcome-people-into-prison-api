@@ -11,8 +11,7 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPublicKey
 import java.time.Duration
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 @Component
 class JwtAuthHelper() {
@@ -30,13 +29,13 @@ class JwtAuthHelper() {
   fun setAuthorisation(
     user: String,
     roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
+    scopes: List<String> = listOf(),
   ): (HttpHeaders) -> Unit {
     val token = createJwt(
       subject = user,
       scope = scopes,
       expiryTime = Duration.ofHours(1L),
-      roles = roles
+      roles = roles,
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
@@ -44,13 +43,13 @@ class JwtAuthHelper() {
   fun getAuthorisation(
     user: String,
     roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
+    scopes: List<String> = listOf(),
   ): String {
     val token = createJwt(
       subject = user,
       scope = scopes,
       expiryTime = Duration.ofHours(1L),
-      roles = roles
+      roles = roles,
     )
     return "Bearer $token"
   }
@@ -60,7 +59,7 @@ class JwtAuthHelper() {
     scope: List<String>? = listOf(),
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
-    jwtId: String = UUID.randomUUID().toString()
+    jwtId: String = UUID.randomUUID().toString(),
   ): String =
     mutableMapOf<String, Any>()
       .also { subject?.let { subject -> it["user_name"] = subject } }
@@ -73,7 +72,7 @@ class JwtAuthHelper() {
           .setSubject(subject)
           .addClaims(it.toMap())
           .setExpiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
-          .signWith(SignatureAlgorithm.RS256, keyPair.private)
+          .signWith(keyPair.private, SignatureAlgorithm.RS256)
           .compact()
       }
 }
