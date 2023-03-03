@@ -34,9 +34,9 @@ class BasmServiceTest {
           fromLocation = "Penrith County Court",
           fromLocationId = "PENRCT",
           fromLocationType = LocationType.COURT,
-          gender = Gender.MALE
-        )
-      )
+          gender = Gender.MALE,
+        ),
+      ),
     )
   }
 
@@ -57,8 +57,8 @@ class BasmServiceTest {
         date = LocalDate.of(2021, 9, 22),
         fromLocation = "Moorland (HMP & YOI)",
         fromLocationId = "MDI",
-        fromLocationType = LocationType.OTHER
-      )
+        fromLocationType = LocationType.OTHER,
+      ),
     )
   }
 }

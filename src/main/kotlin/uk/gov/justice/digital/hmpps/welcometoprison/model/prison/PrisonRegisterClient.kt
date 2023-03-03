@@ -11,7 +11,7 @@ data class Prison(@JsonProperty("prisonName") val prisonName: String)
 
 @Component
 class PrisonRegisterClient(
-  @Qualifier("prisonRegisterWebClient") private val webClient: WebClient
+  @Qualifier("prisonRegisterWebClient") private val webClient: WebClient,
 ) {
   fun getPrison(prisonId: String): Prison? =
     webClient

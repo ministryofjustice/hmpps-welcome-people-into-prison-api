@@ -29,14 +29,14 @@ class ArrivalsServiceTest {
   fun `Retrieving csv arrivals`() {
     whenever(confirmedArrivalRepository.findAllByArrivalDateIsBetween(any(), any())).thenReturn(
       Stream.of(
-        confirmedArrival
-      )
+        confirmedArrival,
+      ),
     )
 
     val arrivals = arrivalsService.getArrivalsAsCsv(DATE, 7)
     assertThat(arrivals).isEqualTo(
       "id,timestamp,arrivalDate,prisonId,arrivalType,username\n" +
-        "1,2021-02-23T01:00:00,2021-02-01,MDI,NEW_TO_PRISON,\"9fa70e9f0d541dab23d0ca65edb1a261\"\n"
+        "1,2021-02-23T01:00:00,2021-02-01,MDI,NEW_TO_PRISON,\"9fa70e9f0d541dab23d0ca65edb1a261\"\n",
     )
   }
 
@@ -51,8 +51,9 @@ class ArrivalsServiceTest {
 
     assertThat(arrivals).isEqualTo(
       listOf(
-        arrival1.copy(potentialMatches = listOf(match)), arrival2.copy(potentialMatches = emptyList())
-      )
+        arrival1.copy(potentialMatches = listOf(match)),
+        arrival2.copy(potentialMatches = emptyList()),
+      ),
     )
   }
 
@@ -60,7 +61,7 @@ class ArrivalsServiceTest {
   fun `Arrivals are removed when confirmed`() {
     whenever(basmService.getArrivals(any(), any(), any())).thenReturn(listOf(arrival1, arrival2))
     whenever(confirmedArrivalRepository.findAllByArrivalDateAndPrisonId(any(), any())).thenReturn(
-      listOf(arrival1.whenConfirmed())
+      listOf(arrival1.whenConfirmed()),
     )
 
     val arrivals = arrivalsService.getArrivals("MDI", DATE)
@@ -85,9 +86,10 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = true, potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = true,
+            potentialMatches = listOf(match1, match2),
           ),
-        )
+        ),
       )
     }
 
@@ -105,9 +107,10 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false, potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = false,
+            potentialMatches = listOf(match1, match2),
           ),
-        )
+        ),
       )
     }
 
@@ -125,9 +128,10 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false, potentialMatches = listOf(match1, match2)
+            isCurrentPrisoner = false,
+            potentialMatches = listOf(match1, match2),
           ),
-        )
+        ),
       )
     }
 
@@ -143,9 +147,10 @@ class ArrivalsServiceTest {
       assertThat(arrivals).isEqualTo(
         listOf(
           arrival.copy(
-            isCurrentPrisoner = false, potentialMatches = listOf()
+            isCurrentPrisoner = false,
+            potentialMatches = listOf(),
           ),
-        )
+        ),
       )
     }
   }
@@ -168,7 +173,7 @@ class ArrivalsServiceTest {
       prisonId = "MDI",
       bookingId = 1232,
       arrivalDate = LocalDate.of(2021, 2, 1),
-      username = "UserT"
+      username = "UserT",
     )
 
     private val arrival1 = Arrival(
@@ -182,7 +187,7 @@ class ArrivalsServiceTest {
       fromLocation = "Moorland (HMP & YOI)",
       fromLocationId = "MDI",
       fromLocationType = LocationType.CUSTODY_SUITE,
-      isCurrentPrisoner = false
+      isCurrentPrisoner = false,
     )
 
     private val arrival2 = arrival1.copy(
@@ -193,7 +198,7 @@ class ArrivalsServiceTest {
       prisonNumber = ANOTHER_PRISON_NUMBER,
       pncNumber = ANOTHER_PNC_NUMBER,
       fromLocationType = LocationType.PRISON,
-      isCurrentPrisoner = false
+      isCurrentPrisoner = false,
     )
 
     private val match = PotentialMatch(
@@ -218,7 +223,7 @@ class ArrivalsServiceTest {
       prisonId = "Prison Id",
       bookingId = 123,
       arrivalDate = this.date,
-      username = "user_1"
+      username = "user_1",
     )
   }
 }

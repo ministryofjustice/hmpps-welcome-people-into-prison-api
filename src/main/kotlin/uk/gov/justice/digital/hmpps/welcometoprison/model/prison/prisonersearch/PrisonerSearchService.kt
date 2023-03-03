@@ -16,8 +16,11 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
     ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
 
   fun getPncNumbers(prisonerNumbers: List<String>): Map<String, String?> {
-    return if (prisonerNumbers.isEmpty()) emptyMap()
-    else client.matchPncNumbersByPrisonerNumbers(prisonerNumbers).associate { it.prisonerNumber to it.pncNumber }
+    return if (prisonerNumbers.isEmpty()) {
+      emptyMap()
+    } else {
+      client.matchPncNumbersByPrisonerNumbers(prisonerNumbers).associate { it.prisonerNumber to it.pncNumber }
+    }
   }
 
   fun findPotentialMatches(request: MatchPrisonersRequest): List<PotentialMatch> {
@@ -35,7 +38,7 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
       lastName = this.lastName,
       dateOfBirth = this.dateOfBirth,
       pncNumber = this.pncNumber,
-      nomsNumber = this.prisonNumber
+      nomsNumber = this.prisonNumber,
     )
   }
 }

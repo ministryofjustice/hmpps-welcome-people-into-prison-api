@@ -18,14 +18,14 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
     type: String,
     fromStartDate: LocalDate,
     toStartDate: LocalDate,
-    prisonNumbers: List<String>
+    prisonNumbers: List<String>,
   ): List<PersonalCareCounter> {
     return webClient.post()
       .uri(
         "/api/bookings/offenderNo/personal-care-needs/count?type=" +
           type +
           "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
-          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
       )
       .bodyValue(prisonNumbers)
       .retrieve()

@@ -38,7 +38,7 @@ class HealthCheckTest : IntegrationTestBase() {
       .expectBody().jsonPath("components.healthInfo.details.version").value(
         Consumer<String> {
           assertThat(it).startsWith(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
-        }
+        },
       )
   }
 
@@ -102,8 +102,8 @@ class HealthCheckTest : IntegrationTestBase() {
         aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(if (status == 200) "pong" else "some error")
-          .withStatus(status)
-      )
+          .withStatus(status),
+      ),
     )
 
     prisonApiMockServer.stubFor(
@@ -111,17 +111,18 @@ class HealthCheckTest : IntegrationTestBase() {
         aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(
-            if (status == 200)
+            if (status == 200) {
               """
                 {
                   "status": "UP"
                 }
               """.trimIndent()
-            else
+            } else {
               "some error"
+            },
           )
-          .withStatus(status)
-      )
+          .withStatus(status),
+      ),
     )
 
     prisonRegisterMockServer.stubFor(
@@ -129,16 +130,18 @@ class HealthCheckTest : IntegrationTestBase() {
         aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(
-            if (status == 200)
+            if (status == 200) {
               """
                 {
                   "status": "UP"
                 }
               """.trimIndent()
-            else "some error"
+            } else {
+              "some error"
+            },
           )
-          .withStatus(status)
-      )
+          .withStatus(status),
+      ),
     )
 
     prisonerSearchMockServer.stubFor(
@@ -146,16 +149,18 @@ class HealthCheckTest : IntegrationTestBase() {
         aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(
-            if (status == 200)
+            if (status == 200) {
               """
                 {
                   "status": "UP"
                 }
               """.trimIndent()
-            else "some error"
+            } else {
+              "some error"
+            },
           )
-          .withStatus(status)
-      )
+          .withStatus(status),
+      ),
     )
   }
 }

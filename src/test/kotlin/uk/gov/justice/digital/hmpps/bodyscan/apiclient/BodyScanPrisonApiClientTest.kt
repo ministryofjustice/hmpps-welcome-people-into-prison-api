@@ -65,10 +65,10 @@ class BodyScanPrisonApiClientTest {
       PersonalCareCounter(offenderNo = "G8874VW", size = 100),
       PersonalCareCounter(offenderNo = "G8874VX", size = 115),
       PersonalCareCounter(offenderNo = "G8874VY", size = 116),
-      PersonalCareCounter(offenderNo = "G8874VZ", size = 117)
+      PersonalCareCounter(offenderNo = "G8874VZ", size = 117),
     )
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/api/bookings/offenderNo/personal-care-needs/count?type=BSCAN&fromStartDate=2022-01-01&toStartDate=2022-12-31"))
+      postRequestedFor(urlEqualTo("/api/bookings/offenderNo/personal-care-needs/count?type=BSCAN&fromStartDate=2022-01-01&toStartDate=2022-12-31")),
     )
   }
 
@@ -86,12 +86,12 @@ class BodyScanPrisonApiClientTest {
         lastName = "BROWN",
         agencyId = "LII",
         activeFlag = true,
-        dateOfBirth = LocalDate.of(1992, 3, 12)
-      )
+        dateOfBirth = LocalDate.of(1992, 3, 12),
+      ),
     )
 
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber")),
     )
   }
 
@@ -103,7 +103,7 @@ class BodyScanPrisonApiClientTest {
       bodyScanPrisonApiClient.getOffenderDetails(prisonNumber)
     }
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber"))
+      getRequestedFor(urlEqualTo("/api/offenders/$prisonNumber")),
     )
   }
 
@@ -117,7 +117,7 @@ class BodyScanPrisonApiClientTest {
     mockServer.stubAddPersonalCareNeeds(bookingId, date)
     bodyScanPrisonApiClient.addPersonalCareNeeds(bookingId, PersonalCareNeeds(date, bodyScanReason, bodyScanResult))
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/api/bookings/$bookingId/personal-care-needs"))
+      postRequestedFor(urlEqualTo("/api/bookings/$bookingId/personal-care-needs")),
     )
   }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.config.typeReference
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.Order.asc
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.Order.ASC
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`query of`
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
@@ -23,7 +23,7 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
   fun getPrison(prisonId: String): Location? = get(
     path = "/api/reference/locations",
     query = `query of`(filters = mapOf("nomis_agency_id" to listOf(prisonId))),
-    type = typeReference<JsonApiResponse<Location>>()
+    type = typeReference<JsonApiResponse<Location>>(),
   ).block()?.firstOrNull()
 
   fun getMovements(prisonUuid: String, from: LocalDate, to: LocalDate): List<Movement> = get(
@@ -35,27 +35,27 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
         "date_to" to listOf(to.format(ISO_DATE)),
         "status" to listOf("requested", "accepted", "booked", "in_transit", "completed"),
       ),
-      sort = "date" to asc,
+      sort = "date" to ASC,
       page = 1,
       perPage = 200,
-      includes = listOf("profile.person", "from_location", "to_location", "profile.person.gender")
+      includes = listOf("profile.person", "from_location", "to_location", "profile.person.gender"),
     ),
-    type = typeReference<JsonApiResponse<Movement>>()
+    type = typeReference<JsonApiResponse<Movement>>(),
   ).block() ?: emptyList()
 
   fun getMovement(moveId: String): Movement? = get(
     path = "/api/moves/$moveId",
     query = `query of`(
-      includes = listOf("profile.person", "from_location", "to_location", "profile.person.gender")
+      includes = listOf("profile.person", "from_location", "to_location", "profile.person.gender"),
     ),
-    type = typeReference<JsonApiResponse<Movement>>()
+    type = typeReference<JsonApiResponse<Movement>>(),
   ).onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
     .block()?.firstOrNull()
 
   private fun <T : Any> get(
     path: String,
     query: String = "",
-    type: ParameterizedTypeReference<JsonApiResponse<T>>
+    type: ParameterizedTypeReference<JsonApiResponse<T>>,
   ): Mono<List<T>> =
     webClient.get()
       .uri("$path$query")

@@ -22,8 +22,8 @@ class SearchScenariosTest {
         ExpectedResult("Jon", "Smith", 3),
         ExpectedResult("kohn", "Smith", 3),
         ExpectedIrrelevant("Jane", "Smith"),
-        ExpectedIrrelevant("Simon", "Marshall")
-      )
+        ExpectedIrrelevant("Simon", "Marshall"),
+      ),
     )
   }
 
@@ -41,8 +41,8 @@ class SearchScenariosTest {
         ExpectedResult("Jane", "Smith", 10),
         ExpectedResult("Jane", "Johnson", 5),
         ExpectedResult("Simon", "Johnson", 5),
-        ExpectedIrrelevant("Simon", "Marshall")
-      )
+        ExpectedIrrelevant("Simon", "Marshall"),
+      ),
     )
   }
 
@@ -61,7 +61,7 @@ class SearchScenariosTest {
         ExpectedResult("Jon", "Smith", 5),
         ExpectedResult("kohn", "Smith", 5),
         ExpectedIrrelevant("Jane", "Smith"),
-      )
+      ),
     )
   }
 
@@ -79,7 +79,7 @@ class SearchScenariosTest {
       firstName = firstName,
       lastName = lastName,
       movementDateTime = LocalDate.ofEpochDay(1).atStartOfDay(),
-      location = null
+      location = null,
     )
   }
 

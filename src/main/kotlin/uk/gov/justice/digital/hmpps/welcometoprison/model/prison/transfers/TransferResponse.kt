@@ -9,5 +9,5 @@ data class TransferResponse(
   @Schema(description = "prison number", example = "G6081VQ")
   val prisonNumber: String,
   @Schema(description = "location", example = "D-3-017")
-  val location: String
+  val location: String,
 )

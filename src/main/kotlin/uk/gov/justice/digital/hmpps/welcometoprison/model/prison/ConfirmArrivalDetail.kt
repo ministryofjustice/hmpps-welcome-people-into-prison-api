@@ -15,7 +15,7 @@ data class ConfirmArrivalDetail(
     description = "The offender's PNC (Police National Computer) number.",
     example = "03/11999M",
     pattern = "^([0-9]{2}|[0-9]{4})/[0-9]+[a-zA-Z]$",
-    maxLength = 20
+    maxLength = 20,
   )
   @field:Length(max = 20)
   @field:Pattern(regexp = "^([0-9]{2}|[0-9]{4})/[0-9]+[a-zA-Z]$", message = "PNC is not valid")
@@ -25,7 +25,7 @@ data class ConfirmArrivalDetail(
     description = "The offender's Prison number.",
     example = "A1234AA",
     pattern = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$",
-    maxLength = 7
+    maxLength = 7,
   )
   @field:Length(max = 7)
   @field:Pattern(regexp = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$", message = "Prison number is not valid")
@@ -42,7 +42,7 @@ data class ConfirmArrivalDetail(
     description = "The offender's first name.",
     example = "John",
     maxLength = 35,
-    pattern = "^[A-Z|a-z ,.'-]+$"
+    pattern = "^[A-Z|a-z ,.'-]+$",
   )
   @field:Length(max = 35)
   @field:NotBlank
@@ -52,7 +52,7 @@ data class ConfirmArrivalDetail(
   @Schema(
     required = true,
     description = "The offender's date of birth. Must be specified in YYYY-MM-DD format. Range allowed is 16-110 years",
-    example = "1970-01-01"
+    example = "1970-01-01",
   )
   @field:NotNull
   val dateOfBirth: LocalDate? = null,
@@ -62,7 +62,7 @@ data class ConfirmArrivalDetail(
     description = "A code representing the offender's gender (from the SEX reference domain).",
     example = "M",
     allowableValues = ["M", "F", "NK", "NS", "REF"],
-    maxLength = 12
+    maxLength = 12,
   )
   @field:Length(max = 12)
   @field:NotBlank
@@ -88,7 +88,7 @@ data class ConfirmArrivalDetail(
   @Schema(description = "Require imprisonment status (e.g Adult Imprisonment Without Option CJA03)", example = "SENT03")
   @field:Length(max = 12, message = "Imprisonment status cannot be more than 12 characters")
   @field:NotNull
-  val imprisonmentStatus: String? = null
+  val imprisonmentStatus: String? = null,
 ) {
   val youthOffender: Boolean
     get() = Age.lessThanTwentyOneYears(dateOfBirth!!, LocalDate.now())

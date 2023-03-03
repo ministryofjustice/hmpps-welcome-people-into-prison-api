@@ -51,16 +51,16 @@ class PrisonApiClientTest {
     assertThat(userCaseLoads).containsExactly(
       UserCaseLoad(
         caseLoadId = "MDI",
-        description = "Moorland Closed (HMP & YOI)"
+        description = "Moorland Closed (HMP & YOI)",
       ),
       UserCaseLoad(
         caseLoadId = "NMI",
-        description = "Nottingham (HMP)"
-      )
+        description = "Nottingham (HMP)",
+      ),
     )
 
     mockServer.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/users/me/caseLoads"))
+      WireMock.getRequestedFor(WireMock.urlEqualTo("/api/users/me/caseLoads")),
     )
   }
 
@@ -87,7 +87,7 @@ class PrisonApiClientTest {
         movementReasonDescription = "Normal Transfer",
         directionCode = "OUT",
         movementTime = LocalTime.of(12, 0, 0),
-        movementDate = LocalDate.of(2011, 9, 8)
+        movementDate = LocalDate.of(2011, 9, 8),
       ),
       OffenderMovement(
         offenderNo = "G1038GO",
@@ -105,7 +105,7 @@ class PrisonApiClientTest {
         movementReasonDescription = "Normal Transfer",
         directionCode = "OUT",
         movementTime = LocalTime.of(14, 0, 0),
-        movementDate = LocalDate.of(2010, 8, 20)
+        movementDate = LocalDate.of(2010, 8, 20),
       ),
       OffenderMovement(
         offenderNo = "G5428GJ",
@@ -123,18 +123,18 @@ class PrisonApiClientTest {
         movementReasonDescription = "Normal Transfer",
         directionCode = "OUT",
         movementTime = LocalTime.of(12, 0, 0),
-        movementDate = LocalDate.of(2010, 5, 4)
-      )
+        movementDate = LocalDate.of(2010, 5, 4),
+      ),
     )
 
     mockServer.verify(
       WireMock.getRequestedFor(
         WireMock.urlEqualTo(
           "/api/movements/NMI/enroute?movementDate=" + LocalDate.now().format(
-            DateTimeFormatter.ISO_LOCAL_DATE
-          )
-        )
-      )
+            DateTimeFormatter.ISO_LOCAL_DATE,
+          ),
+        ),
+      ),
     )
   }
 
@@ -149,8 +149,8 @@ class PrisonApiClientTest {
         firstName = "A",
         lastName = "Z",
         dateOfBirth = LocalDate.of(1961, 5, 29),
-        gender = "M"
-      )
+        gender = "M",
+      ),
     )
 
     assertThat(response.offenderNo).isEqualTo(offenderNumber)
@@ -168,8 +168,8 @@ class PrisonApiClientTest {
         prisonId = "NMI",
         imprisonmentStatus = "SENT03",
         movementReasonCode = "C",
-        youthOffender = false
-      )
+        youthOffender = false,
+      ),
     )
   }
 
@@ -186,8 +186,8 @@ class PrisonApiClientTest {
           prisonId = "NMI",
           imprisonmentStatus = "SENT03",
           movementReasonCode = "C",
-          youthOffender = false
-        )
+          youthOffender = false,
+        ),
       )
     }.isInstanceOf(ClientException::class.java)
   }
@@ -221,8 +221,8 @@ class PrisonApiClientTest {
         prisonId = "NMI",
         imprisonmentStatus = "SENT03",
         movementReasonCode = "C",
-        youthOffender = false
-      )
+        youthOffender = false,
+      ),
     )
   }
 
@@ -239,8 +239,8 @@ class PrisonApiClientTest {
           prisonId = "NMI",
           imprisonmentStatus = "SENT03",
           movementReasonCode = "C",
-          youthOffender = false
-        )
+          youthOffender = false,
+        ),
       )
     }.isInstanceOf(ClientException::class.java)
   }
@@ -255,8 +255,8 @@ class PrisonApiClientTest {
       TransferIn(
         cellLocation = "MDI-RECP",
         commentText = "Prisoner was transferred to a new prison",
-        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-      )
+        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+      ),
     )
   }
 
@@ -271,8 +271,8 @@ class PrisonApiClientTest {
         TransferIn(
           cellLocation = "MDI-RECP",
           commentText = "Prisoner was transferred to a new prison",
-          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-        )
+          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+        ),
       )
     }.isInstanceOf(ClientException::class.java)
   }
@@ -288,8 +288,8 @@ class PrisonApiClientTest {
         agencyId = "MDI",
         movementReasonCode = "CA",
         commentText = "Prisoner was transferred from court",
-        dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-      )
+        dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+      ),
     )
   }
 
@@ -305,8 +305,8 @@ class PrisonApiClientTest {
           agencyId = "MDI",
           movementReasonCode = "CA",
           commentText = "Prisoner was transferred from court",
-          dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-        )
+          dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+        ),
       )
     }.isInstanceOf(ClientException::class.java)
   }
@@ -325,7 +325,7 @@ class PrisonApiClientTest {
       toAgency = "ABRYMC",
       toAgencyDescription = "Aberystwyth Magistrates Court",
       movementTime = LocalDateTime.of(2022, 1, 18, 8, 0),
-      commentText = "pHnuWeNNnALpHnuWeNNnA"
+      commentText = "pHnuWeNNnALpHnuWeNNnA",
     )
 
     mockServer.stubGetTemporaryAbsencesSuccess(agencyId)
@@ -370,8 +370,8 @@ class PrisonApiClientTest {
         agencyId = "NMI",
         movementReasonCode = "ET",
         commentText = "",
-        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0)
-      )
+        receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+      ),
     )
     assertThat(response.offenderNo).isEqualTo(offenderNumber)
   }

@@ -31,8 +31,12 @@ class ArrivalListenerTest {
 
     arrivalListener.arrived(
       ArrivalEvent(
-        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
-      )
+        arrivalId = "1",
+        prisonId = "MDI",
+        prisonNumber = "A1234AA",
+        bookingId = 123,
+        arrivalType = RECALL,
+      ),
     )
 
     verify(confirmedArrivalRepository).save(
@@ -45,9 +49,9 @@ class ArrivalListenerTest {
           arrivalType = RECALL,
           username = "USER-1",
           arrivalDate = LocalDate.now(FIXED_CLOCK),
-          timestamp = LocalDateTime.now(FIXED_CLOCK)
-        )
-      )
+          timestamp = LocalDateTime.now(FIXED_CLOCK),
+        ),
+      ),
     )
   }
 
@@ -57,8 +61,12 @@ class ArrivalListenerTest {
 
     arrivalListener.arrived(
       ArrivalEvent(
-        arrivalId = "1", prisonId = "MDI", prisonNumber = "A1234AA", bookingId = 123, arrivalType = RECALL
-      )
+        arrivalId = "1",
+        prisonId = "MDI",
+        prisonNumber = "A1234AA",
+        bookingId = 123,
+        arrivalType = RECALL,
+      ),
     )
 
     verify(telemetryClient).trackEvent(
@@ -70,9 +78,9 @@ class ArrivalListenerTest {
         "bookingId" to "123",
         "arrivalType" to "RECALL",
         "username" to "USER-1",
-        "timestamp" to LocalDateTime.now(FIXED_CLOCK).toString()
+        "timestamp" to LocalDateTime.now(FIXED_CLOCK).toString(),
       ),
-      null
+      null,
     )
   }
 }

@@ -47,11 +47,11 @@ class PrisonRegisterClientTest {
     val agency = prisonRegisterClient.getPrison(PRISON_ID)
 
     Assertions.assertThat(agency).isEqualTo(
-      Prison(prisonName = "Nottingham (HMP)")
+      Prison(prisonName = "Nottingham (HMP)"),
     )
 
     mockServer.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/prisons/id/$PRISON_ID"))
+      WireMock.getRequestedFor(WireMock.urlEqualTo("/prisons/id/$PRISON_ID")),
     )
   }
 

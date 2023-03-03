@@ -41,8 +41,8 @@ class LimitStatusResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .exchange()
@@ -86,8 +86,8 @@ class LimitStatusResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .exchange()
@@ -102,7 +102,7 @@ class LimitStatusResourceTest : IntegrationTestBase() {
             {"prisonNumber":"G8874VX","numberOfBodyScans":115,"bodyScanStatus":"CLOSE_TO_LIMIT", "numberOfBodyScansRemaining": 1},
             {"prisonNumber":"G8874VY","numberOfBodyScans":116,"bodyScanStatus":"DO_NOT_SCAN", "numberOfBodyScansRemaining": 0},
             {"prisonNumber":"G8874VZ","numberOfBodyScans":117,"bodyScanStatus":"DO_NOT_SCAN", "numberOfBodyScansRemaining": 0}
-          ]"""
+          ]""",
         )
     }
   }

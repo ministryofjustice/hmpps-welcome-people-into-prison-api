@@ -27,7 +27,7 @@ data class CreateOffenderDetail(
   val pncNumber: String? = null,
   val suffix: String? = null,
   val title: String? = null,
-  val booking: AdmitOnNewBookingDetail? = null
+  val booking: AdmitOnNewBookingDetail? = null,
 )
 
 data class AdmitOnNewBookingDetail(
@@ -35,7 +35,7 @@ data class AdmitOnNewBookingDetail(
   val fromLocationId: String? = null,
   val movementReasonCode: String,
   val youthOffender: Boolean = false,
-  val imprisonmentStatus: String
+  val imprisonmentStatus: String,
 )
 
 data class RecallBooking(
@@ -45,27 +45,27 @@ data class RecallBooking(
   val movementReasonCode: String,
   val youthOffender: Boolean = false,
   val cellLocation: String? = null,
-  val imprisonmentStatus: String
+  val imprisonmentStatus: String,
 )
 
 data class TransferIn(
   val cellLocation: String? = null,
   val commentText: String? = null,
-  val receiveTime: LocalDateTime? = null
+  val receiveTime: LocalDateTime? = null,
 )
 
 data class TemporaryAbsencesArrival(
   val agencyId: String? = null,
   val movementReasonCode: String? = null,
   val commentText: String? = null,
-  val receiveTime: LocalDateTime? = null
+  val receiveTime: LocalDateTime? = null,
 )
 
 data class CourtTransferIn(
   val agencyId: String,
   val movementReasonCode: String? = null,
   val commentText: String? = null,
-  val dateTime: LocalDateTime? = null
+  val dateTime: LocalDateTime? = null,
 )
 
 data class TemporaryAbsence(
@@ -79,7 +79,7 @@ data class TemporaryAbsence(
   val toAgencyDescription: String? = null,
   val movementReasonCode: String,
   val movementReason: String,
-  val commentText: String? = null
+  val commentText: String? = null,
 
 )
 
@@ -95,7 +95,7 @@ data class Movement(
   val toAgencyDescription: String? = null,
   val movementTime: LocalTime,
   val movementDateTime: LocalDateTime,
-  val location: String? = null
+  val location: String? = null,
 )
 
 /*
@@ -104,14 +104,14 @@ data class Movement(
 data class InmateDetail(
   val bookingId: Long,
   val offenderNo: String,
-  val assignedLivingUnit: AssignedLivingUnit? = null
+  val assignedLivingUnit: AssignedLivingUnit? = null,
 )
 
 data class AssignedLivingUnit(
   val agencyId: String,
   val locationId: Int?,
   val description: String?,
-  val agencyName: String
+  val agencyName: String,
 )
 
 data class UserCaseLoad(
@@ -157,7 +157,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
     webClient.get()
       .uri(
         "/api/movements/$agencyId/enroute?movementDate=" +
-          movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+          movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
       )
       .retrieve()
       .bodyToMono(typeReference<List<OffenderMovement>>())
@@ -230,7 +230,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival"
+          "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival",
         )
       }
       .bodyToMono(InmateDetail::class.java)
@@ -259,7 +259,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .uri(
         "api/movements/$agencyId/in?fromDateTime=" +
           "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
-          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
       )
       .header("Page-Limit", "10000")
       .retrieve()

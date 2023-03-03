@@ -18,13 +18,13 @@ import java.time.LocalDate
 @Validated
 @RequestMapping(name = "Events", produces = [MediaType.APPLICATION_JSON_VALUE])
 class EventsCsvResource(
-  private val arrivalsService: ArrivalsService
+  private val arrivalsService: ArrivalsService,
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
     summary = "Arrival events",
     description = "Arrival events in CSV format.",
-    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])]
+    security = [SecurityRequirement(name = "ROLE_VIEW_ARRIVALS", scopes = ["read"])],
   )
   @GetMapping(path = ["/events"], produces = ["text/csv"])
   fun getEvents(
@@ -35,6 +35,6 @@ class EventsCsvResource(
 
     @RequestParam(name = "days")
     @Parameter(description = "Return details of events occurring within this number of days of start-date")
-    days: Long?
+    days: Long?,
   ) = arrivalsService.getArrivalsAsCsv(startDate, days ?: 7L)
 }

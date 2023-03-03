@@ -13,7 +13,7 @@ data class PersonalCareNeeds(
   @JsonIgnore
   val bodyScanReason: BodyScanReason,
   @JsonIgnore
-  val bodyScanResult: BodyScanResult
+  val bodyScanResult: BodyScanResult,
 
 ) {
   @JsonProperty("problemCode")
@@ -39,6 +39,6 @@ fun PersonalCareNeeds.toEventProperties(prisonNumber: String, username: String) 
   "date" to date.toString(),
   "bodyScanReason" to bodyScanReason.toString(),
   "bodyScanResult" to bodyScanResult.toString(),
-  "username" to username
+  "username" to username,
 
 )

@@ -18,7 +18,7 @@ class TemporaryAbsenceService(
   private val prisonApiClient: PrisonApiClient,
   private val locationFormatter: LocationFormatter,
   private val arrivalListener: ArrivalListener,
-  private val prisonerSearchApiClient: PrisonerSearchApiClient
+  private val prisonerSearchApiClient: PrisonerSearchApiClient,
 ) {
 
   fun getTemporaryAbsence(prisonNumber: String): TemporaryAbsenceResponse {
@@ -35,7 +35,7 @@ class TemporaryAbsenceService(
       dateOfBirth = it.dateOfBirth,
       prisonNumber = it.offenderNo,
       reasonForAbsence = it.movementReason,
-      movementDateTime = it.movementTime
+      movementDateTime = it.movementTime,
     )
   }
 
@@ -51,12 +51,15 @@ class TemporaryAbsenceService(
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,
         arrivalType = TEMPORARY_ABSENCE,
-      )
+      ),
     )
     return ConfirmTemporaryAbsenceResponse(prisonNumber, locationFormatter.extract(inmateDetail))
   }
 
   private fun ConfirmTemporaryAbsenceRequest.toArrival() = TemporaryAbsencesArrival(
-    prisonId, movementReasonCode, commentText, receiveTime
+    prisonId,
+    movementReasonCode,
+    commentText,
+    receiveTime,
   )
 }

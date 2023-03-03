@@ -71,7 +71,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
       basmApiMockServer.verify(
         1,
-        postRequestedFor(urlEqualTo("/oauth/token"))
+        postRequestedFor(urlEqualTo("/oauth/token")),
       )
     }
 
@@ -115,9 +115,9 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       basmApiMockServer.verify(
         getRequestedFor(
           urlEqualTo(
-            "/api/moves?include=profile.person,from_location,to_location,profile.person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc"
-          )
-        ).withHeader("Authorization", equalTo("Bearer ABCDE"))
+            "/api/moves?include=profile.person,from_location,to_location,profile.person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2020-01-02&filter%5Bdate_to%5D=2020-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=ASC",
+          ),
+        ).withHeader("Authorization", equalTo("Bearer ABCDE")),
       )
     }
   }
@@ -173,7 +173,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Confirm arrivals tests")
   inner class ConfirmArrivalTests {
-    val validRequest = { prisonNumber: String? ->
+    val validRequest = { _: String? ->
       """
         {
           "firstName": "Alpha",
@@ -204,8 +204,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
@@ -224,7 +224,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
       val token = getAuthorisation(
         roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-        scopes = listOf("read", "write")
+        scopes = listOf("read", "write"),
       )
 
       webTestClient
@@ -240,9 +240,9 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         postRequestedFor(
           urlEqualTo(
-            "/api/offenders"
-          )
-        ).withHeader("Authorization", equalTo(token))
+            "/api/offenders",
+          ),
+        ).withHeader("Authorization", equalTo(token)),
       )
     }
 
@@ -257,7 +257,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       val token = getAuthorisation(
         username = username,
         roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-        scopes = listOf("read", "write")
+        scopes = listOf("read", "write"),
       )
 
       webTestClient
@@ -289,8 +289,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
@@ -302,7 +302,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "movementReasonCode": "N",
           "imprisonmentStatus": "SENT03"
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -313,13 +313,12 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "errorCode": null,
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
 
     @Test
     fun `create and book - prison-api create offender fails`() {
-
       prisonApiMockServer.stubCreateOffenderFails(500)
 
       webTestClient
@@ -328,8 +327,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
@@ -340,7 +339,6 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book - prison-api create offender fails on a client error without proper error response`() {
-
       prisonApiMockServer.stubCreateOffenderFails(400)
 
       webTestClient
@@ -349,8 +347,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
@@ -371,8 +369,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(prisonNumber))
@@ -385,7 +383,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "errorCode": "NO_CELL_CAPACITY",
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
 
@@ -399,8 +397,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
@@ -413,7 +411,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "errorCode": "PRISONER_ALREADY_EXIST",
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
 
@@ -427,8 +425,8 @@ class ArrivalsResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
@@ -440,7 +438,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           "status": 400,
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
   }

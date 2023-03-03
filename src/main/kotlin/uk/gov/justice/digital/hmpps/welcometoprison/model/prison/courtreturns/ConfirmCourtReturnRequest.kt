@@ -19,10 +19,10 @@ data class ConfirmCourtReturnRequest(
     description = "The offender's Prison number.",
     example = "A1234AA",
     pattern = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$",
-    maxLength = 7
+    maxLength = 7,
   )
   @field:Length(max = 7)
   @field:Pattern(regexp = "^[A-Za-z]\\d{4}[A-Za-z]{2}\$", message = "Prison number is not valid")
   @field:NotNull
-  val prisonNumber: String
+  val prisonNumber: String,
 )

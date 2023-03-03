@@ -22,7 +22,7 @@ class PrisonerSearchServiceTest {
   @Test
   fun `getPncNumbers - happy path when PNC Number available`() {
     whenever(client.matchPncNumbersByPrisonerNumbers(any())).thenReturn(
-      listOf(PrisonerAndPncNumber(PRISON_NUMBER, PNC_NUMBER))
+      listOf(PrisonerAndPncNumber(PRISON_NUMBER, PNC_NUMBER)),
     )
     val prisonerAndPncNumbers = service.getPncNumbers(listOf(PRISON_NUMBER))
 
@@ -63,9 +63,9 @@ class PrisonerSearchServiceTest {
           gender = SEX,
           status = INACTIVE_OUT,
           prisonId = PRISON_ID,
-          lastMovementTypeCode = LAST_MOVEMENT_TYPE_CODE
-        )
-      )
+          lastMovementTypeCode = LAST_MOVEMENT_TYPE_CODE,
+        ),
+      ),
     )
     val matchPrisonersRequest = MatchPrisonersRequest(
       prisonNumber = PRISON_NUMBER,
@@ -103,8 +103,8 @@ class PrisonerSearchServiceTest {
         SEX,
         INACTIVE_OUT,
         LAST_MOVEMENT_TYPE_CODE,
-        PRISON_ID
-      )
+        PRISON_ID,
+      ),
     )
 
     val prisoner = service.getPrisoner("A1234AA")
@@ -120,8 +120,8 @@ class PrisonerSearchServiceTest {
         SEX,
         "INACTIVE OUT-REL-MDI",
         NEW_BOOKING,
-        false
-      )
+        false,
+      ),
     )
   }
 

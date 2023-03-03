@@ -24,7 +24,7 @@ class Searcher<Q, T : Comparable<T>>(private val strategy: SearchStrategy<Q, T>)
   data class Result<T : Comparable<T>>(
     val item: T,
     // null denotes irrelevant
-    val relevance: Int?
+    val relevance: Int?,
   )
 
   interface SearchStrategy<Q, T : Comparable<T>> {

@@ -134,6 +134,6 @@ class SearchByNameAndPrisonNumberTest {
     firstName = firstName,
     lastName = lastName,
     movementDateTime = LocalDate.ofEpochDay(1).atStartOfDay(),
-    location = null
+    location = null,
   )
 }

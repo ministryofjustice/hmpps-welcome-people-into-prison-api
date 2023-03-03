@@ -65,7 +65,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
     prisonApiMockServer.stubGetMovementSuccess(
       "MDI",
       LocalDate.of(2019, 1, 2).atStartOfDay(),
-      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX)
+      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX),
     )
 
     webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02")
@@ -97,7 +97,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
          "first":true,
          "empty":false
         }
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -106,7 +106,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
     prisonApiMockServer.stubGetMovementSuccess(
       "MDI",
       LocalDate.of(2019, 1, 2).atStartOfDay(),
-      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX)
+      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX),
     )
 
     webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02&query=HeRKImer&pageSize=50")
@@ -136,7 +136,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
          "first":true,
          "empty":false
         }
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -145,7 +145,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
     prisonApiMockServer.stubGetMovementSuccessWithNoLocation(
       "MDI",
       LocalDate.of(2019, 1, 2).atStartOfDay(),
-      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX)
+      LocalDate.of(2020, 1, 2).atTime(LocalTime.MAX),
     )
 
     webTestClient.get().uri("/prisons/MDI/recent-arrivals?fromDate=2019-01-02&toDate=2020-01-02")
@@ -177,7 +177,7 @@ class RecentArrivalsResourceTest : IntegrationTestBase() {
          "first":true,
          "empty":false
         }
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 }

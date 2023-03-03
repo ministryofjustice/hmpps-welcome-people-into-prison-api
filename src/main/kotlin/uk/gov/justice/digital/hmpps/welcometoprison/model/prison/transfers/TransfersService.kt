@@ -55,7 +55,7 @@ class TransfersService(
         prisonNumber = inmateDetail.offenderNo,
         bookingId = inmateDetail.bookingId,
         arrivalType = TRANSFER,
-      )
+      ),
     )
     return TransferResponse(prisonNumber = inmateDetail.offenderNo, location = locationFormatter.extract(inmateDetail))
   }

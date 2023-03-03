@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.courtreturns.Co
 class PrisonService(
   private val prisonApiClient: PrisonApiClient,
   private val prisonRegisterClient: PrisonRegisterClient,
-  private val locationFormatter: LocationFormatter
+  private val locationFormatter: LocationFormatter,
 ) {
 
   fun getPrisonerImage(prisonNumber: String): ByteArray? =
@@ -24,7 +24,7 @@ class PrisonService(
 
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
-    confirmArrivalDetail: ConfirmArrivalDetail
+    confirmArrivalDetail: ConfirmArrivalDetail,
   ): InmateDetail =
     prisonApiClient.admitOffenderOnNewBooking(
       prisonNumber,
@@ -34,9 +34,9 @@ class PrisonService(
           fromLocationId = fromLocationId,
           movementReasonCode = movementReasonCode!!,
           youthOffender = youthOffender,
-          imprisonmentStatus = imprisonmentStatus!!
+          imprisonmentStatus = imprisonmentStatus!!,
         )
-      }
+      },
     )
 
   fun recallOffender(prisonNumber: String, detail: ConfirmArrivalDetail): InmateDetail =
@@ -48,9 +48,9 @@ class PrisonService(
           fromLocationId = fromLocationId,
           movementReasonCode = movementReasonCode!!,
           youthOffender = youthOffender,
-          imprisonmentStatus = imprisonmentStatus!!
+          imprisonmentStatus = imprisonmentStatus!!,
         )
-      }
+      },
     )
 
   fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): InmateDetail =
@@ -68,10 +68,10 @@ class PrisonService(
               fromLocationId = fromLocationId,
               movementReasonCode = movementReasonCode!!,
               youthOffender = youthOffender,
-              imprisonmentStatus = imprisonmentStatus!!
-            )
+              imprisonmentStatus = imprisonmentStatus!!,
+            ),
           )
-        }
+        },
       )
 
   fun returnFromCourt(prisonId: String, prisonNumber: String): ConfirmCourtReturnResponse {
@@ -79,7 +79,7 @@ class PrisonService(
     return ConfirmCourtReturnResponse(
       prisonNumber = inmateDetail.offenderNo,
       location = locationFormatter.extract(inmateDetail),
-      bookingId = inmateDetail.bookingId
+      bookingId = inmateDetail.bookingId,
     )
   }
 }

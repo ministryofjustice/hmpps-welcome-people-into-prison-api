@@ -24,5 +24,5 @@ data class TemporaryAbsenceResponse(
   val reasonForAbsence: String,
 
   @Schema(description = "Date and time when prisoner left prison", example = "2022-01-18T14:00:00")
-  val movementDateTime: LocalDateTime?
+  val movementDateTime: LocalDateTime?,
 )
