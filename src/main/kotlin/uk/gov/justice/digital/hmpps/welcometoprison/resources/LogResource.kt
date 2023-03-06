@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 class LogResource(
   private val logService: LogService,
 
-  ) {
+) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @GetMapping(
     value = ["/log-test/{type}/{random}"],
@@ -27,5 +27,5 @@ class LogResource(
     @PathVariable
     random: Int,
 
-    ) = logService.generateLog(type, random)
+  ) = logService.generateLog(type, random)
 }

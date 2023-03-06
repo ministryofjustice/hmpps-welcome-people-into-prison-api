@@ -20,5 +20,4 @@ class LogService {
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
-
 }
