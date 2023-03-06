@@ -49,7 +49,7 @@ class JsonApiQueryBuilderTest {
   fun `check sorting`() =
     `query of`(
       sort = "name" to Order.ASC,
-    ) `decodes to` "?sort[by]=name&sort[direction]=ASC"
+    ) `decodes to` "?sort[by]=name&sort[direction]=asc"
 
   @Test
   fun `complex example`() =
@@ -64,7 +64,7 @@ class JsonApiQueryBuilderTest {
       page = 1,
       perPage = 200,
       includes = listOf("profile.person", "profile.person_escort_record.flags"),
-    ) `decodes to` "?include=profile.person,profile.person_escort_record.flags&filter[to_location_id]=123&filter[date_from]=2020-02-12&filter[date_to]=2020-02-13&filter[status]=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort[by]=date&sort[direction]=ASC"
+    ) `decodes to` "?include=profile.person,profile.person_escort_record.flags&filter[to_location_id]=123&filter[date_from]=2020-02-12&filter[date_to]=2020-02-13&filter[status]=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort[by]=date&sort[direction]=asc"
 }
 
 infix fun String.`decodes to`(expected: String) =
