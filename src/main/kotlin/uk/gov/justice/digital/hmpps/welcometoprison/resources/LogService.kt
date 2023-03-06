@@ -6,13 +6,16 @@ import org.springframework.stereotype.Service
 @Service
 class LogService {
   fun generateLog(type: String, random: Int): String {
-
-    if ("INFO" == type.uppercase()) {
-      log.info("LogService info message: $random")
-    } else if ("WARNING" == type.uppercase()) {
-      log.warn("LogService warning message: $random")
-    } else {
-      log.error("LogService error message: $random")
+    try {
+      if ("INFO" == type.uppercase()) {
+        log.info("LogService info message: $random")
+      } else if ("WARNING" == type.uppercase()) {
+        log.warn("LogService warning message: $random")
+      } else {
+        log.error("LogService error message: $random")
+      }
+    } catch (exception: Exception) {
+      log.error("LogService exception", exception)
     }
     return "ok"
   }
