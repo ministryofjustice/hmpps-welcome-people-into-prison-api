@@ -50,14 +50,15 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
         .exchange()
         .expectStatus().isNoContent
     }
+
     @Test
     fun `add body scan when prisoner not exist`() {
       val prisonNumber = "A1278AA"
@@ -69,8 +70,8 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(VALID_REQUEST)
@@ -87,12 +88,12 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
         .headers(
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write")
-          )
+            scopes = listOf("read", "write"),
+          ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
-          "{}"
+          "{}",
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -103,7 +104,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
           "errorCode": null,
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
   }

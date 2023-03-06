@@ -35,7 +35,7 @@ import java.time.LocalDate
 @RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArrivalsResource(
   private val arrivalsService: ArrivalsService,
-  private val confirmationService: ConfirmationService
+  private val confirmationService: ConfirmationService,
 ) {
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
   @Operation(
@@ -49,24 +49,24 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = Arrival::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = Arrival::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prison ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -74,19 +74,23 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(path = ["/prisons/{prisonId}/arrivals"])
   fun getMoves(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
-    @Parameter(description = "Arrivals on a specific date", example = "2020-01-26", required = true) @DateTimeFormat(
-      iso = DateTimeFormat.ISO.DATE
-    ) @RequestParam date: LocalDate
+    @PathVariable
+    prisonId: String,
+    @Parameter(description = "Arrivals on a specific date", example = "2020-01-26", required = true)
+    @DateTimeFormat(
+      iso = DateTimeFormat.ISO.DATE,
+    )
+    @RequestParam
+    date: LocalDate,
   ): List<Arrival> = arrivalsService.getArrivals(prisonId, date)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -101,19 +105,19 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = Arrival::class)
-          )
-        ]
+            schema = Schema(implementation = Arrival::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -121,17 +125,17 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @GetMapping(path = ["/arrivals/{arrivalId}"])
   fun getMove(
     @Schema(description = "ID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
-    @PathVariable arrivalId: String,
+    @PathVariable
+    arrivalId: String,
   ): Arrival = arrivalsService.getArrival(arrivalId)
 
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
@@ -141,8 +145,8 @@ class ArrivalsResource(
     security = [
       SecurityRequirement(
         name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
-        scopes = ["write"]
-      )
+        scopes = ["write"],
+      ),
     ],
     responses = [
       ApiResponse(
@@ -151,19 +155,19 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ConfirmArrivalResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ConfirmArrivalResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -171,25 +175,26 @@ class ArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @PostMapping(
     "/arrivals/{arrivalId}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+    produces = [MediaType.APPLICATION_JSON_VALUE],
   )
   fun confirmArrival(
     @PathVariable
-    @Valid @NotEmpty
+    @Valid
+    @NotEmpty
     arrivalId: String,
 
     @RequestBody
-    @Valid @NotNull
-    confirmArrivalDetail: ConfirmArrivalDetail
+    @Valid
+    @NotNull
+    confirmArrivalDetail: ConfirmArrivalDetail,
   ): ConfirmArrivalResponse = confirmationService.confirmArrival(Confirmation.Expected(arrivalId, confirmArrivalDetail))
 }

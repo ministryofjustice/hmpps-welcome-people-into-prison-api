@@ -40,17 +40,17 @@ class CreateBodyScanResource(
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prison ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -58,20 +58,22 @@ class CreateBodyScanResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @PostMapping(path = ["/body-scans/prisoners/{prisonNumber}"])
   @ResponseStatus(HttpStatus.NO_CONTENT)
   fun addBodyScan(
     @Schema(description = "Prison number", example = "A1278AA", required = true)
-    @PathVariable prisonNumber: String,
+    @PathVariable
+    prisonNumber: String,
 
     @RequestBody
-    @Valid @NotNull
-    detail: BodyScanDetailRequest
+    @Valid
+    @NotNull
+    detail: BodyScanDetailRequest,
   ): Unit = bodyScanService.addBodyScan(prisonNumber, detail)
 }

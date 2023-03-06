@@ -20,7 +20,7 @@ data class ClientErrorResponse(
   val errorCode: Int? = null,
   val userMessage: String? = null,
   val developerMessage: String? = null,
-  val moreInfo: String? = null
+  val moreInfo: String? = null,
 )
 
 data class NotFoundException(override val message: String) : RuntimeException(message)

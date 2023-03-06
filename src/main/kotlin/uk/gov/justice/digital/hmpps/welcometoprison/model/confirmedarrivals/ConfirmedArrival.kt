@@ -32,7 +32,7 @@ data class ConfirmedArrival(
 
   val arrivalDate: LocalDate,
 
-  val username: String?
+  val username: String?,
 )
 
 enum class ConfirmedArrivalType {
@@ -41,5 +41,5 @@ enum class ConfirmedArrivalType {
   RECALL,
   COURT_TRANSFER,
   TEMPORARY_ABSENCE,
-  TRANSFER
+  TRANSFER,
 }

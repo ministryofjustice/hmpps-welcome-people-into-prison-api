@@ -19,7 +19,7 @@ enum class ArrivalType {
 
   // The following shouldn't really happen
   CURRENTLY_IN,
-  UNKNOWN
+  UNKNOWN,
 }
 
 fun MatchPrisonerResponse.toPrisonerDetails() = PrisonerDetails(
@@ -32,7 +32,7 @@ fun MatchPrisonerResponse.toPrisonerDetails() = PrisonerDetails(
   isCurrentPrisoner = this.isCurrentPrisoner,
   sex = this.gender,
   arrivalType = this.calculateArrivalType(),
-  arrivalTypeDescription = this.buildArrivalDescription()
+  arrivalTypeDescription = this.buildArrivalDescription(),
 )
 
 fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
@@ -45,7 +45,7 @@ fun MatchPrisonerResponse.toPotentialMatch() = PotentialMatch(
   isCurrentPrisoner = this.isCurrentPrisoner,
   sex = this.gender,
   arrivalType = this.calculateArrivalType(),
-  arrivalTypeDescription = this.buildArrivalDescription()
+  arrivalTypeDescription = this.buildArrivalDescription(),
 )
 
 private fun MatchPrisonerResponse.buildArrivalDescription() = "$status-$lastMovementTypeCode-$prisonId"

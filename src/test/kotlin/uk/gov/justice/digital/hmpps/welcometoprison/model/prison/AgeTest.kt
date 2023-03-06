@@ -10,8 +10,8 @@ class AgeTest {
     assertThat(
       Age.lessThanTwentyOneYears(
         LocalDate.of(1961, 5, 29),
-        LocalDate.of(1982, 5, 28)
-      )
+        LocalDate.of(1982, 5, 28),
+      ),
     ).isTrue
   }
 
@@ -20,8 +20,8 @@ class AgeTest {
     assertThat(
       Age.lessThanTwentyOneYears(
         LocalDate.of(1961, 5, 29),
-        LocalDate.of(1982, 5, 29)
-      )
+        LocalDate.of(1982, 5, 29),
+      ),
     ).isFalse
   }
 }

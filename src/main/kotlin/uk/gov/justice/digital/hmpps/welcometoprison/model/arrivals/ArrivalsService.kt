@@ -15,7 +15,7 @@ class ArrivalsService(
   private val basmService: BasmService,
   private val prisonerSearchService: PrisonerSearchService,
   private val confirmedArrivalRepository: ConfirmedArrivalRepository,
-  private val arrivalsCsvConverter: ConfirmedArrivalsCsvConverter
+  private val arrivalsCsvConverter: ConfirmedArrivalsCsvConverter,
 ) {
   fun getArrival(arrivalId: String): Arrival = augmentWithPrisonData(basmService.getArrival(arrivalId))
 
@@ -38,19 +38,19 @@ class ArrivalsService(
         arrival.lastName,
         arrival.dateOfBirth,
         arrival.prisonNumber,
-        arrival.pncNumber
-      )
+        arrival.pncNumber,
+      ),
     )
 
     return arrival.copy(
       isCurrentPrisoner = matches.isNotEmpty() && matches.all { it.isCurrentPrisoner },
-      potentialMatches = matches
+      potentialMatches = matches,
     )
   }
 
   fun getArrivalsAsCsv(startDate: LocalDate, numberOfDays: Long): String {
     return arrivalsCsvConverter.toCsv(
-      confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays))
+      confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays)),
     )
   }
 }

@@ -23,7 +23,7 @@ class WebClientConfiguration(
   @Value("\${prison.endpoint.url}") private val prisonApiBaseUrl: String,
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
   @Value("\${prisoner.search.endpoint.url}") private val prisonerSearchApiUrl: String,
-  @Value("\${prison.register.endpoint.url}") private val prisonRegisterApiUrl: String
+  @Value("\${prison.register.endpoint.url}") private val prisonRegisterApiUrl: String,
 ) {
 
   @Bean
@@ -58,7 +58,7 @@ class WebClientConfiguration(
             configurer.defaultCodecs()
               .maxInMemorySize(-1)
           }
-          .build()
+          .build(),
       )
       .build()
   }
@@ -92,7 +92,7 @@ class WebClientConfiguration(
   @Bean
   fun authorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository?,
-    oAuth2AuthorizedClientService: OAuth2AuthorizedClientService?
+    oAuth2AuthorizedClientService: OAuth2AuthorizedClientService?,
   ): OAuth2AuthorizedClientManager? {
     val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build()
     val authorizedClientManager =
@@ -111,7 +111,7 @@ class WebClientConfiguration(
       next.exchange(
         ClientRequest.from(request)
           .header(AUTHORIZATION, "Bearer $token")
-          .build()
+          .build(),
       )
     }
 }

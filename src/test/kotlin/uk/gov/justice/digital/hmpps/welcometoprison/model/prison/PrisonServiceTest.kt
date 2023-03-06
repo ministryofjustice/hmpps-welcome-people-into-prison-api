@@ -30,8 +30,8 @@ class PrisonServiceTest {
       "134",
       1,
       "RECP",
-      "Nottingham (HMP)"
-    )
+      "Nottingham (HMP)",
+    ),
   )
 
   @Test
@@ -58,9 +58,9 @@ class PrisonServiceTest {
       listOf(
         UserCaseLoad(
           caseLoadId = "MDI",
-          description = "Moorland Closed (HMP & YOI)"
-        )
-      )
+          description = "Moorland Closed (HMP & YOI)",
+        ),
+      ),
     )
 
     val result: List<UserCaseLoad> = prisonService.getUserCaseLoads()
@@ -68,8 +68,8 @@ class PrisonServiceTest {
     assertThat(result).containsExactly(
       UserCaseLoad(
         caseLoadId = "MDI",
-        description = "Moorland Closed (HMP & YOI)"
-      )
+        description = "Moorland Closed (HMP & YOI)",
+      ),
     )
   }
 
@@ -106,7 +106,7 @@ class PrisonServiceTest {
         fromLocationId = fromLocationId,
         movementReasonCode = movementReasonCode!!,
         youthOffender = youthOffender,
-        imprisonmentStatus = imprisonmentStatus!!
+        imprisonmentStatus = imprisonmentStatus!!,
       )
     }
     val prisonNumber = "ABC123A"
@@ -134,7 +134,7 @@ class PrisonServiceTest {
         fromLocationId = fromLocationId,
         movementReasonCode = movementReasonCode!!,
         youthOffender = youthOffender,
-        imprisonmentStatus = imprisonmentStatus!!
+        imprisonmentStatus = imprisonmentStatus!!,
       )
     }
     val prisonNumber = "ABC123A"

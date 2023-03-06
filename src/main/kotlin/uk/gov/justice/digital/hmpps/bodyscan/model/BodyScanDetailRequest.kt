@@ -10,7 +10,7 @@ data class BodyScanDetailRequest(
   @Schema(
     required = true,
     description = "Date on which the scan took place. Must be specified in YYYY-MM-DD format.",
-    example = "1970-01-01"
+    example = "1970-01-01",
   )
   @field:NotNull
   val date: LocalDate? = null,

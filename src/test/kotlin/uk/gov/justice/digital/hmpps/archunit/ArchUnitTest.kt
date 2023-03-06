@@ -16,7 +16,7 @@ class ArchUnitTest {
         "..uk.gov.justice.digital.hmpps.welcometoprison..",
         "..uk.gov.justice.digital.hmpps.bodyscan..",
         "..uk.gov.justice.digital.hmpps.archunit..",
-        "..uk.gov.justice.digital.hmpps.config.."
+        "..uk.gov.justice.digital.hmpps.config..",
       )
 
     rule.orShould().haveSimpleName("App")
@@ -29,7 +29,7 @@ class ArchUnitTest {
     val rule = ArchRuleDefinition.noClasses().that().resideInAPackage("..uk.gov.justice.digital.hmpps.config..")
       .should().dependOnClassesThat().resideInAnyPackage(
         "..uk.gov.justice.digital.hmpps.bodyscan..",
-        "..uk.gov.justice.digital.hmpps.welcometoprison.."
+        "..uk.gov.justice.digital.hmpps.welcometoprison..",
       )
 
     rule.check(importedClasses)

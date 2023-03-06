@@ -24,9 +24,14 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.ConfirmArrivalD
 @Validated
 @RequestMapping(name = "Arrivals", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UnexpectedArrivalsResource(
-  private val confirmationService: ConfirmationService
+  private val confirmationService: ConfirmationService,
 ) {
 
+  @PostMapping(
+    "/unexpected-arrivals/confirm",
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
+    produces = [MediaType.APPLICATION_JSON_VALUE],
+  )
   @PreAuthorize("hasRole('ROLE_BOOKING_CREATE') and hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Confirms the unexpected arrival",
@@ -34,8 +39,8 @@ class UnexpectedArrivalsResource(
     security = [
       SecurityRequirement(
         name = "ROLE_BOOKING_CREATE,ROLE_VIEW_ARRIVALS,ROLE_TRANSFER_PRISONER",
-        scopes = ["write"]
-      )
+        scopes = ["write"],
+      ),
     ],
     responses = [
       ApiResponse(
@@ -44,19 +49,19 @@ class UnexpectedArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ConfirmArrivalResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ConfirmArrivalResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -64,22 +69,16 @@ class UnexpectedArrivalsResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
-  )
-
-  @PostMapping(
-    "/unexpected-arrivals/confirm",
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+    ],
   )
   fun confirmArrival(
-
     @RequestBody
-    @Valid @NotNull
-    confirmArrivalDetail: ConfirmArrivalDetail
+    @Valid
+    @NotNull
+    confirmArrivalDetail: ConfirmArrivalDetail,
   ): ConfirmArrivalResponse = confirmationService.confirmArrival(Confirmation.Unexpected(confirmArrivalDetail))
 }

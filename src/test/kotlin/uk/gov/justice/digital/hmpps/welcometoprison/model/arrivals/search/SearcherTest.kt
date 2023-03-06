@@ -13,7 +13,9 @@ class SearcherTest {
     override fun evaluate(query: Int, item: Int): Result<Int> {
       return if (item <= query) {
         Result(item, query - item)
-      } else Result(item, null)
+      } else {
+        Result(item, null)
+      }
     }
   }
 
@@ -57,7 +59,7 @@ class SearcherTest {
     assertThat(results).containsExactly(
       Result(1, relevance = 2),
       Result(2, relevance = 1),
-      Result(3, relevance = 0)
+      Result(3, relevance = 0),
     )
   }
 
@@ -70,7 +72,7 @@ class SearcherTest {
       Result(1, relevance = 2),
       Result(2, relevance = 1),
       Result(2, relevance = 1),
-      Result(3, relevance = 0)
+      Result(3, relevance = 0),
     )
   }
 
@@ -104,7 +106,11 @@ class SearcherTest {
     val items = listOf(1, 2, 3, 6, 2)
     val results = searcher.search(null, items)
     assertThat(results).containsExactly(
-      1, 2, 2, 3, 6
+      1,
+      2,
+      2,
+      3,
+      6,
     )
   }
 }

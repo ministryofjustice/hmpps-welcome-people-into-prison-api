@@ -8,7 +8,7 @@ import java.time.temporal.TemporalAdjusters
 
 @Service
 class LimitStatusService(
-  private val prisonApiClient: BodyScanPrisonApiClient
+  private val prisonApiClient: BodyScanPrisonApiClient,
 ) {
   companion object {
     const val TYPE = "BSCAN"
@@ -24,7 +24,7 @@ class LimitStatusService(
     return prisonNumbers.stream().map {
       LimitStatusResponse(
         prisonNumber = it,
-        numberOfBodyScans = apiMap.getOrDefault(it, 0)
+        numberOfBodyScans = apiMap.getOrDefault(it, 0),
       )
     }.toList()
   }
