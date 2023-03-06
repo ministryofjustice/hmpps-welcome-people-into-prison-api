@@ -173,7 +173,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Confirm arrivals tests")
   inner class ConfirmArrivalTests {
-    val validRequest = { prisonNumber: String? ->
+    val validRequest = { _: String? ->
       """
         {
           "firstName": "Alpha",
