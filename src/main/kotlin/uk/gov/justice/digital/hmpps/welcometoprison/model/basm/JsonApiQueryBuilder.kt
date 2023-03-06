@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 typealias Param<T> = Pair<String, T>
 
 object JsonApiQueryBuilder {
-  enum class Order { ASC, DESC }
+  enum class Order(val value: String) { ASC("asc"), DESC("desc") }
 
   fun `query of`(
     includes: List<String>? = null,
@@ -15,7 +15,7 @@ object JsonApiQueryBuilder {
     val includeParams = includes.toParams { listOf("include" to it.joinToString(",")) }
     val perPageParam = perPage.toParams { listOf("per_page" to it) }
     val pageParam = page.toParams { listOf("page" to it) }
-    val sortParam = sort.toParams { (name, order) -> listOf("sort[by]" to name, "sort[direction]" to order) }
+    val sortParam = sort.toParams { (name, order) -> listOf("sort[by]" to name, "sort[direction]" to order.value) }
     val filterParams =
       filters.toParams { it.toList().map { (name, values) -> "filter[$name]" to values.joinToString(",") } }
 
