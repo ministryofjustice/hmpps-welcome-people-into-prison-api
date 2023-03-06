@@ -42,24 +42,24 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = Transfer::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = Transfer::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prison ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -67,20 +67,21 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(
     path = [
-      "/prisons/{prisonId}/transfers"
-    ]
+      "/prisons/{prisonId}/transfers",
+    ],
   )
   fun getTransfers(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
+    @PathVariable
+    prisonId: String,
   ): List<Transfer> = transfersService.getTransfers(prisonId)
 
   @PreAuthorize("hasRole('ROLE_VIEW_ARRIVALS')")
@@ -95,24 +96,24 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = Transfer::class)
-          )
-        ]
+            schema = Schema(implementation = Transfer::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prison or Transfer not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -120,22 +121,24 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(
     path = [
       "/prisons/{prisonId}/transfers/{prisonNumber}",
-    ]
+    ],
   )
   fun getTransfer(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
+    @PathVariable
+    prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
-    @PathVariable prisonNumber: String
+    @PathVariable
+    prisonNumber: String,
   ): Transfer = transfersService.getTransfer(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
@@ -150,24 +153,24 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = TransferResponse::class)
-          )
-        ]
+            schema = Schema(implementation = TransferResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to post",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prisoner number not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -175,26 +178,26 @@ class TransfersResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
-
   @PostMapping(
     "/transfers/{prisonNumber}/confirm",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+    produces = [MediaType.APPLICATION_JSON_VALUE],
   )
   fun transferIn(
     @PathVariable
-    @Valid @NotEmpty
+    @Valid
+    @NotEmpty
     prisonNumber: String,
 
     @RequestBody
     @Valid
     @NotNull
-    transferInDetail: TransferInDetail
+    transferInDetail: TransferInDetail,
   ): TransferResponse = transfersService.transferInOffender(prisonNumber, transferInDetail)
 }

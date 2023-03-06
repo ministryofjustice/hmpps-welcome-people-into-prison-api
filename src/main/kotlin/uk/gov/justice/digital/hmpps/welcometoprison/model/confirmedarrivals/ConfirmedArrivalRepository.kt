@@ -10,11 +10,11 @@ interface ConfirmedArrivalRepository : JpaRepository<ConfirmedArrival, Long> {
 
   fun findAllByArrivalDateAndPrisonId(
     arrivalDate: LocalDate,
-    prisonId: String
+    prisonId: String,
   ): List<ConfirmedArrival>
 
   fun findAllByArrivalDateIsBetween(
     fromArrivalDate: LocalDate,
-    toArrivalDate: LocalDate
+    toArrivalDate: LocalDate,
   ): Stream<ConfirmedArrival>
 }

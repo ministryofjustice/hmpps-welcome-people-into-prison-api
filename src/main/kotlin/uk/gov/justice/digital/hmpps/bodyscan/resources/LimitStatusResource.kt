@@ -40,19 +40,19 @@ class LimitStatusResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = LimitStatusResponse::class)
-          )
-        ]
+            schema = Schema(implementation = LimitStatusResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -60,16 +60,17 @@ class LimitStatusResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(path = ["/body-scans/prisoners/{prisonNumber}"])
   fun getBodyScanForSinglePrisoner(
     @Schema(description = "Prison Number", example = "G8874VT", required = true)
-    @PathVariable prisonNumber: String
+    @PathVariable
+    prisonNumber: String,
   ): LimitStatusResponse =
     limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), listOf(prisonNumber)).first()
 
@@ -85,19 +86,19 @@ class LimitStatusResource(
         content = [
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = LimitStatusResponse::class))
-          )
-        ]
+            array = ArraySchema(schema = Schema(implementation = LimitStatusResponse::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -105,17 +106,18 @@ class LimitStatusResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @PostMapping(path = ["/body-scans/prisoners"])
   fun getBodyScansForMultiplePrisoners(
     @RequestBody
-    @Valid @NotNull
-    prisonNumbers: List<String>
+    @Valid
+    @NotNull
+    prisonNumbers: List<String>,
   ): List<LimitStatusResponse> =
     limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), prisonNumbers)
 }

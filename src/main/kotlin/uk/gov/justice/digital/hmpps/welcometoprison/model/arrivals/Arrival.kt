@@ -45,11 +45,11 @@ data class Arrival(
 
   @Schema(
     description = "Gender of the arrival according to Book a Secure Move",
-    example = "MALE"
+    example = "MALE",
   )
   val gender: Gender? = null,
 
-  var potentialMatches: List<PotentialMatch>? = null
+  var potentialMatches: List<PotentialMatch>? = null,
 )
 
 data class PotentialMatch(
@@ -88,7 +88,7 @@ enum class LocationType {
   COURT,
   CUSTODY_SUITE,
   PRISON,
-  OTHER
+  OTHER,
 }
 
 enum class Gender {

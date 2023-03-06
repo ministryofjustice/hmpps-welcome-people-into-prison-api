@@ -9,6 +9,6 @@ data class OffenderDetails(
   val lastName: String,
   val agencyId: String,
   val activeFlag: Boolean,
-  val dateOfBirth: LocalDate
+  val dateOfBirth: LocalDate,
 
 )

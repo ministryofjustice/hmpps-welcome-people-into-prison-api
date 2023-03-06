@@ -24,8 +24,8 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
       .headers(
         setAuthorisation(
           roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-          scopes = listOf("read", "write")
-        )
+          scopes = listOf("read", "write"),
+        ),
       )
       .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
       .bodyValue(confirmCourtReturnRequest)

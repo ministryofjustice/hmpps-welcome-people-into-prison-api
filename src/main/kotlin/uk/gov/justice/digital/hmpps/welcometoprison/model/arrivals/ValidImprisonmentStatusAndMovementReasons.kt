@@ -3,35 +3,35 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 val RECALL_MOVEMENT_REASONS = listOf(
   MovementReason(
     description = "Licence",
-    movementReasonCode = "L"
+    movementReasonCode = "L",
   ),
   MovementReason(
     description = "Home Detention Curfew",
-    movementReasonCode = "B"
+    movementReasonCode = "B",
   ),
   MovementReason(
     description = "Home leave",
-    movementReasonCode = "H"
+    movementReasonCode = "H",
   ),
   MovementReason(
     description = "Detention and Training Order",
-    movementReasonCode = "Y"
+    movementReasonCode = "Y",
   ),
   MovementReason(
     description = "Intermittent custody",
-    movementReasonCode = "24"
+    movementReasonCode = "24",
   ),
   MovementReason(
     description = "Foreign national removal scheme",
-    movementReasonCode = "ETB"
+    movementReasonCode = "ETB",
   ),
   MovementReason(
     description = "Emergency temporary release",
-    movementReasonCode = "ETRLR"
+    movementReasonCode = "ETRLR",
   ),
   MovementReason(
     description = "Error in emergency temporary release",
-    movementReasonCode = "ETRRIE"
+    movementReasonCode = "ETRRIE",
   ),
 )
 
@@ -41,7 +41,7 @@ val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
   imprisonmentStatusCode = "RECEP_REC",
   secondLevelTitle = "Where is the prisoner being recalled from?",
   secondLevelValidationMessage = "Select where the person is being recalled from",
-  movementReasons = RECALL_MOVEMENT_REASONS
+  movementReasons = RECALL_MOVEMENT_REASONS,
 )
 
 val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
@@ -49,13 +49,13 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     code = "on-remand",
     description = "On remand",
     imprisonmentStatusCode = "RECEP_REM",
-    movementReasons = listOf(MovementReason(movementReasonCode = "N"))
+    movementReasons = listOf(MovementReason(movementReasonCode = "N")),
   ),
   ImprisonmentStatus(
     code = "convicted-unsentenced",
     description = "Convicted - waiting to be sentenced",
     imprisonmentStatusCode = "RECEP_UNS",
-    movementReasons = listOf(MovementReason(movementReasonCode = "V"))
+    movementReasons = listOf(MovementReason(movementReasonCode = "V")),
   ),
   ImprisonmentStatus(
     code = "determinate-sentence",
@@ -66,21 +66,21 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Imprisonment without option of a fine",
-        movementReasonCode = "I"
+        movementReasonCode = "I",
       ),
       MovementReason(
         description = "Extended sentence for public protection",
-        movementReasonCode = "26"
+        movementReasonCode = "26",
       ),
       MovementReason(
         description = "Intermittent custodial sentence",
-        movementReasonCode = "INTER"
+        movementReasonCode = "INTER",
       ),
       MovementReason(
         description = "Partly suspended sentence",
-        movementReasonCode = "P"
+        movementReasonCode = "P",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "indeterminate-sentence",
@@ -91,25 +91,25 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Imprisonment without option of a fine",
-        movementReasonCode = "I"
+        movementReasonCode = "I",
       ),
       MovementReason(
         description = "Custody for life - aged under 18",
-        movementReasonCode = "27"
+        movementReasonCode = "27",
       ),
       MovementReason(
         description = "Custody for life - aged at least 18 but under 21",
-        movementReasonCode = "29"
+        movementReasonCode = "29",
       ),
       MovementReason(
         description = "Detained at Her Majesty's Pleasure under Section 53 (1) Children and Young Persons Act",
-        movementReasonCode = "J"
+        movementReasonCode = "J",
       ),
       MovementReason(
         description = "For public protection",
-        movementReasonCode = "25"
+        movementReasonCode = "25",
       ),
-    )
+    ),
   ),
   RECALL_STATUS_AND_MOVEMENT_REASONS,
 
@@ -122,13 +122,13 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Another establishment",
-        movementReasonCode = "INT"
+        movementReasonCode = "INT",
       ),
       MovementReason(
         description = "A foreign establishment",
-        movementReasonCode = "T"
+        movementReasonCode = "T",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "temporary-stay",
@@ -139,17 +139,17 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Sameday stopover enroute to another establishment",
-        movementReasonCode = "Z"
+        movementReasonCode = "Z",
       ),
       MovementReason(
         description = "Overnight stopover enroute to another establishment",
-        movementReasonCode = "S"
+        movementReasonCode = "S",
       ),
       MovementReason(
         description = "Overnight stopover for accumulated visits",
-        movementReasonCode = "Q"
+        movementReasonCode = "Q",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "awaiting-transfer-to-hospital",
@@ -157,9 +157,9 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     imprisonmentStatusCode = "RECEP_HOS",
     movementReasons = listOf(
       MovementReason(
-        movementReasonCode = "O"
+        movementReasonCode = "O",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "late-return",
@@ -170,13 +170,13 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Voluntary",
-        movementReasonCode = "A"
+        movementReasonCode = "A",
       ),
       MovementReason(
         description = "Involuntary",
-        movementReasonCode = "U"
+        movementReasonCode = "U",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "detention-under-immigration-powers",
@@ -184,9 +184,9 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     imprisonmentStatusCode = "RECEP_IMM",
     movementReasons = listOf(
       MovementReason(
-        movementReasonCode = "E"
+        movementReasonCode = "E",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "youth-offender",
@@ -194,9 +194,9 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     imprisonmentStatusCode = "RECEP_YOI",
     movementReasons = listOf(
       MovementReason(
-        movementReasonCode = "W"
+        movementReasonCode = "W",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "recapture",
@@ -204,9 +204,9 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     imprisonmentStatusCode = "RECEP_CAP",
     movementReasons = listOf(
       MovementReason(
-        movementReasonCode = "RECA"
+        movementReasonCode = "RECA",
       ),
-    )
+    ),
   ),
   ImprisonmentStatus(
     code = "civil-offence",
@@ -217,13 +217,13 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     movementReasons = listOf(
       MovementReason(
         description = "Civil committal",
-        movementReasonCode = "C"
+        movementReasonCode = "C",
       ),
       MovementReason(
         description = "Non-payment of a fine",
-        movementReasonCode = "F"
+        movementReasonCode = "F",
       ),
-    )
+    ),
   ),
 )
 

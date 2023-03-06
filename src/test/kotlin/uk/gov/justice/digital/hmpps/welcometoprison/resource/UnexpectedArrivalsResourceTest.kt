@@ -66,9 +66,9 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       prisonApiMockServer.verify(
         postRequestedFor(
           urlEqualTo(
-            "/api/offenders"
-          )
-        ).withHeader("Authorization", equalTo(token))
+            "/api/offenders",
+          ),
+        ).withHeader("Authorization", equalTo(token)),
       )
     }
 
@@ -92,7 +92,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
           "movementReasonCode": "N",
           "imprisonmentStatus": "SENT03"
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -103,13 +103,12 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
           "errorCode": null,
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
 
     @Test
     fun `create and book - prison-api create offender fails`() {
-
       prisonApiMockServer.stubCreateOffenderFails(500)
 
       webTestClient
@@ -125,7 +124,6 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
 
     @Test
     fun `create and book - prison-api create offender fails on a client error without proper error response`() {
-
       prisonApiMockServer.stubCreateOffenderFails(400)
 
       webTestClient
@@ -158,7 +156,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
           "errorCode": "PRISONER_ALREADY_EXIST",
           "moreInfo": null
         }
-          """.trimIndent()
+          """.trimIndent(),
         )
     }
   }

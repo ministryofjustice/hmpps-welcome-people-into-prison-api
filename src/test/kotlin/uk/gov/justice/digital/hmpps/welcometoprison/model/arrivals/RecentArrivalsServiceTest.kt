@@ -20,13 +20,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `location is formatted when contains RECP`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(listOf(testMovement(1, "NMP-RECP")))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(0, 1)
+      PageRequest.of(0, 1),
     )
 
     assertThat(arrivals.content[0].location).isEqualTo("Reception")
@@ -34,13 +33,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `location is unaltered when not containing RECP`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(listOf(testMovement(1, "Room-1")))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(0, 1)
+      PageRequest.of(0, 1),
     )
 
     assertThat(arrivals.content[0].location).isEqualTo("Room-1")
@@ -48,7 +46,6 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `results are sorted`() {
-
     val dayBeforeYesterday = LocalDateTime.now().minusDays(2)
     val today = LocalDateTime.now()
     val yesterday = LocalDateTime.now().minusDays(1)
@@ -60,13 +57,13 @@ class RecentArrivalsServiceTest {
         testMovement(1, "RECP") { today },
         testMovement(2, "RECP") { yesterday },
         testMovement(3, "RECP") { tomorrow },
-      )
+      ),
     )
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(0, 50)
+      PageRequest.of(0, 50),
     )
 
     assertThat(arrivals)
@@ -76,13 +73,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `recent arrival first page of 200 results`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(200))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(0, 50)
+      PageRequest.of(0, 50),
     )
     val firstElement = arrivals.get().findFirst().get()
     val lastElement = arrivals.get().skip(arrivals.get().count() - 1).findFirst().get()
@@ -96,13 +92,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `recent arrival second page of 200 results`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(200))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(1, 50)
+      PageRequest.of(1, 50),
     )
     val firstElement = arrivals.get().findFirst().get()
     val lastElement = arrivals.get().skip(arrivals.get().count() - 1).findFirst().get()
@@ -116,13 +111,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `recent arrival last page of 199 results`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(199))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(3, 50)
+      PageRequest.of(3, 50),
     )
     val firstElement = arrivals.get().findFirst().get()
     val lastElement = arrivals.get().skip(arrivals.get().count() - 1).findFirst().get()
@@ -136,13 +130,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `recent arrival get not existing page return 0 results`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(20))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(1, 50)
+      PageRequest.of(1, 50),
     )
 
     assertThat(arrivals.count()).isEqualTo(0)
@@ -153,13 +146,12 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `recent arrival no results`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(0))
 
     val arrivals = recentArrivalsService.getArrivals(
       "MDI",
       LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
-      PageRequest.of(0, 50)
+      PageRequest.of(0, 50),
     )
 
     assertThat(arrivals.count()).isEqualTo(0)
@@ -170,7 +162,6 @@ class RecentArrivalsServiceTest {
 
   @Test
   fun `fuzzy searching and pagination`() {
-
     whenever(prisonApiClient.getMovement(any(), any(), any())).thenReturn(getList(200))
 
     val getPage = { page: Int ->
@@ -178,7 +169,7 @@ class RecentArrivalsServiceTest {
         "MDI",
         LocalDate.of(2017, 1, 2) to LocalDate.of(2020, 1, 2),
         PageRequest.of(page, 5),
-        "AA01050"
+        "AA01050",
       )
       assertThat(arrivals.count()).isEqualTo(arrivals.content.size)
       assertThat(arrivals.totalElements).isEqualTo(22)
@@ -205,7 +196,7 @@ class RecentArrivalsServiceTest {
   private fun testMovement(
     index: Int,
     location: String = "location-$index",
-    now: () -> LocalDateTime = { LocalDate.now().atStartOfDay() }
+    now: () -> LocalDateTime = { LocalDate.now().atStartOfDay() },
   ): Movement {
     val number = index.toString().padStart(3, '0')
     return Movement(
@@ -216,7 +207,7 @@ class RecentArrivalsServiceTest {
       lastName = "lastName$number",
       location = location,
       movementTime = LocalTime.of(12, 0, 0),
-      movementDateTime = now()
+      movementDateTime = now(),
     )
   }
 }

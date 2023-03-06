@@ -3,16 +3,15 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 typealias Param<T> = Pair<String, T>
 
 object JsonApiQueryBuilder {
-  enum class Order { asc, desc }
+  enum class Order { ASC, DESC }
 
   fun `query of`(
     includes: List<String>? = null,
     filters: Map<String, List<String>>? = null,
     sort: Pair<String, Order>? = null,
     page: Int? = null,
-    perPage: Int? = null
+    perPage: Int? = null,
   ): String {
-
     val includeParams = includes.toParams { listOf("include" to it.joinToString(",")) }
     val perPageParam = perPage.toParams { listOf("per_page" to it) }
     val pageParam = page.toParams { listOf("page" to it) }

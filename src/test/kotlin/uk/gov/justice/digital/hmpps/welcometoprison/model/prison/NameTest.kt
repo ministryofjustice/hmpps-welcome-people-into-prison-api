@@ -21,7 +21,7 @@ class NameTest {
     "'Tom, jim, Baker','Tom, Jim, Baker'",
     "'tom, jim baker', 'Tom, Jim Baker'",
     "'tom, Jim, baker','Tom, Jim, Baker'",
-    "'jim,roberts', 'Jim,Roberts'"
+    "'jim,roberts', 'Jim,Roberts'",
   )
   fun `scenarios`(nomisName: String, expectedResult: String) {
     assertThat(properCase(nomisName)).isEqualTo(expectedResult)

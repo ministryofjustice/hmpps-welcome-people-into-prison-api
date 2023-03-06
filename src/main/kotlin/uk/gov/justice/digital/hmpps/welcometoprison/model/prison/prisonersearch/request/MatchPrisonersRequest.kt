@@ -21,7 +21,7 @@ data class MatchPrisonersRequest(
   val prisonNumber: String? = null,
 
   @Schema(description = "PNC number", example = "01/1234X")
-  val pncNumber: String? = null
+  val pncNumber: String? = null,
 ) {
   @Schema(hidden = true)
   fun isValid() = !(prisonNumber.isNullOrBlank()) || !(pncNumber.isNullOrBlank()) || !(lastName.isNullOrBlank() && dateOfBirth == null)

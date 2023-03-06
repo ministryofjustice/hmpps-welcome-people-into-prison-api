@@ -23,8 +23,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(200)
-            .withBody("userCaseLoads".loadJson(this))
-        )
+            .withBody("userCaseLoads".loadJson(this)),
+        ),
     )
   }
 
@@ -35,8 +35,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(200)
-            .withBody("prisonTransfersEnRoute".loadJson(this))
-        )
+            .withBody("prisonTransfersEnRoute".loadJson(this)),
+        ),
     )
   }
 
@@ -72,9 +72,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   },
                   "identifiers": []
                 }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -85,8 +85,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .withStatus(status)
-            .withBody("""{"message":"exception message"}""")
-        )
+            .withBody("""{"message":"exception message"}"""),
+        ),
     )
   }
 
@@ -103,9 +103,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     "errorCode" : 30002,
     "userMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO",
     "developerMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO"
-}"""
-            )
-        )
+}""",
+            ),
+        ),
     )
   }
 
@@ -124,9 +124,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     "status": 400,
     "userMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO",
     "developerMessage": "Prisoner with PNC 09/222376Z already exists with ID G9934UO"
-}"""
-            )
-        )
+}""",
+            ),
+        ),
     )
   }
 
@@ -186,9 +186,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -206,9 +206,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A0001AA",
                 "developerMessage": "No prisoner found for prisoner number A0001AA"
               }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -227,9 +227,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     "userMessage": "The cell MDI-RECP does not have any available capacity",
     "developerMessage": "The cell MDI-RECP does not have any available capacity"
 }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -289,9 +289,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -309,9 +309,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A0001AA",
                 "developerMessage": "No prisoner found for prisoner number A0001AA"
               }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -371,9 +371,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -391,9 +391,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A0001AA",
                 "developerMessage": "No prisoner found for prisoner number A0001AA"
               }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -412,9 +412,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
     "userMessage": "The cell MDI-RECP does not have any available capacity",
     "developerMessage": "The cell MDI-RECP does not have any available capacity"
 }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -474,9 +474,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -494,9 +494,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "No prisoner found for prisoner number A1234BC",
                 "developerMessage": "No prisoner found for prisoner number A1234BC"
               }
-            """
-            )
-        )
+            """,
+            ),
+        ),
     )
   }
 
@@ -524,9 +524,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "commentText": "pHnuWeNNnALpHnuWeNNnA"
                 }
               ]
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -544,10 +544,10 @@ class PrisonApiMockServer : WireMockServer(9005) {
                 "userMessage": "Resource with id [$offenderNumber] not found.",
                 "developerMessage": "Resource with id [$offenderNumber] not found."
               }
-            """
-            )
+            """,
+            ),
 
-        )
+        ),
     )
   }
 
@@ -558,8 +558,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
           aResponse()
             .withHeader("Content-Type", MediaType.IMAGE_JPEG_VALUE)
             .withStatus(200)
-            .withBodyFile("img/image.png")
-        )
+            .withBodyFile("img/image.png"),
+        ),
     )
   }
 
@@ -600,9 +600,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "commentText": "pHnuWeNNnALpHnuWeNNnA"
                 }
               ]
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -662,9 +662,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "iepDetails": []
                 }
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -672,7 +672,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
     stubFor(
       get(
         "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
-          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
       )
         .withHeader("Page-Limit", equalTo("10000"))
         .willReturn(
@@ -711,9 +711,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
         "location": "MDI-RECV"
     }
 ]
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 
@@ -721,7 +721,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
     stubFor(
       get(
         "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
-          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
       )
         .withHeader("Page-Limit", equalTo("10000"))
         .willReturn(
@@ -759,9 +759,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
         "movementDateTime": "2021-08-04T14:15:27"
     }
 ]
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 }

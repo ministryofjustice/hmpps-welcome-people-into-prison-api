@@ -16,7 +16,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         "/api/bookings/offenderNo/personal-care-needs/count?type=" +
           "$type" +
           "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
-          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
       ).withRequestBody(equalToJson(prisonNumbers.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }))
         .willReturn(
           aResponse()
@@ -56,9 +56,9 @@ class PrisonApiMockServer : WireMockServer(9005) {
         "offenderNo": "G8874VZ",
         "size": 117
     }
-]"""
-            )
-        )
+]""",
+            ),
+        ),
     )
   }
 
@@ -144,19 +144,19 @@ class PrisonApiMockServer : WireMockServer(9005) {
     "receptionDate": "2022-08-02",
     "locationDescription": "Lincoln (HMP)",
     "latestLocationId": "LII"
-}"""
-            )
-        )
+}""",
+            ),
+        ),
     )
   }
 
   fun stubAddPersonalCareNeeds(
     bookingId: Long,
-    date: LocalDate
+    date: LocalDate,
   ) {
     stubFor(
       post(
-        "/api/bookings/$bookingId/personal-care-needs"
+        "/api/bookings/$bookingId/personal-care-needs",
       ).withRequestBody(
         equalToJson(
           """
@@ -167,14 +167,14 @@ class PrisonApiMockServer : WireMockServer(9005) {
           "startDate": "${date.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
           "endDate": "${date.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
         }
-          """.trimIndent()
-        )
+          """.trimIndent(),
+        ),
       )
         .willReturn(
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            .withStatus(201)
-        )
+            .withStatus(201),
+        ),
     )
   }
 }

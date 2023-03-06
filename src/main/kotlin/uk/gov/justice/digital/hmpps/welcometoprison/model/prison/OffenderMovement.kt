@@ -20,5 +20,5 @@ data class OffenderMovement(
   val movementReasonDescription: String,
   val directionCode: String,
   val movementTime: LocalTime,
-  val movementDate: LocalDate
+  val movementDate: LocalDate,
 )

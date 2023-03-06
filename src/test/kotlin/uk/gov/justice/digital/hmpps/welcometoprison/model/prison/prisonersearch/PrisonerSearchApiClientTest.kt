@@ -60,13 +60,13 @@ class PrisonerSearchApiClientTest {
           status = INACTIVE_OUT,
           gender = "Male",
           prisonId = "MDI",
-          lastMovementTypeCode = "REL"
-        )
-      )
+          lastMovementTypeCode = "REL",
+        ),
+      ),
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches")),
     )
   }
 
@@ -74,7 +74,7 @@ class PrisonerSearchApiClientTest {
   fun `successful match by prisoner number when PNC Number available`() {
     mockServer.stubMatchByPrisonerNumbers(
       200,
-      listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A"))
+      listOf(PrisonerAndPncNumber(prisonerNumber = "A1278AA", pncNumber = "1234/1234589A")),
     )
     val result = client.matchPncNumbersByPrisonerNumbers(listOf("A1278AA"))
 
@@ -83,12 +83,12 @@ class PrisonerSearchApiClientTest {
         PrisonerAndPncNumber(
           prisonerNumber = "A1278AA",
           pncNumber = "1234/1234589A",
-        )
-      )
+        ),
+      ),
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
+      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers")),
     )
   }
 
@@ -101,12 +101,12 @@ class PrisonerSearchApiClientTest {
       listOf(
         PrisonerAndPncNumber(
           prisonerNumber = "A1278AA",
-        )
-      )
+        ),
+      ),
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers"))
+      postRequestedFor(urlEqualTo("/prisoner-search/prisoner-numbers")),
     )
   }
 
@@ -127,12 +127,12 @@ class PrisonerSearchApiClientTest {
         status = "INACTIVE_OUT",
         gender = "Male",
         prisonId = "MDI",
-        lastMovementTypeCode = "REL"
-      )
+        lastMovementTypeCode = "REL",
+      ),
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches")),
     )
   }
 
@@ -153,12 +153,12 @@ class PrisonerSearchApiClientTest {
         gender = "Male",
         status = null,
         lastMovementTypeCode = null,
-        prisonId = null
-      )
+        prisonId = null,
+      ),
     )
 
     mockServer.verify(
-      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches"))
+      postRequestedFor(urlEqualTo("/prisoner-search/possible-matches")),
     )
   }
 }

@@ -40,24 +40,24 @@ class RecentArrivalsResource(private val recentArrivalsService: RecentArrivalsSe
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ArrivalsPage::class)
-          )
-        ]
+            schema = Schema(implementation = ArrivalsPage::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to retrieve",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Prison ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "500",
@@ -65,33 +65,46 @@ class RecentArrivalsResource(private val recentArrivalsService: RecentArrivalsSe
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
-    ]
+    ],
   )
   @GetMapping(path = ["/prisons/{prisonId}/recent-arrivals"])
   fun getRecentArrivals(
     @Schema(description = "Prison ID", example = "MDI", required = true)
-    @PathVariable prisonId: String,
-    @Parameter(description = "Arrivals from specific date", example = "2020-01-26", required = true) @DateTimeFormat(
-      iso = DateTimeFormat.ISO.DATE
-    ) @RequestParam(required = true) fromDate: LocalDate,
-    @Parameter(description = "Arrivals to specific date", example = "2020-01-26", required = true) @DateTimeFormat(
-      iso = DateTimeFormat.ISO.DATE
-    ) @RequestParam toDate: LocalDate,
+    @PathVariable
+    prisonId: String,
+    @Parameter(description = "Arrivals from specific date", example = "2020-01-26", required = true)
+    @DateTimeFormat(
+      iso = DateTimeFormat.ISO.DATE,
+    )
+    @RequestParam(required = true)
+    fromDate: LocalDate,
+    @Parameter(description = "Arrivals to specific date", example = "2020-01-26", required = true)
+    @DateTimeFormat(
+      iso = DateTimeFormat.ISO.DATE,
+    )
+    @RequestParam
+    toDate: LocalDate,
     @Parameter(description = "Size of the page", example = "50", required = false)
-    @RequestParam(defaultValue = Int.MAX_VALUE.toString(), required = false) pageSize: Int,
+    @RequestParam(defaultValue = Int.MAX_VALUE.toString(), required = false)
+    pageSize: Int,
     @Parameter(description = "Page number to display", example = "0", required = false)
-    @RequestParam(defaultValue = "0", required = false) page: Int,
+    @RequestParam(defaultValue = "0", required = false)
+    page: Int,
     @Parameter(
       description = "Query to optionally filter moves, Performs complete/partial and fuzzy matching",
       example = "John Smith",
-      required = false
+      required = false,
     )
-    @RequestParam(required = false) query: String?
+    @RequestParam(required = false)
+    query: String?,
   ): Page<RecentArrival> = recentArrivalsService.getArrivals(
-    prisonId, fromDate to toDate, PageRequest.of(page, pageSize), query
+    prisonId,
+    fromDate to toDate,
+    PageRequest.of(page, pageSize),
+    query,
   )
 }

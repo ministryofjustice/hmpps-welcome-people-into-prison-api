@@ -14,5 +14,5 @@ data class PotentialMatchRequest(
 
   val pncNumber: String? = null,
 
-  val nomsNumber: String? = null
+  val nomsNumber: String? = null,
 )

@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.config.SecurityUserContext
 class CreateBodyScanService(
   private val bodyScanPrisonApiClient: BodyScanPrisonApiClient,
   private val telemetryClient: TelemetryClient,
-  private val securityUserContext: SecurityUserContext
+  private val securityUserContext: SecurityUserContext,
 ) {
 
   fun addBodyScan(prisonNumber: String, details: BodyScanDetailRequest) {
@@ -19,11 +19,11 @@ class CreateBodyScanService(
     val personalCareNeeds = PersonalCareNeeds(
       date = details.date!!,
       bodyScanReason = details.reason!!,
-      bodyScanResult = details.result!!
+      bodyScanResult = details.result!!,
     )
     bodyScanPrisonApiClient.addPersonalCareNeeds(
       sentenceDetails.bookingId,
-      personalCareNeeds
+      personalCareNeeds,
     )
     telemetryClient.trackEvent("BodyScan", personalCareNeeds.toEventProperties(prisonNumber, securityUserContext.principal), null)
   }

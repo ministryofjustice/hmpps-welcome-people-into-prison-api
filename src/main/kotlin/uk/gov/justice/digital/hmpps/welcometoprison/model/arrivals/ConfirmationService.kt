@@ -60,7 +60,7 @@ class ConfirmationService(
   private fun returnFromCourt(
     arrivalId: String,
     prisonNumber: String,
-    confirmation: ConfirmCourtReturnRequest
+    confirmation: ConfirmCourtReturnRequest,
   ): ConfirmCourtReturnResponse {
     val response = prisonService.returnFromCourt(confirmation.prisonId, prisonNumber)
 
@@ -71,7 +71,7 @@ class ConfirmationService(
         arrivalType = COURT_TRANSFER,
         prisonId = confirmation.prisonId,
         bookingId = response.bookingId,
-      )
+      ),
     )
     return response
   }
@@ -116,6 +116,7 @@ class ConfirmationService(
   )
 
   private fun InmateDetail.toResponse() = ConfirmArrivalResponse(
-    prisonNumber = this.offenderNo, location = locationFormatter.extract(this)
+    prisonNumber = this.offenderNo,
+    location = locationFormatter.extract(this),
   )
 }

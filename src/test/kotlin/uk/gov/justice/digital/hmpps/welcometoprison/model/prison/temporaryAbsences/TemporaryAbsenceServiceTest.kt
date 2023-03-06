@@ -29,10 +29,14 @@ class TemporaryAbsenceServiceTest {
   private val prisonerSearchApiClient: PrisonerSearchApiClient = mock()
   private val temporaryAbsenceService = TemporaryAbsenceService(prisonApiClient, locationFormatter, arrivalListener, prisonerSearchApiClient)
   private val inmateDetail = InmateDetail(
-    offenderNo = "G6081VQ", bookingId = 1L,
+    offenderNo = "G6081VQ",
+    bookingId = 1L,
     assignedLivingUnit = AssignedLivingUnit(
-      "NMI", 1, "RECP", "Nottingham (HMP)"
-    )
+      "NMI",
+      1,
+      "RECP",
+      "Nottingham (HMP)",
+    ),
   )
 
   @Test
@@ -48,8 +52,8 @@ class TemporaryAbsenceServiceTest {
         dateOfBirth = LocalDate.of(1991, 7, 31),
         prisonNumber = "A1234AA",
         reasonForAbsence = "Hospital",
-        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
-      )
+        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0),
+      ),
     )
 
     verify(prisonApiClient).getTemporaryAbsences("MDI")
@@ -68,8 +72,8 @@ class TemporaryAbsenceServiceTest {
         status = null,
         lastMovementTypeCode = null,
         gender = "Male",
-        prisonId = "MDI"
-      )
+        prisonId = "MDI",
+      ),
     )
     whenever(prisonApiClient.getTemporaryAbsences(any())).thenReturn(listOf(arrivalKnownToNomis))
 
@@ -82,8 +86,8 @@ class TemporaryAbsenceServiceTest {
         dateOfBirth = LocalDate.of(1991, 7, 31),
         prisonNumber = "A1234AA",
         reasonForAbsence = "Hospital",
-        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0)
-      )
+        movementDateTime = LocalDateTime.of(2022, 1, 18, 8, 0),
+      ),
     )
 
     verify(prisonApiClient).getTemporaryAbsences("MDI")
@@ -111,8 +115,8 @@ class TemporaryAbsenceServiceTest {
         status = null,
         lastMovementTypeCode = null,
         gender = "Male",
-        prisonId = "MDI"
-      )
+        prisonId = "MDI",
+      ),
     )
     whenever(prisonApiClient.getTemporaryAbsences(any())).thenReturn(listOf(arrivalKnownToNomis))
 
@@ -127,7 +131,7 @@ class TemporaryAbsenceServiceTest {
 
     val request = ConfirmTemporaryAbsenceRequest(prisonId = "MDI", movementReasonCode = "C")
     assertThat(
-      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
+      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request),
     ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
 
     verify(prisonApiClient).confirmTemporaryAbsencesArrival("A1234AA", TemporaryAbsencesArrival("MDI", "C"))
@@ -139,7 +143,7 @@ class TemporaryAbsenceServiceTest {
 
     val request = ConfirmTemporaryAbsenceRequest(prisonId = "MDI", movementReasonCode = "C", arrivalId = "abc-123")
     assertThat(
-      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request)
+      temporaryAbsenceService.confirmTemporaryAbsencesArrival("A1234AA", request),
     ).isEqualTo(ConfirmTemporaryAbsenceResponse(prisonNumber = "A1234AA", location = "Reception"))
 
     verify(arrivalListener).arrived(
@@ -148,8 +152,8 @@ class TemporaryAbsenceServiceTest {
         prisonId = "MDI",
         prisonNumber = inmateDetail.offenderNo,
         arrivalType = ConfirmedArrivalType.TEMPORARY_ABSENCE,
-        bookingId = inmateDetail.bookingId
-      )
+        bookingId = inmateDetail.bookingId,
+      ),
     )
   }
 
@@ -164,7 +168,7 @@ class TemporaryAbsenceServiceTest {
       toAgency = "ABRYMC",
       toAgencyDescription = "Aberystwyth Magistrates Court",
       movementReasonCode = "RO",
-      movementReason = "Hospital"
+      movementReason = "Hospital",
     )
   }
 }

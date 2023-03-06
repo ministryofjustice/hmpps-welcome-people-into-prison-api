@@ -21,9 +21,9 @@ class PrisonRegisterMockServer : WireMockServer(9006) {
                 "prisonName": "Nottingham (HMP)",
                 "active": true
               }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 }

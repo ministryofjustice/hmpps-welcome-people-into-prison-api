@@ -5,5 +5,5 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 
 open class MockServer(port: Int) : WireMockServer(
   WireMockConfiguration.wireMockConfig()
-    .port(port)
+    .port(port),
 )
