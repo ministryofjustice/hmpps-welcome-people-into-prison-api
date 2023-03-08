@@ -82,5 +82,17 @@ class Model {
 
     @JsonProperty("prison_transfer")
     PRISON_TRANSFER,
+
+    @JsonProperty("court_other")
+    COURT_OTHER,
+
+    @JsonProperty("hospital")
+    HOSPITAL,
+
+    @JsonProperty("police_transfer")
+    POLICE_TRANSFER,
+
+    @JsonProperty("video_remand_hearing")
+    VIDEO_REMAND_HEARING,
   }
 }
