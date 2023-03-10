@@ -2,14 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.1-beta-3"
-  kotlin("plugin.spring") version "1.8.0"
-  kotlin("plugin.jpa") version "1.8.0"
+  kotlin("plugin.spring") version "1.8.10"
+  kotlin("plugin.jpa") version "1.8.10"
 }
 
 configurations {
-  all {
-    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
-  }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
@@ -26,7 +23,6 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
   implementation("commons-codec:commons-codec:1.15")
-  implementation("ch.qos.logback:logback-core:1.4.5")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.1")
