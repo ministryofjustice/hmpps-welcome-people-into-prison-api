@@ -26,6 +26,8 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
   implementation("commons-codec:commons-codec:1.15")
+  implementation("ch.qos.logback:logback-core:1.4.5")
+
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.1")
