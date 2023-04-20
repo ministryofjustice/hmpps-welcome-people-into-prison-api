@@ -115,15 +115,9 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
 
   ImprisonmentStatus(
     code = "transfer",
-    description = "Transfer from another establishment",
+    description = "Transfer from a foreign establishment",
     imprisonmentStatusCode = "RECEP_TRA",
-    secondLevelTitle = "Where is the prisoner being transferred from?",
-    secondLevelValidationMessage = "Select the type of transfer",
     movementReasons = listOf(
-      MovementReason(
-        description = "Another establishment",
-        movementReasonCode = "INT",
-      ),
       MovementReason(
         description = "A foreign establishment",
         movementReasonCode = "T",
