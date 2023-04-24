@@ -46,7 +46,7 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .jsonPath("$[2].description").isEqualTo("Sentenced - fixed length of time")
         .jsonPath("$[3].description").isEqualTo("Sentenced for life")
         .jsonPath("$[4].description").isEqualTo("Recalled")
-        .jsonPath("$[5].description").isEqualTo("Transfer from another establishment")
+        .jsonPath("$[5].description").isEqualTo("Transfer from a foreign establishment")
         .jsonPath("$[6].description").isEqualTo("Temporary stay enroute to another establishment")
         .jsonPath("$[7].description").isEqualTo("Awaiting transfer to hospital")
         .jsonPath("$[8].description").isEqualTo("Late return from Release on Temporary Licence (ROTL)")
