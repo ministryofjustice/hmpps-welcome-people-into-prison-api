@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals
 
+import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
@@ -33,6 +34,7 @@ class ConfirmationServiceTest {
   private val prisonService: PrisonService = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val arrivalListener: ArrivalListener = mock()
+  private val telemetryClient: TelemetryClient = mock()
   private val locationFormatter: LocationFormatter = LocationFormatter()
 
   private val confirmationService = ConfirmationService(
