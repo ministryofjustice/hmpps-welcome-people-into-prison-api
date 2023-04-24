@@ -175,7 +175,6 @@ class PrisonApiClientTest {
         ),
       )
     } catch (exception: Exception) {
-      assertThat(exception.javaClass.equals("ss"))
     }
 
     verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
