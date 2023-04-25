@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
+import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -123,13 +124,22 @@ fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = empt
 fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-fun propagateClientError(response: ClientResponse, message: String) =
+fun propagateClientError(response: ClientResponse, message: String, telemetryClient: TelemetryClient) =
   response.bodyToMono(ClientErrorResponse::class.java).map {
+    telemetryClient.trackEvent(
+      "PrisonApiClientError",
+      mapOf("message" to message, "codeError" to response.statusCode().value().toString()),
+      null,
+    )
     ClientException(it, message)
   }
 
 @Component
-class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: WebClient) {
+class PrisonApiClient(
+  @Qualifier("prisonApiWebClient") private val webClient: WebClient,
+  private val telemetryClient: TelemetryClient,
+) {
+
   fun getPrisonerImage(offenderNumber: String): ByteArray? =
     webClient.get()
       .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
@@ -172,7 +182,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders")
+        propagateClientError(response, "Client error when posting to /api/offenders", telemetryClient)
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw RuntimeException()
@@ -186,7 +196,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/booking")
+        propagateClientError(
+          response,
+          "Client error when posting to /api/offenders/$offenderNo/booking",
+          telemetryClient,
+        )
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw RuntimeException()
@@ -200,7 +214,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/recall")
+        propagateClientError(
+          response,
+          "Client error when posting to /api/offenders/$offenderNo/recall",
+          telemetryClient,
+        )
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw IllegalStateException("No response from prison api")
@@ -214,7 +232,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders/$offenderNo/transfer-in")
+        propagateClientError(
+          response,
+          "Client error when posting to /api/offenders/$offenderNo/transfer-in",
+          telemetryClient,
+        )
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw IllegalStateException("No response from prison api")
@@ -231,6 +253,7 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
         propagateClientError(
           response,
           "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival",
+          telemetryClient,
         )
       }
       .bodyToMono(InmateDetail::class.java)
@@ -242,7 +265,11 @@ class PrisonApiClient(@Qualifier("prisonApiWebClient") private val webClient: We
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in")
+        propagateClientError(
+          response,
+          "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in",
+          telemetryClient,
+        )
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw IllegalStateException("No response from prison api")

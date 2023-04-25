@@ -1,12 +1,17 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.config.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
@@ -17,6 +22,7 @@ import java.time.format.DateTimeFormatter
 
 class PrisonApiClientTest {
   private lateinit var prisonApiClient: PrisonApiClient
+  private val telemetryClient: TelemetryClient = mock()
 
   companion object {
     @JvmField
@@ -39,7 +45,7 @@ class PrisonApiClientTest {
   fun resetStubs() {
     mockServer.resetAll()
     val webClient = WebClient.create("http://localhost:${mockServer.port()}")
-    prisonApiClient = PrisonApiClient(webClient)
+    prisonApiClient = PrisonApiClient(webClient, telemetryClient)
   }
 
   @Test
@@ -154,6 +160,24 @@ class PrisonApiClientTest {
     )
 
     assertThat(response.offenderNo).isEqualTo(offenderNumber)
+  }
+
+  @Test
+  fun `create offender fails`() {
+    mockServer.stubCreateOffenderFails(400)
+    try {
+      val response = prisonApiClient.createOffender(
+        CreateOffenderDetail(
+          firstName = "A",
+          lastName = "Z",
+          dateOfBirth = LocalDate.of(1961, 5, 29),
+          gender = "M",
+        ),
+      )
+    } catch (exception: Exception) {
+    }
+
+    verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
   }
 
   @Test
