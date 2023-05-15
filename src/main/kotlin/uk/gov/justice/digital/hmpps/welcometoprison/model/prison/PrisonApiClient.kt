@@ -124,14 +124,18 @@ fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = empt
 fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
   if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-fun propagateClientError(response: ClientResponse, message: String, telemetryClient: TelemetryClient) =
+fun propagateClientError(response: ClientResponse, telemetryClient: TelemetryClient) =
   response.bodyToMono(ClientErrorResponse::class.java).map {
     telemetryClient.trackEvent(
       "PrisonApiClientError",
-      mapOf("message" to message, "codeError" to response.statusCode().value().toString()),
+      mapOf(
+        "message" to it.developerMessage,
+        "errorCode" to it.errorCode.toString(),
+        "statusCode" to response.statusCode().value().toString(),
+      ),
       null,
     )
-    ClientException(it, message)
+    ClientException(it, it.developerMessage.orEmpty())
   }
 
 @Component
@@ -182,7 +186,7 @@ class PrisonApiClient(
       .bodyValue(detail)
       .retrieve()
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, "Client error when posting to /api/offenders", telemetryClient)
+        propagateClientError(response, telemetryClient)
       }
       .bodyToMono(InmateDetail::class.java)
       .block() ?: throw RuntimeException()
@@ -198,7 +202,6 @@ class PrisonApiClient(
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$offenderNo/booking",
           telemetryClient,
         )
       }
@@ -216,7 +219,6 @@ class PrisonApiClient(
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$offenderNo/recall",
           telemetryClient,
         )
       }
@@ -234,7 +236,6 @@ class PrisonApiClient(
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$offenderNo/transfer-in",
           telemetryClient,
         )
       }
@@ -252,7 +253,6 @@ class PrisonApiClient(
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$offenderNo/temporary-absence-arrival",
           telemetryClient,
         )
       }
@@ -267,7 +267,6 @@ class PrisonApiClient(
       .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
         propagateClientError(
           response,
-          "Client error when posting to /api/offenders/$prisonNumber/court-transfer-in",
           telemetryClient,
         )
       }
