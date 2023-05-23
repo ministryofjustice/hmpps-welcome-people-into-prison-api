@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.4-beta-2"
-  kotlin("plugin.spring") version "1.8.10"
-  kotlin("plugin.jpa") version "1.8.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.4"
+  kotlin("plugin.spring") version "1.8.21"
+  kotlin("plugin.jpa") version "1.8.21"
 }
 
 configurations {
@@ -21,7 +21,7 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.10.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
   implementation("commons-codec:commons-codec:1.15")
 
   runtimeOnly("org.flywaydb:flyway-core")
