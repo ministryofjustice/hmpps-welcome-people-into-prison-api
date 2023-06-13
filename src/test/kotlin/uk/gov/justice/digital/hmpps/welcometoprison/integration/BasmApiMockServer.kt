@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
@@ -44,6 +45,7 @@ class BasmApiMockServer : WireMockServer(9004) {
       get(
         urlPathMatching("/api/moves\\\\?.*"),
       )
+        .withHeader("X-Current-User", WireMock.equalTo("welcome-into-prison-client"))
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -60,6 +61,7 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
     webClient.get()
       .uri("$path$query")
       .header("Accept", "application/vnd.api+json; version=2")
+      .header("X-Current-User", SecurityContextHolder.getContext().authentication.principal.toString())
       .retrieve()
       .bodyToMono(type)
       .map { it.payload }
