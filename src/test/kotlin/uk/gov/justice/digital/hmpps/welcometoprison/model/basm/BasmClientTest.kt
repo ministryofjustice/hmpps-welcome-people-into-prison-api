@@ -7,6 +7,11 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.BasmApiMockServer
 import java.time.LocalDate
@@ -18,6 +23,10 @@ class BasmClientTest {
   companion object {
     @JvmField
     internal val mockServer = BasmApiMockServer()
+
+    @JvmField
+    internal val securityContext: SecurityContext = mock()
+    internal val authentication: Authentication = mock()
 
     @BeforeAll
     @JvmStatic
@@ -37,6 +46,9 @@ class BasmClientTest {
     mockServer.resetAll()
     val webClient = WebClient.create("http://localhost:${mockServer.port()}")
     basmClient = BasmClient(webClient)
+    whenever(securityContext.authentication).thenReturn(authentication)
+    SecurityContextHolder.setContext(securityContext)
+    whenever(SecurityContextHolder.getContext().authentication.principal).thenReturn("welcome-into-prison-client")
   }
 
   @Test
