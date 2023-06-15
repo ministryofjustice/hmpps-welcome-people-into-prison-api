@@ -530,6 +530,48 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubGetMainOffenceSuccess(bookingId: Long) {
+    stubFor(
+      get("/api/bookings/$bookingId/mainOffence")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+                  {
+                      "bookingId": $bookingId,
+                      "offenceDescription": "Burglary dwelling and theft  - no violence",
+                      "offenceCode": "TH68036",
+                      "statuteCode": "TH68"
+                  }
+              ]
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
+  fun stubGetMainOffenceNotFound(bookingId: Long) {
+    stubFor(
+      get("/api/bookings/$bookingId/mainOffence")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(404)
+            .withBody(
+              """
+              {
+                  "status": 404,
+                  "userMessage": "Offender booking with id $bookingId not found.",
+                  "developerMessage": "Offender booking with id $bookingId not found."
+              }
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
+
   fun stubGetImage404(offenderNumber: String) {
     stubFor(
       get("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")

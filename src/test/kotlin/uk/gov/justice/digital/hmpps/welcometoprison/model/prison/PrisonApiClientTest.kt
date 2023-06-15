@@ -360,6 +360,34 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `Get main offence successful`() {
+    val bookingId = 123L
+    val mainOffence = MainOffence(
+      bookingId = 123,
+      offenceDescription = "Burglary dwelling and theft  - no violence",
+      offenceCode = "TH68036",
+      statuteCode = "TH68",
+    )
+
+    mockServer.stubGetMainOffenceSuccess(bookingId)
+
+    val response = prisonApiClient.getMainOffence(bookingId)
+
+    assertThat(response).isEqualTo(mainOffence)
+  }
+
+  @Test
+  fun `Get main offence when not found`() {
+    val bookingId = 123L
+
+    mockServer.stubGetMainOffenceNotFound(bookingId)
+
+    val response = prisonApiClient.getMainOffence(bookingId)
+
+    assertThat(response).isNull()
+  }
+
+  @Test
   fun `Get recent movements successful`() {
     val agencyId = "MDI"
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
