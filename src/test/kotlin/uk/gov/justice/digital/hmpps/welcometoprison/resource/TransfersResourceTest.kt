@@ -108,14 +108,27 @@ class TransfersResourceTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `returns json in expected format`() {
+    fun `returns json with main offence in expected format`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
+      prisonApiMockServer.stubGetMainOffenceSuccess(472195)
 
       webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
         .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
-        .expectBody().json("transfer".loadJson(this))
+        .expectBody().json("transferWithMainOffence".loadJson(this))
+    }
+
+    @Test
+    fun `returns json without main offence in expected format`() {
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
+      prisonApiMockServer.stubGetMainOffenceNotFound(472195)
+
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("transferWithoutMainOffence".loadJson(this))
     }
 
     @Test

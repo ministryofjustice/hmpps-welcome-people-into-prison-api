@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.Transfer
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferInDetail
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferResponse
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransferWithMainOffence
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.transfers.TransfersService
 
 @RestController
@@ -132,14 +133,14 @@ class TransfersResource(
       "/prisons/{prisonId}/transfers/{prisonNumber}",
     ],
   )
-  fun getTransfer(
+  fun getTransferWithMainOffence(
     @Schema(description = "Prison ID", example = "MDI", required = true)
     @PathVariable
     prisonId: String,
     @Schema(description = "Prison Number", example = "A1234AA", required = true)
     @PathVariable
     prisonNumber: String,
-  ): Transfer = transfersService.getTransfer(prisonId, prisonNumber)
+  ): TransferWithMainOffence = transfersService.getTransfer(prisonId, prisonNumber)
 
   @PreAuthorize("hasRole('ROLE_TRANSFER_PRISONER') and hasAuthority('SCOPE_write')")
   @Operation(
