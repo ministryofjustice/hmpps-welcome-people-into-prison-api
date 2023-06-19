@@ -173,7 +173,7 @@ class PrisonApiClient(
       .retrieve()
       .bodyToMono(typeReference<List<MainOffence>>())
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()?.get(0)
+      .block()?.firstOrNull()
 
   fun getUserCaseLoads(): List<UserCaseLoad> =
     webClient.get()

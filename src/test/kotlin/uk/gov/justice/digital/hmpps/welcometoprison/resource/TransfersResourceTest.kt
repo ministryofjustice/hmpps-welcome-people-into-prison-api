@@ -132,6 +132,18 @@ class TransfersResourceTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `returns json without main offence when main offence not exist in expected format`() {
+      prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
+      prisonApiMockServer.stubGetEmptyMainOffenceSuccess(472195)
+
+      webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("transferWithoutMainOffence".loadJson(this))
+    }
+
+    @Test
     fun `calls prison API with passed through token`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 

@@ -552,6 +552,24 @@ class PrisonApiMockServer : WireMockServer(9005) {
         ),
     )
   }
+
+  fun stubGetEmptyMainOffenceSuccess(bookingId: Long) {
+    stubFor(
+      get("/api/bookings/$bookingId/mainOffence")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              [
+              ]
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
+
   fun stubGetMainOffenceNotFound(bookingId: Long) {
     stubFor(
       get("/api/bookings/$bookingId/mainOffence")
