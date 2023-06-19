@@ -99,6 +99,13 @@ data class Movement(
   val location: String? = null,
 )
 
+data class MainOffence(
+  val bookingId: Long,
+  val offenceDescription: String,
+  val offenceCode: String,
+  val statuteCode: String,
+)
+
 /*
  * The response has many more fields and nested values but currently only bookingId is needed.
  */
@@ -159,6 +166,14 @@ class PrisonApiClient(
       .bodyToMono(typeReference<Prison>())
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
       .block()
+
+  fun getMainOffence(bookingId: Long): MainOffence? =
+    webClient.get()
+      .uri("api/bookings/$bookingId/mainOffence")
+      .retrieve()
+      .bodyToMono(typeReference<List<MainOffence>>())
+      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+      .block()?.get(0)
 
   fun getUserCaseLoads(): List<UserCaseLoad> =
     webClient.get()

@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.Arri
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ArrivalListener
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalType.TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.Name
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.OffenderMovement
+import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.OffenderMovementWithPnc
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.TransferIn
 import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.PrisonerSearchService
@@ -22,23 +24,48 @@ class TransfersService(
   private val arrivalListener: ArrivalListener,
 ) {
 
-  fun getTransfer(agencyId: String, prisonNumber: String): Transfer =
-    getTransfers(agencyId).find { it.prisonNumber == prisonNumber }
-      ?: throw NotFoundException("Could not find transfer with prisonNumber: '$prisonNumber'")
+  fun getTransfer(agencyId: String, prisonNumber: String): TransferWithMainOffence {
+    val offenderMovementWithPnc = getOffenderMovementsWithPnc(agencyId, prisonNumber)[0]
+    var mainOffence = prisonApiClient.getMainOffence(offenderMovementWithPnc.offenderMovement.bookingId)
+    return TransferWithMainOffence(
+      firstName = Name.properCase(offenderMovementWithPnc.offenderMovement.firstName),
+      lastName = Name.properCase(offenderMovementWithPnc.offenderMovement.lastName),
+      dateOfBirth = offenderMovementWithPnc.offenderMovement.dateOfBirth,
+      fromLocation = offenderMovementWithPnc.offenderMovement.fromAgencyDescription,
+      prisonNumber = offenderMovementWithPnc.offenderMovement.offenderNo,
+      date = offenderMovementWithPnc.offenderMovement.movementDate,
+      pncNumber = offenderMovementWithPnc.pncNumber,
+      mainOffence = mainOffence?.offenceDescription,
+    )
+  }
+
+  fun getOffenderMovementsWithPnc(agencyId: String, forPrisonNumber: String?): List<OffenderMovementWithPnc> {
+    var transfers: List<OffenderMovement> = prisonApiClient.getPrisonTransfersEnRoute(agencyId, LocalDate.now())
+    if (!forPrisonNumber.isNullOrBlank()) {
+      transfers = transfers.filter { it.offenderNo == forPrisonNumber }
+      if (transfers.isEmpty()) {
+        throw NotFoundException("Could not find transfer with prisonNumber: '$forPrisonNumber'")
+      }
+    }
+    val pncNumbers = prisonerSearchService.getPncNumbers(transfers.map { it.offenderNo })
+    return transfers.map {
+      OffenderMovementWithPnc(
+        offenderMovement = it,
+        pncNumber = pncNumbers[it.offenderNo],
+      )
+    }
+  }
 
   fun getTransfers(agencyId: String): List<Transfer> {
-    val transfers = prisonApiClient.getPrisonTransfersEnRoute(agencyId, LocalDate.now())
-    val pncNumbers = prisonerSearchService.getPncNumbers(transfers.map { it.offenderNo })
-
-    return transfers.map {
+    return getOffenderMovementsWithPnc(agencyId, null).map {
       Transfer(
-        firstName = Name.properCase(it.firstName),
-        lastName = Name.properCase(it.lastName),
-        dateOfBirth = it.dateOfBirth,
-        fromLocation = it.fromAgencyDescription,
-        prisonNumber = it.offenderNo,
-        date = it.movementDate,
-        pncNumber = pncNumbers[it.offenderNo],
+        firstName = Name.properCase(it.offenderMovement.firstName),
+        lastName = Name.properCase(it.offenderMovement.lastName),
+        dateOfBirth = it.offenderMovement.dateOfBirth,
+        fromLocation = it.offenderMovement.fromAgencyDescription,
+        prisonNumber = it.offenderMovement.offenderNo,
+        date = it.offenderMovement.movementDate,
+        pncNumber = it.pncNumber,
       )
     }
   }
