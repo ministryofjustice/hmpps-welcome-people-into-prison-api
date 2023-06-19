@@ -377,6 +377,15 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `Get empty main offence successful`() {
+    val bookingId = 123L
+    mockServer.stubGetEmptyMainOffenceSuccess(bookingId)
+    val response = prisonApiClient.getMainOffence(bookingId)
+
+    assertThat(response).isNull()
+  }
+
+  @Test
   fun `Get main offence when not found`() {
     val bookingId = 123L
 

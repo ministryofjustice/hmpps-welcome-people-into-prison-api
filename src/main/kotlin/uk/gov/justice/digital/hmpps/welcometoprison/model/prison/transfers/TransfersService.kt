@@ -25,7 +25,7 @@ class TransfersService(
 ) {
 
   fun getTransfer(agencyId: String, prisonNumber: String): TransferWithMainOffence {
-    val offenderMovementWithPnc = getOffenderMovementsWithPnc(agencyId, prisonNumber)[0]
+    val offenderMovementWithPnc = getOffenderMovementsWithPnc(agencyId, prisonNumber).first()
     var mainOffence = prisonApiClient.getMainOffence(offenderMovementWithPnc.offenderMovement.bookingId)
     return TransferWithMainOffence(
       firstName = Name.properCase(offenderMovementWithPnc.offenderMovement.firstName),
