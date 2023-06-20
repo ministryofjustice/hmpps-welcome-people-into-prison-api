@@ -35,7 +35,7 @@ class TransfersService(
       prisonNumber = offenderMovementWithPnc.offenderMovement.offenderNo,
       date = offenderMovementWithPnc.offenderMovement.movementDate,
       pncNumber = offenderMovementWithPnc.pncNumber,
-      mainOffence = mainOffence?.offenceDescription,
+      mainOffence = mainOffence?.offenceDescription?.lowercase()?.replaceFirstChar { a -> a.uppercase() },
     )
   }
 
