@@ -92,7 +92,7 @@ class TransfersServiceTest {
   @Test
   fun getTransferWithMainOffence() {
     whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
-    whenever(prisonApiClient.getMainOffence((any()))).thenReturn(MainOffence(1119482, "Burglary dwelling and theft  - no violence", "TH68036", "TH68"))
+    whenever(prisonApiClient.getMainOffence((any()))).thenReturn(MainOffence(1119482, "BURGLARY DWELLING AND THEFT  - NO VIOLENCE", "TH68036", "TH68"))
 
     val transfers = transfersService.getTransfer("NMI", "G6081VQ")
 
@@ -106,6 +106,29 @@ class TransfersServiceTest {
         date = LocalDate.of(2011, 9, 8),
         pncNumber = null,
         mainOffence = "Burglary dwelling and theft  - no violence",
+      ),
+    )
+
+    verify(prisonApiClient).getPrisonTransfersEnRoute("NMI", LocalDate.now())
+  }
+
+  @Test
+  fun getTransferWhenMainOffenceIsEmpty() {
+    whenever(prisonApiClient.getPrisonTransfersEnRoute(any(), any())).thenReturn(listOf(arrivalKnownToNomis))
+    whenever(prisonApiClient.getMainOffence((any()))).thenReturn(MainOffence(1119482, "", "TH68036", "TH68"))
+
+    val transfers = transfersService.getTransfer("NMI", "G6081VQ")
+
+    assertThat(transfers).isEqualTo(
+      TransferWithMainOffence(
+        prisonNumber = "G6081VQ",
+        dateOfBirth = LocalDate.of(1981, 7, 4),
+        firstName = "Iruncekas",
+        lastName = "Bronseria",
+        fromLocation = "Doncaster (HMP)",
+        date = LocalDate.of(2011, 9, 8),
+        pncNumber = null,
+        mainOffence = "",
       ),
     )
 
