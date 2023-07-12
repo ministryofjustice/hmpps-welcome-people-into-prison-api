@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.2.0"
-  kotlin("plugin.spring") version "1.8.21"
-  kotlin("plugin.jpa") version "1.8.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.2.2"
+  kotlin("plugin.spring") version "1.9.0"
+  kotlin("plugin.jpa") version "1.9.0"
 }
 
 configurations {
@@ -25,8 +25,8 @@ dependencies {
   implementation("commons-codec:commons-codec:1.15")
 
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.1")
-  testRuntimeOnly("com.h2database:h2:2.1.214")
+  runtimeOnly("org.postgresql:postgresql:42.5.4")
+  testRuntimeOnly("com.h2database:h2:2.2.220")
 
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 
