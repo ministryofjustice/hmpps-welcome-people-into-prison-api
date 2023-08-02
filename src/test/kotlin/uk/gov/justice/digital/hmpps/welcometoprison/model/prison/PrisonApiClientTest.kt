@@ -263,7 +263,7 @@ class PrisonApiClientTest {
           prisonId = "NMI",
           imprisonmentStatus = "SENT03",
           movementReasonCode = "C",
-          youthOffender = false,
+              youthOffender = false,
         ),
       )
     }.isInstanceOf(ClientException::class.java)
