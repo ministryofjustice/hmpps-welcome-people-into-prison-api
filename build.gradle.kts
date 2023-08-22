@@ -36,6 +36,11 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-api:0.11.5")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
+  constraints {
+    implementation("org.json:json:20230618") {
+      because("previous transitive version has CVE-2022-45688")
+    }
+  }
 }
 
 /**

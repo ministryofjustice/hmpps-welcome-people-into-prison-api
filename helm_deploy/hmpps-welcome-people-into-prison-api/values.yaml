@@ -1,7 +1,7 @@
 ---
 generic-service:
   nameOverride: hmpps-welcome-people-into-prison-api
-
+  serviceAccountName: hmpps-welcome-to-prison
   replicaCount: 4
 
   image:

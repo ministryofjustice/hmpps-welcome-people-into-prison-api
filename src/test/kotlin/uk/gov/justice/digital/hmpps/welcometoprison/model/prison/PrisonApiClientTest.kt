@@ -166,7 +166,7 @@ class PrisonApiClientTest {
   fun `create offender fails`() {
     mockServer.stubCreateOffenderFails(400)
     try {
-      val response = prisonApiClient.createOffender(
+      prisonApiClient.createOffender(
         CreateOffenderDetail(
           firstName = "A",
           lastName = "Z",
