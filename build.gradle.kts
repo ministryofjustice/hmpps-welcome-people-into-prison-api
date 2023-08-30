@@ -40,8 +40,8 @@ dependencies {
     }
   }
 }
-kotlin {
-  jvmToolchain(19)
+java {
+  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 }
 
 tasks {
