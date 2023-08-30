@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM eclipse-temurin:18-jre-jammy AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:19-jre-jammy AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
@@ -32,4 +32,4 @@ COPY --from=builder --chown=appuser:appgroup /app/applicationinsights.dev.json /
 
 USER 2000
 
-ENTRYPOINT ["java", "-javaagent:/app/agent.jar", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:+AlwaysActAsServerClassMachine", "-javaagent:/app/agent.jar", "-jar", "/app/app.jar"]
