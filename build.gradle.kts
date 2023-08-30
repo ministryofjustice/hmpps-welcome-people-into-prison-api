@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.3.0"
   kotlin("plugin.spring") version "1.9.0"
@@ -42,26 +40,16 @@ dependencies {
     }
   }
 }
-
-/**
- * Without this Kotlin compiler setting Java Bean validator annotations do not work on Kotlin lists.
- */
-tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions {
-    freeCompilerArgs += "-Xemit-jvm-type-annotations"
-  }
+java {
+  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 }
 
 tasks {
-  compileKotlin {
-    kotlinOptions {
-      jvmTarget = "18"
-    }
-  }
-
-  compileTestKotlin {
-    kotlinOptions {
-      jvmTarget = "18"
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    compilerOptions {
+      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
+      freeCompilerArgs.set(listOf("-Xemit-jvm-type-annotations"))
+      jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_19)
     }
   }
 }
