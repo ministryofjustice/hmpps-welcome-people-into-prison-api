@@ -41,7 +41,10 @@ dependencies {
   }
 }
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
+  toolchain{
+    languageVersion.set(JavaLanguageVersion.of(19))
+    implementation = JvmImplementation.J9
+  }
 }
 
 tasks {
