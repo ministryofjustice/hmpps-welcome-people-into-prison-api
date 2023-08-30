@@ -40,6 +40,9 @@ dependencies {
     }
   }
 }
+kotlin {
+  jvmToolchain(19)
+}
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
