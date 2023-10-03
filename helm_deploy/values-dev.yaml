@@ -13,5 +13,5 @@ generic-service:
     OAUTH_ENDPOINT_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     PRISON_ENDPOINT_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     BASM_ENDPOINT_URL: "https://hmpps-book-secure-move-api-staging.apps.cloud-platform.service.justice.gov.uk"
-    PRISONER_SEARCH_ENDPOINT_URL: "https://prisoner-offender-search-dev.prison.service.justice.gov.uk"
+    PRISONER_SEARCH_ENDPOINT_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     PRISON_REGISTER_ENDPOINT_URL: "https://prison-register-dev.hmpps.service.justice.gov.uk"
