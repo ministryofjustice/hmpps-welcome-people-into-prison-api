@@ -188,6 +188,7 @@ class ArrivalsServiceTest {
       fromLocationId = "MDI",
       fromLocationType = LocationType.CUSTODY_SUITE,
       isCurrentPrisoner = false,
+      offence = null,
     )
 
     private val arrival2 = arrival1.copy(

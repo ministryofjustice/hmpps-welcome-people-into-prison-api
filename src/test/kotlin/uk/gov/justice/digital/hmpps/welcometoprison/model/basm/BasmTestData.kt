@@ -7,7 +7,9 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PR
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.MoveType.PRISON_TRANSFER
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.People
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.PerResponse
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Profile
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.ResponseAttributes
 import java.time.LocalDate
 
 class BasmTestData {
@@ -60,6 +62,8 @@ class BasmTestData {
             gender = Gender.MALE,
           ),
         ),
+        framework_responses = null,
+        framework_questions = null,
       ),
       Movement(
         id = "0cb56df1-f421-44a9-9f4d-0b4b5661b29f",
@@ -99,6 +103,8 @@ class BasmTestData {
             gender = null,
           ),
         ),
+        framework_responses = null,
+        framework_questions = null,
       ),
     )
 
@@ -138,6 +144,75 @@ class BasmTestData {
           criminal_records_office = null,
           police_national_computer = null,
           null,
+        ),
+      ),
+      framework_responses = null,
+      framework_questions = null,
+    )
+
+    val MOVEMENT_WITH_OFFENCE = Movement(
+      id = "7052fac2-ea13-409d-9786-02d0dc5e89ff",
+      type = "moves",
+      additional_information = null,
+      date = LocalDate.of(2021, 9, 22),
+      date_from = null,
+      date_to = null,
+      move_type = COURT_APPEARANCE,
+      reference = "HDE8729Y",
+      status = "requested",
+      time_due = null,
+      created_at = "2021-09-22T15:02:38+01:00",
+      updated_at = "2021-09-22T15:02:39+01:00",
+      from_location = Location(
+        id = "fecfd195-21af-4cbc-8ad9-3f8d0345d478",
+        title = "Moorland (HMP & YOI)",
+        location_type = "prison",
+        nomis_agency_id = "MDI",
+      ),
+      to_location = Location(
+        id = "2bffa952-398d-4593-b895-8b9f8492cd7a",
+        title = "Barnstaple Magistrates Court",
+        location_type = "court",
+        nomis_agency_id = "BNSTMC",
+      ),
+      profile = Profile(
+        id = "6d6ff6e6-0d4f-49e2-aff6-f3022501be31",
+        person = People(
+          id = "2982f85c-2216-40ca-a73d-67fcd2ae283f",
+          first_names = "Jason Harry",
+          last_name = "Smith",
+          date_of_birth = LocalDate.of(1994, 1, 24),
+          prison_number = null,
+          criminal_records_office = null,
+          police_national_computer = null,
+          null,
+        ),
+      ),
+      framework_responses = arrayOf(
+        PerResponse(
+          id = "1234",
+          type = "framework_responses",
+          attributes = ResponseAttributes(
+            value = "Did a murder",
+            responded = true,
+          ),
+          relationships = Model.ResponseRelationships(
+            question = Model.ResponseQuestion(
+              data = Model.RelationshipData(
+                id = "25cc34d5-de4d-4136-8ca1-8e974e178f9a",
+                type = "framework_questions",
+              ),
+            ),
+          ),
+        ),
+      ),
+      framework_questions = arrayOf(
+        Model.PerQuestion(
+          id = "25cc34d5-de4d-4136-8ca1-8e974e178f9a",
+          attributes = Model.QuestionAttributes(
+            key = "current-offence",
+            section = "offence-information",
+          ),
         ),
       ),
     )

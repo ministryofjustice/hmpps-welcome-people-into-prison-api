@@ -35,6 +35,7 @@ class BasmServiceTest {
           fromLocationId = "PENRCT",
           fromLocationType = LocationType.COURT,
           gender = Gender.MALE,
+          offence = null,
         ),
       ),
     )
@@ -58,6 +59,30 @@ class BasmServiceTest {
         fromLocation = "Moorland (HMP & YOI)",
         fromLocationId = "MDI",
         fromLocationType = LocationType.OTHER,
+        offence = null,
+      ),
+    )
+  }
+
+  @Test
+  fun `getMovement with offence - happy path`() {
+    whenever(basmClient.getMovement(any())).thenReturn(BasmTestData.MOVEMENT_WITH_OFFENCE)
+
+    val moves = service.getArrival("testId")
+
+    assertThat(moves).isEqualTo(
+      Arrival(
+        id = "7052fac2-ea13-409d-9786-02d0dc5e89ff",
+        firstName = "Jason Harry",
+        lastName = "Smith",
+        dateOfBirth = LocalDate.of(1994, 1, 24),
+        prisonNumber = null,
+        pncNumber = null,
+        date = LocalDate.of(2021, 9, 22),
+        fromLocation = "Moorland (HMP & YOI)",
+        fromLocationId = "MDI",
+        fromLocationType = LocationType.OTHER,
+        offence = "Did a murder",
       ),
     )
   }

@@ -32,12 +32,56 @@ class Model {
     val from_location: Location,
     val to_location: Location,
     val profile: Profile?,
+    val framework_responses: Array<PerResponse>?,
+    val framework_questions: Array<PerQuestion>?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   data class Profile(
     val id: String,
     val person: People?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class PerResponse(
+    val id: String,
+    val type: String,
+    val attributes: ResponseAttributes?,
+    val relationships: ResponseRelationships?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class ResponseRelationships(
+    val question: ResponseQuestion,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class ResponseQuestion(
+    val data: RelationshipData,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class RelationshipData(
+    val id: String,
+    val type: String?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class PerQuestion(
+    val id: String,
+    val attributes: QuestionAttributes?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class ResponseAttributes(
+    val value: String?,
+    val responded: Boolean?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class QuestionAttributes(
+    val section: String?,
+    val key: String?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -94,5 +138,8 @@ class Model {
 
     @JsonProperty("video_remand_hearing")
     VIDEO_REMAND_HEARING,
+
+    @JsonProperty("approved_premises")
+    APPROVED_PREMISES,
   }
 }
