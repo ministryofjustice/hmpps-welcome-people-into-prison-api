@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer
 import com.fasterxml.jackson.databind.node.ArrayNode
@@ -57,7 +58,7 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : JsonDeseria
       it.fields().asSequence()
         .filter { (_, values) -> values?.get("data") != null }
         .forEach { (name, values) ->
-          item.set<JsonNode>(name, getRelation(inclusions, values["data"]))
+          item.set<JsonNode>(name, getRelations(inclusions, values["data"]))
         }
     }
 
@@ -68,6 +69,13 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : JsonDeseria
    * Check to see if data for relation is included in API response and if so normalise and return
    * Otherwise just return the existing info (most like just type and ID)
    */
+  private fun getRelations(inclusions: Inclusions, data: JsonNode): JsonNode {
+    return if (data.size() > 2) {
+      ObjectMapper().valueToTree(data.map { getRelation(inclusions, it) })
+    } else {
+      getRelation(inclusions, data)
+    }
+  }
   private fun getRelation(inclusions: Inclusions, data: JsonNode) =
     inclusions[inclusionKey(data)]?.let { normalise(inclusions, it) } ?: data
 

@@ -75,7 +75,7 @@ class BasmClientTest {
     assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENTS)
 
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/moves?include=profile.person,from_location,to_location,profile.person.gender,responses,responses.question&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2017-01-02&filter%5Bdate_to%5D=2017-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc")),
+      getRequestedFor(urlEqualTo("/api/moves?include=profile.person,from_location,to_location,profile.person.gender&filter%5Bto_location_id%5D=a2bc2abf-75fe-4b7f-bf5a-a755bc290757&filter%5Bdate_from%5D=2017-01-02&filter%5Bdate_to%5D=2017-01-02&filter%5Bstatus%5D=requested,accepted,booked,in_transit,completed&page=1&per_page=200&sort%5Bby%5D=date&sort%5Bdirection%5D=asc")),
     )
   }
 
@@ -87,7 +87,19 @@ class BasmClientTest {
     assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENT)
 
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/moves/test?include=profile.person,from_location,to_location,profile.person.gender,responses,responses.question")),
+      getRequestedFor(urlEqualTo("/api/moves/test?include=profile.person,from_location,to_location,profile.person.gender,profile.person_escort_record.responses,profile.person_escort_record.responses.question")),
+    )
+  }
+
+  @Test
+  fun `successful get movement with offence`() {
+    mockServer.stubGetMovementWithOffence("test-offence", 200)
+    val result = basmClient.getMovement("test-offence")
+
+    assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENT_WITH_OFFENCE)
+
+    mockServer.verify(
+      getRequestedFor(urlEqualTo("/api/moves/test-offence?include=profile.person,from_location,to_location,profile.person.gender,profile.person_escort_record.responses,profile.person_escort_record.responses.question")),
     )
   }
 }

@@ -32,56 +32,35 @@ class Model {
     val from_location: Location,
     val to_location: Location,
     val profile: Profile?,
-    val framework_responses: Array<PerResponse>?,
-    val framework_questions: Array<PerQuestion>?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   data class Profile(
     val id: String,
     val person: People?,
+    val person_escort_record: PersonEscortRecords?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class PerResponse(
+  data class PersonEscortRecords(
     val id: String,
-    val type: String,
-    val attributes: ResponseAttributes?,
-    val relationships: ResponseRelationships?,
+    val responses: Array<FrameworkResponses>?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class ResponseRelationships(
-    val question: ResponseQuestion,
-  )
-
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class ResponseQuestion(
-    val data: RelationshipData,
-  )
-
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class RelationshipData(
+  data class FrameworkResponses(
     val id: String,
-    val type: String?,
+    val value: Any?,
+    val question: FrameworkQuestions?,
+    val responded: String?,
+    val value_type: String?,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class PerQuestion(
+  data class FrameworkQuestions(
     val id: String,
-    val attributes: QuestionAttributes?,
-  )
-
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class ResponseAttributes(
-    val value: String?,
-    val responded: Boolean?,
-  )
-
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  data class QuestionAttributes(
-    val section: String?,
-    val key: String?,
+    val section: String,
+    val key: String,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
