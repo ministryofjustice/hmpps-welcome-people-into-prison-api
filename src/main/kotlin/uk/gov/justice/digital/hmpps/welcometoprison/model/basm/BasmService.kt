@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.model.arrivals.Arrival
