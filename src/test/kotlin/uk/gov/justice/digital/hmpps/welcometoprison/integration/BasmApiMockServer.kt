@@ -54,7 +54,9 @@ class BasmApiMockServer : WireMockServer(9004) {
         ),
     )
   }
-
+  fun stubGetMovementWithOffence(id: String, status: Int, body: String? = "move-with-offence".loadJson(this)) {
+    stubGetMovement(id, status, body)
+  }
   fun stubGetMovement(id: String, status: Int, body: String? = "move".loadJson(this)) {
     stubFor(
       get(

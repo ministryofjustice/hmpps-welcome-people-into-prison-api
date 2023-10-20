@@ -29,6 +29,7 @@ class BasmService(private val basmClient: BasmClient) {
 
   private fun Model.Movement.toArrival(): Arrival {
     val personData = this.profile?.person!!
+    val offenceResponse = this.profile.person_escort_record?.responses?.find { it.question?.key == "current-offences" }?.value
 
     return Arrival(
       id = this.id,
@@ -42,6 +43,7 @@ class BasmService(private val basmClient: BasmClient) {
       fromLocationId = this.from_location.nomis_agency_id,
       fromLocationType = this.move_type.toLocationType(),
       gender = this.profile.person.gender?.let { Gender.valueOf(it.name) },
+      offence = offenceResponse?.toString(),
     )
   }
 

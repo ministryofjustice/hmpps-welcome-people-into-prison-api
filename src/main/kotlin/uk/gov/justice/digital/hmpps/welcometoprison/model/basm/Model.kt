@@ -38,6 +38,29 @@ class Model {
   data class Profile(
     val id: String,
     val person: People?,
+    val person_escort_record: PersonEscortRecords?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class PersonEscortRecords(
+    val id: String,
+    val responses: Array<FrameworkResponses>?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class FrameworkResponses(
+    val id: String,
+    val value: Any?,
+    val question: FrameworkQuestions?,
+    val responded: String?,
+    val value_type: String?,
+  )
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  data class FrameworkQuestions(
+    val id: String,
+    val section: String,
+    val key: String,
   )
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -94,5 +117,8 @@ class Model {
 
     @JsonProperty("video_remand_hearing")
     VIDEO_REMAND_HEARING,
+
+    @JsonProperty("approved_premises")
+    APPROVED_PREMISES,
   }
 }

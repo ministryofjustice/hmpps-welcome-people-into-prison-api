@@ -43,6 +43,9 @@ data class Arrival(
   @Schema(description = "Is the arrival in custody according to NOMIS", example = "true")
   val isCurrentPrisoner: Boolean = false,
 
+  @Schema(description = "Offence per BaSM", example = "Burglary")
+  val offence: String?,
+
   @Schema(
     description = "Gender of the arrival according to Book a Secure Move",
     example = "MALE",

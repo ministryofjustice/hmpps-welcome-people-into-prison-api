@@ -87,7 +87,19 @@ class BasmClientTest {
     assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENT)
 
     mockServer.verify(
-      getRequestedFor(urlEqualTo("/api/moves/test?include=profile.person,from_location,to_location,profile.person.gender")),
+      getRequestedFor(urlEqualTo("/api/moves/test?include=profile.person,from_location,to_location,profile.person.gender,profile.person_escort_record.responses,profile.person_escort_record.responses.question")),
+    )
+  }
+
+  @Test
+  fun `successful get movement with offence`() {
+    mockServer.stubGetMovementWithOffence("test-offence", 200)
+    val result = basmClient.getMovement("test-offence")
+
+    assertThat(result).usingRecursiveComparison().isEqualTo(BasmTestData.MOVEMENT_WITH_OFFENCE)
+
+    mockServer.verify(
+      getRequestedFor(urlEqualTo("/api/moves/test-offence?include=profile.person,from_location,to_location,profile.person.gender,profile.person_escort_record.responses,profile.person_escort_record.responses.question")),
     )
   }
 }

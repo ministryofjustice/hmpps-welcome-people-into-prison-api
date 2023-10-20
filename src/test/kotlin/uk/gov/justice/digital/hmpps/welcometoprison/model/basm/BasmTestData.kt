@@ -59,6 +59,7 @@ class BasmTestData {
             police_national_computer = null,
             gender = Gender.MALE,
           ),
+          person_escort_record = null,
         ),
       ),
       Movement(
@@ -98,6 +99,7 @@ class BasmTestData {
             police_national_computer = "99/123456J",
             gender = null,
           ),
+          person_escort_record = null,
         ),
       ),
     )
@@ -138,6 +140,99 @@ class BasmTestData {
           criminal_records_office = null,
           police_national_computer = null,
           null,
+        ),
+        person_escort_record = Model.PersonEscortRecords(
+          id = "06e826ce-a0bf-44c9-993d-093eb16993c9",
+          responses = null,
+        ),
+      ),
+    )
+
+    val MOVEMENT_WITH_OFFENCE = Movement(
+      id = "eb3c5901-3e8f-4f0c-a1e5-d1ae52b886c4",
+      type = "moves",
+      additional_information = null,
+      date = LocalDate.of(2023, 1, 10),
+      date_from = null,
+      date_to = null,
+      move_type = PRISON_REMAND,
+      reference = "FUW7859W",
+      status = "completed",
+      time_due = null,
+      created_at = "2023-01-10T17:16:19+00:00",
+      updated_at = "2023-01-10T17:16:20+00:00",
+      from_location = Location(
+        id = "11f16600-d1dc-4565-977b-43fcc5548c20",
+        title = "Shrewsbury County Court",
+        location_type = "court",
+        nomis_agency_id = "SHRWCT",
+      ),
+      to_location = Location(
+        id = "2716a1b1-fd8e-4b24-992e-2960da4cd70c",
+        title = "LINCOLN (HMP)",
+        location_type = "prison",
+        nomis_agency_id = "LII",
+      ),
+      profile = Profile(
+        id = "e4cd2fdc-57f5-4c6c-b639-9b7091f43fd1",
+        person = People(
+          id = "89c4437f-9851-48cd-8dce-57b42f677506",
+          first_names = "Genoveva",
+          last_name = "Schimmel",
+          date_of_birth = LocalDate.of(1988, 7, 8),
+          prison_number = null,
+          criminal_records_office = null,
+          police_national_computer = "01/111111A",
+          Gender.TRANS,
+        ),
+        person_escort_record = Model.PersonEscortRecords(
+          id = "1f151710-2590-4964-80ce-b2d649bd7917",
+          responses = arrayOf(
+            Model.FrameworkResponses(
+              id = "3257632c-844c-4fc0-84ed-56dee8f29961",
+              responded = "true",
+              value = "Did a murder",
+              value_type = "string",
+              question = Model.FrameworkQuestions(
+                id = "9c68b6e4-509b-442d-a5ab-f09a03ced5cc",
+                section = "offence-information",
+                key = "current-offences",
+              ),
+            ),
+            Model.FrameworkResponses(
+              id = "7d8ab397-ab86-47e4-a4f3-c96c33a565d2",
+              responded = "false",
+              value = null,
+              value_type = "string",
+              question = Model.FrameworkQuestions(
+                id = "c7186192-539f-453c-a433-4fcdea50d427",
+                section = "offence-information",
+                key = "current-or-previous-sex-offender",
+              ),
+            ),
+            Model.FrameworkResponses(
+              id = "22cccdd1-9640-4cbf-9700-7164f878dbe9",
+              responded = "false",
+              value = null,
+              value_type = "string",
+              question = Model.FrameworkQuestions(
+                id = "2cb56004-5b6a-401f-9220-e2d30963d217",
+                section = "offence-information",
+                key = "terrorism-offences",
+              ),
+            ),
+            Model.FrameworkResponses(
+              id = "9f14d24c-3da6-41c8-8d86-67a96a1463d4",
+              responded = "false",
+              value = null,
+              value_type = "string",
+              question = Model.FrameworkQuestions(
+                id = "1036677b-293d-48c3-b6b0-c8eb5d119449",
+                section = "offence-information",
+                key = "hostage-taker",
+              ),
+            ),
+          ),
         ),
       ),
     )
