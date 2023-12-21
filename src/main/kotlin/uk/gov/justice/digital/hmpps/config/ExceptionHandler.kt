@@ -14,6 +14,7 @@ import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
 class ExceptionHandler {
@@ -45,7 +46,7 @@ class ExceptionHandler {
       )
   }
 
-  @ExceptionHandler(NotFoundException::class)
+  @ExceptionHandler(NotFoundException::class, NoResourceFoundException::class)
   fun handleNotFoundException(e: Exception): ResponseEntity<ErrorResponse> {
     log.info("Not found exception: {}", e.message)
     return ResponseEntity
