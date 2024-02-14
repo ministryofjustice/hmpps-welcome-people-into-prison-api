@@ -14,7 +14,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Confirm arrival")
   inner class ConfirmArrivalTests {
-    val VALID_REQUEST = """
+     val validRequest = """
         {
           "firstName": "Alpha",
           "lastName": "Omega",
@@ -37,7 +37,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .uri("/unexpected-arrivals/confirm")
         .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -58,7 +58,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .uri("/unexpected-arrivals/confirm")
         .withBearerToken(token)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isOk
         .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
@@ -116,7 +116,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .uri("/unexpected-arrivals/confirm")
         .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -131,7 +131,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .uri("/unexpected-arrivals/confirm")
         .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -146,7 +146,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
         .uri("/unexpected-arrivals/confirm")
         .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is4xxClientError
         .expectBody().json(
