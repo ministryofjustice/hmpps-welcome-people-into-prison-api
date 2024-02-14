@@ -14,7 +14,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Confirm arrival")
   inner class ConfirmArrivalTests {
-    val VALID_REQUEST = """
+    private val validRequest = """
         {
           "firstName": "Alpha",
           "lastName": "Omega",
@@ -35,9 +35,14 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write"),
+          ),
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -51,14 +56,17 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
 
       prisonApiMockServer.stubCreateOffender(prisonNumber)
 
-      val token = getAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write"))
+      val token = getAuthorisation(
+        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+        scopes = listOf("read", "write"),
+      )
 
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
         .withBearerToken(token)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isOk
         .expectBody().jsonPath("prisonNumber").isEqualTo(prisonNumber)
@@ -81,7 +89,12 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write"),
+          ),
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
           """
@@ -114,9 +127,14 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write"),
+          ),
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -129,9 +147,14 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write"),
+          ),
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is5xxServerError
         .expectBody()
@@ -144,9 +167,14 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
+            scopes = listOf("read", "write"),
+          ),
+        )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().is4xxClientError
         .expectBody().json(

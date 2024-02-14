@@ -195,7 +195,6 @@ class TransfersResource(
     @Valid
     @NotEmpty
     prisonNumber: String,
-
     @RequestBody
     @Valid
     @NotNull

@@ -13,7 +13,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
   @Nested
   @DisplayName("Add body scan tests")
   inner class AddBodyScanTests {
-    val VALID_REQUEST = """
+    private val validRequest = """
         {
           "date": "2022-01-01",
           "reason": "REASONABLE_SUSPICION",
@@ -33,7 +33,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
       webTestClient.post().uri("/body-scans/prisoners/A1278AA")
         .headers(setAuthorisation(roles = listOf(), scopes = listOf("read")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isForbidden
         .expectBody().jsonPath("userMessage").isEqualTo("Access denied")
@@ -54,7 +54,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
           ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isNoContent
     }
@@ -74,7 +74,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
           ),
         )
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .bodyValue(VALID_REQUEST)
+        .bodyValue(validRequest)
         .exchange()
         .expectStatus().isNotFound
     }

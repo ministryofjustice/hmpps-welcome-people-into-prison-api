@@ -15,15 +15,15 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 class ArrivalListenerTest {
-  private val FIXED_NOW = Instant.now()
-  private val ZONE_ID = ZoneId.systemDefault()
-  private val FIXED_CLOCK = Clock.fixed(FIXED_NOW, ZONE_ID)
+  private val fixedNow = Instant.now()
+  private val zoneId = ZoneId.systemDefault()
+  private val fixedClock = Clock.fixed(fixedNow, zoneId)
   private val confirmedArrivalRepository: ConfirmedArrivalRepository = mock()
   private val securityUserContext: SecurityUserContext = mock()
   private val telemetryClient: TelemetryClient = mock()
 
   private val arrivalListener =
-    ArrivalListener(confirmedArrivalRepository, telemetryClient, securityUserContext, FIXED_CLOCK)
+    ArrivalListener(confirmedArrivalRepository, telemetryClient, securityUserContext, fixedClock)
 
   @Test
   fun `arrived events are persisted in the DB`() {
@@ -48,8 +48,8 @@ class ArrivalListenerTest {
           bookingId = 123,
           arrivalType = RECALL,
           username = "USER-1",
-          arrivalDate = LocalDate.now(FIXED_CLOCK),
-          timestamp = LocalDateTime.now(FIXED_CLOCK),
+          arrivalDate = LocalDate.now(fixedClock),
+          timestamp = LocalDateTime.now(fixedClock),
         ),
       ),
     )
@@ -78,7 +78,7 @@ class ArrivalListenerTest {
         "bookingId" to "123",
         "arrivalType" to "RECALL",
         "username" to "USER-1",
-        "timestamp" to LocalDateTime.now(FIXED_CLOCK).toString(),
+        "timestamp" to LocalDateTime.now(fixedClock).toString(),
       ),
       null,
     )

@@ -27,7 +27,8 @@ data class BodyScanDetailRequest(
 
 @Schema(description = "Reason for the scan")
 enum class BodyScanReason(var desc: String) {
-  INTELLIGENCE("intelligence"), REASONABLE_SUSPICION("reasonable suspicion");
+  INTELLIGENCE("intelligence"),
+  REASONABLE_SUSPICION("reasonable suspicion"),
 }
 
 @Schema(description = "Result of a scan")

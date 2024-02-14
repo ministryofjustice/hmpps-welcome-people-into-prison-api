@@ -187,7 +187,6 @@ class TemporaryAbsencesResource(
   fun temporaryAbsencesArrival(
     @PathVariable
     prisonNumber: String,
-
     @RequestBody
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest,
   ): ConfirmTemporaryAbsenceResponse =

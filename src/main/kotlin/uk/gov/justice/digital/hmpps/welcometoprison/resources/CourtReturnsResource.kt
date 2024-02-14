@@ -81,7 +81,6 @@ class CourtReturnsResource(
     @Valid
     @NotEmpty
     arrivalId: String,
-
     @RequestBody
     @Valid
     @NotNull

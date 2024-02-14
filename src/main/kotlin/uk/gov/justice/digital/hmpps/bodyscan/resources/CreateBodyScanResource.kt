@@ -70,7 +70,6 @@ class CreateBodyScanResource(
     @Schema(description = "Prison number", example = "A1278AA", required = true)
     @PathVariable
     prisonNumber: String,
-
     @RequestBody
     @Valid
     @NotNull

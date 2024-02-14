@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.config
 
 enum class ErrorCode {
-  PRISONER_ALREADY_EXIST, NO_CELL_CAPACITY;
+  PRISONER_ALREADY_EXIST,
+  NO_CELL_CAPACITY,
+  ;
 
   companion object {
     @JvmStatic

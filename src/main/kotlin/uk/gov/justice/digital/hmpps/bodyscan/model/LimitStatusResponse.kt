@@ -15,7 +15,9 @@ data class LimitStatusResponse(
   val numberOfBodyScans: Int,
 ) {
   enum class BodyScanStatus {
-    DO_NOT_SCAN, CLOSE_TO_LIMIT, OK_TO_SCAN
+    DO_NOT_SCAN,
+    CLOSE_TO_LIMIT,
+    OK_TO_SCAN,
   }
 
   @Schema(description = "body scan status", example = "DO_NOT_SCAN")

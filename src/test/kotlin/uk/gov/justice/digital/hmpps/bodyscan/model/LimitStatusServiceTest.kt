@@ -25,11 +25,16 @@ class LimitStatusServiceTest {
     val year = Year.of(2022)
     whenever(bodyScanPrisonApiClient.getPersonalCareNeedsForPrisonNumbers(any(), any(), any(), any())).thenReturn(
       listOf(
-        PersonalCareCounter("G8266VA", 99), // OK_TO_SCAN
-        PersonalCareCounter("G8874VB", 100), // CLOSE_TO_LIMIT
-        PersonalCareCounter("G8874VC", 115), // CLOSE_TO_LIMIT
-        PersonalCareCounter("G8874VD", 116), // DO_NOT_SCAN
-        PersonalCareCounter("G8874VE", 117), // DO_NOT_SCAN
+        PersonalCareCounter("G8266VA", 99),
+        // OK_TO_SCAN
+        PersonalCareCounter("G8874VB", 100),
+        // CLOSE_TO_LIMIT
+        PersonalCareCounter("G8874VC", 115),
+        // CLOSE_TO_LIMIT
+        PersonalCareCounter("G8874VD", 116),
+        // DO_NOT_SCAN
+        PersonalCareCounter("G8874VE", 117),
+        // DO_NOT_SCAN
       ),
     )
     val result = limitStatusService.getLimitStatusForYearAndPrisonNumbers(year, prisonNumbers)
