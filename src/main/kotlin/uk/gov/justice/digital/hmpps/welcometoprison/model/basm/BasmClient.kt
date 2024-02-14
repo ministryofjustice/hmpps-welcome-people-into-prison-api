@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.config.typeReference
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.Order.ASC
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`query of`
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`queryOf`
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Location
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.Model.Movement
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.deserializer.JsonApiResponse
@@ -23,13 +23,13 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
 
   fun getPrison(prisonId: String): Location? = get(
     path = "/api/reference/locations",
-    query = `query of`(filters = mapOf("nomis_agency_id" to listOf(prisonId))),
+    query = `queryOf`(filters = mapOf("nomis_agency_id" to listOf(prisonId))),
     type = typeReference<JsonApiResponse<Location>>(),
   ).block()?.firstOrNull()
 
   fun getMovements(prisonUuid: String, from: LocalDate, to: LocalDate): List<Movement> = get(
     path = "/api/moves",
-    query = `query of`(
+    query = `queryOf`(
       filters = mapOf(
         "to_location_id" to listOf(prisonUuid),
         "date_from" to listOf(from.format(ISO_DATE)),
@@ -46,7 +46,7 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
 
   fun getMovement(moveId: String): Movement? = get(
     path = "/api/moves/$moveId",
-    query = `query of`(
+    query = `queryOf`(
       includes = listOf("profile.person", "from_location", "to_location", "profile.person.gender", "profile.person_escort_record.responses", "profile.person_escort_record.responses.question"),
     ),
     type = typeReference<JsonApiResponse<Movement>>(),

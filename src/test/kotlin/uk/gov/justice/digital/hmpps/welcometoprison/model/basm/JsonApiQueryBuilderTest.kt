@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.Order
-import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`query of`
+import uk.gov.justice.digital.hmpps.welcometoprison.model.basm.JsonApiQueryBuilder.`queryOf`
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets.UTF_8
 
@@ -11,20 +11,20 @@ class JsonApiQueryBuilderTest {
 
   @Test
   fun `empty query`() =
-    `query of`() `decodes to` ""
+    `queryOf`() `decodes to` ""
 
   @Test
   fun `includes only`() =
-    `query of`(includes = listOf("profile.person", "profile.person_escort_record.flags")) `decodes to`
+    `queryOf`(includes = listOf("profile.person", "profile.person_escort_record.flags")) `decodes to`
       "?include=profile.person,profile.person_escort_record.flags"
 
   @Test
   fun `single filter`() =
-    `query of`(filters = mapOf("name" to listOf("Jim"))) `decodes to` "?filter[name]=Jim"
+    `queryOf`(filters = mapOf("name" to listOf("Jim"))) `decodes to` "?filter[name]=Jim"
 
   @Test
   fun `multiple filters`() =
-    `query of`(
+    `queryOf`(
       filters = mapOf(
         "name" to listOf("Jim"),
         "age" to listOf("65"),
@@ -33,27 +33,27 @@ class JsonApiQueryBuilderTest {
 
   @Test
   fun `includes and filters`() =
-    `query of`(
+    `queryOf`(
       filters = mapOf("name" to listOf("Jim"), "age" to listOf("65")),
       includes = listOf("profile.person", "profile.person_escort_record.flags"),
     ) `decodes to` "?include=profile.person,profile.person_escort_record.flags&filter[name]=Jim&filter[age]=65"
 
   @Test
   fun `check pagination`() =
-    `query of`(
+    `queryOf`(
       page = 3,
       perPage = 20,
     ) `decodes to` "?page=3&per_page=20"
 
   @Test
   fun `check sorting`() =
-    `query of`(
+    `queryOf`(
       sort = "name" to Order.ASC,
     ) `decodes to` "?sort[by]=name&sort[direction]=asc"
 
   @Test
   fun `complex example`() =
-    `query of`(
+    `queryOf`(
       filters = mapOf(
         "to_location_id" to listOf("123"),
         "date_from" to listOf("2020-02-12"),

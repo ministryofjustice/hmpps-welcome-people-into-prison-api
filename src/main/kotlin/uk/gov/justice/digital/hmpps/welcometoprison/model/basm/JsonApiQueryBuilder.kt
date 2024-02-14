@@ -5,7 +5,7 @@ typealias Param<T> = Pair<String, T>
 object JsonApiQueryBuilder {
   enum class Order(val value: String) { ASC("asc"), DESC("desc") }
 
-  fun `query of`(
+  fun queryOf(
     includes: List<String>? = null,
     filters: Map<String, List<String>>? = null,
     sort: Pair<String, Order>? = null,

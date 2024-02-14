@@ -110,8 +110,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
   }
 
   /* This scenario represents situation when Prison Api do not sent errorCode due to old code
-  * We can remove it after  Prison Api Release
-  * */
+   * We can remove it after  Prison Api Release
+   * */
   fun stubCreateOffenderFailsPrisonerAlreadyExistWithoutErrorCode() {
     stubFor(
       post("/api/offenders")

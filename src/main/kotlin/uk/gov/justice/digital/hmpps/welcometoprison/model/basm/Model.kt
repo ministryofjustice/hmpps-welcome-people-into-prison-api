@@ -76,7 +76,10 @@ class Model {
   )
 
   enum class Gender {
-    MALE, FEMALE, TRANS;
+    MALE,
+    FEMALE,
+    TRANS,
+    ;
 
     companion object {
       @JvmStatic

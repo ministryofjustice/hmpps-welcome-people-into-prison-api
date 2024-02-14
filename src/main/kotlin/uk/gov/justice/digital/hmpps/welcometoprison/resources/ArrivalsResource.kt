@@ -191,7 +191,6 @@ class ArrivalsResource(
     @Valid
     @NotEmpty
     arrivalId: String,
-
     @RequestBody
     @Valid
     @NotNull
