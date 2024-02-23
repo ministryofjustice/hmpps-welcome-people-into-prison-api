@@ -18,22 +18,22 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
-  implementation("org.apache.commons:commons-text:1.10.0")
+  implementation("org.apache.commons:commons-text:1.11.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-  implementation("commons-codec:commons-codec:1.16.0")
+  implementation("commons-codec:commons-codec:1.16.1")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.1")
   testRuntimeOnly("com.h2database:h2:2.2.224")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.3.1")
+  testImplementation("org.wiremock:wiremock-standalone:3.4.1")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.2.1")
   testImplementation("com.tngtech.archunit:archunit-junit5:1.2.1")
-  testImplementation("io.jsonwebtoken:jjwt-api:0.12.3")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.3")
-  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.3")
+  testImplementation("io.jsonwebtoken:jjwt-api:0.12.5")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
+  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
   constraints {
     implementation("org.json:json:20230618") {
       because("previous transitive version has CVE-2022-45688")
