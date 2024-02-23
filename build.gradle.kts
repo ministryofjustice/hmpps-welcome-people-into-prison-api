@@ -50,6 +50,7 @@ tasks {
       apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
       freeCompilerArgs.set(listOf("-Xemit-jvm-type-annotations"))
       jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
     }
   }
 }
