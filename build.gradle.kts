@@ -23,7 +23,7 @@ dependencies {
   implementation("commons-codec:commons-codec:1.16.1")
 
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.7.1")
+  runtimeOnly("org.postgresql:postgresql:42.7.2")
   testRuntimeOnly("com.h2database:h2:2.2.224")
 
   testImplementation("org.wiremock:wiremock-standalone:3.4.1")
