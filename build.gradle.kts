@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.3"
-  kotlin("plugin.spring") version "1.9.22"
-  kotlin("plugin.jpa") version "1.9.22"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.5"
+  kotlin("plugin.spring") version "1.9.23"
+  kotlin("plugin.jpa") version "1.9.23"
 }
 
 configurations {
@@ -34,11 +34,6 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-api:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
-  constraints {
-    implementation("org.json:json:20230618") {
-      because("previous transitive version has CVE-2022-45688")
-    }
-  }
 }
 java {
   toolchain.languageVersion = JavaLanguageVersion.of(21)
