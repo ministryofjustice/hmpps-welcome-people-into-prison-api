@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.5"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.6"
   kotlin("plugin.spring") version "1.9.23"
   kotlin("plugin.jpa") version "1.9.23"
 }
@@ -18,19 +18,19 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
-  implementation("org.apache.commons:commons-text:1.11.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+  implementation("org.apache.commons:commons-text:1.12.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
   implementation("commons-codec:commons-codec:1.16.1")
 
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.7.2")
+  runtimeOnly("org.postgresql:postgresql:42.7.3")
   testRuntimeOnly("com.h2database:h2:2.2.224")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.4.1")
+  testImplementation("org.wiremock:wiremock-standalone:3.5.4")
 
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.2.1")
-  testImplementation("com.tngtech.archunit:archunit-junit5:1.2.1")
+  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.3.0")
+  testImplementation("com.tngtech.archunit:archunit-junit5:1.3.0")
   testImplementation("io.jsonwebtoken:jjwt-api:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
