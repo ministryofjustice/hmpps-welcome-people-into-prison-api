@@ -217,6 +217,25 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `admit Offender On New Booking fails with 409 due to UAL`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubAdmitOnNewBookingFails(offenderNumber, 409)
+
+    assertThatThrownBy {
+      prisonApiClient.admitOffenderOnNewBooking(
+        offenderNumber,
+        AdmitOnNewBookingDetail(
+          prisonId = "NMI",
+          imprisonmentStatus = "UAL",
+          movementReasonCode = "RECA",
+          youthOffender = false,
+        ),
+      )
+    }.isInstanceOf(ClientException::class.java)
+  }
+
+  @Test
   fun `getNullByteArrayWhenImageNotExist`() {
     val offenderNumber = "ABC123A"
 

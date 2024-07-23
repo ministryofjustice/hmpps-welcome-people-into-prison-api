@@ -33,6 +33,10 @@ val RECALL_MOVEMENT_REASONS = listOf(
     description = "Error in emergency temporary release",
     movementReasonCode = "ETRRIE",
   ),
+  MovementReason(
+    movementReasonCode = "RECA",
+    description = "Recapture after escape",
+    ),
 )
 
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
