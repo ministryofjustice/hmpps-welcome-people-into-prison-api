@@ -36,7 +36,7 @@ val RECALL_MOVEMENT_REASONS = listOf(
   MovementReason(
     movementReasonCode = "RECA",
     description = "Recapture after escape",
-    ),
+  ),
 )
 
 val RECALL_STATUS_AND_MOVEMENT_REASONS = ImprisonmentStatus(
