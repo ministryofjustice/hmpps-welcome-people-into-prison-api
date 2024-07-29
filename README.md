@@ -21,3 +21,14 @@ Kotlin based project with
 ```uk.gov.justice.digital.hmpps.welcometoprison``` - all classes for Welcome People Into Prison domain   
 ```uk.gov.justice.digital.hmpps.bodyscan``` - all classes for Body Scan domain  
 ```uk.gov.justice.digital.hmpps.archunit``` - all test classes for guarding project structure
+
+
+## Test coverage report
+
+Run:
+
+```
+./gradlew koverHtmlReport
+```
+
+Then view output file for coverage report.
