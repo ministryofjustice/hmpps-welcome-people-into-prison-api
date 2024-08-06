@@ -25,7 +25,7 @@ dependencies {
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
-  testRuntimeOnly("com.h2database:h2:2.2.224")
+  testRuntimeOnly("com.h2database:h2:2.3.230")
 
   testImplementation("org.wiremock:wiremock-standalone:3.9.1")
 
