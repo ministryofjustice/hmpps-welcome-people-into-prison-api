@@ -1,8 +1,13 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.6"
-  kotlin("plugin.spring") version "1.9.23"
-  kotlin("plugin.jpa") version "1.9.23"
-  id("org.jetbrains.kotlinx.kover") version "0.8.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.2"
+  kotlin("plugin.spring") version "2.0.10"
+  kotlin("plugin.jpa") version "2.0.10"
+  id("org.jetbrains.kotlinx.kover") version "0.8.3"
+  idea
 }
 
 configurations {
@@ -23,11 +28,12 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
   implementation("commons-codec:commons-codec:1.16.1")
 
-  runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.7.3")
-  testRuntimeOnly("com.h2database:h2:2.2.224")
+  implementation("org.flywaydb:flyway-core")
+  runtimeOnly("org.postgresql:postgresql")
+  runtimeOnly("org.flywaydb:flyway-database-postgresql")
+  testRuntimeOnly("com.h2database:h2:2.3.230")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.5.4")
+  testImplementation("org.wiremock:wiremock-standalone:3.9.1")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.3.0")
@@ -41,12 +47,12 @@ java {
 }
 
 tasks {
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  withType<KotlinCompile> {
     compilerOptions {
-      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
+      apiVersion.set(KOTLIN_2_1)
       freeCompilerArgs.set(listOf("-Xemit-jvm-type-annotations"))
-      jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
+      jvmTarget.set(JvmTarget.JVM_21)
+      languageVersion.set(KOTLIN_2_1)
     }
   }
 }

@@ -12,7 +12,6 @@ spring:
     date-format: "yyyy-MM-dd HH:mm:ss"
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
-
   jpa:
     open-in-view: false
     properties:
@@ -30,7 +29,6 @@ spring:
     url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=${database.name}'
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    continue-on-error: true
     hikari:
       pool-name: WelcomePeopleIntoPrison-CP
       connectionTimeout: 1000
@@ -63,6 +61,12 @@ spring:
         provider:
           basm-auth:
             token-uri: ${basm.endpoint.url}/oauth/token
+  data:
+    jdbc:
+      dialect: postgresql
+  sql:
+    init:
+      continue-on-error: true
 
 server:
   port: 8080

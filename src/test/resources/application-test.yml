@@ -38,6 +38,10 @@ spring:
 
   jpa:
     show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
         format_sql: true
+  data:
+    jdbc:
+      dialect: h2
