@@ -28,7 +28,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
   implementation("commons-codec:commons-codec:1.16.1")
 
-  implementation("org.flywaydb:flyway-core")
+  runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   testRuntimeOnly("com.h2database:h2:2.3.230")
