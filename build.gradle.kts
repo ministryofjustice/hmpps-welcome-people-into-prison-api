@@ -22,10 +22,10 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.12.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
   implementation("commons-codec:commons-codec:1.16.1")
+  implementation("com.h2database:h2:2.3.230")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
-  testRuntimeOnly("com.h2database:h2:2.3.230")
 
   testImplementation("org.wiremock:wiremock-standalone:3.9.1")
 
@@ -35,6 +35,7 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-api:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
+  testImplementation("com.h2database:h2:2.3.230")
 }
 java {
   toolchain.languageVersion = JavaLanguageVersion.of(21)
