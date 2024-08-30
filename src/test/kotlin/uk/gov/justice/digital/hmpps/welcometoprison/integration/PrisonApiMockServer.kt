@@ -824,4 +824,19 @@ class PrisonApiMockServer : WireMockServer(9005) {
         ),
     )
   }
+
+  fun stubGetAgencySuccess(agencyId: String) {
+    stubFor(
+      get("/api/agencies/$agencyId")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """{"prisonName":"Nottingham (HMP)"}
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
 }
