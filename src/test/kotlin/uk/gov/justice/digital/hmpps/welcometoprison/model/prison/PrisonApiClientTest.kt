@@ -482,8 +482,8 @@ class PrisonApiClientTest {
     val offenderNumber = "ABC123A"
 
     mockServer.stubErrorTemporaryAbsencesSuccess(offenderNumber, 400)
-    try {
-      val response = prisonApiClient.confirmTemporaryAbsencesArrival(
+    runCatching {
+      prisonApiClient.confirmTemporaryAbsencesArrival(
         offenderNumber,
         TemporaryAbsencesArrival(
           agencyId = "NMI",
@@ -492,8 +492,8 @@ class PrisonApiClientTest {
           receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
         ),
       )
-      assertThat(response.offenderNo).isEqualTo(offenderNumber)
-    } catch (exception: Exception) {
+    }.onFailure {
+      assertThat(it.localizedMessage).contains("No prisoner found for prisoner number $offenderNumber")
     }
 
     verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
