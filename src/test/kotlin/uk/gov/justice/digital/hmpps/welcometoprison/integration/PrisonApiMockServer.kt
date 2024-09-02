@@ -771,8 +771,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
               """
               {
                 "status": $status,
-                "userMessage": "No prisoner found for prisoner number A1234BC",
-                "developerMessage": "No prisoner found for prisoner number A1234BC"
+                "userMessage": "No prisoner found for prisoner number $offenderNo",
+                "developerMessage": "No prisoner found for prisoner number $offenderNo"
               }
             """,
             ),
