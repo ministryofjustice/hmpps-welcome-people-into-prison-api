@@ -478,6 +478,28 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `return from temporary absences fails`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubErrorTemporaryAbsencesSuccess(offenderNumber, 400)
+    try {
+      val response = prisonApiClient.confirmTemporaryAbsencesArrival(
+        offenderNumber,
+        TemporaryAbsencesArrival(
+          agencyId = "NMI",
+          movementReasonCode = "ET",
+          commentText = "",
+          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+        ),
+      )
+      assertThat(response.offenderNo).isEqualTo(offenderNumber)
+    } catch (exception: Exception) {
+    }
+
+    verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
+  }
+
+  @Test
   fun `Confirm get Agency Test`() {
     val agencyId = "AGE1"
     mockServer.stubGetAgencySuccess(agencyId)
