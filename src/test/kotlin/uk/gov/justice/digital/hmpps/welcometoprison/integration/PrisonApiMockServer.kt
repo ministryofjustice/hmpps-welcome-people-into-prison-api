@@ -78,6 +78,38 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubCreateOffenderWithoutAssignedLivingUnit(offenderNo: String) {
+    stubFor(
+      post("/api/offenders")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+                {
+                  "offenderNo": "$offenderNo",
+                  "offenderId": 2582523,
+                  "rootOffenderId": 2582523,
+                  "firstName": "D",
+                  "lastName": "RAP",
+                  "dateOfBirth": "1961-01-04",
+                  "age": 60,
+                 "agencyId": "NMI",
+                  "activeFlag": false
+                  },
+                  "physicalAttributes": {
+                    "sexCode": "F",
+                    "gender": "Female"
+                  },
+                  "identifiers": []
+                }
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
+
   fun stubCreateOffenderFails(status: Int) {
     stubFor(
       post("/api/offenders")
