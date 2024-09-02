@@ -160,6 +160,26 @@ class PrisonApiClientTest {
     )
 
     assertThat(response.offenderNo).isEqualTo(offenderNumber)
+    assertThat(response.assignedLivingUnit).isNotNull
+  }
+
+  @Test
+  fun `create offender without assigned living unit`() {
+    val offenderNumber = "ABC123A"
+
+    mockServer.stubCreateOffenderWithoutAssignedLivingUnit(offenderNumber)
+
+    val response = prisonApiClient.createOffender(
+      CreateOffenderDetail(
+        firstName = "A",
+        lastName = "Z",
+        dateOfBirth = LocalDate.of(1961, 5, 29),
+        gender = "M",
+      ),
+    )
+
+    assertThat(response.offenderNo).isEqualTo(offenderNumber)
+    assertThat(response.assignedLivingUnit).isNull()
   }
 
   @Test
@@ -174,7 +194,8 @@ class PrisonApiClientTest {
           gender = "M",
         ),
       )
-    } catch (exception: Exception) {
+    } catch (exception: RuntimeException) {
+      assertThat(exception.message)
     }
 
     verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
