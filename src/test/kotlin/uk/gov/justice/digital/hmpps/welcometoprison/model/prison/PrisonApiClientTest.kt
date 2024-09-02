@@ -476,4 +476,11 @@ class PrisonApiClientTest {
     )
     assertThat(response.offenderNo).isEqualTo(offenderNumber)
   }
+
+  @Test
+  fun `Confirm get Agency Test`() {
+    val agencyId = "AGE1"
+    mockServer.stubGetAgencySuccess(agencyId)
+    assertThat(prisonApiClient.getAgency(agencyId)).isNotNull
+  }
 }
