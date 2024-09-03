@@ -300,10 +300,13 @@ class PrisonApiClient(
       .uri(
         "api/movements/$agencyId/in?fromDateTime=" +
           "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
-          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
+          toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
       )
       .header("Page-Limit", "10000")
       .retrieve()
       .bodyToMono(typeReference<List<Movement>>())
+      .onErrorResume(WebClientResponseException::class.java) {
+        Mono.just(emptyList())
+      }
       .block() ?: emptyList()
 }

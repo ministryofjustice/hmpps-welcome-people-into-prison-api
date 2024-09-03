@@ -461,6 +461,30 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `Get recent movements successful with empty list`() {
+    val agencyId = "MDI"
+    val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
+    val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
+    mockServer.stubGetMovementSuccessButEmptyList(agencyId, fromDate, toDate)
+
+    val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
+
+    assertThat(response.size).isEqualTo(0)
+  }
+
+  @Test
+  fun `Get recent movements agency not found`() {
+    val agencyId = "XXX"
+    val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
+    val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
+
+    mockServer.stubGetMovementEmptyListWhenServerError(agencyId, fromDate, toDate, 404)
+    val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
+    assertThat(response.size).isEqualTo(0)
+    assertThat(prisonApiClient.getMovement(agencyId, fromDate, toDate)).isNotNull()
+  }
+
+  @Test
   fun `Confirm return from temporary absences successful`() {
     val offenderNumber = "ABC123A"
     mockServer.stubConfirmTemporaryAbsencesSuccess(offenderNumber)
