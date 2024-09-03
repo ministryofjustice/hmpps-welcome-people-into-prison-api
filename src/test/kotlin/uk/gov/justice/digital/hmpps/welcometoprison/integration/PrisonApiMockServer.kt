@@ -760,6 +760,26 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubErrorTemporaryAbsencesSuccess(offenderNo: String, status: Int) {
+    stubFor(
+      put("/api/offenders/$offenderNo/temporary-absence-arrival")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(status)
+            .withBody(
+              """
+              {
+                "status": $status,
+                "userMessage": "No prisoner found for prisoner number $offenderNo",
+                "developerMessage": "No prisoner found for prisoner number $offenderNo"
+              }
+            """,
+            ),
+        ),
+    )
+  }
+
   fun stubGetMovementSuccess(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime) {
     stubFor(
       get(
