@@ -14,6 +14,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.config.ClientException
+import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -477,11 +478,12 @@ class PrisonApiClientTest {
     val agencyId = "XXX"
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
     val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
-
     mockServer.stubGetMovementEmptyListWhenServerError(agencyId, fromDate, toDate, 404)
-    val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
-    assertThat(response.size).isEqualTo(0)
-    assertThat(prisonApiClient.getMovement(agencyId, fromDate, toDate)).isNotNull()
+
+    assertThatThrownBy {
+      prisonApiClient.getMovement(agencyId, fromDate, toDate)
+      assertThat(prisonApiClient.getMovement(agencyId, fromDate, toDate)).isNotNull()
+    }.isInstanceOf(NotFoundException::class.java).hasMessage("Could not find agency with agencyId: '$agencyId'")
   }
 
   @Test
