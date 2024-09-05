@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.config.ClientErrorResponse
 import uk.gov.justice.digital.hmpps.config.ClientException
-import uk.gov.justice.digital.hmpps.config.NotFoundException
 import uk.gov.justice.digital.hmpps.config.typeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -306,8 +305,5 @@ class PrisonApiClient(
       .header("Page-Limit", "10000")
       .retrieve()
       .bodyToMono(typeReference<List<Movement>>())
-      .onErrorResume(WebClientResponseException::class.java) {
-        throw NotFoundException("Could not find agency with agencyId: '$agencyId'")
-      }
       .block() ?: emptyList()
 }
