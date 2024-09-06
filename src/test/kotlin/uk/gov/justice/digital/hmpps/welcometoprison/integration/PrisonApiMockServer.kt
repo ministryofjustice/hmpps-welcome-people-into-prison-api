@@ -907,12 +907,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
         .willReturn(
           aResponse()
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            .withStatus(status)
-            .withBody(
-              """
-              []
-              """.trimIndent(),
-            ),
+            .withStatus(status),
         ),
     )
   }

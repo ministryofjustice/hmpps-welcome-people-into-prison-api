@@ -12,6 +12,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.config.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
@@ -24,6 +25,7 @@ class PrisonApiClientTest {
   private lateinit var prisonApiClient: PrisonApiClient
   private val telemetryClient: TelemetryClient = mock()
   val agencyId = "MDI"
+  val agencyIdInvalid = "XXX"
 
   companion object {
     @JvmField
@@ -185,21 +187,24 @@ class PrisonApiClientTest {
 
   @Test
   fun `create offender fails`() {
-    mockServer.stubCreateOffenderFails(400)
-    try {
-      prisonApiClient.createOffender(
-        CreateOffenderDetail(
-          firstName = "A",
-          lastName = "Z",
-          dateOfBirth = LocalDate.of(1961, 5, 29),
-          gender = "M",
-        ),
-      )
-    } catch (exception: RuntimeException) {
-      assertThat(exception.message)
-    }
-
-    verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubCreateOffenderFails(it.value())
+        try {
+          prisonApiClient.createOffender(
+            CreateOffenderDetail(
+              firstName = "A",
+              lastName = "Z",
+              dateOfBirth = LocalDate.of(1961, 5, 29),
+              gender = "M",
+            ),
+          )
+          verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
+        } catch (exception: RuntimeException) {
+          assertThat(exception.message)
+        }
+      }
   }
 
   @Test
@@ -223,19 +228,23 @@ class PrisonApiClientTest {
   fun `admit Offender On New Booking fails`() {
     val offenderNumber = "ABC123A"
 
-    mockServer.stubAdmitOnNewBookingFails(offenderNumber, 404)
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubAdmitOnNewBookingFails(offenderNumber, it.value())
 
-    assertThatThrownBy {
-      prisonApiClient.admitOffenderOnNewBooking(
-        offenderNumber,
-        AdmitOnNewBookingDetail(
-          prisonId = "NMI",
-          imprisonmentStatus = "SENT03",
-          movementReasonCode = "C",
-          youthOffender = false,
-        ),
-      )
-    }.isInstanceOf(ClientException::class.java)
+        assertThatThrownBy {
+          prisonApiClient.admitOffenderOnNewBooking(
+            offenderNumber,
+            AdmitOnNewBookingDetail(
+              prisonId = "NMI",
+              imprisonmentStatus = "SENT03",
+              movementReasonCode = "C",
+              youthOffender = false,
+            ),
+          )
+        }.isInstanceOf(ClientException::class.java)
+      }
   }
 
   @Test
@@ -295,19 +304,23 @@ class PrisonApiClientTest {
   fun `Recall offender fails`() {
     val offenderNumber = "ABC123A"
 
-    mockServer.stubRecallOffenderFails(offenderNumber, 404)
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubRecallOffenderFails(offenderNumber, it.value())
 
-    assertThatThrownBy {
-      prisonApiClient.recallOffender(
-        offenderNumber,
-        RecallBooking(
-          prisonId = "NMI",
-          imprisonmentStatus = "SENT03",
-          movementReasonCode = "C",
-          youthOffender = false,
-        ),
-      )
-    }.isInstanceOf(ClientException::class.java)
+        assertThatThrownBy {
+          prisonApiClient.recallOffender(
+            offenderNumber,
+            RecallBooking(
+              prisonId = "NMI",
+              imprisonmentStatus = "SENT03",
+              movementReasonCode = "C",
+              youthOffender = false,
+            ),
+          )
+        }.isInstanceOf(ClientException::class.java)
+      }
   }
 
   @Test
@@ -328,18 +341,23 @@ class PrisonApiClientTest {
   @Test
   fun `Transfer in offender fails`() {
     val offenderNumber = "ABC123A"
-    mockServer.stubTransferInOffenderFails(offenderNumber, 404)
 
-    assertThatThrownBy {
-      prisonApiClient.transferIn(
-        offenderNumber,
-        TransferIn(
-          cellLocation = "MDI-RECP",
-          commentText = "Prisoner was transferred to a new prison",
-          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
-        ),
-      )
-    }.isInstanceOf(ClientException::class.java)
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubTransferInOffenderFails(offenderNumber, it.value())
+
+        assertThatThrownBy {
+          prisonApiClient.transferIn(
+            offenderNumber,
+            TransferIn(
+              cellLocation = "MDI-RECP",
+              commentText = "Prisoner was transferred to a new prison",
+              receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+            ),
+          )
+        }.isInstanceOf(ClientException::class.java)
+      }
   }
 
   @Test
@@ -361,19 +379,23 @@ class PrisonApiClientTest {
   @Test
   fun `Transfer from Court fails`() {
     val offenderNumber = "A1234BC"
-    mockServer.stubCourtTransferInOffenderFails(offenderNumber, 404)
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubCourtTransferInOffenderFails(offenderNumber, it.value())
 
-    assertThatThrownBy {
-      prisonApiClient.courtTransferIn(
-        offenderNumber,
-        CourtTransferIn(
-          agencyId,
-          movementReasonCode = "CA",
-          commentText = "Prisoner was transferred from court",
-          dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
-        ),
-      )
-    }.isInstanceOf(ClientException::class.java)
+        assertThatThrownBy {
+          prisonApiClient.courtTransferIn(
+            offenderNumber,
+            CourtTransferIn(
+              agencyId,
+              movementReasonCode = "CA",
+              commentText = "Prisoner was transferred from court",
+              dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+            ),
+          )
+        }.isInstanceOf(ClientException::class.java)
+      }
   }
 
   @Test
@@ -471,7 +493,6 @@ class PrisonApiClientTest {
 
   @Test
   fun `Get recent movements agency not found and throw 500 Server error`() {
-    val agencyIdInvalid = "XXX"
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
     val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
     mockServer.stubGetMovementEmptyListWhenServerError(agencyIdInvalid, fromDate, toDate, 404)
@@ -503,22 +524,25 @@ class PrisonApiClientTest {
   fun `return from temporary absences fails`() {
     val offenderNumber = "ABC123A"
 
-    mockServer.stubErrorTemporaryAbsencesSuccess(offenderNumber, 400)
-    runCatching {
-      prisonApiClient.confirmTemporaryAbsencesArrival(
-        offenderNumber,
-        TemporaryAbsencesArrival(
-          agencyId = "NMI",
-          movementReasonCode = "ET",
-          commentText = "",
-          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
-        ),
-      )
-    }.onFailure {
-      assertThat(it.localizedMessage).contains("No prisoner found for prisoner number $offenderNumber")
-    }
-
-    verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubErrorTemporaryAbsencesSuccess(offenderNumber, it.value())
+        runCatching {
+          prisonApiClient.confirmTemporaryAbsencesArrival(
+            offenderNumber,
+            TemporaryAbsencesArrival(
+              agencyId = "NMI",
+              movementReasonCode = "ET",
+              commentText = "",
+              receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+            ),
+          )
+          verify(telemetryClient).trackEvent(eq("PrisonApiClientError"), any(), eq(null))
+        }.onFailure {
+          assertThat(it.localizedMessage).contains("No prisoner found for prisoner number $offenderNumber")
+        }
+      }
   }
 
   @Test
