@@ -72,12 +72,16 @@ class PrisonApiClientTest {
   }
 
   @Test
-  fun `get user case loads 404`() {
-    mockServer.stubGetUserCaseLoads404()
-    assertThatThrownBy {
-      val userCaseLoads = prisonApiClient.getUserCaseLoads()
-      assertThat(userCaseLoads).isEmpty()
-    }.isInstanceOf(RuntimeException::class.java)
+  fun `get user case loads fails`() {
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubGetUserCaseLoadsis4xxClientError(it.value())
+        assertThatThrownBy {
+          val userCaseLoads = prisonApiClient.getUserCaseLoads()
+          assertThat(userCaseLoads).isEmpty()
+        }.isInstanceOf(RuntimeException::class.java)
+      }
   }
 
   @Test

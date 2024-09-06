@@ -28,13 +28,13 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-  fun stubGetUserCaseLoads404() {
+  fun stubGetUserCaseLoadsis4xxClientError(status: Int) {
     stubFor(
       get("/api/users/me/caseLoads")
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withStatus(404),
+            .withStatus(status),
         ),
     )
   }
