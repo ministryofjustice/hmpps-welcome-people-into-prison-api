@@ -897,7 +897,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
-  fun stubGetMovementEmptyListWhenServerError(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime, status: Int) {
+  fun stubGetMovementWhenServerError(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime, status: Int) {
     stubFor(
       get(
         "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +

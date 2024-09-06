@@ -492,10 +492,10 @@ class PrisonApiClientTest {
   }
 
   @Test
-  fun `Get recent movements agency not found and throw 500 Server error`() {
+  fun `Get recent movements agencyId not found`() {
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
     val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
-    mockServer.stubGetMovementEmptyListWhenServerError(agencyIdInvalid, fromDate, toDate, 404)
+    mockServer.stubGetMovementWhenServerError(agencyIdInvalid, fromDate, toDate, 404)
 
     assertThatThrownBy {
       prisonApiClient.getMovement(agencyIdInvalid, fromDate, toDate)
