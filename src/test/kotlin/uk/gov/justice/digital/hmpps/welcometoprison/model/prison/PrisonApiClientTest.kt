@@ -12,6 +12,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.config.ClientException
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.PrisonApiMockServer
@@ -336,18 +337,23 @@ class PrisonApiClientTest {
   @Test
   fun `Transfer in offender fails`() {
     val offenderNumber = "ABC123A"
-    mockServer.stubTransferInOffenderFails(offenderNumber, 404)
 
-    assertThatThrownBy {
-      prisonApiClient.transferIn(
-        offenderNumber,
-        TransferIn(
-          cellLocation = "MDI-RECP",
-          commentText = "Prisoner was transferred to a new prison",
-          receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
-        ),
-      )
-    }.isInstanceOf(ClientException::class.java)
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubTransferInOffenderFails(offenderNumber, it.value())
+
+        assertThatThrownBy {
+          prisonApiClient.transferIn(
+            offenderNumber,
+            TransferIn(
+              cellLocation = "MDI-RECP",
+              commentText = "Prisoner was transferred to a new prison",
+              receiveTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
+            ),
+          )
+        }.isInstanceOf(ClientException::class.java)
+      }
   }
 
   @Test
