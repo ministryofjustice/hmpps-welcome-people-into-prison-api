@@ -877,6 +877,41 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubGetMovementSuccessButEmptyList(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime) {
+    stubFor(
+      get(
+        "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
+      )
+        .withHeader("Page-Limit", equalTo("10000"))
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(200)
+            .withBody(
+              """
+              []
+              """.trimIndent(),
+            ),
+        ),
+    )
+  }
+
+  fun stubGetMovementWhenServerError(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime, status: Int) {
+    stubFor(
+      get(
+        "/api/movements/$agencyId/in?fromDateTime=${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}" +
+          "&toDateTime=${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
+      )
+        .withHeader("Page-Limit", equalTo("10000"))
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .withStatus(status),
+        ),
+    )
+  }
+
   fun stubGetAgencySuccess(agencyId: String) {
     stubFor(
       get("/api/agencies/$agencyId")
