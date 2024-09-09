@@ -78,7 +78,7 @@ class PrisonApiClientTest {
       .map {
         mockServer.stubGetUserCaseLoadsis4xxClientError(it.value())
         assertThatThrownBy {
-          val userCaseLoads = prisonApiClient.getUserCaseLoads()
+          prisonApiClient.getUserCaseLoads()
         }.isInstanceOf(RuntimeException::class.java)
       }
   }
