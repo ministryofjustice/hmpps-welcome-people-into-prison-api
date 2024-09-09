@@ -24,6 +24,8 @@ import java.time.format.DateTimeFormatter
 class PrisonApiClientTest {
   private lateinit var prisonApiClient: PrisonApiClient
   private val telemetryClient: TelemetryClient = mock()
+  val agencyId = "MDI"
+  val agencyIdInvalid = "XXX"
 
   companion object {
     @JvmField
@@ -378,7 +380,7 @@ class PrisonApiClientTest {
     prisonApiClient.courtTransferIn(
       offenderNumber,
       CourtTransferIn(
-        agencyId = "MDI",
+        agencyId,
         movementReasonCode = "CA",
         commentText = "Prisoner was transferred from court",
         dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
@@ -398,7 +400,7 @@ class PrisonApiClientTest {
           prisonApiClient.courtTransferIn(
             offenderNumber,
             CourtTransferIn(
-              agencyId = "MDI",
+              agencyId,
               movementReasonCode = "CA",
               commentText = "Prisoner was transferred from court",
               dateTime = LocalDateTime.of(2021, 11, 15, 1, 0, 0),
@@ -410,7 +412,6 @@ class PrisonApiClientTest {
 
   @Test
   fun `Get temporary absences successful`() {
-    val agencyId = "MDI"
     val temporaryAbsence = TemporaryAbsence(
       offenderNo = "G1310UO",
       firstName = "EGURZTOF",
@@ -471,7 +472,6 @@ class PrisonApiClientTest {
 
   @Test
   fun `Get recent movements successful`() {
-    val agencyId = "MDI"
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
     val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
     mockServer.stubGetMovementSuccess(agencyId, fromDate, toDate)
@@ -483,7 +483,6 @@ class PrisonApiClientTest {
 
   @Test
   fun `Get recent movements successful without location`() {
-    val agencyId = "MDI"
     val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
     val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
     mockServer.stubGetMovementSuccessWithNoLocation(agencyId, fromDate, toDate)
@@ -491,6 +490,28 @@ class PrisonApiClientTest {
     val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
 
     assertThat(response.size).isEqualTo(2)
+  }
+
+  @Test
+  fun `Get recent movements successful with empty list`() {
+    val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
+    val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
+    mockServer.stubGetMovementSuccessButEmptyList(agencyId, fromDate, toDate)
+
+    val response = prisonApiClient.getMovement(agencyId, fromDate, toDate)
+
+    assertThat(response.size).isEqualTo(0)
+  }
+
+  @Test
+  fun `Get recent movements agencyId not found`() {
+    val fromDate = LocalDateTime.of(2020, 1, 18, 8, 0)
+    val toDate = LocalDateTime.of(2022, 1, 18, 8, 0)
+    mockServer.stubGetMovementWhenServerError(agencyIdInvalid, fromDate, toDate, 404)
+
+    assertThatThrownBy {
+      prisonApiClient.getMovement(agencyIdInvalid, fromDate, toDate)
+    }.isInstanceOf(RuntimeException::class.java)
   }
 
   @Test
@@ -537,7 +558,6 @@ class PrisonApiClientTest {
 
   @Test
   fun `Confirm get Agency Test`() {
-    val agencyId = "AGE1"
     mockServer.stubGetAgencySuccess(agencyId)
     assertThat(prisonApiClient.getAgency(agencyId)).isNotNull
   }
