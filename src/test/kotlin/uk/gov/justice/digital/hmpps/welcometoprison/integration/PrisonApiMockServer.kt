@@ -28,6 +28,17 @@ class PrisonApiMockServer : WireMockServer(9005) {
     )
   }
 
+  fun stubGetUserCaseLoadsis4xxClientError(status: Int) {
+    stubFor(
+      get("/api/users/me/caseLoads")
+        .willReturn(
+          aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(status),
+        ),
+    )
+  }
+
   fun stubGetPrisonTransfersEnRoute(prisonId: String, movementDate: LocalDate) {
     stubFor(
       get("/api/movements/$prisonId/enroute?movementDate=" + movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE))

@@ -74,6 +74,18 @@ class PrisonApiClientTest {
   }
 
   @Test
+  fun `get user case loads fails`() {
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubGetUserCaseLoadsis4xxClientError(it.value())
+        assertThatThrownBy {
+          prisonApiClient.getUserCaseLoads()
+        }.isInstanceOf(RuntimeException::class.java)
+      }
+  }
+
+  @Test
   fun `get prison transfers en-route happy path`() {
     mockServer.stubGetPrisonTransfersEnRoute("NMI", LocalDate.now())
 
