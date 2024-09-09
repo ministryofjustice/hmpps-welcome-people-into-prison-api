@@ -3,12 +3,14 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
@@ -61,6 +63,24 @@ class BasmClientTest {
     mockServer.verify(
       getRequestedFor(urlEqualTo("/api/reference/locations?filter%5Bnomis_agency_id%5D=MDI")),
     )
+  }
+
+  @Test
+  fun `get prison fails`() {
+    HttpStatus.entries
+      .filter { it.is4xxClientError }
+      .map {
+        mockServer.stubGetPrison(it.value())
+
+        assertThatThrownBy {
+          val result = basmClient.getPrison("XXX")
+          assertThat(result).isNull()
+        }.isInstanceOf(RuntimeException::class.java)
+
+        mockServer.verify(
+          getRequestedFor(urlEqualTo("/api/reference/locations?filter%5Bnomis_agency_id%5D=XXX")),
+        )
+      }
   }
 
   @Test
