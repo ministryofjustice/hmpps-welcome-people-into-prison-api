@@ -499,7 +499,6 @@ class PrisonApiClientTest {
 
     assertThatThrownBy {
       prisonApiClient.getMovement(agencyIdInvalid, fromDate, toDate)
-      assertThat(prisonApiClient.getMovement(agencyIdInvalid, fromDate, toDate)).isNotNull()
     }.isInstanceOf(RuntimeException::class.java)
   }
 
