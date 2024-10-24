@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.6"
-  kotlin("plugin.spring") version "2.0.20"
-  kotlin("plugin.jpa") version "2.0.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.7"
+  kotlin("plugin.spring") version "2.0.21"
+  kotlin("plugin.jpa") version "2.0.21"
   id("org.jetbrains.kotlinx.kover") version "0.8.3"
   idea
 }
@@ -31,9 +31,9 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  testRuntimeOnly("com.h2database:h2:2.3.230")
+  testRuntimeOnly("com.h2database:h2:2.3.232")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.9.1")
+  testImplementation("org.wiremock:wiremock-standalone:3.9.2")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.3.0")
