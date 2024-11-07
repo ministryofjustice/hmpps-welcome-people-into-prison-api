@@ -42,17 +42,12 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
 }
-java {
-  toolchain.languageVersion = JavaLanguageVersion.of(21)
+kotlin {
+  jvmToolchain(21)
 }
 
 tasks {
-  withType<KotlinCompile> {
-    compilerOptions {
-      apiVersion.set(KOTLIN_2_1)
-      freeCompilerArgs.set(listOf("-Xemit-jvm-type-annotations"))
-      jvmTarget.set(JvmTarget.JVM_21)
-      languageVersion.set(KOTLIN_2_1)
-    }
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
   }
 }
