@@ -16,4 +16,5 @@ generic-service:
     PRISONER_SEARCH_ENDPOINT_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
     PRISON_REGISTER_ENDPOINT_URL: "https://prison-register-preprod.hmpps.service.justice.gov.uk"
 generic-prometheus-alerts:
-  alertSeverity: NON_PROD_ALERTS_SEVERITY_LABEL
+  businessHoursOnly: true
+  alertSeverity: digital-prison-service-dev
