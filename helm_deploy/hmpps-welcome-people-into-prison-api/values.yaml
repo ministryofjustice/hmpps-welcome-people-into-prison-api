@@ -1,6 +1,7 @@
 generic-service:
   nameOverride: hmpps-welcome-people-into-prison-api
   serviceAccountName: hmpps-welcome-to-prison
+  productId: "DPS046"
   replicaCount: 4
 
   image:
