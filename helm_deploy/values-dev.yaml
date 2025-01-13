@@ -4,6 +4,9 @@
 generic-service:
   replicaCount: 2
 
+  scheduledDowntime:
+    enabled: true
+
   ingress:
     hosts:
       - welcome-api-dev.prison.service.justice.gov.uk
