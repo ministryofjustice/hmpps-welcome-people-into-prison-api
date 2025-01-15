@@ -2,7 +2,7 @@
 # Per environment values which override defaults in hmpps-welcome-people-into-prison-api/values.yaml
 
 generic-service:
-  replicaCount: 4
+  replicaCount: 2
 
   scheduledDowntime:
     enabled: true
