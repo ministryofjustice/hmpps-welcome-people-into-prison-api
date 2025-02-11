@@ -46,4 +46,4 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-welcome-people-into-prison-api
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: move-a-prisoner-alerts-nonprod
