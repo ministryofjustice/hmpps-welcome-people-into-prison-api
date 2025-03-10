@@ -17,10 +17,9 @@ data class RecentArrival(
   @Schema(description = "Location", example = "MDI-1-3-004") val location: String?,
 ) : Comparable<RecentArrival> {
 
-  override fun compareTo(other: RecentArrival) =
-    compareByDescending<RecentArrival> { it.movementDateTime }
-      .thenBy { it.lastName }
-      .thenBy { it.firstName }
-      .thenBy { it.prisonNumber }
-      .compare(this, other)
+  override fun compareTo(other: RecentArrival) = compareByDescending<RecentArrival> { it.movementDateTime }
+    .thenBy { it.lastName }
+    .thenBy { it.firstName }
+    .thenBy { it.prisonNumber }
+    .compare(this, other)
 }

@@ -76,11 +76,10 @@ class ConfirmationService(
     return response
   }
 
-  private fun admitOffender(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse =
-    when (confirmation.movementReasonCode) {
-      in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmation, prisonNumber)
-      else -> admitOffenderOnNewBooking(confirmation, prisonNumber)
-    }
+  private fun admitOffender(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse = when (confirmation.movementReasonCode) {
+    in RECALL_MOVEMENT_REASON_CODES -> recallOffender(confirmation, prisonNumber)
+    else -> admitOffenderOnNewBooking(confirmation, prisonNumber)
+  }
 
   private fun admitOffenderOnNewBooking(confirmation: Confirmation, prisonNumber: String): ConfirmArrivalResponse {
     val result = prisonService.admitOffenderOnNewBooking(prisonNumber, confirmation.detail)

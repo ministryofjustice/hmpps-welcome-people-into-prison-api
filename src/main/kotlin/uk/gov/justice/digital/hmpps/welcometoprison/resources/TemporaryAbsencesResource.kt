@@ -189,6 +189,5 @@ class TemporaryAbsencesResource(
     prisonNumber: String,
     @RequestBody
     confirmTemporaryAbsenceRequest: ConfirmTemporaryAbsenceRequest,
-  ): ConfirmTemporaryAbsenceResponse =
-    temporaryAbsenceService.confirmTemporaryAbsencesArrival(prisonNumber, confirmTemporaryAbsenceRequest)
+  ): ConfirmTemporaryAbsenceResponse = temporaryAbsenceService.confirmTemporaryAbsencesArrival(prisonNumber, confirmTemporaryAbsenceRequest)
 }

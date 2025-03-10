@@ -13,12 +13,11 @@ data class Prison(@JsonProperty("prisonName") val prisonName: String)
 class PrisonRegisterClient(
   @Qualifier("prisonRegisterWebClient") private val webClient: WebClient,
 ) {
-  fun getPrison(prisonId: String): Prison? =
-    webClient
-      .get()
-      .uri("/prisons/id/$prisonId")
-      .retrieve()
-      .bodyToMono(typeReference<Prison>())
-      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()
+  fun getPrison(prisonId: String): Prison? = webClient
+    .get()
+    .uri("/prisons/id/$prisonId")
+    .retrieve()
+    .bodyToMono(typeReference<Prison>())
+    .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+    .block()
 }

@@ -52,8 +52,7 @@ class LimitStatusServiceTest {
     assertThat(result.getStatusFor("G8874VE")).isEqualTo(DO_NOT_SCAN)
   }
 
-  private fun List<LimitStatusResponse>.getStatusFor(number: String) =
-    this.find { it.prisonNumber == number }?.getBodyScanStatus()
+  private fun List<LimitStatusResponse>.getStatusFor(number: String) = this.find { it.prisonNumber == number }?.getBodyScanStatus()
 
   @Test
   fun `get limit status for year and when no prison numbers`() {

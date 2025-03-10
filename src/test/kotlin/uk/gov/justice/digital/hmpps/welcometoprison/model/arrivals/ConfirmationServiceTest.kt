@@ -344,7 +344,6 @@ class ConfirmationServiceTest {
     fun recallMovementReasonCodes(): Stream<String> = RECALL_MOVEMENT_REASON_CODES.stream()
 
     @JvmStatic
-    fun nonRecallMovementReasonCodes(): Stream<String> =
-      (ALL_MOVEMENT_REASON_CODES - RECALL_MOVEMENT_REASON_CODES).stream()
+    fun nonRecallMovementReasonCodes(): Stream<String> = (ALL_MOVEMENT_REASON_CODES - RECALL_MOVEMENT_REASON_CODES).stream()
   }
 }

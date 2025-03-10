@@ -33,13 +33,11 @@ class SearchByNameAndPrisonNumber : SearchStrategy<String, RecentArrival> {
   }
 }
 
-private fun String.splitToTerms() =
-  this.trim().replace("[,.-]".toRegex(), " ").lowercase().split("\\s+".toRegex()).filter { it.isNotBlank() }
+private fun String.splitToTerms() = this.trim().replace("[,.-]".toRegex(), " ").lowercase().split("\\s+".toRegex()).filter { it.isNotBlank() }
 
 private fun RecentArrival.splitToFields() = listOf(prisonNumber, firstName, lastName).map { it.trim().lowercase() }
 
 /**
  * Produces a list that contains every combination of elements in ts and us
  */
-private fun <T, U> cartesianProduct(ts: List<T>, us: List<U>): List<Pair<T, U>> =
-  ts.flatMap { t -> us.map { u -> t to u } }
+private fun <T, U> cartesianProduct(ts: List<T>, us: List<U>): List<Pair<T, U>> = ts.flatMap { t -> us.map { u -> t to u } }

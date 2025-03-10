@@ -83,11 +83,9 @@ class SearchScenariosTest {
     )
   }
 
-  data class ExpectedResult(override val firstName: String, override val lastName: String, val score: Int) :
-    Result(firstName, lastName) {
+  data class ExpectedResult(override val firstName: String, override val lastName: String, val score: Int) : Result(firstName, lastName) {
     fun toSearchResult() = Searcher.Result(this.toRecentArrival(), score)
   }
 
-  data class ExpectedIrrelevant(override val firstName: String, override val lastName: String) :
-    Result(firstName, lastName)
+  data class ExpectedIrrelevant(override val firstName: String, override val lastName: String) : Result(firstName, lastName)
 }

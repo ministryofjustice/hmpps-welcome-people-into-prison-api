@@ -23,8 +23,7 @@ object JsonApiQueryBuilder {
     return if (params.isNotEmpty()) "?${params.joinToString("&")}" else ""
   }
 
-  private fun <T, R> T?.toParams(build: (value: T) -> List<Param<R>>) =
-    if (this == null) emptyArray() else build(this).map { it.write() }.toTypedArray()
+  private fun <T, R> T?.toParams(build: (value: T) -> List<Param<R>>) = if (this == null) emptyArray() else build(this).map { it.write() }.toTypedArray()
 
   private fun <T> Param<T>.write() = "$first=$second"
 }

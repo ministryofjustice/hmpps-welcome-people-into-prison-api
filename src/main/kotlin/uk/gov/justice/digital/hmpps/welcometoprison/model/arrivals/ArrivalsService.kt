@@ -48,9 +48,7 @@ class ArrivalsService(
     )
   }
 
-  fun getArrivalsAsCsv(startDate: LocalDate, numberOfDays: Long): String {
-    return arrivalsCsvConverter.toCsv(
-      confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays)),
-    )
-  }
+  fun getArrivalsAsCsv(startDate: LocalDate, numberOfDays: Long): String = arrivalsCsvConverter.toCsv(
+    confirmedArrivalRepository.findAllByArrivalDateIsBetween(startDate, startDate.plusDays(numberOfDays)),
+  )
 }

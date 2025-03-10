@@ -19,35 +19,31 @@ class BodyScanPrisonApiClient(@Qualifier("prisonApiWebClient") private val webCl
     fromStartDate: LocalDate,
     toStartDate: LocalDate,
     prisonNumbers: List<String>,
-  ): List<PersonalCareCounter> {
-    return webClient.post()
-      .uri(
-        "/api/bookings/offenderNo/personal-care-needs/count?type=" +
-          type +
-          "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
-          "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
-      )
-      .bodyValue(prisonNumbers)
-      .retrieve()
-      .bodyToMono(typeReference<List<PersonalCareCounter>>())
-      .block()
-      ?: emptyList()
-  }
+  ): List<PersonalCareCounter> = webClient.post()
+    .uri(
+      "/api/bookings/offenderNo/personal-care-needs/count?type=" +
+        type +
+        "&fromStartDate=${fromStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" +
+        "&toStartDate=${toStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}",
+    )
+    .bodyValue(prisonNumbers)
+    .retrieve()
+    .bodyToMono(typeReference<List<PersonalCareCounter>>())
+    .block()
+    ?: emptyList()
 
-  fun getOffenderDetails(prisonNumber: String): OffenderDetails =
-    webClient.get().uri("/api/offenders/$prisonNumber")
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) {
-        throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
-      }
-      .bodyToMono(OffenderDetails::class.java)
-      .block()!!
+  fun getOffenderDetails(prisonNumber: String): OffenderDetails = webClient.get().uri("/api/offenders/$prisonNumber")
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) {
+      throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
+    }
+    .bodyToMono(OffenderDetails::class.java)
+    .block()!!
 
-  fun addPersonalCareNeeds(bookingId: Long, personalCareNeeds: PersonalCareNeeds) =
-    webClient.post()
-      .uri("/api/bookings/$bookingId/personal-care-needs")
-      .bodyValue(personalCareNeeds)
-      .retrieve()
-      .toBodilessEntity()
-      .block()
+  fun addPersonalCareNeeds(bookingId: Long, personalCareNeeds: PersonalCareNeeds) = webClient.post()
+    .uri("/api/bookings/$bookingId/personal-care-needs")
+    .bodyValue(personalCareNeeds)
+    .retrieve()
+    .toBodilessEntity()
+    .block()
 }

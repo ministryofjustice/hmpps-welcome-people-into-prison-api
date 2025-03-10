@@ -23,12 +23,11 @@ class ModelTest {
 
   companion object {
     @JvmStatic
-    fun genderKeysAndValues(): Stream<Arguments> =
-      Stream.of(
-        arguments("male", Gender.MALE),
-        arguments("female", Gender.FEMALE),
-        arguments("trans", Gender.TRANS),
-        arguments("somethingelse", null),
-      )
+    fun genderKeysAndValues(): Stream<Arguments> = Stream.of(
+      arguments("male", Gender.MALE),
+      arguments("female", Gender.FEMALE),
+      arguments("trans", Gender.TRANS),
+      arguments("somethingelse", null),
+    )
   }
 }
