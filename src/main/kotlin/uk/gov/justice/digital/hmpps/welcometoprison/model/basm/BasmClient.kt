@@ -57,16 +57,14 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
     path: String,
     query: String = "",
     type: ParameterizedTypeReference<JsonApiResponse<T>>,
-  ): Mono<List<T>> =
-    webClient.get()
-      .uri("$path$query")
-      .header("Accept", "application/vnd.api+json; version=2")
-      .header("X-Current-User", SecurityContextHolder.getContext().authentication.principal.toString())
-      .retrieve()
-      .bodyToMono(type)
-      .map { it.payload }
+  ): Mono<List<T>> = webClient.get()
+    .uri("$path$query")
+    .header("Accept", "application/vnd.api+json; version=2")
+    .header("X-Current-User", SecurityContextHolder.getContext().authentication.principal.toString())
+    .retrieve()
+    .bodyToMono(type)
+    .map { it.payload }
 
   fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, NOT_FOUND)
-  fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
-    if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
+  fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 }

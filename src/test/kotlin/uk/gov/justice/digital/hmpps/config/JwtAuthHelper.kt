@@ -13,7 +13,7 @@ import java.time.Duration
 import java.util.*
 
 @Component
-class JwtAuthHelper() {
+class JwtAuthHelper {
   private final var keyPair: KeyPair
 
   init {
@@ -59,19 +59,18 @@ class JwtAuthHelper() {
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
     jwtId: String = UUID.randomUUID().toString(),
-  ): String =
-    mutableMapOf<String, Any>()
-      .also { subject?.let { subject -> it["user_name"] = subject } }
-      .also { it["client_id"] = "court-reg-client" }
-      .also { roles?.let { roles -> it["authorities"] = roles } }
-      .also { scope?.let { scope -> it["scope"] = scope } }
-      .let {
-        Jwts.builder()
-          .id(jwtId)
-          .subject(subject)
-          .claims(it.toMap())
-          .expiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
-          .signWith(keyPair.private)
-          .compact()
-      }
+  ): String = mutableMapOf<String, Any>()
+    .also { subject?.let { subject -> it["user_name"] = subject } }
+    .also { it["client_id"] = "court-reg-client" }
+    .also { roles?.let { roles -> it["authorities"] = roles } }
+    .also { scope?.let { scope -> it["scope"] = scope } }
+    .let {
+      Jwts.builder()
+        .id(jwtId)
+        .subject(subject)
+        .claims(it.toMap())
+        .expiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
+        .signWith(keyPair.private)
+        .compact()
+    }
 }

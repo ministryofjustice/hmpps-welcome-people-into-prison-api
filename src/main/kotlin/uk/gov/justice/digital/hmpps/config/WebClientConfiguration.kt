@@ -40,9 +40,7 @@ class WebClientConfiguration(
   }
 
   @Bean
-  fun prisonApiHealthWebClient(): WebClient {
-    return WebClient.builder().baseUrl(prisonApiBaseUrl).build()
-  }
+  fun prisonApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(prisonApiBaseUrl).build()
 
   @Bean
   fun basmApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
@@ -64,9 +62,7 @@ class WebClientConfiguration(
   }
 
   @Bean
-  fun prisonerSearchApiHealthWebClient(): WebClient {
-    return WebClient.builder().baseUrl(prisonerSearchApiUrl).build()
-  }
+  fun prisonerSearchApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(prisonerSearchApiUrl).build()
 
   @Bean
   fun prisonerSearchApiWebClient(): WebClient {
@@ -82,9 +78,7 @@ class WebClientConfiguration(
   }
 
   @Bean
-  fun basmApiHealthWebClient(): WebClient {
-    return WebClient.builder().baseUrl(basmRootUri).build()
-  }
+  fun basmApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(basmRootUri).build()
 
   @Bean
   fun prisonRegisterWebClient(): WebClient = WebClient.builder().baseUrl(prisonRegisterApiUrl).build()
@@ -101,17 +95,16 @@ class WebClientConfiguration(
     return authorizedClientManager
   }
 
-  private fun addAuthHeaderFilterFunction() =
-    ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
-      val token = when (val authentication = SecurityContextHolder.getContext().authentication) {
-        is AuthAwareAuthenticationToken -> authentication.token.tokenValue
-        else -> throw IllegalStateException("Auth token not present")
-      }
-
-      next.exchange(
-        ClientRequest.from(request)
-          .header(AUTHORIZATION, "Bearer $token")
-          .build(),
-      )
+  private fun addAuthHeaderFilterFunction() = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
+    val token = when (val authentication = SecurityContextHolder.getContext().authentication) {
+      is AuthAwareAuthenticationToken -> authentication.token.tokenValue
+      else -> throw IllegalStateException("Auth token not present")
     }
+
+    next.exchange(
+      ClientRequest.from(request)
+        .header(AUTHORIZATION, "Bearer $token")
+        .build(),
+    )
+  }
 }

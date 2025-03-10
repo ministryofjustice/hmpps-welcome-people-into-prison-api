@@ -22,12 +22,10 @@ data class LimitStatusResponse(
 
   @Schema(description = "body scan status", example = "DO_NOT_SCAN")
   @JsonProperty("bodyScanStatus")
-  fun getBodyScanStatus(): BodyScanStatus {
-    return when {
-      numberOfBodyScans < 100 -> BodyScanStatus.OK_TO_SCAN
-      numberOfBodyScans < MAX_NUMBER_OF_BODY_SCANS_PER_YEAR -> BodyScanStatus.CLOSE_TO_LIMIT
-      else -> BodyScanStatus.DO_NOT_SCAN
-    }
+  fun getBodyScanStatus(): BodyScanStatus = when {
+    numberOfBodyScans < 100 -> BodyScanStatus.OK_TO_SCAN
+    numberOfBodyScans < MAX_NUMBER_OF_BODY_SCANS_PER_YEAR -> BodyScanStatus.CLOSE_TO_LIMIT
+    else -> BodyScanStatus.DO_NOT_SCAN
   }
 
   @Schema(description = "Number of scans remaining this year", example = "123")

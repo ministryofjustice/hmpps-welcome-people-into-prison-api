@@ -56,18 +56,16 @@ class TransfersService(
     }
   }
 
-  fun getTransfers(agencyId: String): List<Transfer> {
-    return getOffenderMovementsWithPnc(agencyId, null).map {
-      Transfer(
-        firstName = Name.properCase(it.offenderMovement.firstName),
-        lastName = Name.properCase(it.offenderMovement.lastName),
-        dateOfBirth = it.offenderMovement.dateOfBirth,
-        fromLocation = it.offenderMovement.fromAgencyDescription,
-        prisonNumber = it.offenderMovement.offenderNo,
-        date = it.offenderMovement.movementDate,
-        pncNumber = it.pncNumber,
-      )
-    }
+  fun getTransfers(agencyId: String): List<Transfer> = getOffenderMovementsWithPnc(agencyId, null).map {
+    Transfer(
+      firstName = Name.properCase(it.offenderMovement.firstName),
+      lastName = Name.properCase(it.offenderMovement.lastName),
+      dateOfBirth = it.offenderMovement.dateOfBirth,
+      fromLocation = it.offenderMovement.fromAgencyDescription,
+      prisonNumber = it.offenderMovement.offenderNo,
+      date = it.offenderMovement.movementDate,
+      pncNumber = it.pncNumber,
+    )
   }
 
   fun transferInOffender(

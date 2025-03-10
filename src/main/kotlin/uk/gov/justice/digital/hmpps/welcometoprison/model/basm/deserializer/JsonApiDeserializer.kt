@@ -23,11 +23,12 @@ typealias Inclusions = Map<InclusionKey, JsonNode>
 private fun inclusionKey(node: JsonNode) = node["type"] to node["id"]
 private fun inclusions(node: JsonNode) = node.get("included")?.associateBy { inclusionKey(it) } ?: emptyMap()
 
-class JsonApiDeserializer(private val valueType: JavaType? = null) : JsonDeserializer<Any>(), ContextualDeserializer {
+class JsonApiDeserializer(private val valueType: JavaType? = null) :
+  JsonDeserializer<Any>(),
+  ContextualDeserializer {
 
   @Throws(JsonMappingException::class)
-  override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> =
-    JsonApiDeserializer(ctxt.contextualType.bindings.typeParameters[0])
+  override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> = JsonApiDeserializer(ctxt.contextualType.bindings.typeParameters[0])
 
   @Throws(IOException::class)
   override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): Any {
@@ -69,15 +70,12 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : JsonDeseria
    * Check to see if data for relation is included in API response and if so normalise and return
    * Otherwise just return the existing info (most like just type and ID)
    */
-  private fun getRelations(inclusions: Inclusions, data: JsonNode): JsonNode {
-    return if (data.size() > 2) {
-      ObjectMapper().valueToTree(data.map { getRelation(inclusions, it) })
-    } else {
-      getRelation(inclusions, data)
-    }
+  private fun getRelations(inclusions: Inclusions, data: JsonNode): JsonNode = if (data.size() > 2) {
+    ObjectMapper().valueToTree(data.map { getRelation(inclusions, it) })
+  } else {
+    getRelation(inclusions, data)
   }
-  private fun getRelation(inclusions: Inclusions, data: JsonNode) =
-    inclusions[inclusionKey(data)]?.let { normalise(inclusions, it) } ?: data
+  private fun getRelation(inclusions: Inclusions, data: JsonNode) = inclusions[inclusionKey(data)]?.let { normalise(inclusions, it) } ?: data
 
   private fun ObjectNode.getAndRemove(name: String): ObjectNode? {
     val field = this.get(name)?.let { it as ObjectNode }

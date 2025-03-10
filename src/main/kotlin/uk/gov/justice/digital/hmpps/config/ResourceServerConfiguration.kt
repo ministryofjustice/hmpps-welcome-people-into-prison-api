@@ -15,39 +15,36 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 @EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 class ResourceServerConfiguration {
   @Bean
-  fun securityFilterChain(http: HttpSecurity, mvc: MvcRequestMatcher.Builder): SecurityFilterChain =
-    http
-      .sessionManagement { sessionManagement ->
-        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      }
-      .csrf { csrfManagement ->
-        csrfManagement.disable()
-      }
-      .authorizeHttpRequests { auth ->
-        auth.requestMatchers(
-          mvc.pattern("/webjars/**"),
-          mvc.pattern("/favicon.ico"),
-          mvc.pattern("/csrf"),
-          mvc.pattern("/health/**"),
-          mvc.pattern("/info"),
-          mvc.pattern("/ping"),
-          mvc.pattern("/v3/api-docs/**"),
-          mvc.pattern("/swagger-ui/**"),
-          mvc.pattern("/swagger-ui.html"),
-        )
-          .permitAll().anyRequest().authenticated()
-      }
-      .also {
-        it.oauth2ResourceServer { oauth2ResourceServerCustomizer ->
-          oauth2ResourceServerCustomizer.jwt { jwtCustomizer ->
-            jwtCustomizer.jwtAuthenticationConverter(AuthAwareTokenConverter())
-          }
+  fun securityFilterChain(http: HttpSecurity, mvc: MvcRequestMatcher.Builder): SecurityFilterChain = http
+    .sessionManagement { sessionManagement ->
+      sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    }
+    .csrf { csrfManagement ->
+      csrfManagement.disable()
+    }
+    .authorizeHttpRequests { auth ->
+      auth.requestMatchers(
+        mvc.pattern("/webjars/**"),
+        mvc.pattern("/favicon.ico"),
+        mvc.pattern("/csrf"),
+        mvc.pattern("/health/**"),
+        mvc.pattern("/info"),
+        mvc.pattern("/ping"),
+        mvc.pattern("/v3/api-docs/**"),
+        mvc.pattern("/swagger-ui/**"),
+        mvc.pattern("/swagger-ui.html"),
+      )
+        .permitAll().anyRequest().authenticated()
+    }
+    .also {
+      it.oauth2ResourceServer { oauth2ResourceServerCustomizer ->
+        oauth2ResourceServerCustomizer.jwt { jwtCustomizer ->
+          jwtCustomizer.jwtAuthenticationConverter(AuthAwareTokenConverter())
         }
       }
-      .build()
+    }
+    .build()
 
   @Bean
-  fun mvc(introspector: HandlerMappingIntrospector?): MvcRequestMatcher.Builder? {
-    return MvcRequestMatcher.Builder(introspector)
-  }
+  fun mvc(introspector: HandlerMappingIntrospector?): MvcRequestMatcher.Builder? = MvcRequestMatcher.Builder(introspector)
 }

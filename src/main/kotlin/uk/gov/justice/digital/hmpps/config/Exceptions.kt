@@ -7,12 +7,10 @@ enum class ErrorCode {
 
   companion object {
     @JvmStatic
-    fun valueOf(errorCode: Int?): ErrorCode? {
-      return when (errorCode) {
-        30001 -> NO_CELL_CAPACITY
-        30002 -> PRISONER_ALREADY_EXIST
-        else -> null
-      }
+    fun valueOf(errorCode: Int?): ErrorCode? = when (errorCode) {
+      30001 -> NO_CELL_CAPACITY
+      30002 -> PRISONER_ALREADY_EXIST
+      else -> null
     }
   }
 }

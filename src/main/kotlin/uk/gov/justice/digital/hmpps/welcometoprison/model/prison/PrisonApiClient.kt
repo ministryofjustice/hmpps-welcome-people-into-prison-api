@@ -128,22 +128,20 @@ data class UserCaseLoad(
 )
 
 fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
-fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
-  if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
+fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
-fun propagateClientError(response: ClientResponse, telemetryClient: TelemetryClient) =
-  response.bodyToMono(ClientErrorResponse::class.java).map {
-    telemetryClient.trackEvent(
-      "PrisonApiClientError",
-      mapOf(
-        "message" to it.developerMessage,
-        "errorCode" to it.errorCode.toString(),
-        "statusCode" to response.statusCode().value().toString(),
-      ),
-      null,
-    )
-    ClientException(it, it.developerMessage.orEmpty())
-  }
+fun propagateClientError(response: ClientResponse, telemetryClient: TelemetryClient) = response.bodyToMono(ClientErrorResponse::class.java).map {
+  telemetryClient.trackEvent(
+    "PrisonApiClientError",
+    mapOf(
+      "message" to it.developerMessage,
+      "errorCode" to it.errorCode.toString(),
+      "statusCode" to response.statusCode().value().toString(),
+    ),
+    null,
+  )
+  ClientException(it, it.developerMessage.orEmpty())
+}
 
 @Component
 class PrisonApiClient(
@@ -151,159 +149,146 @@ class PrisonApiClient(
   private val telemetryClient: TelemetryClient,
 ) {
 
-  fun getPrisonerImage(offenderNumber: String): ByteArray? =
-    webClient.get()
-      .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
-      .retrieve()
-      .bodyToMono(ByteArray::class.java)
-      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()
+  fun getPrisonerImage(offenderNumber: String): ByteArray? = webClient.get()
+    .uri("/api/bookings/offenderNo/$offenderNumber/image/data?fullSizeImage=false")
+    .retrieve()
+    .bodyToMono(ByteArray::class.java)
+    .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+    .block()
 
-  fun getAgency(agencyId: String): Prison? =
-    webClient.get()
-      .uri("/api/agencies/$agencyId")
-      .retrieve()
-      .bodyToMono(typeReference<Prison>())
-      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()
+  fun getAgency(agencyId: String): Prison? = webClient.get()
+    .uri("/api/agencies/$agencyId")
+    .retrieve()
+    .bodyToMono(typeReference<Prison>())
+    .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+    .block()
 
-  fun getMainOffence(bookingId: Long): MainOffence? =
-    webClient.get()
-      .uri("api/bookings/$bookingId/mainOffence")
-      .retrieve()
-      .bodyToMono(typeReference<List<MainOffence>>())
-      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
-      .block()?.firstOrNull()
+  fun getMainOffence(bookingId: Long): MainOffence? = webClient.get()
+    .uri("api/bookings/$bookingId/mainOffence")
+    .retrieve()
+    .bodyToMono(typeReference<List<MainOffence>>())
+    .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+    .block()?.firstOrNull()
 
-  fun getUserCaseLoads(): List<UserCaseLoad> =
-    webClient.get()
-      .uri("/api/users/me/caseLoads")
-      .retrieve()
-      .bodyToMono(typeReference<List<UserCaseLoad>>())
-      .block() ?: emptyList()
+  fun getUserCaseLoads(): List<UserCaseLoad> = webClient.get()
+    .uri("/api/users/me/caseLoads")
+    .retrieve()
+    .bodyToMono(typeReference<List<UserCaseLoad>>())
+    .block() ?: emptyList()
 
-  fun getPrisonTransfersEnRoute(agencyId: String, movementDate: LocalDate): List<OffenderMovement> =
-    webClient.get()
-      .uri(
-        "/api/movements/$agencyId/enroute?movementDate=" +
-          movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
-      )
-      .retrieve()
-      .bodyToMono(typeReference<List<OffenderMovement>>())
-      .block() ?: emptyList()
+  fun getPrisonTransfersEnRoute(agencyId: String, movementDate: LocalDate): List<OffenderMovement> = webClient.get()
+    .uri(
+      "/api/movements/$agencyId/enroute?movementDate=" +
+        movementDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    )
+    .retrieve()
+    .bodyToMono(typeReference<List<OffenderMovement>>())
+    .block() ?: emptyList()
 
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE' and scope 'write'.
    */
-  fun createOffender(detail: CreateOffenderDetail): InmateDetail =
-    webClient.post()
-      .uri("/api/offenders")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(response, telemetryClient)
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw RuntimeException()
+  fun createOffender(detail: CreateOffenderDetail): InmateDetail = webClient.post()
+    .uri("/api/offenders")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(response, telemetryClient)
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw RuntimeException()
 
   /**
    * The prison-api end-point expects requests to have role 'BOOKING_CREATE', scope 'write' and a (NOMIS) username.
    */
-  fun admitOffenderOnNewBooking(offenderNo: String, detail: AdmitOnNewBookingDetail): InmateDetail =
-    webClient.post()
-      .uri("/api/offenders/$offenderNo/booking")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(
-          response,
-          telemetryClient,
-        )
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw RuntimeException()
-
-  /**
-   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
-   */
-  fun recallOffender(offenderNo: String, detail: RecallBooking): InmateDetail =
-    webClient.put()
-      .uri("/api/offenders/$offenderNo/recall")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(
-          response,
-          telemetryClient,
-        )
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw IllegalStateException("No response from prison api")
-
-  /**
-   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
-   */
-  fun transferIn(offenderNo: String, detail: TransferIn): InmateDetail =
-    webClient.put()
-      .uri("/api/offenders/$offenderNo/transfer-in")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(
-          response,
-          telemetryClient,
-        )
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw IllegalStateException("No response from prison api")
-
-  /**
-   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
-   */
-  fun confirmTemporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): InmateDetail =
-    webClient.put()
-      .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(
-          response,
-          telemetryClient,
-        )
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw IllegalStateException("No response from prison api")
-
-  fun courtTransferIn(prisonNumber: String, detail: CourtTransferIn): InmateDetail =
-    webClient.put()
-      .uri("/api/offenders/$prisonNumber/court-transfer-in")
-      .bodyValue(detail)
-      .retrieve()
-      .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
-        propagateClientError(
-          response,
-          telemetryClient,
-        )
-      }
-      .bodyToMono(InmateDetail::class.java)
-      .block() ?: throw IllegalStateException("No response from prison api")
-
-  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> =
-    webClient.get()
-      .uri("/api/movements/agency/$agencyId/temporary-absences")
-      .retrieve()
-      .bodyToMono(typeReference<List<TemporaryAbsence>>())
-      .block() ?: emptyList()
-
-  fun getMovement(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime): List<Movement> =
-    webClient.get()
-      .uri(
-        "api/movements/$agencyId/in?fromDateTime=" +
-          "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
-          "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
+  fun admitOffenderOnNewBooking(offenderNo: String, detail: AdmitOnNewBookingDetail): InmateDetail = webClient.post()
+    .uri("/api/offenders/$offenderNo/booking")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(
+        response,
+        telemetryClient,
       )
-      .header("Page-Limit", "10000")
-      .retrieve()
-      .bodyToMono(typeReference<List<Movement>>())
-      .block() ?: emptyList()
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw RuntimeException()
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun recallOffender(offenderNo: String, detail: RecallBooking): InmateDetail = webClient.put()
+    .uri("/api/offenders/$offenderNo/recall")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(
+        response,
+        telemetryClient,
+      )
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw IllegalStateException("No response from prison api")
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun transferIn(offenderNo: String, detail: TransferIn): InmateDetail = webClient.put()
+    .uri("/api/offenders/$offenderNo/transfer-in")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(
+        response,
+        telemetryClient,
+      )
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw IllegalStateException("No response from prison api")
+
+  /**
+   * The prison-api end-point expects requests to have role 'TRANSFER_PRISONER', scope 'write' and a (NOMIS) username.
+   */
+  fun confirmTemporaryAbsencesArrival(offenderNo: String, detail: TemporaryAbsencesArrival): InmateDetail = webClient.put()
+    .uri("/api/offenders/$offenderNo/temporary-absence-arrival")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(
+        response,
+        telemetryClient,
+      )
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw IllegalStateException("No response from prison api")
+
+  fun courtTransferIn(prisonNumber: String, detail: CourtTransferIn): InmateDetail = webClient.put()
+    .uri("/api/offenders/$prisonNumber/court-transfer-in")
+    .bodyValue(detail)
+    .retrieve()
+    .onStatus({ httpStatus -> httpStatus.is4xxClientError }) { response ->
+      propagateClientError(
+        response,
+        telemetryClient,
+      )
+    }
+    .bodyToMono(InmateDetail::class.java)
+    .block() ?: throw IllegalStateException("No response from prison api")
+
+  fun getTemporaryAbsences(agencyId: String): List<TemporaryAbsence> = webClient.get()
+    .uri("/api/movements/agency/$agencyId/temporary-absences")
+    .retrieve()
+    .bodyToMono(typeReference<List<TemporaryAbsence>>())
+    .block() ?: emptyList()
+
+  fun getMovement(agencyId: String, fromDate: LocalDateTime, toDate: LocalDateTime): List<Movement> = webClient.get()
+    .uri(
+      "api/movements/$agencyId/in?fromDateTime=" +
+        "${fromDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}&toDateTime=" +
+        "${toDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}",
+    )
+    .header("Page-Limit", "10000")
+    .retrieve()
+    .bodyToMono(typeReference<List<Movement>>())
+    .block() ?: emptyList()
 }

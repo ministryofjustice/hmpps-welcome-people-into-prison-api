@@ -77,8 +77,7 @@ abstract class IntegrationTestBase {
     prisonerSearchMockServer.resetAll()
   }
 
-  internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) =
-    this.apply { header(AUTHORIZATION, token) }
+  internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
 
   internal fun setAuthorisation(
     roles: List<String> = listOf(),

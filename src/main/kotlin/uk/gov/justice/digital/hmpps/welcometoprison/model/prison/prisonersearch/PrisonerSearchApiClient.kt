@@ -12,26 +12,21 @@ import uk.gov.justice.digital.hmpps.welcometoprison.model.prison.prisonersearch.
 @Component
 class PrisonerSearchApiClient(@Qualifier("prisonerSearchApiWebClient") private val webClient: WebClient) {
 
-  fun matchPrisoner(potentialMatchRequest: PotentialMatchRequest): List<MatchPrisonerResponse> {
-    return webClient.post()
-      .uri("/prisoner-search/possible-matches")
-      .bodyValue(potentialMatchRequest)
-      .retrieve()
-      .bodyToMono(typeReference<List<MatchPrisonerResponse>>())
-      .block()
-      ?: emptyList()
-  }
+  fun matchPrisoner(potentialMatchRequest: PotentialMatchRequest): List<MatchPrisonerResponse> = webClient.post()
+    .uri("/prisoner-search/possible-matches")
+    .bodyValue(potentialMatchRequest)
+    .retrieve()
+    .bodyToMono(typeReference<List<MatchPrisonerResponse>>())
+    .block()
+    ?: emptyList()
 
-  fun getPrisoner(prisonNumber: String): MatchPrisonerResponse? =
-    matchPrisoner(PotentialMatchRequest(nomsNumber = prisonNumber)).firstOrNull()
+  fun getPrisoner(prisonNumber: String): MatchPrisonerResponse? = matchPrisoner(PotentialMatchRequest(nomsNumber = prisonNumber)).firstOrNull()
 
-  fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> {
-    return webClient.post()
-      .uri("/prisoner-search/prisoner-numbers")
-      .bodyValue(MatchByPrisonerNumberRequest(prisonerNumbers))
-      .retrieve()
-      .bodyToMono(typeReference<List<PrisonerAndPncNumber>>())
-      .block()
-      ?: emptyList()
-  }
+  fun matchPncNumbersByPrisonerNumbers(prisonerNumbers: List<String>): List<PrisonerAndPncNumber> = webClient.post()
+    .uri("/prisoner-search/prisoner-numbers")
+    .bodyValue(MatchByPrisonerNumberRequest(prisonerNumbers))
+    .retrieve()
+    .bodyToMono(typeReference<List<PrisonerAndPncNumber>>())
+    .block()
+    ?: emptyList()
 }

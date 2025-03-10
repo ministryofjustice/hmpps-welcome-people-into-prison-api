@@ -21,11 +21,9 @@ class JsonApiDeserializerTest {
     .registerModule(JavaTimeModule())
     .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-  private fun wrapper(type: KClass<*>) =
-    mapper.typeFactory.constructParametricType(JsonApiResponse::class.java, type.java)
+  private fun wrapper(type: KClass<*>) = mapper.typeFactory.constructParametricType(JsonApiResponse::class.java, type.java)
 
-  private fun <T : Any> readJsonApiResponse(type: KClass<T>, fileName: String) =
-    mapper.readValue<JsonApiResponse<T>>(fileName.loadJson(this), wrapper(type))
+  private fun <T : Any> readJsonApiResponse(type: KClass<T>, fileName: String) = mapper.readValue<JsonApiResponse<T>>(fileName.loadJson(this), wrapper(type))
 
   @Test
   fun `check single empty deserialization`() {

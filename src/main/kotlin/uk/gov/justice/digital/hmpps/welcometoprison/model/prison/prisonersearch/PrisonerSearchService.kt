@@ -15,12 +15,10 @@ class PrisonerSearchService(@Autowired private val client: PrisonerSearchApiClie
   fun getPrisoner(prisonNumber: String): PrisonerDetails = client.getPrisoner(prisonNumber)?.toPrisonerDetails()
     ?: throw NotFoundException("Could not find prisoner with prisonNumber: '$prisonNumber'")
 
-  fun getPncNumbers(prisonerNumbers: List<String>): Map<String, String?> {
-    return if (prisonerNumbers.isEmpty()) {
-      emptyMap()
-    } else {
-      client.matchPncNumbersByPrisonerNumbers(prisonerNumbers).associate { it.prisonerNumber to it.pncNumber }
-    }
+  fun getPncNumbers(prisonerNumbers: List<String>): Map<String, String?> = if (prisonerNumbers.isEmpty()) {
+    emptyMap()
+  } else {
+    client.matchPncNumbersByPrisonerNumbers(prisonerNumbers).associate { it.prisonerNumber to it.pncNumber }
   }
 
   fun findPotentialMatches(request: MatchPrisonersRequest): List<PotentialMatch> {

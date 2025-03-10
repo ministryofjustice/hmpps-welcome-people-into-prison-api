@@ -10,12 +10,10 @@ class SearcherTest {
 
   // All numbers <= query are returned, numbers further away from query are more relevant
   private val lessThanAndEqualStrategy = object : SearchStrategy<Int, Int> {
-    override fun evaluate(query: Int, item: Int): Result<Int> {
-      return if (item <= query) {
-        Result(item, query - item)
-      } else {
-        Result(item, null)
-      }
+    override fun evaluate(query: Int, item: Int): Result<Int> = if (item <= query) {
+      Result(item, query - item)
+    } else {
+      Result(item, null)
     }
   }
 

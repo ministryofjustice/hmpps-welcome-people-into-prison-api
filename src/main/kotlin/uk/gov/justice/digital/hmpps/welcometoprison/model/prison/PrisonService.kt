@@ -12,67 +12,61 @@ class PrisonService(
   private val locationFormatter: LocationFormatter,
 ) {
 
-  fun getPrisonerImage(prisonNumber: String): ByteArray? =
-    prisonApiClient.getPrisonerImage(prisonNumber)
-      ?: throw NotFoundException("Could not find image for: '$prisonNumber'")
+  fun getPrisonerImage(prisonNumber: String): ByteArray? = prisonApiClient.getPrisonerImage(prisonNumber)
+    ?: throw NotFoundException("Could not find image for: '$prisonNumber'")
 
-  fun getPrison(prisonId: String): Prison =
-    prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
+  fun getPrison(prisonId: String): Prison = prisonRegisterClient.getPrison(prisonId) ?: throw NotFoundException("Could not find prison with id: '$prisonId'")
 
-  fun getUserCaseLoads(): List<UserCaseLoad> =
-    prisonApiClient.getUserCaseLoads()
+  fun getUserCaseLoads(): List<UserCaseLoad> = prisonApiClient.getUserCaseLoads()
 
   fun admitOffenderOnNewBooking(
     prisonNumber: String,
     confirmArrivalDetail: ConfirmArrivalDetail,
-  ): InmateDetail =
-    prisonApiClient.admitOffenderOnNewBooking(
-      prisonNumber,
-      with(confirmArrivalDetail) {
-        AdmitOnNewBookingDetail(
-          prisonId = prisonId!!,
-          fromLocationId = fromLocationId,
-          movementReasonCode = movementReasonCode!!,
-          youthOffender = youthOffender,
-          imprisonmentStatus = imprisonmentStatus!!,
-        )
-      },
-    )
-
-  fun recallOffender(prisonNumber: String, detail: ConfirmArrivalDetail): InmateDetail =
-    prisonApiClient.recallOffender(
-      prisonNumber,
-      with(detail) {
-        RecallBooking(
-          prisonId = prisonId!!,
-          fromLocationId = fromLocationId,
-          movementReasonCode = movementReasonCode!!,
-          youthOffender = youthOffender,
-          imprisonmentStatus = imprisonmentStatus!!,
-        )
-      },
-    )
-
-  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): InmateDetail =
-    prisonApiClient
-      .createOffender(
-        with(confirmArrivalDetail) {
-          CreateOffenderDetail(
-            firstName = firstName!!,
-            lastName = lastName!!,
-            dateOfBirth = dateOfBirth!!,
-            gender = sex!!,
-            pncNumber = pncNumber,
-            booking = AdmitOnNewBookingDetail(
-              prisonId = prisonId!!,
-              fromLocationId = fromLocationId,
-              movementReasonCode = movementReasonCode!!,
-              youthOffender = youthOffender,
-              imprisonmentStatus = imprisonmentStatus!!,
-            ),
-          )
-        },
+  ): InmateDetail = prisonApiClient.admitOffenderOnNewBooking(
+    prisonNumber,
+    with(confirmArrivalDetail) {
+      AdmitOnNewBookingDetail(
+        prisonId = prisonId!!,
+        fromLocationId = fromLocationId,
+        movementReasonCode = movementReasonCode!!,
+        youthOffender = youthOffender,
+        imprisonmentStatus = imprisonmentStatus!!,
       )
+    },
+  )
+
+  fun recallOffender(prisonNumber: String, detail: ConfirmArrivalDetail): InmateDetail = prisonApiClient.recallOffender(
+    prisonNumber,
+    with(detail) {
+      RecallBooking(
+        prisonId = prisonId!!,
+        fromLocationId = fromLocationId,
+        movementReasonCode = movementReasonCode!!,
+        youthOffender = youthOffender,
+        imprisonmentStatus = imprisonmentStatus!!,
+      )
+    },
+  )
+
+  fun createOffender(confirmArrivalDetail: ConfirmArrivalDetail): InmateDetail = prisonApiClient
+    .createOffender(
+      with(confirmArrivalDetail) {
+        CreateOffenderDetail(
+          firstName = firstName!!,
+          lastName = lastName!!,
+          dateOfBirth = dateOfBirth!!,
+          gender = sex!!,
+          pncNumber = pncNumber,
+          booking = AdmitOnNewBookingDetail(
+            prisonId = prisonId!!,
+            fromLocationId = fromLocationId,
+            movementReasonCode = movementReasonCode!!,
+            youthOffender = youthOffender,
+            imprisonmentStatus = imprisonmentStatus!!,
+          ),
+        )
+      },
+    )
 
   fun returnFromCourt(prisonId: String, prisonNumber: String): ConfirmCourtReturnResponse {
     val inmateDetail = prisonApiClient.courtTransferIn(prisonNumber, CourtTransferIn(prisonId))

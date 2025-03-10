@@ -71,8 +71,7 @@ class LimitStatusResource(
     @Schema(description = "Prison Number", example = "G8874VT", required = true)
     @PathVariable
     prisonNumber: String,
-  ): LimitStatusResponse =
-    limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), listOf(prisonNumber)).first()
+  ): LimitStatusResponse = limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), listOf(prisonNumber)).first()
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_HEALTH_PROBLEMS')")
   @Operation(
@@ -118,6 +117,5 @@ class LimitStatusResource(
     @Valid
     @NotNull
     prisonNumbers: List<String>,
-  ): List<LimitStatusResponse> =
-    limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), prisonNumbers)
+  ): List<LimitStatusResponse> = limitStatusService.getLimitStatusForYearAndPrisonNumbers(Year.now(), prisonNumbers)
 }
