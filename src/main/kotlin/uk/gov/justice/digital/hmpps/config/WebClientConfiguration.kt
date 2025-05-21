@@ -17,6 +17,9 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.SYSTEM_USERNAME
+import java.time.Duration
+import uk.gov.justice.hmpps.kotlin.auth.authorisedWebClient
 
 @Configuration
 class WebClientConfiguration(
@@ -24,7 +27,16 @@ class WebClientConfiguration(
   @Value("\${basm.endpoint.url}") private val basmRootUri: String,
   @Value("\${prisoner.search.endpoint.url}") private val prisonerSearchApiUrl: String,
   @Value("\${prison.register.endpoint.url}") private val prisonRegisterApiUrl: String,
+  @Value("\${manage.users.endpoint.url}") private val manageUsersApiUri: String,
+  @Value("\${api.timeout:20s}") val healthTimeout: Duration,
 ) {
+
+  @Bean
+  fun manageUsersHealthWebClient(): WebClient = WebClient.builder().baseUrl(manageUsersApiUri).build()
+
+  @Bean
+  fun manageUsersWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient =
+    WebClient.builder().authorisedWebClient(authorizedClientManager, registrationId = SYSTEM_USERNAME, url = manageUsersApiUri, healthTimeout)
 
   @Bean
   fun prisonApiWebClient(): WebClient {

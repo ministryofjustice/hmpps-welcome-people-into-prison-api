@@ -26,7 +26,7 @@ class JwtAuthHelper {
   fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
 
   fun setAuthorisation(
-    user: String,
+    user: String?,
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
   ): (HttpHeaders) -> Unit {

@@ -1,0 +1,155 @@
+{
+  "id": "transactions",
+  "name": "Transactions for WPIP",
+  "description": "List of confirmed in WPIP",
+  "metadata": {
+    "author": "Dafydd Houston",
+    "version": "1.0.0",
+    "owner": "Move a prisoner team"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "dataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "VIEW_ARRIVALS"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["prison_id IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "arrivals",
+      "name": "Transactions for confirmed arrivals",
+      "datasource": "dataSource",
+      "query": "ca.prison_id, ca.\"timestamp\" as arrival_time, ca.arrival_type, ca.username from confirmed_arrival ca",
+      "schema": {
+        "field": [
+          {
+            "name": "prison_id",
+            "type": "string"
+          },
+          {
+            "name": "arrival_time",
+            "type": "datetime"
+          },
+          {
+            "name": "arrival_type",
+            "type": "string",
+            "filter": {
+              "type": "multiselect",
+              "staticoptions": [
+                {"name": "COURT_TRANSFER", "display": "Court transfer"},
+                {"name": "NEW_BOOKING_EXISTING_OFFENDER", "display": "New booking (Existing offender)"},
+                {"name": "NEW_TO_PRISON", "display": "New to prison"},
+                {"name": "RECALL", "display": "Recall"},
+                {"name": "TEMPORARY_ABSENCE", "display": "Temporary absense"},
+                {"name": "TRANSFER", "display": "Transfer"}
+              ]
+            }
+          },
+          {
+            "name": "username",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "arrivals",
+      "name": "Transactions for WPIP",
+      "description": "Details each confirmed arrival that has occurred in a prison",
+      "version": "1.0.0",
+      "dataset": "$ref:arrivals",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:prison_id",
+            "display": "Prison ID",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+
+            "filter": {
+              "type": "multiselect",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:arrival_time",
+            "display": "Arrival time",
+            "formula": "format_date(${tx_start_time}, 'dd/MM/yyyy HH:mm')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:arrival_type",
+            "display": "Arrival type",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:username",
+            "display": "User name",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:arrivals"
+      }]
+    }
+  ]
+}
