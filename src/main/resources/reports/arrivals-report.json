@@ -25,7 +25,7 @@
             {
               "match": [
                 "${role}",
-                "MANAGE_RES_LOCATIONS_OP_CAP"
+                "PRISONS_REPORTING_USER"
               ]
             }
           ]

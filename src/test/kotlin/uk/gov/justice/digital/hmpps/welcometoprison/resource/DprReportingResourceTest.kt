@@ -23,7 +23,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
 
   @BeforeEach
   fun setUp() {
-    manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("MANAGE_RES_LOCATIONS_OP_CAP"))
+    manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("PRISONS_REPORTING_USER"))
     manageUsersApiMockServer.stubLookupUserCaseload(REQUESTING_USER, "LEI", listOf("MDI"))
   }
 
