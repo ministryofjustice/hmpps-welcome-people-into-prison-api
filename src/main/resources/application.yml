@@ -58,15 +58,29 @@ spring:
             client-id: ${basm.client.client-id}
             client-secret: ${basm.client.client-secret}
             authorization-grant-type: client_credentials
+          WELCOME_PEOPLE_INTO_PRISON_API:
+            provider: hmpps-auth
+            client-id: ${welcome_people_into_prison.api.client.id}
+            client-secret: ${welcome_people_into_prison.api.client.secret}
+            authorization-grant-type: client_credentials
         provider:
           basm-auth:
             token-uri: ${basm.endpoint.url}/oauth/token
+          hmpps-auth:
+            token-uri: ${oauth.endpoint.url}/oauth/token
   data:
     jdbc:
       dialect: postgresql
   sql:
     init:
       continue-on-error: true
+
+dpr:
+  lib:
+    definition:
+      locations: "reports/arrivals-report.json"
+    system:
+      role: DPR_API_ACCESS
 
 server:
   port: 8080

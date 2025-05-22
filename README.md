@@ -44,3 +44,16 @@ Fetch the newest changes from hmpps-kotlin-template calling `git fetch hmpps-kot
 Find out missing commits https://github.com/ministryofjustice/hmpps-template-kotlin/commits/main/ following `sync commit` above.
 Cherry Pick the changes by calling `git cherry-pick <<commit_id>>..<<commit_id>>` if you want to Cherry pick only one commit call `git cherry-pick <<commit_id>>`
 Resolve the conflict and update **sync date** and **sync commit** in README.md to guide the next person on what was done.  
+
+### DPR confirmed arrivals report
+This API is integrated with a DPR report for confirmed arrivals. The report is configured in 
+`resources/reports/arrivals-report.json`
+
+Example definition endpoint 
+
+``GET {{url}}/definitions/transactions/arrivals``
+
+Example report endpoint
+
+``GET {{url}}/reports/transactions/arrivals``
+

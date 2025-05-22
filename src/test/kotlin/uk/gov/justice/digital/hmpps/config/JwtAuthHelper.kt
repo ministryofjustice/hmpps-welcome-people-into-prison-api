@@ -26,15 +26,17 @@ class JwtAuthHelper {
   fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
 
   fun setAuthorisation(
-    user: String,
+    user: String?,
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
+    clientId: String = "test-client-id",
   ): (HttpHeaders) -> Unit {
     val token = createJwt(
       subject = user,
       scope = scopes,
       expiryTime = Duration.ofHours(1L),
       roles = roles,
+      clientId = clientId,
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
@@ -43,31 +45,43 @@ class JwtAuthHelper {
     user: String,
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
+    clientId: String = "test-client-id",
   ): String {
     val token = createJwt(
       subject = user,
       scope = scopes,
       expiryTime = Duration.ofHours(1L),
       roles = roles,
+      clientId = clientId,
     )
     return "Bearer $token"
   }
 
   internal fun createJwt(
+    clientId: String,
     subject: String?,
     scope: List<String>? = listOf(),
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
     jwtId: String = UUID.randomUUID().toString(),
-  ): String = mutableMapOf<String, Any>()
-    .also { subject?.let { subject -> it["user_name"] = subject } }
-    .also { it["client_id"] = "court-reg-client" }
-    .also { roles?.let { roles -> it["authorities"] = roles } }
-    .also { scope?.let { scope -> it["scope"] = scope } }
+    authSource: String = "none",
+    grantType: String = "client_credentials",
+  ): String = mutableMapOf<String, Any>(
+    "sub" to (subject ?: clientId),
+    "client_id" to clientId,
+    "auth_source" to authSource,
+    "grant_type" to grantType,
+  ).apply {
+    subject?.let { this["user_name"] = subject }
+    scope?.let { this["scope"] = scope }
+    roles?.let {
+      this["authorities"] = roles.map { "ROLE_${it.substringAfter("ROLE_")}" }
+    }
+  }
     .let {
       Jwts.builder()
         .id(jwtId)
-        .subject(subject)
+        .subject(subject ?: clientId)
         .claims(it.toMap())
         .expiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
         .signWith(keyPair.private)

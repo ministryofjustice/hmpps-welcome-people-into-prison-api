@@ -26,6 +26,7 @@ class HealthCheckTest : IntegrationTestBase() {
       .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonRegisterHealth.details.HttpStatus").isEqualTo("OK")
       .jsonPath("components.prisonerSearchApiHealth.details.HttpStatus").isEqualTo("OK")
+      .jsonPath("components.manageUsersApiHealth.details.HttpStatus").isEqualTo("OK")
   }
 
   @Test
@@ -145,6 +146,25 @@ class HealthCheckTest : IntegrationTestBase() {
     )
 
     prisonerSearchMockServer.stubFor(
+      get("/health/ping").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(
+            if (status == 200) {
+              """
+                {
+                  "status": "UP"
+                }
+              """.trimIndent()
+            } else {
+              "some error"
+            },
+          )
+          .withStatus(status),
+      ),
+    )
+
+    manageUsersApiMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
