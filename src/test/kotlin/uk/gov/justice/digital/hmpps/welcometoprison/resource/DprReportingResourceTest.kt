@@ -113,7 +113,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
            {
               "id": "transactions",
               "name": "Transactions for WPIP",
-              "description": "List of confirmed in WPIP",
+              "description": "List of confirmed arrivals in WPIP",
               "variant": {
                 "id": "arrivals",
                 "name": "Transactions for WPIP",
