@@ -1,7 +1,7 @@
 {
   "id": "transactions",
   "name": "Transactions for WPIP",
-  "description": "List of confirmed in WPIP",
+  "description": "List of confirmed arrivals in WPIP",
   "metadata": {
     "author": "Dafydd Houston",
     "version": "1.0.0",
