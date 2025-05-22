@@ -25,7 +25,7 @@
             {
               "match": [
                 "${role}",
-                "VIEW_ARRIVALS"
+                "MANAGE_RES_LOCATIONS_OP_CAP"
               ]
             }
           ]
@@ -53,7 +53,7 @@
       "id": "arrivals",
       "name": "Transactions for confirmed arrivals",
       "datasource": "dataSource",
-      "query": "ca.prison_id, ca.\"timestamp\" as arrival_time, ca.arrival_type, ca.username from confirmed_arrival ca",
+      "query": "select ca.prison_id, ca.\"timestamp\" as arrival_time, ca.arrival_type, ca.username from confirmed_arrival ca",
       "schema": {
         "field": [
           {
@@ -119,7 +119,7 @@
           {
             "name": "$ref:arrival_time",
             "display": "Arrival time",
-            "formula": "format_date(${tx_start_time}, 'dd/MM/yyyy HH:mm')",
+            "formula": "format_date(${arrival_time}, 'dd/MM/yyyy HH:mm')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true,

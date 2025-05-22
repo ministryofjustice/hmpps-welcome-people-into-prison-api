@@ -88,10 +88,11 @@ abstract class IntegrationTestBase {
   internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
 
   internal fun setAuthorisation(
+    clientId: String = "test-client-id",
     user: String? = "welcome-into-prison-client",
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes, clientId = clientId)
 
   internal fun getAuthorisation(
     roles: List<String> = listOf(),
