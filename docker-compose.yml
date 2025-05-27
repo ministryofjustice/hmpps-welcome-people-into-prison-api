@@ -29,7 +29,7 @@ services:
       - POSTGRES_DB=hmpps-welcome-people-into-prison-api-db
 
   prison-api:
-    image: quay.io/hmpps/prison-api:latest
+    image: ghcr.io/ministryofjustice/prison-api:latest
     networks:
       - hmpps
     container_name: prison-api
