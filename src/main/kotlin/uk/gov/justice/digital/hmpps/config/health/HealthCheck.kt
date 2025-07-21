@@ -35,3 +35,6 @@ class PrisonerSearchApiHealth(@Qualifier("prisonerSearchApiHealthWebClient") web
 
 @Component
 class BasmApiHealth(@Qualifier("basmApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/ping")
+
+@Component
+class ManageUsersApiHealth(@Qualifier("manageUsersHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")

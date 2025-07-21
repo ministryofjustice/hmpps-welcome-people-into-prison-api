@@ -17,6 +17,7 @@ class ArchUnitTest {
         "..uk.gov.justice.digital.hmpps.bodyscan..",
         "..uk.gov.justice.digital.hmpps.archunit..",
         "..uk.gov.justice.digital.hmpps.config..",
+        "..uk.gov.justice.digital.hmpps.digitalprisonreportinglib..",
       )
 
     rule.orShould().haveSimpleName("App")

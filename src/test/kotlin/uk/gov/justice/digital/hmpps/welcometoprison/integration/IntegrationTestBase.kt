@@ -40,6 +40,8 @@ abstract class IntegrationTestBase {
     internal val prisonApiMockServer = PrisonApiMockServer()
     internal val prisonRegisterMockServer = PrisonRegisterMockServer()
     internal val prisonerSearchMockServer = PrisonerSearchMockServer()
+    internal val manageUsersApiMockServer = ManageUsersApiMockServer()
+    internal val hmppsAuthMockServer = HmppsAuthMockServer()
 
     @BeforeAll
     @JvmStatic
@@ -53,6 +55,9 @@ abstract class IntegrationTestBase {
       prisonRegisterMockServer.start()
       prisonerSearchMockServer.start()
       prisonerSearchMockServer.stubMatchPrisoners(200)
+      manageUsersApiMockServer.start()
+      hmppsAuthMockServer.start()
+      hmppsAuthMockServer.stubGrantToken()
     }
 
     @AfterAll
@@ -62,6 +67,8 @@ abstract class IntegrationTestBase {
       prisonApiMockServer.stop()
       prisonRegisterMockServer.stop()
       prisonerSearchMockServer.stop()
+      manageUsersApiMockServer.stop()
+      hmppsAuthMockServer.stop()
     }
   }
 
@@ -75,14 +82,17 @@ abstract class IntegrationTestBase {
     prisonApiMockServer.resetAll()
     prisonRegisterMockServer.resetAll()
     prisonerSearchMockServer.resetAll()
+    manageUsersApiMockServer.resetAll()
   }
 
   internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
 
   internal fun setAuthorisation(
+    clientId: String = "test-client-id",
+    user: String? = "welcome-into-prison-client",
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation("welcome-into-prison-client", roles, scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes, clientId = clientId)
 
   internal fun getAuthorisation(
     roles: List<String> = listOf(),
