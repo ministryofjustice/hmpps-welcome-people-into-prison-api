@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.3"
-  kotlin("plugin.spring") version "2.1.10"
-  kotlin("plugin.jpa") version "2.1.10"
-  id("org.jetbrains.kotlinx.kover") version "0.8.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.2"
+  kotlin("plugin.spring") version "2.2.0"
+  kotlin("plugin.jpa") version "2.2.0"
+  id("org.jetbrains.kotlinx.kover") version "0.9.1"
   idea
 }
 
@@ -21,7 +21,7 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.12.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
   implementation("commons-codec:commons-codec:1.16.1")
 
   runtimeOnly("org.flywaydb:flyway-core")
@@ -29,7 +29,7 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   testRuntimeOnly("com.h2database:h2:2.3.232")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.9.2")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.3.0")
