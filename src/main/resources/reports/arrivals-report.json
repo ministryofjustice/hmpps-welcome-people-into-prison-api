@@ -110,9 +110,8 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false,
-
             "filter": {
-              "type": "multiselect",
+              "type": "caseloads",
               "mandatory": false
             }
           },
