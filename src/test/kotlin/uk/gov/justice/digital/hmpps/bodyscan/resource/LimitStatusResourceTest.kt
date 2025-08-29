@@ -33,6 +33,7 @@ class LimitStatusResourceTest : IntegrationTestBase() {
     fun `happy path`() {
       val prisonNumber = "G8874VT"
       val startDate: LocalDate = LocalDate.ofYearDay(Year.now().value, 1)
+      val endDate: LocalDate = LocalDate.ofYearDay(Year.now().value, startDate.lengthOfYear())
       prisonApiMockServer.stubGetPersonalCareNeedsForPrisonNumbers("BSCAN", startDate, endDate, listOf(prisonNumber))
       webTestClient
         .get()
