@@ -26,10 +26,6 @@ data class PersonalCareNeeds(
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   fun getStartDate() = date
 
-  @JsonProperty("endDate")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  fun getEndDate() = date
-
   @JsonProperty("commentText")
   fun getCommentText() = ("${bodyScanReason.desc} - $bodyScanResult").lowercase().replaceFirstChar { it.uppercase() }
 }
