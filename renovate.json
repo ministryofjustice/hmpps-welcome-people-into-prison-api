@@ -8,6 +8,12 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major Gradle dependencies",
       "groupSlug": "all-gradle-minor-patch"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "fileMatch": ["^\\.github/workflows/.*\\.yml$"]
     }
-  ]
+  ],
+  "rebaseWhen": "conflicted",
+  "schedule": ["before 7am every weekday", "after 1am every weekday"]
 }
