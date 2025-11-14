@@ -24,14 +24,14 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
   implementation("commons-codec:commons-codec:1.20.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.1")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.7.7")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.7.8")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   testRuntimeOnly("com.h2database:h2:2.4.240")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.2")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.tngtech.archunit:archunit-junit5-api:1.4.1")
