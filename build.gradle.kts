@@ -24,7 +24,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
   implementation("commons-codec:commons-codec:1.21.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:10.0.0")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql")
