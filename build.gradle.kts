@@ -23,7 +23,7 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.15.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16")
   implementation("commons-codec:commons-codec:1.21.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.1.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
 
   runtimeOnly("org.flywaydb:flyway-core")
