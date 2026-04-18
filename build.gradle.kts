@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.5.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.6.0"
   kotlin("plugin.spring") version "2.3.20"
   kotlin("plugin.jpa") version "2.3.20"
-  id("org.jetbrains.kotlinx.kover") version "0.9.7"
+  id("org.jetbrains.kotlinx.kover") version "0.9.8"
   idea
 }
 
@@ -21,7 +21,7 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.15.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17")
   implementation("commons-codec:commons-codec:1.21.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
@@ -34,8 +34,8 @@ dependencies {
   testImplementation("org.wiremock:wiremock-standalone:3.13.2")
 
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.4.1")
-  testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
+  testImplementation("com.tngtech.archunit:archunit-junit5-api:1.4.2")
+  testImplementation("com.tngtech.archunit:archunit-junit5:1.4.2")
   testImplementation("io.jsonwebtoken:jjwt-api:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.13.0")
