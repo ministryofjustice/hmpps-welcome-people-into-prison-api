@@ -21,7 +21,7 @@ dependencies {
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
 
   implementation("org.apache.commons:commons-text:1.15.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
   implementation("commons-codec:commons-codec:1.21.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
