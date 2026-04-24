@@ -7,7 +7,6 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -112,7 +111,6 @@ class BasmClientTest {
     )
   }
 
-  @Disabled("Temporarily disabled during Spring Boot 10 upgrade")
   @Test
   fun `successful get movement with offence`() {
     mockServer.stubGetMovementWithOffence("test-offence", 200)

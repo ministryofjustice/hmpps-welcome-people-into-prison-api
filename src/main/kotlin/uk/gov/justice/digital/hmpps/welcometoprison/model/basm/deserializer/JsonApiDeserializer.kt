@@ -42,7 +42,6 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : ValueDeseri
   /**
    * Move each attribute, up a layer to the root of the object
    * Replace each relationship with its normalised included counterpart (if present) and migrate to root of the object
-   * Limit recursion depth to prevent stack overflow and OOM with deeply nested structures
    */
   private fun normalise(inclusions: Inclusions, item: JsonNode, depth: Int): JsonNode {
     if (item !is ObjectNode) throw RuntimeException("$item is not an object node")
@@ -66,8 +65,8 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : ValueDeseri
    * Check to see if data for relation is included in API response and if so normalise and return
    * Otherwise just return the existing info (most like just type and ID)
    */
-  private fun getRelations(inclusions: Inclusions, data: JsonNode, depth: Int): JsonNode = if (data.size() > 2) {
-    JsonMapper().valueToTree(data.map { getRelation(inclusions, it, depth) })
+  private fun getRelations(inclusions: Inclusions, data: JsonNode, depth: Int): JsonNode = if (data is ArrayNode) {
+    JsonMapper().valueToTree(data.values().map { getRelation(inclusions, it, depth) })
   } else {
     getRelation(inclusions, data, depth)
   }
@@ -78,7 +77,8 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) : ValueDeseri
       // At max depth, return just type and id to prevent OOM from circular references
       data
     } else {
-      inclusions[inclusionKey(data)]?.let { normalise(inclusions, it, depth + 1) } ?: data
+      inclusions[inclusionKey(data)]?.deepCopy()
+        ?.let { normalise(inclusions, it, depth + 1) } ?: data
     }
   }
 
