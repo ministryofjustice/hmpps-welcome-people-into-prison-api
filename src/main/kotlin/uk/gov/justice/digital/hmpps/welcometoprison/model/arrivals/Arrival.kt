@@ -78,7 +78,7 @@ data class PotentialMatch(
   val sex: String,
 
   @JsonIgnore
-  val isCurrentPrisoner: Boolean,
+  val isCurrentPrisoner: Boolean = false,
 
   @Schema(description = "Description of arrival type", example = "ACTIVE IN-ADM-MDI")
   val arrivalTypeDescription: String,

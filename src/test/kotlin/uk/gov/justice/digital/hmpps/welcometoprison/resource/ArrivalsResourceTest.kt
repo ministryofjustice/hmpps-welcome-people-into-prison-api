@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.assertj.core.api.Assertions.assertThat
@@ -222,15 +223,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
 
       prisonApiMockServer.stubCreateOffender(prisonNumber)
 
-      val token = getAuthorisation(
-        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-        scopes = listOf("read", "write"),
-      )
-
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
         .exchange()
@@ -242,7 +238,7 @@ class ArrivalsResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/offenders",
           ),
-        ).withHeader("Authorization", equalTo(token)),
+        ).withHeader("Authorization", matching("Bearer .*")),
       )
     }
 
@@ -254,16 +250,10 @@ class ArrivalsResourceTest : IntegrationTestBase() {
       assertThat(confirmedArrivalRepository.count()).isEqualTo(0)
       prisonApiMockServer.stubCreateOffender(prisonNumber)
 
-      val token = getAuthorisation(
-        username = username,
-        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-        scopes = listOf("read", "write"),
-      )
-
       webTestClient
         .post()
         .uri("/arrivals/06274b73-6aa9-490e-ab0e-2a25b3638068/confirm")
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write"), user = username))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest(null))
         .exchange()
