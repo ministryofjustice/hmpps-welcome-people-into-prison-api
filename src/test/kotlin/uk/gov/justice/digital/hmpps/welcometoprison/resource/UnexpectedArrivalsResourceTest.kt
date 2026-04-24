@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
-import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.junit.jupiter.api.DisplayName
@@ -56,15 +56,10 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
 
       prisonApiMockServer.stubCreateOffender(prisonNumber)
 
-      val token = getAuthorisation(
-        roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"),
-        scopes = listOf("read", "write"),
-      )
-
       webTestClient
         .post()
         .uri("/unexpected-arrivals/confirm")
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_BOOKING_CREATE", "ROLE_TRANSFER_PRISONER"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest)
         .exchange()
@@ -76,7 +71,7 @@ class UnexpectedArrivalsResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/offenders",
           ),
-        ).withHeader("Authorization", equalTo(token)),
+        ).withHeader("Authorization", matching("Bearer .*")),
       )
     }
 

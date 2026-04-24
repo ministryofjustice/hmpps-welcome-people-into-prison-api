@@ -60,11 +60,11 @@ class BasmClient(@Qualifier("basmApiWebClient") private val webClient: WebClient
   ): Mono<List<T>> = webClient.get()
     .uri("$path$query")
     .header("Accept", "application/vnd.api+json; version=2")
-    .header("X-Current-User", SecurityContextHolder.getContext().authentication.principal.toString())
+    .header("X-Current-User", SecurityContextHolder.getContext().authentication?.name ?: "anonymous")
     .retrieve()
     .bodyToMono(type)
     .map { it.payload }
 
-  fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, NOT_FOUND)
-  fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
+  fun <T : Any> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, NOT_FOUND)
+  fun <T : Any> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 }

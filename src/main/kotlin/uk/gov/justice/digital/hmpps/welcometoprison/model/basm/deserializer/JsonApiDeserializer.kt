@@ -1,18 +1,15 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.model.basm.deserializer
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.BeanProperty
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.JsonMappingException
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.deser.ContextualDeserializer
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
-import java.io.IOException
+import tools.jackson.core.JsonParser
+import tools.jackson.databind.BeanProperty
+import tools.jackson.databind.DeserializationContext
+import tools.jackson.databind.JavaType
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.ValueDeserializer
+import tools.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.databind.node.ArrayNode
+import tools.jackson.databind.node.ObjectNode
 
 @JsonDeserialize(using = JsonApiDeserializer::class)
 data class JsonApiResponse<T>(val payload: List<T>)
@@ -23,22 +20,20 @@ typealias Inclusions = Map<InclusionKey, JsonNode>
 private fun inclusionKey(node: JsonNode) = node["type"] to node["id"]
 private fun inclusions(node: JsonNode) = node.get("included")?.associateBy { inclusionKey(it) } ?: emptyMap()
 
-class JsonApiDeserializer(private val valueType: JavaType? = null) :
-  JsonDeserializer<Any>(),
-  ContextualDeserializer {
+class JsonApiDeserializer(private val valueType: JavaType? = null) : ValueDeserializer<Any>() {
 
-  @Throws(JsonMappingException::class)
-  override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): JsonDeserializer<*> = JsonApiDeserializer(ctxt.contextualType.bindings.typeParameters[0])
+  override fun createContextual(ctxt: DeserializationContext, property: BeanProperty?): ValueDeserializer<*> = JsonApiDeserializer(ctxt.contextualType.bindings.typeParameters[0])
 
-  @Throws(IOException::class)
   override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): Any {
-    val node = parser.codec.readTree<ObjectNode>(parser)
+    val node: ObjectNode = ctxt.readTree(parser) as ObjectNode
     val inclusions = inclusions(node)
 
-    val convert = { it: JsonNode -> parser.codec.treeToValue(normalise(inclusions, it), valueType?.rawClass) }
+    val convert = { it: JsonNode ->
+      ctxt.readTreeAsValue(normalise(inclusions, it, 0), valueType?.rawClass) as Any
+    }
 
-    val result = when (val data = node.get("data")) {
-      is ArrayNode -> data.map { convert(it) }
+    val result: List<Any> = when (val data = node.get("data")) {
+      is ArrayNode -> data.values().map { convert(it) }
       else -> listOf(convert(data))
     }
     return JsonApiResponse(result)
@@ -48,18 +43,18 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) :
    * Move each attribute, up a layer to the root of the object
    * Replace each relationship with its normalised included counterpart (if present) and migrate to root of the object
    */
-  private fun normalise(inclusions: Inclusions, item: JsonNode): JsonNode {
+  private fun normalise(inclusions: Inclusions, item: JsonNode, depth: Int): JsonNode {
     if (item !is ObjectNode) throw RuntimeException("$item is not an object node")
 
     val attributes = item.getAndRemove("attributes")
     val relationships = item.getAndRemove("relationships")
 
-    attributes?.let { item.setAll<JsonNode>(attributes) }
+    attributes?.let { item.setAll(attributes) }
     relationships?.let {
-      it.fields().asSequence()
+      it.properties().asSequence()
         .filter { (_, values) -> values?.get("data") != null }
         .forEach { (name, values) ->
-          item.set<JsonNode>(name, getRelations(inclusions, values["data"]))
+          item.set(name, getRelations(inclusions, values["data"], depth + 1))
         }
     }
 
@@ -70,12 +65,22 @@ class JsonApiDeserializer(private val valueType: JavaType? = null) :
    * Check to see if data for relation is included in API response and if so normalise and return
    * Otherwise just return the existing info (most like just type and ID)
    */
-  private fun getRelations(inclusions: Inclusions, data: JsonNode): JsonNode = if (data.size() > 2) {
-    ObjectMapper().valueToTree(data.map { getRelation(inclusions, it) })
+  private fun getRelations(inclusions: Inclusions, data: JsonNode, depth: Int): JsonNode = if (data is ArrayNode) {
+    JsonMapper().valueToTree(data.values().map { getRelation(inclusions, it, depth) })
   } else {
-    getRelation(inclusions, data)
+    getRelation(inclusions, data, depth)
   }
-  private fun getRelation(inclusions: Inclusions, data: JsonNode) = inclusions[inclusionKey(data)]?.let { normalise(inclusions, it) } ?: data
+
+  private fun getRelation(inclusions: Inclusions, data: JsonNode, depth: Int): JsonNode {
+    val maxDepth = 10
+    return if (depth >= maxDepth) {
+      // At max depth, return just type and id to prevent OOM from circular references
+      data
+    } else {
+      inclusions[inclusionKey(data)]?.deepCopy()
+        ?.let { normalise(inclusions, it, depth + 1) } ?: data
+    }
+  }
 
   private fun ObjectNode.getAndRemove(name: String): ObjectNode? {
     val field = this.get(name)?.let { it as ObjectNode }

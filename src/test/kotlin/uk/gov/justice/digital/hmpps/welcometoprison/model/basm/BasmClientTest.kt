@@ -50,7 +50,7 @@ class BasmClientTest {
     basmClient = BasmClient(webClient)
     whenever(securityContext.authentication).thenReturn(authentication)
     SecurityContextHolder.setContext(securityContext)
-    whenever(SecurityContextHolder.getContext().authentication.principal).thenReturn("welcome-into-prison-client")
+    whenever(authentication.name).thenReturn("welcome-into-prison-client")
   }
 
   @Test
