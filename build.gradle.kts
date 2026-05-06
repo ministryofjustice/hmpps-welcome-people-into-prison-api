@@ -1,7 +1,7 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.2.1"
-  kotlin("plugin.spring") version "2.3.20"
-  kotlin("plugin.jpa") version "2.3.20"
+  kotlin("plugin.spring") version "2.3.21"
+  kotlin("plugin.jpa") version "2.3.21"
   id("org.jetbrains.kotlinx.kover") version "0.9.8"
   idea
 }
@@ -23,7 +23,7 @@ dependencies {
 
   implementation("org.apache.commons:commons-text:1.15.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
-  implementation("commons-codec:commons-codec:1.21.0")
+  implementation("commons-codec:commons-codec:1.22.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
 
   runtimeOnly("org.flywaydb:flyway-core")
