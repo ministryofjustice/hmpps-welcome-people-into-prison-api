@@ -2,12 +2,11 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.basm.deserializer
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.KotlinModule
 import uk.gov.justice.digital.hmpps.welcometoprison.utils.loadJson
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -16,14 +15,15 @@ import kotlin.reflect.KClass
 
 class JsonApiDeserializerTest {
 
-  private val mapper = ObjectMapper()
-    .registerModule(KotlinModule.Builder().build())
-    .registerModule(JavaTimeModule())
+  private val mapper = JsonMapper.builder()
+    .addModule(KotlinModule.Builder().build())
     .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .build()
 
   private fun wrapper(type: KClass<*>) = mapper.typeFactory.constructParametricType(JsonApiResponse::class.java, type.java)
 
-  private fun <T : Any> readJsonApiResponse(type: KClass<T>, fileName: String) = mapper.readValue<JsonApiResponse<T>>(fileName.loadJson(this), wrapper(type))
+  @Suppress("UNCHECKED_CAST")
+  private fun <T : Any> readJsonApiResponse(type: KClass<T>, fileName: String) = mapper.readValue(fileName.loadJson(this), wrapper(type)) as JsonApiResponse<T>
 
   @Test
   fun `check single empty deserialization`() {

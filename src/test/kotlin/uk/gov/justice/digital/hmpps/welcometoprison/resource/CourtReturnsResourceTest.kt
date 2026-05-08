@@ -45,11 +45,9 @@ class CourtReturnsResourceTest : IntegrationTestBase() {
 
   @Test
   fun `requires correct role`() {
-    val token = getAuthorisation(roles = listOf(), scopes = listOf("write"))
-
     webTestClient.post().uri(url)
       .bodyValue(confirmCourtReturnRequest)
-      .withBearerToken(token)
+      .headers(setAuthorisation(roles = listOf(), scopes = listOf("write")))
       .exchange()
       .expectStatus().isForbidden
       .expectBody().jsonPath("userMessage").isEqualTo("Access denied")

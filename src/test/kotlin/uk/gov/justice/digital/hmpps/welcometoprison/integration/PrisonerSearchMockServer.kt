@@ -12,11 +12,7 @@ class PrisonerSearchMockServer : MockServer(8093) {
 
   fun stubMatchPrisoners(status: Int) {
     stubFor(
-      WireMock.post(
-        WireMock.urlPathMatching(
-          "/prisoner-search/possible-matches\\\\?.*",
-        ),
-      )
+      WireMock.post(WireMock.urlPathEqualTo("/prisoner-search/possible-matches"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

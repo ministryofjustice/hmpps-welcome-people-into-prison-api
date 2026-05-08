@@ -47,12 +47,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/body-scans/prisoners/$prisonNumber")
-        .headers(
-          setAuthorisation(
-            roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write"),
-          ),
-        )
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(validRequest)
         .exchange()
@@ -85,12 +80,7 @@ class CreateBodyScanResourceTest : IntegrationTestBase() {
       webTestClient
         .post()
         .uri("/body-scans/prisoners/$prisonNumber")
-        .headers(
-          setAuthorisation(
-            roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"),
-            scopes = listOf("read", "write"),
-          ),
-        )
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_HEALTH_PROBLEMS"), scopes = listOf("read", "write")))
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .bodyValue(
           "{}",

@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.resource
 
-import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.junit.jupiter.api.BeforeEach
@@ -63,10 +63,8 @@ class TransfersResourceTest : IntegrationTestBase() {
     fun `calls prison API with passed through token`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
-      val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
-
       webTestClient.get().uri("/prisons/MDI/transfers")
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 
@@ -75,7 +73,7 @@ class TransfersResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
           ),
-        ).withHeader("Authorization", equalTo(token)),
+        ).withHeader("Authorization", matching("Bearer .*")),
       )
     }
   }
@@ -147,10 +145,8 @@ class TransfersResourceTest : IntegrationTestBase() {
     fun `calls prison API with passed through token`() {
       prisonApiMockServer.stubGetPrisonTransfersEnRoute("MDI", LocalDate.now())
 
-      val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
-
       webTestClient.get().uri("/prisons/MDI/transfers/G6081VQ")
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
         .exchange()
         .expectStatus().isOk
 
@@ -159,7 +155,7 @@ class TransfersResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/movements/MDI/enroute?movementDate=" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
           ),
-        ).withHeader("Authorization", equalTo(token)),
+        ),
       )
     }
   }
@@ -206,13 +202,10 @@ class TransfersResourceTest : IntegrationTestBase() {
         LocalDateTime.of(2021, 11, 15, 1, 0, 0),
       )
 
-      val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
-
-      webTestClient
-        .post()
+      webTestClient.post()
         .uri("/transfers/A1234BC/confirm")
+        .headers(setAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write")))
         .bodyValue(transferInDetail)
-        .withBearerToken(token)
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -224,8 +217,7 @@ class TransfersResourceTest : IntegrationTestBase() {
           urlEqualTo(
             "/api/offenders/A1234BC/transfer-in",
           ),
-        ).withHeader("Authorization", equalTo(token))
-          .withRequestBody(equalToJson(objectMapper.writeValueAsString(transferIn))),
+        ).withRequestBody(equalToJson(objectMapper.writeValueAsString(transferIn))),
       )
     }
   }

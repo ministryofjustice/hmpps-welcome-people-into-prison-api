@@ -7,15 +7,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 class ResourceServerConfiguration {
   @Bean
-  fun securityFilterChain(http: HttpSecurity, mvc: MvcRequestMatcher.Builder): SecurityFilterChain = http
+  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain = http
     .sessionManagement { sessionManagement ->
       sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
@@ -24,17 +22,18 @@ class ResourceServerConfiguration {
     }
     .authorizeHttpRequests { auth ->
       auth.requestMatchers(
-        mvc.pattern("/webjars/**"),
-        mvc.pattern("/favicon.ico"),
-        mvc.pattern("/csrf"),
-        mvc.pattern("/health/**"),
-        mvc.pattern("/info"),
-        mvc.pattern("/ping"),
-        mvc.pattern("/v3/api-docs/**"),
-        mvc.pattern("/swagger-ui/**"),
-        mvc.pattern("/swagger-ui.html"),
+        "/webjars/**",
+        "/favicon.ico",
+        "/csrf",
+        "/health/**",
+        "/info",
+        "/ping",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
       )
-        .permitAll().anyRequest().authenticated()
+        .permitAll()
+      auth.anyRequest().authenticated()
     }
     .also {
       it.oauth2ResourceServer { oauth2ResourceServerCustomizer ->
@@ -44,7 +43,4 @@ class ResourceServerConfiguration {
       }
     }
     .build()
-
-  @Bean
-  fun mvc(introspector: HandlerMappingIntrospector?): MvcRequestMatcher.Builder? = MvcRequestMatcher.Builder(introspector)
 }

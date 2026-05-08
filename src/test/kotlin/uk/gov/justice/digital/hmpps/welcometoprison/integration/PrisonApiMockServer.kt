@@ -61,6 +61,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
             .withBody(
               """
                 {
+                  "bookingId": 1234567,
                   "offenderNo": "$offenderNo",
                   "offenderId": 2582523,
                   "rootOffenderId": 2582523,
@@ -73,7 +74,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "assignedLivingUnit": {
                     "agencyId": "NMI",
                     "locationId": 1,
-                    "description": "RECP",
+                    "description": "Reception",
                     "agencyName": "Nottingham (HMP)"
                      
                   },
@@ -99,6 +100,7 @@ class PrisonApiMockServer : WireMockServer(9005) {
             .withBody(
               """
                 {
+                  "bookingId": 1234567,
                   "offenderNo": "$offenderNo",
                   "offenderId": 2582523,
                   "rootOffenderId": 2582523,
@@ -106,9 +108,8 @@ class PrisonApiMockServer : WireMockServer(9005) {
                   "lastName": "RAP",
                   "dateOfBirth": "1961-01-04",
                   "age": 60,
-                 "agencyId": "NMI",
-                  "activeFlag": false
-                  },
+                  "agencyId": "NMI",
+                  "activeFlag": false,
                   "physicalAttributes": {
                     "sexCode": "F",
                     "gender": "Female"

@@ -6,29 +6,30 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.context.annotation.Import
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersSpec
-import uk.gov.justice.digital.hmpps.config.JwtAuthHelper
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Import(JwtAuthHelper::class)
+@AutoConfigureWebTestClient
+@AutoConfigureJson
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
 
-  @Suppress("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   lateinit var webTestClient: WebTestClient
 
   val objectMapper: ObjectMapper by lazy { ObjectMapper().registerModule(JavaTimeModule()) }
 
   @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
+  protected lateinit var jwtAuthHelper: JwtAuthorisationHelper
 
   companion object {
     internal val prisonApiMockServer = PrisonApiMockServer()
@@ -56,16 +57,16 @@ abstract class IntegrationTestBase {
     prisonApiMockServer.resetAll()
   }
 
-  internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
+  internal fun <S : RequestHeadersSpec<S>> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
 
-  internal fun setAuthorisation(
+  protected fun setAuthorisation(
+    user: String? = "WELCOME_INTO_PRISON_API",
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation("welcome-into-prison-client", roles, scopes)
-
-  internal fun getAuthorisation(
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf(),
-    username: String = "welcome-into-prison-client",
-  ) = jwtAuthHelper.getAuthorisation(user = username, roles = roles, scopes = scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
+    clientId = "welcome-into-prison-client",
+    username = user,
+    roles = roles,
+    scope = scopes,
+  )
 }

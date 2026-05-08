@@ -77,7 +77,6 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
     @Test
     fun `confirm arrival`() {
       prisonApiMockServer.stubConfirmTemporaryAbsencesSuccess("G5666UK")
-      val token = getAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
         "ET",
@@ -88,7 +87,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
         .post()
         .uri("/temporary-absences/G5666UK/confirm")
         .bodyValue(confirmTemporaryAbsenceRequest)
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf("ROLE_TRANSFER_PRISONER"), scopes = listOf("write")))
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -113,7 +112,6 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
     @Test
     fun `requires correct role`() {
-      val token = getAuthorisation(roles = listOf(), scopes = listOf("write"))
       val confirmTemporaryAbsenceRequest = ConfirmTemporaryAbsenceRequest(
         "NMI",
         "ET",
@@ -123,7 +121,7 @@ class TemporaryAbsencesResourceTest : IntegrationTestBase() {
 
       webTestClient.post().uri("/temporary-absences/G5666UK/confirm")
         .bodyValue(confirmTemporaryAbsenceRequest)
-        .withBearerToken(token)
+        .headers(setAuthorisation(roles = listOf(), scopes = listOf("write")))
         .exchange()
         .expectStatus().isForbidden
         .expectBody().jsonPath("userMessage").isEqualTo("Access denied")

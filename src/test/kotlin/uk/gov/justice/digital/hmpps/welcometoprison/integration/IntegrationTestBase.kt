@@ -1,24 +1,25 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.context.annotation.Import
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersSpec
-import uk.gov.justice.digital.hmpps.config.JwtAuthHelper
+import tools.jackson.databind.json.JsonMapper
 import uk.gov.justice.digital.hmpps.welcometoprison.model.confirmedarrivals.ConfirmedArrivalRepository
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Import(JwtAuthHelper::class)
+@AutoConfigureWebTestClient
+@AutoConfigureJson
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
 
@@ -30,10 +31,10 @@ abstract class IntegrationTestBase {
   @Autowired
   lateinit var confirmedArrivalRepository: ConfirmedArrivalRepository
 
-  val objectMapper: ObjectMapper by lazy { ObjectMapper().registerModule(JavaTimeModule()) }
+  val objectMapper: JsonMapper by lazy { JsonMapper.builder().findAndAddModules().build() }
 
   @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
+  protected lateinit var jwtAuthHelper: JwtAuthorisationHelper
 
   companion object {
     internal val basmApiMockServer = BasmApiMockServer()
@@ -85,18 +86,16 @@ abstract class IntegrationTestBase {
     manageUsersApiMockServer.resetAll()
   }
 
-  internal fun <S : RequestHeadersSpec<S>?> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
+  internal fun <S : RequestHeadersSpec<S>> RequestHeadersSpec<S>.withBearerToken(token: String) = this.apply { header(AUTHORIZATION, token) }
 
-  internal fun setAuthorisation(
-    clientId: String = "test-client-id",
+  protected fun setAuthorisation(
     user: String? = "welcome-into-prison-client",
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes, clientId = clientId)
-
-  internal fun getAuthorisation(
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf(),
-    username: String = "welcome-into-prison-client",
-  ) = jwtAuthHelper.getAuthorisation(user = username, roles = roles, scopes = scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
+    clientId = "test-client-id",
+    username = user,
+    roles = roles,
+    scope = scopes,
+  )
 }

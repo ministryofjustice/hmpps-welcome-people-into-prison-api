@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.welcometoprison.model.prison
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
@@ -127,8 +128,8 @@ data class UserCaseLoad(
   val description: String,
 )
 
-fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
-fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
+fun <T : Any> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, HttpStatus.NOT_FOUND)
+fun <T : Any> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatusCode): Mono<T> = if (exception.statusCode == statusCode) Mono.empty() else Mono.error(exception)
 
 fun propagateClientError(response: ClientResponse, telemetryClient: TelemetryClient) = response.bodyToMono(ClientErrorResponse::class.java).map {
   telemetryClient.trackEvent(

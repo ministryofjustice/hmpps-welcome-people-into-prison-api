@@ -44,7 +44,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
       @Test
       fun `returns the definitions of all the reports`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -55,7 +55,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
       @Test
       fun `returns the definitions of all the reports but not authorises as no user in context`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(user = null, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+          .headers(setAuthorisation(user = null, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -68,7 +68,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
         manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("ANOTHER_USER_ROLE"))
 
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -89,7 +89,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
       manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("ANOTHER_USER_ROLE"))
 
       webTestClient.get().uri(url)
-        .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+        .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
         .header("Content-Type", "application/json")
         .exchange()
         .expectStatus().isForbidden
@@ -102,7 +102,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
       @Test
       fun `returns the definition of the report`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -141,7 +141,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
         manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("ANOTHER_USER_ROLE"))
 
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+          .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isForbidden
@@ -155,7 +155,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
         @Sql("classpath:repository/confirmed-arrival.sql")
         fun `returns a page of the report`() {
           webTestClient.get().uri(url)
-            .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+            .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
@@ -187,7 +187,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
           manageUsersApiMockServer.stubLookupUserCaseload(REQUESTING_USER, "BXI", listOf("BXI"))
 
           webTestClient.get().uri(url)
-            .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read"), clientId = CLIENT_ID))
+            .headers(setAuthorisation(user = REQUESTING_USER, roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk

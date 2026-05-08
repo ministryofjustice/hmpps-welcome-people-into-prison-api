@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.welcometoprison.integration.health
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.http.HttpHeader
+import com.github.tomakehurst.wiremock.http.HttpHeaders
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.welcometoprison.integration.IntegrationTestBase
@@ -22,11 +24,11 @@ class HealthCheckTest : IntegrationTestBase() {
       .isOk
       .expectBody()
       .jsonPath("status").isEqualTo("UP")
-      .jsonPath("components.basmApiHealth.details.HttpStatus").isEqualTo("OK")
-      .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("OK")
-      .jsonPath("components.prisonRegisterHealth.details.HttpStatus").isEqualTo("OK")
-      .jsonPath("components.prisonerSearchApiHealth.details.HttpStatus").isEqualTo("OK")
-      .jsonPath("components.manageUsersApiHealth.details.HttpStatus").isEqualTo("OK")
+      .jsonPath("components.basmApi.details.HttpStatus").isEqualTo("200 OK")
+      .jsonPath("components.prisonApi.details.HttpStatus").isEqualTo("200 OK")
+      .jsonPath("components.prisonRegisterApi.details.HttpStatus").isEqualTo("200 OK")
+      .jsonPath("components.prisonerSearchApi.details.HttpStatus").isEqualTo("200 OK")
+      .jsonPath("components.manageUsersApi.details.HttpStatus").isEqualTo("200 OK")
   }
 
   @Test
@@ -93,11 +95,13 @@ class HealthCheckTest : IntegrationTestBase() {
       .is5xxServerError
       .expectBody()
       .jsonPath("status").isEqualTo("DOWN")
-      .jsonPath("components.basmApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
-      .jsonPath("components.prisonApiHealth.details.HttpStatus").isEqualTo("NOT_FOUND")
+      .jsonPath("components.basmApi.details.HttpStatus").isEqualTo("404 NOT_FOUND")
+      .jsonPath("components.prisonApi.details.HttpStatus").isEqualTo("404 NOT_FOUND")
   }
 
   private fun stubPing(status: Int) {
+    val stat = if (status == 200) "UP" else "DOWN"
+
     basmApiMockServer.stubFor(
       get("/ping").willReturn(
         aResponse()
@@ -110,18 +114,8 @@ class HealthCheckTest : IntegrationTestBase() {
     prisonApiMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(
-            if (status == 200) {
-              """
-                {
-                  "status": "UP"
-                }
-              """.trimIndent()
-            } else {
-              "some error"
-            },
-          )
+          .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+          .withBody("""{"status": "$stat"}""")
           .withStatus(status),
       ),
     )
@@ -129,18 +123,8 @@ class HealthCheckTest : IntegrationTestBase() {
     prisonRegisterMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(
-            if (status == 200) {
-              """
-                {
-                  "status": "UP"
-                }
-              """.trimIndent()
-            } else {
-              "some error"
-            },
-          )
+          .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+          .withBody("""{"status": "$stat"}""")
           .withStatus(status),
       ),
     )
@@ -148,18 +132,8 @@ class HealthCheckTest : IntegrationTestBase() {
     prisonerSearchMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(
-            if (status == 200) {
-              """
-                {
-                  "status": "UP"
-                }
-              """.trimIndent()
-            } else {
-              "some error"
-            },
-          )
+          .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+          .withBody("""{"status": "$stat"}""")
           .withStatus(status),
       ),
     )
@@ -167,18 +141,8 @@ class HealthCheckTest : IntegrationTestBase() {
     manageUsersApiMockServer.stubFor(
       get("/health/ping").willReturn(
         aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(
-            if (status == 200) {
-              """
-                {
-                  "status": "UP"
-                }
-              """.trimIndent()
-            } else {
-              "some error"
-            },
-          )
+          .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+          .withBody("""{"status": "$stat"}""")
           .withStatus(status),
       ),
     )

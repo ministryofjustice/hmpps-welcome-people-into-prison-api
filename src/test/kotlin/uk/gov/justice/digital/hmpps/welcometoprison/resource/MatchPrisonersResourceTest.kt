@@ -17,12 +17,10 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
         }
       """
 
-    val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
-
     val resp = webTestClient
       .post()
       .uri("/match-prisoners")
-      .withBearerToken(token)
+      .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
       .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
       .bodyValue(validRequest)
       .exchange()
@@ -45,12 +43,10 @@ class MatchPrisonersResourceTest : IntegrationTestBase() {
         }
       """
 
-    val token = getAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read"))
-
     val resp = webTestClient
       .post()
       .uri("/match-prisoners")
-      .withBearerToken(token)
+      .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
       .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
       .bodyValue(validRequest)
       .exchange()

@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.welcometoprison.integration
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
@@ -43,9 +44,9 @@ class BasmApiMockServer : WireMockServer(9004) {
   fun stubGetMovements(status: Int, hasMissingDob: Boolean = false) {
     stubFor(
       get(
-        urlPathMatching("/api/moves\\\\?.*"),
+        urlPathEqualTo("/api/moves"),
       )
-        .withHeader("X-Current-User", WireMock.equalTo("welcome-into-prison-client"))
+        .withHeader("X-Current-User", equalTo("welcome-into-prison-client"))
         .willReturn(
           aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
