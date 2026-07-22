@@ -31,7 +31,7 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .exchange()
         .expectStatus().isOk
         .expectBody()
-        .jsonPath("$.length()").isEqualTo(13)
+        .jsonPath("$.length()").isEqualTo(14)
     }
 
     @Test
@@ -47,13 +47,14 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .jsonPath("$[3].description").isEqualTo("Sentenced for life")
         .jsonPath("$[4].description").isEqualTo("Recalled")
         .jsonPath("$[5].description").isEqualTo("Transfer from a foreign establishment")
-        .jsonPath("$[6].description").isEqualTo("Temporary stay enroute to another establishment")
-        .jsonPath("$[7].description").isEqualTo("Awaiting transfer to hospital")
-        .jsonPath("$[8].description").isEqualTo("Late return from Release on Temporary Licence (ROTL)")
-        .jsonPath("$[9].description").isEqualTo("Detention under immigration powers")
-        .jsonPath("$[10].description").isEqualTo("Detention in Youth Offender Institution")
-        .jsonPath("$[11].description").isEqualTo("Recapture after escape")
-        .jsonPath("$[12].description").isEqualTo("Civil offence")
+        .jsonPath("$[6].description").isEqualTo("Repatriated to this country")
+        .jsonPath("$[7].description").isEqualTo("Temporary stay enroute to another establishment")
+        .jsonPath("$[8].description").isEqualTo("Awaiting transfer to hospital")
+        .jsonPath("$[9].description").isEqualTo("Late return from Release on Temporary Licence (ROTL)")
+        .jsonPath("$[10].description").isEqualTo("Detention under immigration powers")
+        .jsonPath("$[11].description").isEqualTo("Detention in Youth Offender Institution")
+        .jsonPath("$[12].description").isEqualTo("Recapture after escape")
+        .jsonPath("$[13].description").isEqualTo("Civil offence")
     }
 
     @Test
@@ -81,6 +82,29 @@ class ImprisonmentReasonsResourceTest : IntegrationTestBase() {
         .jsonPath("$[2].movementReasons[1].description").isEqualTo("Extended sentence for public protection")
         .jsonPath("$[2].movementReasons[1].movementReasonCode").isEqualTo("26")
         .jsonPath("$[2].movementReasons.length()").isEqualTo(4)
+    }
+
+    @Test
+    fun `returns ImprisonmentStatus with a fixed from location`() {
+      webTestClient.get().uri("/imprisonment-statuses")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectBody()
+        .jsonPath("$[6].description").isEqualTo("Repatriated to this country")
+        .jsonPath("$[6].imprisonmentStatusCode").isEqualTo("RECEP_DET")
+        .jsonPath("$[6].fromLocationId").isEqualTo("FORGN")
+        .jsonPath("$[6].movementReasons[0].movementReasonCode").isEqualTo("I")
+        .jsonPath("$[6].movementReasons.length()").isEqualTo(1)
+    }
+
+    @Test
+    fun `omits fromLocationId for statuses without a fixed from location`() {
+      webTestClient.get().uri("/imprisonment-statuses")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_ARRIVALS"), scopes = listOf("read")))
+        .exchange()
+        .expectBody()
+        .jsonPath("$[0].fromLocationId").doesNotExist()
+        .jsonPath("$[5].fromLocationId").doesNotExist()
     }
   }
 }

@@ -21,6 +21,12 @@ data class ImprisonmentStatus(
   @Schema(description = "Validation message", example = "Select the type of the determinate sentence")
   val secondLevelValidationMessage: String? = null,
 
+  @Schema(
+    description = "Nomis agency location the arrival is recorded as coming from, where this is fixed for the status",
+    example = "FORGN",
+  )
+  val fromLocationId: String? = null,
+
   @Schema(description = "Movement reasons data", example = "Intermittent custodial sentence, INTER ")
   val movementReasons: List<MovementReason>,
 )

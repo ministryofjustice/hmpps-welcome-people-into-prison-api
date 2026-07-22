@@ -129,6 +129,17 @@ val IMPRISONMENT_STATUSES_WITH_REASONS = listOf(
     ),
   ),
   ImprisonmentStatus(
+    code = "repatriation",
+    description = "Repatriated to this country",
+    imprisonmentStatusCode = "RECEP_DET",
+    fromLocationId = "FORGN",
+    movementReasons = listOf(
+      MovementReason(
+        movementReasonCode = "I",
+      ),
+    ),
+  ),
+  ImprisonmentStatus(
     code = "temporary-stay",
     description = "Temporary stay enroute to another establishment",
     imprisonmentStatusCode = "RECEP_TEM",
