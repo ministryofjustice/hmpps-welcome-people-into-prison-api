@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.3"
-  kotlin("plugin.spring") version "2.4.0"
-  kotlin("plugin.jpa") version "2.4.0"
-  id("org.jetbrains.kotlinx.kover") version "0.9.8"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.7"
+  kotlin("plugin.spring") version "2.4.10"
+  kotlin("plugin.jpa") version "2.4.10"
+  id("org.jetbrains.kotlinx.kover") version "0.9.9"
   idea
 }
 
@@ -12,7 +12,7 @@ configurations {
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.0")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -23,11 +23,11 @@ dependencies {
 
   implementation("org.apache.commons:commons-text:1.15.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
-  implementation("commons-codec:commons-codec:1.22.0")
+  implementation("commons-codec:commons-codec:1.22.1")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.12.3")
 
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.7.11")
+  runtimeOnly("org.postgresql:postgresql:42.7.13")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.0")
