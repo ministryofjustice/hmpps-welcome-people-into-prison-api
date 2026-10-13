@@ -61,6 +61,11 @@ spring:
             client-id: ${welcome_people_into_prison.api.client.id}
             client-secret: ${welcome_people_into_prison.api.client.secret}
             authorization-grant-type: client_credentials
+          DPR_LIB_API:
+            provider: hmpps-auth
+            client-id: ${welcome_people_into_prison.api.client.id}
+            client-secret: ${welcome_people_into_prison.api.client.secret}
+            authorization-grant-type: client_credentials
         provider:
           basm-auth:
             token-uri: ${basm.endpoint.url}/oauth/token
@@ -77,8 +82,13 @@ dpr:
   lib:
     definition:
       locations: "reports/arrivals-report.json"
+    hasProbationDatasources: false
     system:
       role: DPR_API_ACCESS
+      token:
+        enabled: true
+    manage-users:
+      host: ${manage.users.endpoint.url}
 
 server:
   port: 8080

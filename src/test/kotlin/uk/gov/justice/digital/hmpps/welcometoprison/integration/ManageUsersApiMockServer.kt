@@ -54,6 +54,27 @@ class ManageUsersApiMockServer : WireMockServer(WIREMOCK_PORT) {
     )
   }
 
+  fun stubLookupUser(username: String = "request-user") {
+    val payload = """
+      {
+        "username": "$username",
+        "active": true,
+        "name": "Request User",
+        "authSource": "NOMIS",
+        "userId": "1234",
+        "uuid": "00000000-0000-0000-0000-000000000000"
+      }
+    """.trimIndent()
+    stubFor(
+      get("/users/$username")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(payload).withStatus(200),
+        ),
+    )
+  }
+
   data class RolesResponse(
     val roleCode: String,
   )

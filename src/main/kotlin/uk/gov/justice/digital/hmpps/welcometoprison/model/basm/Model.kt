@@ -84,7 +84,7 @@ class Model {
     companion object {
       @JvmStatic
       @JsonCreator
-      fun create(value: JsonNode?) = when (value?.get("key")?.asText()) {
+      fun create(value: JsonNode?) = when (value?.get("key")?.asString()) {
         "male" -> MALE
         "female" -> FEMALE
         "trans" -> TRANS
