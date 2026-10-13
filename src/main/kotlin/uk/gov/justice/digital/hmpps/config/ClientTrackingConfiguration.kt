@@ -5,7 +5,6 @@ import com.nimbusds.jwt.SignedJWT
 import io.opentelemetry.api.trace.Span
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
@@ -26,7 +25,7 @@ class ClientTrackingInterceptor : HandlerInterceptor {
   override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
     val token = request.getHeader(HttpHeaders.AUTHORIZATION)
     val bearer = "Bearer "
-    if (StringUtils.startsWithIgnoreCase(token, bearer)) {
+    if (token?.startsWith(bearer, ignoreCase = true) == true) {
       try {
         val jwtBody = getClaimsFromJWT(token)
         val user = jwtBody.getClaim("user_name")?.toString()
