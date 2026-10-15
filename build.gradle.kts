@@ -12,7 +12,7 @@ configurations {
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.3")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -24,13 +24,13 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.15.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
   implementation("commons-codec:commons-codec:1.23.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:18.2.4")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:18.2.5")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.14")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.3")
   testRuntimeOnly("com.h2database:h2:2.5.252")
 
   testImplementation("org.wiremock:wiremock-standalone:3.13.2")
