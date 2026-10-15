@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config
 
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,8 +18,6 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
-import uk.gov.justice.digital.hmpps.SYSTEM_USERNAME
-import uk.gov.justice.hmpps.kotlin.auth.authorisedWebClient
 import java.time.Duration
 
 @Configuration
@@ -33,9 +32,6 @@ class WebClientConfiguration(
 
   @Bean
   fun manageUsersHealthWebClient(): WebClient = WebClient.builder().baseUrl(manageUsersApiUri).build()
-
-  @Bean
-  fun manageUsersWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient = WebClient.builder().authorisedWebClient(authorizedClientManager, registrationId = SYSTEM_USERNAME, url = manageUsersApiUri, healthTimeout)
 
   @Bean
   fun prisonApiWebClient(): WebClient {
@@ -54,7 +50,7 @@ class WebClientConfiguration(
   fun prisonApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(prisonApiBaseUrl).build()
 
   @Bean
-  fun basmApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+  fun basmApiWebClient(@Qualifier("basmAuthorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
     oauth2Client.setDefaultClientRegistrationId("basm-api")
 
@@ -95,7 +91,7 @@ class WebClientConfiguration(
   fun prisonRegisterWebClient(): WebClient = WebClient.builder().baseUrl(prisonRegisterApiUrl).build()
 
   @Bean
-  fun authorizedClientManager(
+  fun basmAuthorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository,
     oAuth2AuthorizedClientService: OAuth2AuthorizedClientService,
   ): OAuth2AuthorizedClientManager {

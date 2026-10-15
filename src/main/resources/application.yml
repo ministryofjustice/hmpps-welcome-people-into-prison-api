@@ -25,8 +25,6 @@ spring:
 
   datasource:
     url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=${database.name}'
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
     hikari:
       pool-name: WelcomePeopleIntoPrison-CP
       connectionTimeout: 1000
