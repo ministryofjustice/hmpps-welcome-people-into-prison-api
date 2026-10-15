@@ -23,6 +23,7 @@ class DprReportingResourceTest : IntegrationTestBase() {
 
   @BeforeEach
   fun setUp() {
+    manageUsersApiMockServer.stubLookupUser(REQUESTING_USER)
     manageUsersApiMockServer.stubLookupUsersRoles(REQUESTING_USER, listOf("PRISONS_REPORTING_USER"))
     manageUsersApiMockServer.stubLookupUserCaseload(REQUESTING_USER, "LEI", listOf("MDI"))
   }
@@ -53,14 +54,12 @@ class DprReportingResourceTest : IntegrationTestBase() {
       }
 
       @Test
-      fun `returns the definitions of all the reports but not authorises as no user in context`() {
+      fun `denies access to report definitions when no user is in context`() {
         webTestClient.get().uri(url)
           .headers(setAuthorisation(user = null, roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
-          .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(1)
-          .jsonPath("$[0].authorised").isEqualTo("false")
+          .expectStatus().isForbidden
       }
 
       @Test
