@@ -22,9 +22,6 @@ management.endpoint:
   info.cache.time-to-live: 0
 
 spring:
-  main:
-    allow-bean-definition-overriding: true
-
   security:
     oauth2:
       resourceserver:

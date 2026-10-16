@@ -1,14 +1,33 @@
 server:
   shutdown: immediate
 
+basm:
+  endpoint.url: http://localhost:9004
+
 oauth:
   endpoint.url: http://localhost:8090/auth
+
+prison:
+  endpoint.url: http://localhost:8082
+  register.endpoint.url: http://localhost:9006
+
+prisoner:
+  search.endpoint.url: http://localhost:8093
+
+manage:
+  users.endpoint.url: http://localhost:9007
 
 management.endpoint:
   health.cache.time-to-live: 0
   info.cache.time-to-live: 0
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5431/hmpps-welcome-people-into-prison-api-db
+    username: test
+    password: test
+    hikari:
+      schema: public
   security:
     oauth2:
       resourceserver:
