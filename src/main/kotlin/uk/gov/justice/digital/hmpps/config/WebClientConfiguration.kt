@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.SYSTEM_USERNAME
+import uk.gov.justice.hmpps.kotlin.auth.authorisedWebClient
 import java.time.Duration
 
 @Configuration
@@ -32,6 +34,9 @@ class WebClientConfiguration(
 
   @Bean
   fun manageUsersHealthWebClient(): WebClient = WebClient.builder().baseUrl(manageUsersApiUri).build()
+
+  @Bean
+  fun applicationManageUsersWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient = WebClient.builder().authorisedWebClient(authorizedClientManager, registrationId = SYSTEM_USERNAME, url = manageUsersApiUri, healthTimeout)
 
   @Bean
   fun prisonApiWebClient(): WebClient {
