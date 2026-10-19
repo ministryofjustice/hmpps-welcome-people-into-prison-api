@@ -56,4 +56,3 @@ Example definition endpoint
 Example report endpoint
 
 ``GET {{url}}/reports/transactions/arrivals``
-
