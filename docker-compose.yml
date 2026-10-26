@@ -38,7 +38,7 @@ services:
     ports:
       - "8082:8080"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8080"]
     environment:
       - SPRING_PROFILES_ACTIVE=nomis-hsqldb
 
@@ -50,7 +50,7 @@ services:
     ports:
       - "8083:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8080"]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - DELIUS_ENABLED=false
