@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.14"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.15"
   kotlin("plugin.spring") version "2.4.21"
   kotlin("plugin.jpa") version "2.4.21"
   id("org.jetbrains.kotlinx.kover") version "0.9.11"
@@ -12,7 +12,7 @@ configurations {
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.3")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.1.0")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -24,13 +24,13 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.15.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
   implementation("commons-codec:commons-codec:1.23.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:18.3.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:18.6.2")
 
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.14")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.3")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.1.0")
   testRuntimeOnly("com.h2database:h2:2.5.252")
 
   testImplementation("org.wiremock:wiremock-standalone:3.13.2")
